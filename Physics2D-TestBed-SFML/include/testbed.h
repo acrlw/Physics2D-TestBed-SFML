@@ -31,7 +31,6 @@ namespace Physics2D
 		~TestBed();
 		void exec();
 	private:
-		void render(sf::RenderWindow& window);
 		void renderGUI(sf::RenderWindow& window, sf::Clock& clock);
 
 		void pause();
@@ -48,18 +47,9 @@ namespace Physics2D
 		int m_frequency = 120;
 		float m_contactBiasFactor = 0.03f;
 
-		bool m_bodyVisible = true;
-		bool m_aabbVisible = false;
-		bool m_jointVisible = true;
-		bool m_gridVisible = false;
-		bool m_treeVisible = false;
-		bool m_contactsVisible = false;
-		bool m_axisVisible = false;
 		bool m_userDrawVisible = true;
-		bool m_angleVisible = false;
-		bool m_centerVisible = false;
-
 		bool m_running = true;
+		bool m_cameraViewportMovement = false;
 
 		
 		int m_currentItem = 0;
@@ -76,6 +66,8 @@ namespace Physics2D
 		Camera m_camera;
 
 		Vector2 m_mousePos;
+
+		std::unique_ptr<sf::Thread> m_physicsThread;
 	};
 }
 #endif

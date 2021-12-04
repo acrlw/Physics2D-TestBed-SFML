@@ -15,6 +15,14 @@ namespace Physics2D
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_world.createJoint(m_pointJointPrimitive);
         m_mouseJoint->setActive(false);
+
+        m_camera.setViewport(Camera::Viewport(Vector2(0, 0), Vector2(1920, 1080)));
+        m_camera.setWorld(&m_world);
+        m_camera.setDbvh(&m_dbvh);
+        m_camera.setTree(&m_tree);
+        m_camera.setContactMaintainer(&m_maintainer);
+
+        m_physicsThread = std::make_unique<sf::Thread>(&TestBed::simulate, this);
     }
     TestBed::~TestBed()
     {
@@ -31,8 +39,7 @@ namespace Physics2D
 
         window.setActive(false);
 
-        sf::Thread physicsThread(&TestBed::simulate, this);
-        physicsThread.launch();
+        m_physicsThread->launch();
 
         sf::Clock deltaClock;
         while (window.isOpen())
@@ -45,7 +52,7 @@ namespace Physics2D
                 {
                 case sf::Event::Closed:
                 {
-                    physicsThread.terminate();
+                    m_physicsThread->terminate();
                     window.close();
                     break;
                 }
@@ -66,25 +73,100 @@ namespace Physics2D
                 }
                 case sf::Event::MouseButtonPressed:
                 {
+                    Vector2 pos(event.mouseButton.x, event.mouseButton.y);
+                    m_mousePos = m_camera.screenToWorld(pos);
+
+                    if (event.mouseButton.button == sf::Mouse::Right)
+                        m_cameraViewportMovement = true;
+
                     if (m_currentFrame != nullptr)
                         m_currentFrame->onMousePress(event);
+
+                    if (event.mouseButton.button == sf::Mouse::Left && m_mouseJoint != nullptr)
+                    {
+                        AABB mouseBox;
+                        mouseBox.position = m_mousePos;
+                        mouseBox.width = 0.01f;
+                        mouseBox.height = 0.01f;
+
+                        for (auto& body : m_tree.query(mouseBox))
+                        {
+                            Vector2 point = m_mousePos - body->position();
+                            point = Matrix2x2(-body->rotation()).multiply(point);
+                            if (body->shape()->contains(point) && m_selectedBody == nullptr)
+                            {
+                                m_selectedBody = body;
+                                auto prim = m_mouseJoint->primitive();
+                                prim.localPointA = body->toLocalPoint(m_mousePos);
+                                prim.bodyA = body;
+                                prim.targetPoint = m_mousePos;
+                                m_mouseJoint->setActive(true);
+                                m_mouseJoint->set(prim);
+                                break;
+                            }
+                        }
+                    }
+
                     break;
                 }
                 case sf::Event::MouseButtonReleased:
                 {
+                    Vector2 pos(event.mouseButton.x, event.mouseButton.y);
+                    m_mousePos = m_camera.screenToWorld(pos);
+
                     if (m_currentFrame != nullptr)
                         m_currentFrame->onMouseRelease(event);
+
+                    if (m_mouseJoint == nullptr)
+                        return;
+                    m_mouseJoint->setActive(false);
+
+                    m_cameraViewportMovement = false;
+                    m_selectedBody = nullptr;
+
                     break;
                 }
                 case sf::Event::MouseMoved:
                 {
                     if (m_currentFrame != nullptr)
                         m_currentFrame->onMouseMove(event);
+
+                    Vector2 pos(event.mouseMove.x, event.mouseMove.y);
+
+                    Vector2 tf = m_camera.screenToWorld(pos) - m_mousePos;
+                    if (m_cameraViewportMovement)
+                    {
+                        tf *= m_camera.meterToPixel();
+                        m_camera.setTransform(m_camera.transform() + tf);
+                    }
+                    m_mousePos = m_camera.screenToWorld(pos);
+
+                    if (m_currentFrame != nullptr)
+                        m_currentFrame->onMouseMove(event);
+
+                    if (m_mouseJoint == nullptr)
+                        return;
+
+                    auto prim = m_mouseJoint->primitive();
+                    prim.targetPoint = m_mousePos;
+                    m_mouseJoint->set(prim);
+
                     break;
                 }
                 case sf::Event::MouseWheelScrolled:
                 {
-                    std::cout << "wheel movement: " << event.mouseWheelScroll.wheel << std::endl;
+                    if (event.mouseWheelScroll.delta > 0)
+                        m_camera.setMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 4.0f);
+                    else
+                        m_camera.setMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 4.0f);
+                    break;
+                }
+                case sf::Event::Resized:
+                {
+                    Camera::Viewport viewport = m_camera.viewport();
+                    viewport.set(event.size.width, event.size.height);
+                    m_camera.setViewport(viewport);
+                    window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
                     break;
                 }
                 default:
@@ -93,30 +175,13 @@ namespace Physics2D
             }
 
 
-
-            render(window);
+            m_camera.render(window);
             renderGUI(window, deltaClock);
 
         }
         ImGui::SFML::Shutdown();
 
 	}
-    void TestBed::render(sf::RenderWindow& window)
-    {
-        window.clear(sf::Color(50, 50, 50));
-
-        sf::CircleShape shape(50.f);
-        sf::Color color = sf::Color::Green;
-        color.a = 38;
-        shape.setFillColor(color);
-
-        // set a 10-pixel wide orange outline
-        shape.setOutlineThickness(1.f);
-        color.a = 255;
-        shape.setOutlineColor(color);
-
-        window.draw(shape);
-    }
     void TestBed::renderGUI(sf::RenderWindow& window, sf::Clock& clock)
     {
         const char* items[] = { "Bitmask" , "Bridge" , "Broadphase" , "Chain" , "Collision" , "Domino" , "Friction" ,
@@ -140,28 +205,35 @@ namespace Physics2D
         ImGui::Combo("Current Scene", &m_currentItem, items, IM_ARRAYSIZE(items));
         if (oldItem != m_currentItem)
         {
-            std::cout << "change scene" << std::endl;
+            m_physicsThread->terminate();
+            changeFrame();
+            m_physicsThread->launch();
         }
 
         ImGui::Separator();
         ImGui::Text("Sliders");
         ImGui::SliderInt("Position Iteration", &m_positionIteration, 1, 20);
+        m_world.setPositionIteration(m_positionIteration);
+
         ImGui::SliderInt("Velocity Iteration", &m_velocityIteration, 1, 20);
+        m_world.setVelocityIteration(m_velocityIteration);
+
         ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
         ImGui::SliderFloat("Contact Bias Factor", &m_contactBiasFactor, 0.01f, 0.1f);
+        m_maintainer.m_biasFactor = m_contactBiasFactor;
 
         ImGui::Separator();
         ImGui::Text("Switches");
-        ImGui::Checkbox("Body Visible", &m_bodyVisible);
-        ImGui::Checkbox("AABB Visible", &m_aabbVisible);
-        ImGui::Checkbox("Joint Visible", &m_jointVisible);
-        ImGui::Checkbox("Grid Scale Line Visible", &m_gridVisible);
-        ImGui::Checkbox("Tree Visible", &m_treeVisible);
-        ImGui::Checkbox("Contacts Visible", &m_contactsVisible);
-        ImGui::Checkbox("Axis Visible", &m_axisVisible);
+        ImGui::Checkbox("Body Visible", &m_camera.bodyVisible());
+        ImGui::Checkbox("AABB Visible", &m_camera.aabbVisible());
+        ImGui::Checkbox("Joint Visible", &m_camera.jointVisible());
+        ImGui::Checkbox("Grid Scale Line Visible", &m_camera.gridScaleLineVisible());
+        ImGui::Checkbox("Tree Visible", &m_camera.treeVisible());
+        ImGui::Checkbox("Contacts Visible", &m_camera.contactVisible());
+        ImGui::Checkbox("Axis Visible", &m_camera.axisVisible());
         ImGui::Checkbox("User Draw Visible", &m_userDrawVisible);
-        ImGui::Checkbox("Angle Visible", &m_angleVisible);
-        ImGui::Checkbox("Center Visible", &m_centerVisible);
+        ImGui::Checkbox("Angle Visible", &m_camera.rotationLineVisible());
+        ImGui::Checkbox("Center Visible", &m_camera.centerVisible());
 
         ImGui::Separator();
         ImGui::Text("Timestep");
@@ -229,8 +301,7 @@ namespace Physics2D
         {
             if (m_running)
                 step();
-            std::cout << "tick, running:" << m_running << std::endl;
-            sf::sleep(sf::milliseconds(1000));
+            sf::sleep(sf::milliseconds(5));
         }
     }
     void TestBed::changeFrame()
