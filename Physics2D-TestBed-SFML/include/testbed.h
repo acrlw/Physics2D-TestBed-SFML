@@ -2,17 +2,33 @@
 #define TESTBED_H
 #include "imgui.h"
 #include "imgui-SFML.h"
+
 #include <iostream>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Graphics.hpp>
+
+#include "scenes/bitmask.h"
+#include "scenes/bridge.h"
+#include "scenes/broadphase.h"
+#include "scenes/chain.h"
+#include "scenes/collision.h"
+#include "scenes/domino.h"
+#include "scenes/friction.h"
+#include "scenes/geometry.h"
+#include "scenes/joints.h"
+#include "scenes/narrowphase.h"
+#include "scenes/newtoncradle.h"
+#include "scenes/raycast.h"
+#include "scenes/restitution.h"
+#include "scenes/sensor.h"
+#include "scenes/stacking.h"
+#include "scenes/wreckingball.h"
+#include "scenes/pendulum.h"
 namespace Physics2D
 {
 	class TestBed
 	{
 	public:
+		TestBed();
+		~TestBed();
 		void exec();
 	private:
 		void render(sf::RenderWindow& window);
@@ -21,6 +37,11 @@ namespace Physics2D
 		void pause();
 		void restart();
 		void step();
+
+		void simulate();
+
+		void changeFrame();
+		void clearAll();
 
 		int m_positionIteration = 8;
 		int m_velocityIteration = 6;
@@ -38,8 +59,23 @@ namespace Physics2D
 		bool m_angleVisible = false;
 		bool m_centerVisible = false;
 
+		bool m_running = true;
+
 		
 		int m_currentItem = 0;
+
+		Frame* m_currentFrame = nullptr;
+
+		PhysicsWorld m_world;
+		ContactMaintainer m_maintainer;
+		Tree m_tree;
+		DBVH m_dbvh;
+		Body* m_selectedBody;
+		PointJoint* m_mouseJoint;
+		PointJointPrimitive m_pointJointPrimitive;
+		Camera m_camera;
+
+		Vector2 m_mousePos;
 	};
 }
 #endif
