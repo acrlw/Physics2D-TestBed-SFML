@@ -45,13 +45,6 @@ namespace Physics2D
 
 			//draw background
 			window.clear(sf::Color(50, 50, 50));
-
-			//RenderSFMLImpl::renderPoint(window, *this, Vector2(0, 0), sf::Color::Green);
-			ShapePrimitive primitive;
-			Circle circle(1.0f);
-			primitive.shape = &circle;
-			primitive.rotation = 0;
-			RenderSFMLImpl::renderCircle(window, *this, primitive, sf::Color::Green);
 			
 
 			if (m_bodyVisible)
@@ -67,10 +60,8 @@ namespace Physics2D
 						color = sf::Color(100, 100, 100);
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
 					if (m_centerVisible)
-					{
-						color = sf::Color(150, 150, 150);
-						RenderSFMLImpl::renderPoint(window, *this, primitive.transform, color);
-					}
+						RenderSFMLImpl::renderPoint(window, *this, primitive.transform, RenderConstant::materialGray);
+
 					if (m_rotationLineVisible)
 						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
 				}

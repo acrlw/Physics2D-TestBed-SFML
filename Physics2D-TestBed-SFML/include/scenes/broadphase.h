@@ -52,20 +52,20 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			//AABB queryRegion;
-			//queryRegion.width = 8;
-			//queryRegion.height = 8;
-			//auto bodyList = m_tree->query(queryRegion);
-			//QPen region(QColor("#B2EBF2"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-			//QPen hit(QColor("#FF9800"), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+			AABB queryRegion;
+			queryRegion.width = 8;
+			queryRegion.height = 8;
+			auto bodyList = m_tree->query(queryRegion);
+			sf::Color regionColor = sf::Color(178, 235, 242);
+			sf::Color hitColor = sf::Color(255, 152, 0);
 
-			//Rectangle rect(8, 8);
-			//ShapePrimitive sp;
-			//sp.shape = &rect;
-			//RendererQtImpl::renderShape(painter, m_camera, sp, region);
+			Rectangle rect(8, 8);
+			ShapePrimitive sp;
+			sp.shape = &rect;
+			RenderSFMLImpl::renderShape(window, *m_camera, sp, regionColor);
 
-			//for(auto& elem: bodyList)
-			//	RendererQtImpl::renderAABB(painter, m_camera, elem->aabb(), hit);
+			for(auto& elem: bodyList)
+				RenderSFMLImpl::renderAABB(window, *m_camera, elem->aabb(), hitColor);
 		}
 	private:
 		Rectangle rectangle;

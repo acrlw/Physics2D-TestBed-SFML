@@ -52,27 +52,29 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			//Vector2 p;
-			//Vector2 d = m_mousePos.normal();
-			//QPen origin(Qt::gray, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-			//QPen dir(Qt::green, 1, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin);
-			//QPen hit(Qt::cyan, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-			//RendererQtImpl::renderPoint(painter, m_camera, Vector2(0, 0), origin);
-			//RendererQtImpl::renderLine(painter, m_camera, p, d * 10.0f, dir);
-			//auto bodyList = m_tree->raycast(p, d);
-			//for(auto& elem: bodyList)
-			//{
-			//	ShapePrimitive sp;
-			//	sp.rotation = elem->rotation();
-			//	sp.transform = elem->position();
-			//	sp.shape = elem->shape();
-			//	RendererQtImpl::renderShape(painter, m_camera, sp, hit);
-			//}
+			Vector2 p;
+			Vector2 d = m_mousePos.normal();
+			sf::Color originColor = RenderConstant::materialGray;
+			sf::Color dirColor = RenderConstant::materialDarkGreen;
+			sf::Color hitColor = sf::Color::Cyan;
+
+
+			RenderSFMLImpl::renderPoint(window, *m_camera, Vector2(0, 0), originColor);
+			RenderSFMLImpl::renderLine(window, *m_camera, p, d * 10.0f, dirColor);
+			auto bodyList = m_tree->raycast(p, d);
+			for(auto& elem: bodyList)
+			{
+				ShapePrimitive sp;
+				sp.rotation = elem->rotation();
+				sp.transform = elem->position();
+				sp.shape = elem->shape();
+				RenderSFMLImpl::renderShape(window, *m_camera, sp, hitColor);
+			}
 
 		}
 		void onMouseMove(sf::Event& event) override
 		{
-			//m_mousePos  = m_camera->screenToWorld(Vector2(e->pos().x(), e->pos().y()));
+			m_mousePos  = m_camera->screenToWorld(Vector2(event.mouseMove.x, event.mouseMove.y));
 		}
 	private:
 		Vector2 m_mousePos = Vector2(1, 1);

@@ -89,7 +89,7 @@ namespace Physics2D
         bool m_aabbVisible = false;
         bool m_jointVisible = true;
         bool m_bodyVisible = true;
-        bool m_axisVisible = true;
+        bool m_axisVisible = false;
         bool m_dbvhVisible = false;
         bool m_treeVisible = false;
         bool m_gridScaleLineVisible = false;

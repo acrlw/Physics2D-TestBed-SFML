@@ -82,9 +82,8 @@ namespace Physics2D
 				points.pop_front();
 			points.emplace_back(stick3->toWorldPoint(Vector2{ 2.0f, 0.0f }));
 
-			//QPen p(Qt::cyan, 1);
-			//for(auto& elem: points)
-			//	RendererQtImpl::renderPoint(painter, m_camera, elem, p);
+			for(auto& elem: points)
+				RenderSFMLImpl::renderPoint(window, *m_camera, elem, sf::Color::Cyan);
 		}
 		void release() override
 		{

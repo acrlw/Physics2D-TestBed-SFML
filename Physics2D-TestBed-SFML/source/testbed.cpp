@@ -22,6 +22,7 @@ namespace Physics2D
         m_camera.setTree(&m_tree);
         m_camera.setContactMaintainer(&m_maintainer);
 
+        changeFrame();
         m_physicsThread = std::make_unique<sf::Thread>(&TestBed::simulate, this);
     }
     TestBed::~TestBed()
@@ -176,6 +177,8 @@ namespace Physics2D
 
 
             m_camera.render(window);
+            if (m_currentFrame != nullptr)
+                m_currentFrame->render(window);
             renderGUI(window, deltaClock);
 
         }
@@ -205,9 +208,9 @@ namespace Physics2D
         ImGui::Combo("Current Scene", &m_currentItem, items, IM_ARRAYSIZE(items));
         if (oldItem != m_currentItem)
         {
-            m_physicsThread->terminate();
+            m_running = false;
             changeFrame();
-            m_physicsThread->launch();
+            m_running = true;
         }
 
         ImGui::Separator();
@@ -244,7 +247,6 @@ namespace Physics2D
         if (ImGui::Button("Restart", ImVec2(-FLT_MIN, 0.0f)))
             restart();
 
-
         ImGui::End();
         ImGui::SFML::Render(window);
         window.display();
@@ -255,7 +257,9 @@ namespace Physics2D
     }
     void TestBed::restart()
     {
+        m_running = false;
         changeFrame();
+        m_running = true;
     }
     void TestBed::step()
     {

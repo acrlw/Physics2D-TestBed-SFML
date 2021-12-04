@@ -53,9 +53,10 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			//QPen pen(Qt::darkCyan, 1, Qt::DashDotLine);
-			//Vector2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
-			//RendererQtImpl::renderLine(painter, m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal, pen);
+			sf::Color color = sf::Color::Cyan;
+			color.a = 204;
+			Vector2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
+			RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal, color);
 		}
 		void release() override
 		{

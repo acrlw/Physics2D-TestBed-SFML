@@ -8,7 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "camera.h"
-
+#include "render.h"
 namespace Physics2D
 {
 	class Frame

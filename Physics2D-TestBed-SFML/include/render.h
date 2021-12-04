@@ -19,12 +19,13 @@ namespace Physics2D
         const int borderSize = 1;
         const int fillAlpha = 38;
         const int basicCirclePointCount = 30;
+        const real scaleFactor = 0.97f;
         const sf::Color materialYellow = sf::Color(255, 235, 59);
         const sf::Color materialRed = sf::Color(244, 67, 54);
         const sf::Color materialBlue = sf::Color(68, 138, 255);
         const sf::Color materialPink = sf::Color(233, 30, 99);
         const sf::Color materialDarkGreen = sf::Color(44, 113, 48);
-        const sf::Color materialGray = sf::Color(97, 97, 97);
+        const sf::Color materialGray = sf::Color(158, 158, 158);
     }
     class RenderSFMLImpl
     {
