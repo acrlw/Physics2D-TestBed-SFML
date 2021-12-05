@@ -54,7 +54,7 @@ namespace Physics2D
 		void render(sf::RenderWindow& window) override
 		{
 			sf::Color color = sf::Color::Cyan;
-			color.a = 204;
+			color.a = 155;
 			Vector2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
 			RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal, color);
 		}

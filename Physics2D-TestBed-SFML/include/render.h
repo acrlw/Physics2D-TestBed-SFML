@@ -19,6 +19,7 @@ namespace Physics2D
         const int borderSize = 1;
         const int fillAlpha = 38;
         const int basicCirclePointCount = 30;
+        const real basicDashLength = 2;
         const real scaleFactor = 0.97f;
         const sf::Color materialYellow = sf::Color(255, 235, 59);
         const sf::Color materialRed = sf::Color(244, 67, 54);
