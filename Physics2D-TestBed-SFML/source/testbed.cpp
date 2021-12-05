@@ -299,6 +299,8 @@ namespace Physics2D
     {
         while (true)
         {
+            std::lock_guard<std::mutex> lock(m_mutex);
+            
             if (m_running)
                 step();
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -306,7 +308,7 @@ namespace Physics2D
     }
     void TestBed::changeFrame()
     {
-        m_mutex.lock();
+        std::lock_guard<std::mutex> lock(m_mutex);
         clearAll();
         switch (m_currentItem)
         {
@@ -367,7 +369,6 @@ namespace Physics2D
         if (m_currentFrame != nullptr)
             m_currentFrame->load();
 
-        m_mutex.unlock();
     }
     void TestBed::clearAll()
     {
