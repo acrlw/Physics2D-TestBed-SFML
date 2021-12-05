@@ -22,6 +22,11 @@
 #include "scenes/stacking.h"
 #include "scenes/wreckingball.h"
 #include "scenes/pendulum.h"
+
+#include <mutex>
+#include <thread>
+#include <condition_variable>
+#include <chrono>
 namespace Physics2D
 {
 	class TestBed
@@ -68,6 +73,7 @@ namespace Physics2D
 		Vector2 m_mousePos;
 
 		std::unique_ptr<sf::Thread> m_physicsThread;
+		std::mutex m_mutex;
 	};
 }
 #endif

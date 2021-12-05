@@ -23,6 +23,7 @@ namespace Physics2D
         m_camera.setContactMaintainer(&m_maintainer);
 
         changeFrame();
+
         m_physicsThread = std::make_unique<sf::Thread>(&TestBed::simulate, this);
     }
     TestBed::~TestBed()
@@ -53,7 +54,7 @@ namespace Physics2D
                 {
                 case sf::Event::Closed:
                 {
-                    m_physicsThread->terminate();
+                    m_physicsThread.release();
                     window.close();
                     break;
                 }
@@ -207,11 +208,8 @@ namespace Physics2D
         int oldItem = m_currentItem;
         ImGui::Combo("Current Scene", &m_currentItem, items, IM_ARRAYSIZE(items));
         if (oldItem != m_currentItem)
-        {
-            m_running = false;
             changeFrame();
-            m_running = true;
-        }
+        
 
         ImGui::Separator();
         ImGui::Text("Sliders");
@@ -257,9 +255,7 @@ namespace Physics2D
     }
     void TestBed::restart()
     {
-        m_running = false;
         changeFrame();
-        m_running = true;
     }
     void TestBed::step()
     {
@@ -305,11 +301,12 @@ namespace Physics2D
         {
             if (m_running)
                 step();
-            sf::sleep(sf::milliseconds(5));
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     }
     void TestBed::changeFrame()
     {
+        m_mutex.lock();
         clearAll();
         switch (m_currentItem)
         {
@@ -369,6 +366,8 @@ namespace Physics2D
         }
         if (m_currentFrame != nullptr)
             m_currentFrame->load();
+
+        m_mutex.unlock();
     }
     void TestBed::clearAll()
     {
