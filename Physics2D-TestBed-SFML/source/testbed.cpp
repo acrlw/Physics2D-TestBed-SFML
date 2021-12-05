@@ -22,9 +22,9 @@ namespace Physics2D
         m_camera.setTree(&m_tree);
         m_camera.setContactMaintainer(&m_maintainer);
 
+        m_physicsThread = std::make_unique<sf::Thread>(&TestBed::simulate, this);
         changeFrame();
 
-        m_physicsThread = std::make_unique<sf::Thread>(&TestBed::simulate, this);
     }
     TestBed::~TestBed()
     {
@@ -208,7 +208,7 @@ namespace Physics2D
         int oldItem = m_currentItem;
         ImGui::Combo("Current Scene", &m_currentItem, items, IM_ARRAYSIZE(items));
         if (oldItem != m_currentItem)
-            changeFrame();
+            change();
         
 
         ImGui::Separator();
@@ -255,7 +255,7 @@ namespace Physics2D
     }
     void TestBed::restart()
     {
-        changeFrame();
+        change();
     }
     void TestBed::step()
     {
@@ -297,18 +297,24 @@ namespace Physics2D
     }
     void TestBed::simulate()
     {
-        while (true)
+        while (m_simulateWorkingState)
         {
-            std::lock_guard<std::mutex> lock(m_mutex);
-            
             if (m_running)
                 step();
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     }
+    void TestBed::change()
+    {
+        m_simulateWorkingState = false;
+        //stop thread
+        m_physicsThread->wait();
+        changeFrame();
+        m_simulateWorkingState = true;
+        m_physicsThread->launch();
+    }
     void TestBed::changeFrame()
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
         clearAll();
         switch (m_currentItem)
         {

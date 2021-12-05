@@ -44,6 +44,7 @@ namespace Physics2D
 
 		void simulate();
 
+		void change();
 		void changeFrame();
 		void clearAll();
 
@@ -73,7 +74,12 @@ namespace Physics2D
 		Vector2 m_mousePos;
 
 		std::unique_ptr<sf::Thread> m_physicsThread;
-		std::mutex m_mutex;
+		std::mutex m_mutexChangeFrame;
+		std::mutex m_mutexSimulate;
+		std::condition_variable m_cvChangeFrame;
+		std::condition_variable m_cvSimulate;
+
+		bool m_simulateWorkingState = true;
 	};
 }
 #endif
