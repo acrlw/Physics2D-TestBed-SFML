@@ -54,6 +54,8 @@ namespace Physics2D
                 {
                 case sf::Event::Closed:
                 {
+                    m_simulateWorkingState = false;
+                    m_physicsThread->wait();
                     m_physicsThread.release();
                     window.close();
                     break;
@@ -178,7 +180,7 @@ namespace Physics2D
 
 
             m_camera.render(window);
-            if (m_currentFrame != nullptr)
+            if (m_currentFrame != nullptr && m_userDrawVisible)
                 m_currentFrame->render(window);
             renderGUI(window, deltaClock);
 
