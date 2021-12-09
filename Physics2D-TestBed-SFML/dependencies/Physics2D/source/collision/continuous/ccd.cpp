@@ -261,4 +261,49 @@ namespace Physics2D
 		return !queryList.empty() ? std::optional(queryList)
 			: std::nullopt;
 	}
+
+    std::optional<std::vector<CCD::CCDPair>> CCD::query(Tree& tree, Body* body, const real& dt)
+    {
+        std::vector<CCDPair> queryList;
+        assert(body != nullptr);
+        auto [trajectoryCCD, aabbCCD] = buildTrajectoryAABB(body, dt);
+        auto potentials = tree.query(aabbCCD);
+
+        for(auto& elem: potentials)
+        {
+            //skip detecting itself
+            if(elem == body)
+                continue;
+
+            auto [trajectoryElement, aabbElement] = buildTrajectoryAABB(elem, dt);
+            auto [newCCDTrajectory, newAABB] = buildTrajectoryAABB(body, elem->position(), dt);
+            auto result = findBroadphaseRoot(body, newCCDTrajectory, elem, trajectoryElement, dt);
+            if(result.has_value())
+            {
+                auto toi = findNarrowphaseRoot(body, newCCDTrajectory, elem, trajectoryElement, result.value(), dt);
+                if (toi.has_value())
+                    queryList.emplace_back(CCDPair(toi.value(), elem));
+            }
+        }
+        return !queryList.empty() ? std::optional(queryList)
+                                  : std::nullopt;
+        return std::nullopt;
+    }
+
+    std::optional<std::vector<CCD::CCDPair>> CCD::selectTargetPair(const std::vector<CCDPair> &pairs, const real &epsilon) {
+        if(pairs.empty())
+            return std::nullopt;
+
+        real minToi = Constant::Max;
+        for(const auto & elem: pairs)
+            if(elem.toi < minToi)
+                minToi = elem.toi;
+
+        std::vector<CCDPair> bodies;
+        for(const auto& elem: pairs)
+            if(fuzzyRealEqual(elem.toi - minToi, epsilon))
+                bodies.emplace_back(elem);
+
+        return bodies;
+    }
 }

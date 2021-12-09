@@ -25,152 +25,178 @@ namespace Physics2D
         m_physicsThread = std::make_unique<sf::Thread>(&TestBed::simulate, this);
         changeFrame();
 
+
     }
     TestBed::~TestBed()
     {
 
+    }
+    void TestBed::onResized(sf::Event& event)
+    {
+        Camera::Viewport viewport = m_camera.viewport();
+        viewport.set(event.size.width, event.size.height);
+        m_camera.setViewport(viewport);
+        m_window->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+    }
+    void TestBed::onClosed(sf::Event& event)
+    {
+        m_simulateWorkingState = false;
+        m_physicsThread->wait();
+        m_physicsThread.release();
+        m_window->close();
+    }
+    void TestBed::onKeyReleased(sf::Event& event)
+    {
+        switch (event.key.code)
+        {
+            case sf::Keyboard::Space:
+            {
+                m_running = !m_running;
+                break;
+            }
+            default:
+                break;
+        }
+        if (m_currentFrame != nullptr)
+            m_currentFrame->onKeyRelease(event);
+    }
+    void TestBed::onMouseReleased(sf::Event& event)
+    {
+        Vector2 pos(event.mouseButton.x, event.mouseButton.y);
+        m_mousePos = m_camera.screenToWorld(pos);
+
+        if (m_currentFrame != nullptr)
+            m_currentFrame->onMouseRelease(event);
+
+        if (m_mouseJoint == nullptr)
+            return;
+        m_mouseJoint->setActive(false);
+
+        m_cameraViewportMovement = false;
+        m_selectedBody = nullptr;
+    }
+    void TestBed::onMouseMoved(sf::Event& event)
+    {
+        if (m_currentFrame != nullptr)
+            m_currentFrame->onMouseMove(event);
+
+        Vector2 pos(event.mouseMove.x, event.mouseMove.y);
+
+        Vector2 tf = m_camera.screenToWorld(pos) - m_mousePos;
+        if (m_cameraViewportMovement)
+        {
+            tf *= m_camera.meterToPixel();
+            m_camera.setTransform(m_camera.transform() + tf);
+        }
+        m_mousePos = m_camera.screenToWorld(pos);
+
+        if (m_currentFrame != nullptr)
+            m_currentFrame->onMouseMove(event);
+
+        if (m_mouseJoint == nullptr)
+            return;
+
+        auto prim = m_mouseJoint->primitive();
+        prim.targetPoint = m_mousePos;
+        m_mouseJoint->set(prim);
+    }
+    void TestBed::onMousePressed(sf::Event& event)
+    {
+        Vector2 pos(event.mouseButton.x, event.mouseButton.y);
+        m_mousePos = m_camera.screenToWorld(pos);
+
+        if (event.mouseButton.button == sf::Mouse::Right)
+            m_cameraViewportMovement = true;
+
+        if (m_currentFrame != nullptr)
+            m_currentFrame->onMousePress(event);
+
+        if (event.mouseButton.button == sf::Mouse::Left && m_mouseJoint != nullptr)
+        {
+            AABB mouseBox;
+            mouseBox.position = m_mousePos;
+            mouseBox.width = 0.01f;
+            mouseBox.height = 0.01f;
+
+            for (auto& body : m_tree.query(mouseBox))
+            {
+                Vector2 point = m_mousePos - body->position();
+                point = Matrix2x2(-body->rotation()).multiply(point);
+                if (body->shape()->contains(point) && m_selectedBody == nullptr)
+                {
+                    m_selectedBody = body;
+                    auto prim = m_mouseJoint->primitive();
+                    prim.localPointA = body->toLocalPoint(m_mousePos);
+                    prim.bodyA = body;
+                    prim.targetPoint = m_mousePos;
+                    m_mouseJoint->setActive(true);
+                    m_mouseJoint->set(prim);
+                    break;
+                }
+            }
+        }
+    }
+
+    void TestBed::onWheelScrolled(sf::Event &event) {
+        if (event.mouseWheelScroll.delta > 0)
+            m_camera.setMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 4.0f);
+        else
+            m_camera.setMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 4.0f);
     }
     void TestBed::exec()
 	{
         // create the window
         sf::ContextSettings settings;
         settings.antialiasingLevel = 8;
-        sf::RenderWindow window(sf::VideoMode(1920, 1080), "Testbed", sf::Style::Default, settings);
-        window.setFramerateLimit(60);
-        ImGui::SFML::Init(window);
-
-        window.setActive(false);
+        m_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Testbed", sf::Style::Default, settings);
+        m_window->setFramerateLimit(60);
+        ImGui::SFML::Init(*m_window);
+        m_window->setActive(false);
 
         m_physicsThread->launch();
 
         sf::Clock deltaClock;
-        while (window.isOpen())
+        while (m_window->isOpen())
         {
             sf::Event event;
-            while (window.pollEvent(event)) {
+            while (m_window->pollEvent(event)) {
                 ImGui::SFML::ProcessEvent(event);
 
                 switch (event.type)
                 {
                 case sf::Event::Closed:
                 {
-                    m_simulateWorkingState = false;
-                    m_physicsThread->wait();
-                    m_physicsThread.release();
-                    window.close();
+                    onClosed(event);
                     break;
                 }
                 case sf::Event::KeyReleased:
                 {
-                    switch (event.key.code)
-                    {
-                    case sf::Keyboard::Space:
-                    {
-                        std::cout << "pause" << std::endl;
-                        break;
-                    }
-                    default:
-                        break;
-                    }
-                    if (m_currentFrame != nullptr)
-                        m_currentFrame->onKeyRelease(event);
+                    onKeyReleased(event);
+                    break;
                 }
                 case sf::Event::MouseButtonPressed:
                 {
-                    Vector2 pos(event.mouseButton.x, event.mouseButton.y);
-                    m_mousePos = m_camera.screenToWorld(pos);
-
-                    if (event.mouseButton.button == sf::Mouse::Right)
-                        m_cameraViewportMovement = true;
-
-                    if (m_currentFrame != nullptr)
-                        m_currentFrame->onMousePress(event);
-
-                    if (event.mouseButton.button == sf::Mouse::Left && m_mouseJoint != nullptr)
-                    {
-                        AABB mouseBox;
-                        mouseBox.position = m_mousePos;
-                        mouseBox.width = 0.01f;
-                        mouseBox.height = 0.01f;
-
-                        for (auto& body : m_tree.query(mouseBox))
-                        {
-                            Vector2 point = m_mousePos - body->position();
-                            point = Matrix2x2(-body->rotation()).multiply(point);
-                            if (body->shape()->contains(point) && m_selectedBody == nullptr)
-                            {
-                                m_selectedBody = body;
-                                auto prim = m_mouseJoint->primitive();
-                                prim.localPointA = body->toLocalPoint(m_mousePos);
-                                prim.bodyA = body;
-                                prim.targetPoint = m_mousePos;
-                                m_mouseJoint->setActive(true);
-                                m_mouseJoint->set(prim);
-                                break;
-                            }
-                        }
-                    }
-
+                    onMousePressed(event);
                     break;
                 }
                 case sf::Event::MouseButtonReleased:
                 {
-                    Vector2 pos(event.mouseButton.x, event.mouseButton.y);
-                    m_mousePos = m_camera.screenToWorld(pos);
-
-                    if (m_currentFrame != nullptr)
-                        m_currentFrame->onMouseRelease(event);
-
-                    if (m_mouseJoint == nullptr)
-                        return;
-                    m_mouseJoint->setActive(false);
-
-                    m_cameraViewportMovement = false;
-                    m_selectedBody = nullptr;
-
+                    onMouseReleased(event);
                     break;
                 }
                 case sf::Event::MouseMoved:
                 {
-                    if (m_currentFrame != nullptr)
-                        m_currentFrame->onMouseMove(event);
-
-                    Vector2 pos(event.mouseMove.x, event.mouseMove.y);
-
-                    Vector2 tf = m_camera.screenToWorld(pos) - m_mousePos;
-                    if (m_cameraViewportMovement)
-                    {
-                        tf *= m_camera.meterToPixel();
-                        m_camera.setTransform(m_camera.transform() + tf);
-                    }
-                    m_mousePos = m_camera.screenToWorld(pos);
-
-                    if (m_currentFrame != nullptr)
-                        m_currentFrame->onMouseMove(event);
-
-                    if (m_mouseJoint == nullptr)
-                        return;
-
-                    auto prim = m_mouseJoint->primitive();
-                    prim.targetPoint = m_mousePos;
-                    m_mouseJoint->set(prim);
-
+                    onMouseMoved(event);
                     break;
                 }
                 case sf::Event::MouseWheelScrolled:
                 {
-                    if (event.mouseWheelScroll.delta > 0)
-                        m_camera.setMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 4.0f);
-                    else
-                        m_camera.setMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 4.0f);
+                    onWheelScrolled(event);
                     break;
                 }
                 case sf::Event::Resized:
                 {
-                    Camera::Viewport viewport = m_camera.viewport();
-                    viewport.set(event.size.width, event.size.height);
-                    m_camera.setViewport(viewport);
-                    window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+                    onResized(event);
                     break;
                 }
                 default:
@@ -178,11 +204,10 @@ namespace Physics2D
                 }
             }
 
-
-            m_camera.render(window);
+            m_camera.render(*m_window);
             if (m_currentFrame != nullptr && m_userDrawVisible)
-                m_currentFrame->render(window);
-            renderGUI(window, deltaClock);
+                m_currentFrame->render(*m_window);
+            renderGUI(*m_window, deltaClock);
 
         }
         ImGui::SFML::Shutdown();
@@ -190,7 +215,7 @@ namespace Physics2D
 	}
     void TestBed::renderGUI(sf::RenderWindow& window, sf::Clock& clock)
     {
-        const char* items[] = { "Bitmask" , "Bridge" , "Broadphase" , "Chain" , "Collision" , "Domino" , "Friction" ,
+        const char* items[] = { "Bitmask" , "Bridge" , "Broadphase" , "Chain" , "Collision" , "Continuous", "Domino" , "Friction" ,
             "Geometry" , "Joints" , "Narrowphase" , "Newton's Cradle" , "Pendulum" , "AABB Raycast" , "Restitution" , "Sensor" , "Stacking" ,
             "Wrecking Ball" };
 
@@ -286,6 +311,8 @@ namespace Physics2D
             m_world.solveVelocityConstraint(dt);
             m_maintainer.solveVelocity(dt);
         }
+        //solve toi
+
 
         m_world.stepPosition(dt);
 
@@ -318,61 +345,63 @@ namespace Physics2D
     void TestBed::changeFrame()
     {
         clearAll();
-        switch (m_currentItem)
-        {
-        case 0:
-            m_currentFrame = new BitmaskFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 1:
-            m_currentFrame = new BridgeFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 2:
-            m_currentFrame = new BroadPhaseFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 3:
-            m_currentFrame = new ChainFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 4:
-            m_currentFrame = new CollisionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 5:
-            m_currentFrame = new DominoFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 6:
-            m_currentFrame = new FrictionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 7:
-            m_currentFrame = new GeometryFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 8:
-            m_currentFrame = new JointsFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 9:
-            m_currentFrame = new NarrowphaseFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 10:
-            m_currentFrame = new NewtonCradleFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 11:
-            m_currentFrame = new PendulumFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 12:
-            m_currentFrame = new RaycastFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 13:
-            m_currentFrame = new RestitutionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 14:
-            m_currentFrame = new SensorFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 15:
-            m_currentFrame = new StackingFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        case 16:
-            m_currentFrame = new WreckingBallFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
-            break;
-        default:
-            break;
+        switch (m_currentItem) {
+            case 0:
+                m_currentFrame = new BitmaskFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 1:
+                m_currentFrame = new BridgeFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 2:
+                m_currentFrame = new BroadPhaseFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 3:
+                m_currentFrame = new ChainFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 4:
+                m_currentFrame = new CollisionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 5:
+                m_currentFrame = new ContinuousFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 6:
+                m_currentFrame = new DominoFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 7:
+                m_currentFrame = new FrictionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 8:
+                m_currentFrame = new GeometryFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 9:
+                m_currentFrame = new JointsFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 10:
+                m_currentFrame = new NarrowphaseFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 11:
+                m_currentFrame = new NewtonCradleFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 12:
+                m_currentFrame = new PendulumFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 13:
+                m_currentFrame = new RaycastFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 14:
+                m_currentFrame = new RestitutionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 15:
+                m_currentFrame = new SensorFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 16:
+                m_currentFrame = new StackingFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            case 17:
+                m_currentFrame = new WreckingBallFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+                break;
+            default:
+                break;
         }
         if (m_currentFrame != nullptr)
             m_currentFrame->load();
@@ -395,5 +424,6 @@ namespace Physics2D
             m_currentFrame = nullptr;
         }
     }
+
 }
 
