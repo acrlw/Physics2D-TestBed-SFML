@@ -4,9 +4,9 @@ set(PHYSICS2D_ALL)
 file(GLOB_RECURSE PHYSICS2D_ALL ./dependencies/Physics2D/*.*)
 
 set(TESTBED_HEADER_ALL)
-file(GLOB_RECURSE TESTBED_HEADER_ALL ./include/*.*)
+file(GLOB_RECURSE TESTBED_HEADER_ALL ./include/*.h)
 set(TESTBED_SOURCE_ALL)
-file(GLOB_RECURSE TESTBED_SOURCE_ALL ./source/*.*)
+file(GLOB_RECURSE TESTBED_SOURCE_ALL ./source/*.cpp)
 
 add_executable (Physics2D-TestBed-SFML "main.cpp" ${PHYSICS2D_ALL} ${TESTBED_HEADER_ALL} 
 ${TESTBED_SOURCE_ALL})

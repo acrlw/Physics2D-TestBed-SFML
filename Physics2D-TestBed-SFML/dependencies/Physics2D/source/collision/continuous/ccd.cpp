@@ -78,164 +78,110 @@ namespace Physics2D
 		body->setPhysicsAttribute(start);
 		return std::make_tuple(trajectory, result);
 	}
-	std::optional<CCD::IndexSection> CCD::findBroadphaseRoot(Body* body1, const BroadphaseTrajectory& trajectory1, Body* body2, const BroadphaseTrajectory& trajectory2, const real& dt)
+	std::optional<CCD::IndexSection> CCD::findBroadphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const real& dt)
 	{
-		assert(body1 != nullptr && body2 != nullptr);
-		bool isBody1CCD = trajectory1.size() > 2;
-		bool isBody2CCD = trajectory2.size() > 2;
-		if (isBody1CCD && isBody2CCD)
-		{
-			AABB traj1 = AABB::unite(trajectory1[0].aabb, trajectory1[trajectory1.size() - 1].aabb);
-			AABB traj2 = AABB::unite(trajectory2[0].aabb, trajectory2[trajectory2.size() - 1].aabb);
-			if (!traj1.collide(traj2))
-				return std::nullopt;
-			size_t length = trajectory1.size() > trajectory2.size() ? trajectory2.size() : trajectory1.size();
-			IndexSection result;
+		assert(staticBody != nullptr && dynamicBody != nullptr);
 
-			for (auto i = 0; i < length - 1; i++)
-			{
-				AABB temp1 = AABB::unite(trajectory1[i].aabb, trajectory1[i + 1].aabb);
-				AABB temp2 = AABB::unite(trajectory2[i].aabb, trajectory2[i + 1].aabb);
-				if (temp1.collide(temp2))
-				{
-					result.forward = i;
-					break;
-				}
-			}
 
-			return result.forward == -1 ? std::nullopt :
-				std::optional(result);
-		}
-		else if (!isBody1CCD || !isBody2CCD)
-		{
-			const BroadphaseTrajectory* trajStatic = nullptr;
-			const BroadphaseTrajectory* trajDynamic = nullptr;
-			if (isBody1CCD)
-			{
-				trajStatic = &trajectory2;
-				trajDynamic = &trajectory1;
-			}
-			else if (isBody2CCD)
-			{
-				trajStatic = &trajectory1;
-				trajDynamic = &trajectory2;
-			}
-
-			AABB traj1 = AABB::unite(trajStatic->at(0).aabb, trajStatic->at(1).aabb);
-			AABB traj2 = AABB::unite(trajDynamic->at(0).aabb, trajDynamic->at(trajDynamic->size() - 1).aabb);
-			if (!traj1.collide(traj2))
-				return std::nullopt;
-			
-			IndexSection result;
-			size_t length = trajDynamic->size();
-			bool forwardFound = false;
-			bool backwardFound = false;
-			for (size_t i = 0, j = length - 1; i < length - 1; i++, j--)
-			{
-				AABB tempForward = AABB::unite(trajDynamic->at(i).aabb, trajDynamic->at(i + 1).aabb);
-				AABB tempBackward = AABB::unite(trajDynamic->at(j).aabb, trajDynamic->at(j - 1).aabb);
-				if (tempForward.collide(traj1) && !forwardFound)
-				{
-					result.forward = i;
-					forwardFound = true;
-				}
-				if (tempBackward.collide(traj1) && !backwardFound)
-				{
-					result.backward = j;
-					backwardFound = true;
-				}
-				if (forwardFound && backwardFound)
-					break;
-			}
-			return result.forward == -1 ? std::nullopt :
-				std::optional(result);
-		}		
-		return std::nullopt;
-		
-	}
-	std::optional<real> CCD::findNarrowphaseRoot(Body* body1, const BroadphaseTrajectory& trajectory1, Body* body2, const BroadphaseTrajectory& trajectory2, const IndexSection& index, const real& dt)
-	{
-		assert(body1 != nullptr && body2 != nullptr);
-		bool isBody1CCD = trajectory1.size() > 2;
-		bool isBody2CCD = trajectory2.size() > 2;
-		if (isBody1CCD && isBody2CCD)
-		{
+		AABB traj1 = AABB::unite(staticTrajectory[0].aabb, staticTrajectory.back().aabb);
+		AABB traj2 = AABB::unite(dynamicTrajectory[0].aabb, dynamicTrajectory.back().aabb);
+		if (!traj1.collide(traj2))
 			return std::nullopt;
 
-		}
-		if (!isBody1CCD || !isBody2CCD)
+		IndexSection result;
+		size_t length = dynamicTrajectory.size();
+		bool forwardFound = false;
+		bool backwardFound = false;
+		for (size_t i = 0, j = length - 1; i < length - 1; i++, j--)
 		{
-			Body* dynamicBody = nullptr;
-			Body::PhysicsAttribute origin1 = body1->physicsAttribute();
-			Body::PhysicsAttribute origin2 = body2->physicsAttribute();
-
-			real startTimestep = 0;
-			real endTimestep = 0;
-			if (isBody1CCD)
+			AABB tempForward = AABB::unite(dynamicTrajectory[i].aabb, dynamicTrajectory[i + 1].aabb);
+			AABB tempBackward = AABB::unite(dynamicTrajectory[j].aabb, dynamicTrajectory[j - 1].aabb);
+			if (tempForward.collide(traj1) && !forwardFound)
 			{
-				dynamicBody = body1;
-				body1->setPhysicsAttribute(trajectory1[index.forward].attribute);
-				startTimestep = trajectory1[index.forward].time;
-				endTimestep = trajectory1[index.backward].time;
+				result.forward = i;
+				forwardFound = true;
 			}
-			else if (isBody2CCD)
+			if (tempBackward.collide(traj1) && !backwardFound)
 			{
-				dynamicBody = body2;
-				body2->setPhysicsAttribute(trajectory2[index.forward].attribute);
-				startTimestep = trajectory2[index.forward].time;
-				endTimestep = trajectory2[index.backward].time;
+				result.backward = j;
+				backwardFound = true;
 			}
-			//slice maybe 25~70. It depends on how thin the sticks you set
-			const real slice = 30.0;
-			real step = (endTimestep - startTimestep) / slice;
-			real forwardSteps = 0;
-			Body::PhysicsAttribute lastAttribute;
-			//forwarding
-			bool isFound = false;
-			while (startTimestep + forwardSteps <= endTimestep)
-			{
-				lastAttribute = dynamicBody->physicsAttribute();
-				dynamicBody->stepPosition(step);
-				forwardSteps += step;
-				if (const bool result = Detector::collide(body1, body2); result)
-				{
-					forwardSteps -= step;
-					dynamicBody->setPhysicsAttribute(lastAttribute);
-					isFound = true;
-					break;
-				}
-			}
+			if (forwardFound && backwardFound)
+				break;
+		}
+		return result.forward == -1 ? std::nullopt :
+			std::optional(result);
 
-			if (!isFound)
-			{
-				body1->setPhysicsAttribute(origin1);
-				body2->setPhysicsAttribute(origin2);
-				return std::nullopt;
-			}
+		
+	}
+	std::optional<real> CCD::findNarrowphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const IndexSection& index, const real& dt)
+	{
+		assert(staticBody != nullptr && dynamicBody != nullptr);
 
-			//retracing
-			step /= 2.0f;
-			const real epsilon = 0.01f;
-			while (startTimestep + forwardSteps <= endTimestep)
-			{
-				lastAttribute = dynamicBody->physicsAttribute();
-				dynamicBody->stepPosition(step);
-				forwardSteps += step;
-				if (const auto result = Detector::detect(body1, body2); result.isColliding)
-				{
-					if (std::fabs(result.penetration) < epsilon)
-					{
-						body1->setPhysicsAttribute(origin1);
-						body2->setPhysicsAttribute(origin2);
-						return std::optional(startTimestep + forwardSteps);
-					}
+		if (dynamicTrajectory.size() < 2)
+			return std::nullopt;
+		
+		Body::PhysicsAttribute staticOrigin = staticBody->physicsAttribute();
+		Body::PhysicsAttribute dynamicOrigin = dynamicBody->physicsAttribute();
 
-					forwardSteps -= step;
-					dynamicBody->setPhysicsAttribute(lastAttribute);
-					step /= 2.0;
-				}
+		real startTimestep = 0;
+		real endTimestep = 0;
+
+		dynamicBody->setPhysicsAttribute(dynamicTrajectory[index.forward].attribute);
+		startTimestep = dynamicTrajectory[index.forward].time;
+		endTimestep = dynamicTrajectory[index.backward].time;
+
+		//slice maybe 25~70. It depends on how thin the sticks you set
+		const real slice = 30.0;
+		real step = (endTimestep - startTimestep) / slice;
+		real forwardSteps = 0;
+		Body::PhysicsAttribute lastAttribute;
+		//forwarding
+		bool isFound = false;
+		while (startTimestep + forwardSteps <= endTimestep)
+		{
+			lastAttribute = dynamicBody->physicsAttribute();
+			dynamicBody->stepPosition(step);
+			forwardSteps += step;
+			if (const bool result = Detector::collide(staticBody, dynamicBody); result)
+			{
+				forwardSteps -= step;
+				dynamicBody->setPhysicsAttribute(lastAttribute);
+				isFound = true;
+				break;
 			}
 		}
+
+		if (!isFound)
+		{
+			staticBody->setPhysicsAttribute(staticOrigin);
+			dynamicBody->setPhysicsAttribute(dynamicOrigin);
+			return std::nullopt;
+		}
+
+		//retracing
+		step /= 2.0f;
+		const real epsilon = 0.01f;
+		while (startTimestep + forwardSteps <= endTimestep)
+		{
+			lastAttribute = dynamicBody->physicsAttribute();
+			dynamicBody->stepPosition(step);
+			forwardSteps += step;
+			if (const auto result = Detector::detect(staticBody, dynamicBody); result.isColliding)
+			{
+				if (std::fabs(result.penetration) < epsilon)
+				{
+					staticBody->setPhysicsAttribute(staticOrigin);
+					dynamicBody->setPhysicsAttribute(dynamicOrigin);
+					return std::optional(startTimestep + forwardSteps);
+				}
+
+				forwardSteps -= step;
+				dynamicBody->setPhysicsAttribute(lastAttribute);
+				step /= 2.0;
+			}
+		}
+
 
 		return std::nullopt;
 	}
@@ -277,17 +223,16 @@ namespace Physics2D
 
             auto [trajectoryElement, aabbElement] = buildTrajectoryAABB(elem, dt);
             auto [newCCDTrajectory, newAABB] = buildTrajectoryAABB(body, elem->position(), dt);
-            auto result = findBroadphaseRoot(body, newCCDTrajectory, elem, trajectoryElement, dt);
+            auto result = findBroadphaseRoot(elem, trajectoryElement, body, newCCDTrajectory, dt);
             if(result.has_value())
             {
-                auto toi = findNarrowphaseRoot(body, newCCDTrajectory, elem, trajectoryElement, result.value(), dt);
+                auto toi = findNarrowphaseRoot(elem, trajectoryElement, body, newCCDTrajectory, result.value(), dt);
                 if (toi.has_value())
                     queryList.emplace_back(CCDPair(toi.value(), elem));
             }
         }
         return !queryList.empty() ? std::optional(queryList)
                                   : std::nullopt;
-        return std::nullopt;
     }
 
     std::optional<std::vector<CCD::CCDPair>> CCD::selectTargetPair(const std::vector<CCDPair> &pairs, const real &epsilon) {
@@ -301,7 +246,7 @@ namespace Physics2D
 
         std::vector<CCDPair> bodies;
         for(const auto& elem: pairs)
-            if(fuzzyRealEqual(elem.toi - minToi, epsilon))
+            if(fuzzyRealEqual(elem.toi, minToi, epsilon))
                 bodies.emplace_back(elem);
 
         return bodies;

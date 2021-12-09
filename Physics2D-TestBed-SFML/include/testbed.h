@@ -58,10 +58,7 @@ namespace Physics2D
 		void changeFrame();
 		void clearAll();
 
-		int m_positionIteration = 8;
-		int m_velocityIteration = 6;
 		int m_frequency = 120;
-		float m_contactBiasFactor = 0.03f;
 
 		bool m_userDrawVisible = true;
 		bool m_running = true;
@@ -72,22 +69,17 @@ namespace Physics2D
 
 		Frame* m_currentFrame = nullptr;
 
-		PhysicsWorld m_world;
-		ContactMaintainer m_maintainer;
-		Tree m_tree;
+		PhysicsSystem m_system;
+
 		DBVH m_dbvh;
-		Body* m_selectedBody;
-		PointJoint* m_mouseJoint;
+		Body* m_selectedBody = nullptr;
+		PointJoint* m_mouseJoint = nullptr;
 		PointJointPrimitive m_pointJointPrimitive;
 		Camera m_camera;
 
 		Vector2 m_mousePos;
 
 		std::unique_ptr<sf::Thread> m_physicsThread;
-		std::mutex m_mutexChangeFrame;
-		std::mutex m_mutexSimulate;
-		std::condition_variable m_cvChangeFrame;
-		std::condition_variable m_cvSimulate;
 
 		bool m_simulateWorkingState = true;
         std::unique_ptr<sf::RenderWindow> m_window;
