@@ -17,10 +17,11 @@ namespace Physics2D
             edge.set({ -100, 0 }, { 100, 0 });
             rect.set(1.0f, 1.0f);
             circle.setRadius(0.1f);
+            stick.set(8.0f, 0.5f);
 
             Body* ground = m_world->createBody();
             ground->setShape(&edge);
-            ground->position().set({ 0, 0 });
+            ground->position().set({ 0,  });
             ground->setMass(Constant::Max);
             ground->setType(Body::BodyType::Static);
             m_tree->insert(ground);
@@ -31,16 +32,17 @@ namespace Physics2D
                 body->setShape(&rect);
                 body->position().set({0, i});
                 body->setType(Body::BodyType::Dynamic);
-                body->setMass(0.5f);
+                body->setMass(5.0f);
                 m_tree->insert(body);
             }
 
             Body* bullet = m_world->createBody();
             bullet->setShape(&circle);
-            bullet->position().set({-10.0f, 5.0f});
+            bullet->position().set({-20.0f, 5.3f});
             bullet->setType(Body::BodyType::Bullet);
-            bullet->setMass(0.1f);
-            bullet->velocity().set({1200.0f, 0.0f});
+            bullet->setMass(0.8f);
+            bullet->velocity().set({1000.0f, 0.0f});
+            //bullet->angularVelocity() = 1000.0f;
             m_tree->insert(bullet);
 
         }
@@ -51,6 +53,7 @@ namespace Physics2D
     private:
         Edge edge;
         Rectangle rect;
+        Rectangle stick;
         Circle circle;
     };
 }

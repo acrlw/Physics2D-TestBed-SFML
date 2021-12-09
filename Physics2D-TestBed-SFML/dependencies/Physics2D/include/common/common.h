@@ -19,6 +19,7 @@ namespace Physics2D
 	namespace Constant
 	{
 		constexpr unsigned int SimplexMax = 8;
+		constexpr unsigned int CCDMaxIterations = 15;
 		constexpr real Epsilon = FLT_EPSILON;
 		constexpr real Max = FLT_MAX;
 		constexpr real PositiveMin = FLT_MIN;

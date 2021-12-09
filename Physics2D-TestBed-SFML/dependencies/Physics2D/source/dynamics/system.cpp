@@ -27,40 +27,49 @@ namespace Physics2D
 
     void PhysicsSystem::step(const real &dt)
     {
-
+        updateTree();
+        //solve ccd first, then solve normal case.
+        if(!solveCCD(dt))
+            solve(dt);
+    }
+    void PhysicsSystem::updateTree()
+    {
         for (auto& elem : m_world.bodyList())
             m_tree.update(elem.get());
+    }
+    bool PhysicsSystem::solveCCD(const real& dt)
+    {
+        std::vector<Body*> bullets;
+        for (auto& body : m_world.bodyList())
+            if (body->type() == Body::BodyType::Bullet)
+                bullets.emplace_back(body.get());
 
-        real ddt = dt;
-	    std::vector<Body*> bullets;
-	    for(auto& body: m_world.bodyList())
-		    if(body->type() == Body::BodyType::Bullet)
-			    bullets.emplace_back(body.get());
-
-		for(auto& bullet: bullets)
-		{
-			//check bullet collide
-            if (bullet->velocity().lengthSquare() < Constant::CCDMinVelocity)
-                break;
-
-			auto potentials = CCD::query(m_tree, bullet, dt);
-			if(potentials.has_value())
-			{
-				auto finals = CCD::selectTargetPair(potentials.value());
-				if(finals.has_value())
-				{
-					auto& list = finals.value();
-                    ddt = list[0].toi;
-				}
-			}
-		}
-        if (ddt < dt)
-            solve(ddt);
-        else
-            solve(dt);
-
-
-
+        for (auto& bullet : bullets)
+        {
+            //check bullet velocity threshold
+            if (bullet->velocity().lengthSquare() < Constant::CCDMinVelocity && bullet->angularVelocity() < Constant::CCDMinVelocity)
+                continue;
+            auto potentials = CCD::query(m_tree, bullet, dt);
+            if (potentials.has_value())
+            {
+                auto finals = CCD::earliestTOI(potentials.value());
+                if (finals.has_value())
+                {
+                    //if toi still exist, just keep solving them until the sum of toi is greater than dt
+                    real toi = finals.value();
+                    solve(toi);
+                    real ddt = (dt - toi) / real(Constant::CCDMaxIterations);
+                    for (int i = 0; i < Constant::CCDMaxIterations; i++) {
+                        updateTree();
+                        solve(ddt);
+                    }
+                    //return solved
+                    return true;
+                }
+            }
+        }
+        //there isn't a ccd case, solve nothing.
+        return false;
     }
     void PhysicsSystem::solve(const real& dt)
     {

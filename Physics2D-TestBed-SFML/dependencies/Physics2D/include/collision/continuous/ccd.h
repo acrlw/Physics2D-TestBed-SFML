@@ -39,7 +39,7 @@ namespace Physics2D
 		static std::optional<real> findNarrowphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const IndexSection& index, const real& dt);
 		static std::optional<std::vector<CCDPair>> query(DBVH::Node* root, Body* body, const real& dt);
         static std::optional<std::vector<CCDPair>> query(Tree& tree, Body* body, const real& dt);
-        static std::optional<std::vector<CCDPair>> selectTargetPair(const std::vector<CCDPair>& pairs, const real& epsilon = Constant::GeometryEpsilon);
+        static std::optional<real> earliestTOI(const std::vector<CCDPair>& pairs, const real& epsilon = Constant::GeometryEpsilon);
 	};
 }
 #endif

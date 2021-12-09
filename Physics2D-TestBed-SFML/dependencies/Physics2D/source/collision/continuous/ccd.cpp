@@ -162,6 +162,7 @@ namespace Physics2D
 		//retracing
 		step /= 2.0f;
 		const real epsilon = 0.01f;
+		unsigned int counter = 0;
 		while (startTimestep + forwardSteps <= endTimestep)
 		{
 			lastAttribute = dynamicBody->physicsAttribute();
@@ -169,7 +170,7 @@ namespace Physics2D
 			forwardSteps += step;
 			if (const auto result = Detector::detect(staticBody, dynamicBody); result.isColliding)
 			{
-				if (std::fabs(result.penetration) < epsilon)
+				if (std::fabs(result.penetration) < epsilon || counter >= Constant::CCDMaxIterations)
 				{
 					staticBody->setPhysicsAttribute(staticOrigin);
 					dynamicBody->setPhysicsAttribute(dynamicOrigin);
@@ -180,6 +181,7 @@ namespace Physics2D
 				dynamicBody->setPhysicsAttribute(lastAttribute);
 				step /= 2.0;
 			}
+			counter++;
 		}
 
 
@@ -235,20 +237,15 @@ namespace Physics2D
                                   : std::nullopt;
     }
 
-    std::optional<std::vector<CCD::CCDPair>> CCD::selectTargetPair(const std::vector<CCDPair> &pairs, const real &epsilon) {
+    std::optional<real> CCD::earliestTOI(const std::vector<CCDPair> &pairs, const real &epsilon) {
         if(pairs.empty())
             return std::nullopt;
 
         real minToi = Constant::Max;
-        for(const auto & elem: pairs)
-            if(elem.toi < minToi)
-                minToi = elem.toi;
+		for (const auto& elem : pairs) 
+			if (elem.toi < minToi) 
+				minToi = elem.toi;
 
-        std::vector<CCDPair> bodies;
-        for(const auto& elem: pairs)
-            if(fuzzyRealEqual(elem.toi, minToi, epsilon))
-                bodies.emplace_back(elem);
-
-        return bodies;
+        return minToi;
     }
 }

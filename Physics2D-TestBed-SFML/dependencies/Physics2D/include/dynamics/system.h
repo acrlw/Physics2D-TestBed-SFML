@@ -19,7 +19,9 @@ namespace Physics2D
 
 
     private:
+        void updateTree();
         void solve(const real& dt);
+        bool solveCCD(const real& dt);
         int m_positionIteration = 8;
         int m_velocityIteration = 6;
 

@@ -95,9 +95,9 @@ namespace Physics2D
 			{
 				for (auto [body, node] : m_dbvh->leaves())
 					RenderSFMLImpl::renderAABB(window, *this, node->aabb, sf::Color::Cyan);
-				for (auto& elem : m_tree->tree())
-					if (elem.body != nullptr)
-						RenderSFMLImpl::renderAABB(window, *this, elem.aabb, sf::Color::Cyan);
+				for (auto& elem : m_world->bodyList())
+					if (elem != nullptr)
+						RenderSFMLImpl::renderAABB(window, *this, elem->aabb(), sf::Color::Cyan);
 			}
 			if (m_dbvhVisible)
 			{

@@ -27,7 +27,7 @@ namespace Physics2D
 			m_tree->insert(ground);
 
 			real offset = 0.0f;
-			real max = 20.0f;
+			real max = 25.0f;
 			for (real j = 0; j < max; j += 1.0f)
 			{
 				Body* body = m_world->createBody();
