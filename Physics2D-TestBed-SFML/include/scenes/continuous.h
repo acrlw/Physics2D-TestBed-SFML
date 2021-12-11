@@ -14,35 +14,35 @@ namespace Physics2D
         }
         void load() override
         {
-            edge.set({ -100, 0 }, { 100, 0 });
+            edge.set({ -200, 0 }, { 200, 0 });
             rect.set(1.0f, 1.0f);
             circle.setRadius(0.1f);
             stick.set(5.0f, 0.5f);
 
             Body* ground = m_world->createBody();
             ground->setShape(&edge);
-            ground->position().set({ 0,  });
+            ground->position().set({ 0, 0});
             ground->setMass(Constant::Max);
             ground->setType(Body::BodyType::Static);
             m_tree->insert(ground);
 
-            for(real i = 1.0f; i <= 10.0f; i += 1.1f)
+            for (real i = 1.0f; i <= 10.0f; i += 1.1f)
             {
                 Body* body = m_world->createBody();
                 body->setShape(&rect);
-                body->position().set({0, i});
+                body->position().set({ 0, i });
                 body->setType(Body::BodyType::Dynamic);
-                body->setMass(10.0f);
+                body->setMass(5.0f);
                 m_tree->insert(body);
             }
 
             Body* bullet = m_world->createBody();
             bullet->setShape(&stick);
-            bullet->position().set({-100.0f, 6.5f});
+            bullet->position().set({ -100.0f, 6.5f });
             bullet->setType(Body::BodyType::Bullet);
-            bullet->setMass(0.8f);
-            bullet->velocity().set({1500.0f, 0.0f});
-            bullet->angularVelocity() = 3000.0f;
+            bullet->setMass(1.0f);
+            bullet->velocity().set({ 3000.0f, 0.0f });
+            bullet->angularVelocity() = -900.0f;
             m_tree->insert(bullet);
 
         }
