@@ -32,7 +32,7 @@ namespace Physics2D
                 body->setShape(&rect);
                 body->position().set({ 0, i });
                 body->setType(Body::BodyType::Dynamic);
-                body->setMass(5.0f);
+                body->setMass(2.0f);
                 m_tree->insert(body);
             }
 
@@ -41,8 +41,8 @@ namespace Physics2D
             bullet->position().set({ -100.0f, 6.5f });
             bullet->setType(Body::BodyType::Bullet);
             bullet->setMass(1.0f);
-            bullet->velocity().set({ 3000.0f, 0.0f });
-            bullet->angularVelocity() = -900.0f;
+            bullet->velocity().set({ 500.0f, 0.0f });
+            bullet->angularVelocity() = -200.0f;
             m_tree->insert(bullet);
 
         }

@@ -34,7 +34,7 @@ namespace Physics2D
     void TestBed::onResized(sf::Event& event)
     {
         Camera::Viewport viewport = m_camera.viewport();
-        viewport.set(real(event.mouseButton.x), real(event.mouseButton.y));
+        viewport.set(real(event.size.width), real(event.size.height));
         m_camera.setViewport(viewport);
         m_window->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
     }
