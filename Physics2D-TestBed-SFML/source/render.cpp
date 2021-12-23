@@ -104,7 +104,7 @@ namespace Physics2D
 		assert(shape.shape != nullptr);
 		assert(shape.shape->type() == Shape::Type::Polygon);
 		sf::ConvexShape convex;
-		Polygon* polygon = dynamic_cast<Polygon*>(shape.shape);
+		Polygon* polygon = static_cast<Polygon*>(shape.shape);
 		convex.setPointCount(polygon->vertices().size() - 1);
 		for (size_t i = 0; i < polygon->vertices().size() - 1; ++i)
 		{
@@ -122,7 +122,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderEdge(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		assert(shape.shape->type() == Shape::Type::Edge);
-		Edge* edge = dynamic_cast<Edge*>(shape.shape);
+		Edge* edge = static_cast<Edge*>(shape.shape);
 		renderPoint(window, camera, edge->startPoint() + shape.transform, color);
 		renderPoint(window, camera, edge->endPoint() + shape.transform, color);
 		renderLine(window, camera, edge->startPoint() + shape.transform, edge->endPoint() + shape.transform, color);
@@ -140,7 +140,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderCircle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		assert(shape.shape->type() == Shape::Type::Circle);
-		const Circle* circle = dynamic_cast<Circle*>(shape.shape);
+		const Circle* circle = static_cast<Circle*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
 		sf::CircleShape circleShape(circle->radius() * RenderConstant::scaleFactor * camera.meterToPixel());
 		sf::Color fillColor(color);
@@ -157,7 +157,7 @@ namespace Physics2D
 		assert(shape.shape->type() == Shape::Type::Capsule);
 		std::vector<sf::Vertex> vertices;
 
-		const Capsule* capsule = dynamic_cast<Capsule*>(shape.shape);
+		const Capsule* capsule = static_cast<Capsule*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
 		int pointCounts = (RenderConstant::basicCirclePointCount + camera.meterToPixel()) / 4;
 		sf::Vertex centerVertex = toVector2f(screenPos);
@@ -209,7 +209,7 @@ namespace Physics2D
 		assert(shape.shape->type() == Shape::Type::Ellipse);
 		std::vector<sf::Vertex> vertices;
 
-		const Ellipse* ellipse = dynamic_cast<Ellipse*>(shape.shape);
+		const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
 		int pointCounts = (RenderConstant::basicCirclePointCount + camera.meterToPixel()) / 2;
 
@@ -330,7 +330,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderDistanceJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
 	{
 		assert(joint != nullptr);
-		DistanceJoint* distanceJoint = dynamic_cast<DistanceJoint*>(joint);
+		DistanceJoint* distanceJoint = static_cast<DistanceJoint*>(joint);
 		Vector2 pa = distanceJoint->primitive().bodyA->toWorldPoint(distanceJoint->primitive().localPointA);
 		Vector2 pb = distanceJoint->primitive().targetPoint;
 		Vector2 n = (pa - pb).normal();
@@ -352,7 +352,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderPointJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
 	{
 		assert(joint != nullptr);
-		PointJoint* pointJoint = dynamic_cast<PointJoint*>(joint);
+		PointJoint* pointJoint = static_cast<PointJoint*>(joint);
 		Vector2 pa = pointJoint->primitive().bodyA->toWorldPoint(pointJoint->primitive().localPointA);
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
@@ -368,7 +368,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderOrientationJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
 	{
 		assert(joint != nullptr);
-		OrientationJoint* pointJoint = dynamic_cast<OrientationJoint*>(joint);
+		OrientationJoint* pointJoint = static_cast<OrientationJoint*>(joint);
 		Vector2 pa = pointJoint->primitive().bodyA->position();
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
@@ -390,7 +390,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderRevoluteJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
 	{
 		assert(joint != nullptr);
-		RevoluteJoint* revoluteJoint = dynamic_cast<RevoluteJoint*>(joint);
+		RevoluteJoint* revoluteJoint = static_cast<RevoluteJoint*>(joint);
 		Vector2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
 		Vector2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
 

@@ -26,23 +26,29 @@ namespace Physics2D
             ground->setType(Body::BodyType::Static);
             m_tree->insert(ground);
 
-            for (real i = 1.0f; i <= 10.0f; i += 1.1f)
+            for (real j = 0; j < 30.0f; j += 1.0f)
             {
-                Body* body = m_world->createBody();
-                body->setShape(&rect);
-                body->position().set({ 0, i });
-                body->setType(Body::BodyType::Dynamic);
-                body->setMass(2.0f);
-                m_tree->insert(body);
+                for (real i = 0; i < 6.0; i += 1.0f)
+                {
+                    Body* body = m_world->createBody();
+                    body->position().set({ i * 1.05f - 2.0f, j * 1.05f - ground->position().y + 0.55f });
+                    body->setShape(&rect);
+                    body->rotation() = 0.0f;
+                    body->setMass(0.1f);
+                    body->setType(Body::BodyType::Dynamic);
+                    body->setFriction(0.8f);
+                    body->setRestitution(0.0f);
+                    m_tree->insert(body);
+                }
             }
 
             Body* bullet = m_world->createBody();
             bullet->setShape(&stick);
             bullet->position().set({ -100.0f, 6.5f });
             bullet->setType(Body::BodyType::Bullet);
-            bullet->setMass(1.0f);
-            bullet->velocity().set({ 500.0f, 0.0f });
-            bullet->angularVelocity() = -200.0f;
+            bullet->setMass(2.0f);
+            bullet->velocity().set({ 1000.0f, 0.0f });
+            bullet->angularVelocity() = -1000.0f;
             m_tree->insert(bullet);
 
         }
