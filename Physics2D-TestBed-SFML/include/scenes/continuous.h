@@ -26,9 +26,9 @@ namespace Physics2D
             ground->setType(Body::BodyType::Static);
             m_tree->insert(ground);
 
-            for (real j = 0; j < 30.0f; j += 1.0f)
+            for (real j = 0; j < 20.0f; j += 1.0f)
             {
-                for (real i = 0; i < 6.0; i += 1.0f)
+                for (real i = 0; i < 3.0; i += 1.0f)
                 {
                     Body* body = m_world->createBody();
                     body->position().set({ i * 1.05f - 2.0f, j * 1.05f - ground->position().y + 0.55f });

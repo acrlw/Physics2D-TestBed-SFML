@@ -1,7 +1,7 @@
 #ifndef PHYSICS2D_SCENES_NARROWPHASE_H
 #define PHYSICS2D_SCENES_NARROWPHASE_H
 #include "./include/frame.h"
-#include "benchmark/benchmark.h"
+
 namespace Physics2D
 {
 	class NarrowphaseFrame : public Frame

@@ -20,6 +20,3 @@ target_link_libraries(Physics2D-TestBed-SFML PRIVATE imgui::imgui)
 
 find_package(ImGui-SFML CONFIG REQUIRED)
 target_link_libraries(Physics2D-TestBed-SFML PRIVATE ImGui-SFML::ImGui-SFML)
-
-find_package(benchmark CONFIG REQUIRED)
-target_link_libraries(Physics2D-TestBed-SFML PRIVATE benchmark::benchmark benchmark::benchmark_main)
