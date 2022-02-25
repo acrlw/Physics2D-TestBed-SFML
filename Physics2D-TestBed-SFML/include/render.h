@@ -48,6 +48,7 @@ namespace Physics2D
         static void renderCurve(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
         static void renderAngleLine(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
 
+        static void renderBody(sf::RenderWindow& window, Camera& camera, Body* body, const sf::Color& color);
         static void renderAABB(sf::RenderWindow& window, Camera& camera, const AABB& aabb, const sf::Color& color);
 
         static void renderJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);

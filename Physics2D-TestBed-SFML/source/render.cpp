@@ -265,6 +265,14 @@ namespace Physics2D
 		renderLine(window, camera, shape.transform + mc, xP, colorX);
 		renderLine(window, camera, shape.transform + mc, yP, colorY);
 	}
+	void RenderSFMLImpl::renderBody(sf::RenderWindow& window, Camera& camera, Body* body, const sf::Color& color)
+	{
+		ShapePrimitive primitive;
+		primitive.shape = body->shape();
+		primitive.rotation = body->rotation();
+		primitive.transform = body->position();
+		renderShape(window, camera, primitive, color);
+	}
 	void RenderSFMLImpl::renderAABB(sf::RenderWindow& window, Camera& camera, const AABB& aabb, const sf::Color& color)
 	{
 		Vector2 aabbSize(aabb.width, aabb.height);

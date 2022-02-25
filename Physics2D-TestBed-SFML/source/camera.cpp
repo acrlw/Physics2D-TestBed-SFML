@@ -59,6 +59,7 @@ namespace Physics2D
 					if (body->sleep())
 						color = sf::Color(100, 100, 100);
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
+
 					if (m_centerVisible)
 						RenderSFMLImpl::renderPoint(window, *this, primitive.transform, RenderConstant::materialGray);
 

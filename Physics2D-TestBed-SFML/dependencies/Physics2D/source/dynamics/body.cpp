@@ -270,6 +270,38 @@ namespace Physics2D {
 			m_invInertia = !realEqual(m_inertia, 0) ? 1.0f / m_inertia : 0;
     }
 
+    Body::Relation::RelationID Body::Relation::generateRelationID(Body* bodyA, Body* bodyB)
+    {
+        assert(bodyA != nullptr && bodyB != nullptr);
+        //Combine two 32-bit id into one 64-bit id in binary form
+        //By Convention: bodyA.id < bodyB.id
+        auto bodyAId = bodyA->id();
+        auto bodyBId = bodyB->id();
+        if(bodyAId > bodyBId)
+            std::swap(bodyAId, bodyBId);
+        
+        auto pair = std::pair{ bodyAId, bodyBId };
+        auto result = reinterpret_cast<uint64_t&>(pair);
+        return result;
+    }
+
+    Body::Relation Body::Relation::generateRelation(Body* bodyA, Body* bodyB)
+    {
+        assert(bodyA != nullptr && bodyB != nullptr);
+        Body::Relation result;
+        auto bodyAId = bodyA->id();
+        auto bodyBId = bodyB->id();
+        if (bodyAId > bodyBId)
+            std::swap(bodyA, bodyB);
+
+        result.relationID = generateRelationID(bodyA, bodyB);
+        result.bodyA = bodyA;
+        result.bodyB = bodyB;
+        return result;
+    }
+
+
+
     void Body::PhysicsAttribute::step(const real& dt)
     {
         position += velocity * dt;

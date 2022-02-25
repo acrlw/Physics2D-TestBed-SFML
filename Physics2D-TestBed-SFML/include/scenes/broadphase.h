@@ -3,6 +3,7 @@
 #include <random>
 
 #include "./include/frame.h"
+#include "dependencies/Physics2D/include/collision/broadphase/sap.h"
 namespace Physics2D
 {
 	class BroadPhaseFrame : public Frame
@@ -38,7 +39,7 @@ namespace Physics2D
 			std::uniform_int_distribution<> dist2(0, 4);
 			std::uniform_real_distribution<> dist3(-Constant::Pi, Constant::Pi);
 
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < 200; i++)
 			{
 				Body* body = m_world->createBody();
 				body->position().set(dist1(gen), dist1(gen));
@@ -49,23 +50,34 @@ namespace Physics2D
 
 				m_tree->insert(body);
 			}
+			for (auto&& elem : m_world->bodyList())
+				bodyList.emplace_back(elem.get());
 		}
 		void render(sf::RenderWindow& window) override
 		{
+			auto pairs = SweepAndPrune::generate(bodyList);
+			sf::Color collisionColor = sf::Color(116, 46, 155);
+			sf::Color hitColor = sf::Color(255, 152, 0);
+			sf::Color regionColor = sf::Color(178, 235, 242);
+			for(auto&& elem: pairs)
+			{
+				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
+				RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
+			}
+
 			AABB queryRegion;
 			queryRegion.width = 8;
 			queryRegion.height = 8;
-			auto bodyList = m_tree->query(queryRegion);
-			sf::Color regionColor = sf::Color(178, 235, 242);
-			sf::Color hitColor = sf::Color(255, 152, 0);
+			auto resultList = SweepAndPrune::query(bodyList, queryRegion);
 
 			Rectangle rect(8, 8);
 			ShapePrimitive sp;
 			sp.shape = &rect;
 			RenderSFMLImpl::renderShape(window, *m_camera, sp, regionColor);
 
-			for(auto& elem: bodyList)
+			for(auto& elem: resultList)
 				RenderSFMLImpl::renderAABB(window, *m_camera, elem->aabb(), hitColor);
+
 		}
 	private:
 		Rectangle rectangle;
@@ -73,6 +85,7 @@ namespace Physics2D
 		Polygon polygon;
 		Capsule capsule;
 		Polygon triangle;
+		std::vector<Body*> bodyList;
 	};
 }
 #endif
