@@ -23,6 +23,8 @@
 #include "scenes/stacking.h"
 #include "scenes/wreckingball.h"
 #include "scenes/pendulum.h"
+#include "scenes/pbd.h"
+#include "scenes/xpbd.h"
 
 #include <mutex>
 #include <thread>

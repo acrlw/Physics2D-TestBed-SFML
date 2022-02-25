@@ -215,8 +215,8 @@ namespace Physics2D
     void TestBed::renderGUI(sf::RenderWindow& window, sf::Clock& clock)
     {
         const char* items[] = { "Bitmask" , "Bridge" , "Broadphase" , "Chain" , "Collision" , "Continuous", "Domino" , "Friction" ,
-            "Geometry" , "Joints" , "Narrowphase" , "Newton's Cradle" , "Pendulum" , "AABB Raycast" , "Restitution" , "Sensor" , "Stacking" ,
-            "Wrecking Ball" };
+            "Geometry" , "Joints" , "Narrowphase" , "Newton's Cradle", "Position-Based Dynamics" , "Pendulum" , "AABB Raycast" , "Restitution" , "Sensor" , "Stacking" ,
+            "Wrecking Ball", "Extended Position-Based Dynamics" };
 
 
         ImGui::SFML::Update(window, clock.restart());
@@ -346,22 +346,28 @@ namespace Physics2D
                 m_currentFrame = new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
                 break;
             case 12:
-                m_currentFrame = new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
                 break;
             case 13:
-                m_currentFrame = new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
                 break;
             case 14:
-                m_currentFrame = new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
                 break;
             case 15:
-                m_currentFrame = new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
                 break;
             case 16:
-                m_currentFrame = new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
                 break;
             case 17:
+                m_currentFrame = new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                break;
+            case 18:
                 m_currentFrame = new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                break;
+            case 19:
+                m_currentFrame = new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
                 break;
             default:
                 break;
