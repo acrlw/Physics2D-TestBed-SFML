@@ -34,9 +34,11 @@ namespace Physics2D
         static sf::Vector2f toVector2f(const Vector2& vector);
         static void renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const int pointSize = RenderConstant::pointSize);
         static void renderLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, const sf::Color& color);
-        static void renderPoints(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& points, const sf::Color& color);
-        static void renderLines(sf::RenderWindow& window, Camera& camera, const std::vector<std::pair<Vector2, Vector2>>& lines, const sf::Color& color);
 
+    	static void renderPoints(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& points, const sf::Color& color);
+        
+    	static void renderLines(sf::RenderWindow& window, Camera& camera, const std::vector<std::pair<Vector2, Vector2>>& lines, const sf::Color& color);
+        
         static void renderShape(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
         static void renderPolygon(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
         static void renderEdge(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);

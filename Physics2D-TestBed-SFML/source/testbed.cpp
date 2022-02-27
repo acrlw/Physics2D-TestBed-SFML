@@ -268,6 +268,10 @@ namespace Physics2D
             restart();
 
         ImGui::End();
+
+        if (m_currentFrame != nullptr)
+            m_currentFrame->renderUI();
+
         ImGui::SFML::Render(window);
         window.display();
     }

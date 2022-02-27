@@ -37,6 +37,9 @@ namespace Physics2D
 		}
 		window.draw(&vertices[0], vertices.size(), sf::Points);
 	}
+
+
+
 	void RenderSFMLImpl::renderLines(sf::RenderWindow& window, Camera& camera, const std::vector<std::pair<Vector2, Vector2>>& lines, const sf::Color& color)
 	{
 		std::vector<sf::Vertex> vertices;
@@ -56,6 +59,8 @@ namespace Physics2D
 		}
 		window.draw(&vertices[0], vertices.size(), sf::Lines);
 	}
+
+
 	void RenderSFMLImpl::renderShape(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		switch (shape.shape->type())

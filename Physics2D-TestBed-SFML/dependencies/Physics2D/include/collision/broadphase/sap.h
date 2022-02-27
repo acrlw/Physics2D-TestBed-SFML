@@ -1,6 +1,5 @@
 #ifndef PHYSICS_BROADPHASE_SAP_H
 #define PHYSICS_BROADPHASE_SAP_H
-#include "../../collision/broadphase/aabb.h"
 #include "../../dynamics/body.h"
 
 namespace Physics2D
