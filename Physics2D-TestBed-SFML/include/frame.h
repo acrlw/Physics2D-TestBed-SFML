@@ -27,6 +27,7 @@ namespace Physics2D
 		virtual void onMouseMove(sf::Event& event) {}
 		virtual void onMouseDoubleClick(sf::Event& event) {}
 		virtual void onKeyRelease(sf::Event& event) {}
+		virtual void onKeyPressed(sf::Event& event) {}
 
 		std::string name()const
 		{

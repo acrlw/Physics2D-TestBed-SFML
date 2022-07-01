@@ -25,19 +25,29 @@ namespace Physics2D
 
 				Vector2 c = target - m_transform;
 
-				//lerp
-				//if (c.lengthSquare() < 0.1)
-				//	m_transform = target;
-				//else
-				//	m_transform += c * 0.02;
-
-				//exp
-				if (c.lengthSquare() < 0.1)
-					m_transform = target;
-				else
-					m_transform -= (1.0 - std::exp(m_restitution * inv_dt)) * c;
-
-				//real frames = m_easingTime * inv_dt;
+				switch (m_easingType)
+				{
+				case EasingType::Exponential:
+				{
+					if (c.lengthSquare() < 0.1)
+						m_transform = target;
+					else
+						m_transform -= (1.0 - std::exp(m_restitution * inv_dt)) * c;
+					break;
+				}
+				case EasingType::Lerp:
+				{
+					if (c.lengthSquare() < 0.1)
+						m_transform = target;
+					else
+						m_transform += 0.02 * c;
+					break;
+				}
+				case EasingType::Uniform:
+				{
+					break;
+				}
+				}
 
 
 			}
@@ -73,8 +83,28 @@ namespace Physics2D
 					if (joint->active())
 						RenderSFMLImpl::renderJoint(window, *this, joint.get(), sf::Color::Green);
 			}
-			if (m_axisVisible)
+
+			if (m_aabbVisible)
 			{
+				for (auto [body, node] : m_dbvh->leaves())
+					RenderSFMLImpl::renderAABB(window, *this, node->aabb, sf::Color::Cyan);
+
+				for (auto& elem : m_world->bodyList())
+					if (elem != nullptr)
+						RenderSFMLImpl::renderAABB(window, *this, elem->aabb(), sf::Color::Cyan);
+			}
+			if (m_dbvhVisible)
+			{
+				drawDbvh(m_dbvh->root(), window);
+			}
+			if (m_treeVisible)
+			{
+				drawTree(m_tree->rootIndex(), window);
+			}
+			if (m_gridScaleLineVisible)
+			{
+				//draw axis
+
 				sf::Color color = sf::Color::Green;
 				color.a = 225;
 
@@ -91,25 +121,7 @@ namespace Physics2D
 				RenderSFMLImpl::renderLine(window, *this, Vector2(0, -m_axisPointCount), Vector2(0, m_axisPointCount), color);
 				RenderSFMLImpl::renderLine(window, *this, Vector2(-m_axisPointCount, 0), Vector2(m_axisPointCount, 0), color);
 
-			}
-			if (m_aabbVisible)
-			{
-				for (auto [body, node] : m_dbvh->leaves())
-					RenderSFMLImpl::renderAABB(window, *this, node->aabb, sf::Color::Cyan);
-				for (auto& elem : m_world->bodyList())
-					if (elem != nullptr)
-						RenderSFMLImpl::renderAABB(window, *this, elem->aabb(), sf::Color::Cyan);
-			}
-			if (m_dbvhVisible)
-			{
-				drawDbvh(m_dbvh->root(), window);
-			}
-			if (m_treeVisible)
-			{
-				drawTree(m_tree->rootIndex(), window);
-			}
-			if (m_gridScaleLineVisible)
-			{
+				//draw grid
 				drawGridScaleLine(window);
 			}
 			if (m_contactVisible)
@@ -132,11 +144,6 @@ namespace Physics2D
 	bool& Camera::bodyVisible()
 	{
 		return m_bodyVisible;
-	}
-
-	bool& Camera::axisVisible()
-	{
-		return m_axisVisible;
 	}
 
 	bool& Camera::gridScaleLineVisible()
@@ -308,6 +315,16 @@ namespace Physics2D
 		m_maintainer = maintainer;
 	}
 
+	Camera::EasingType Camera::easingType() const
+	{
+		return m_easingType;
+	}
+
+	void Camera::setEasingType(EasingType type)
+	{
+		m_easingType = type;
+	}
+
 	void Camera::drawTree(int nodeIndex, sf::RenderWindow& window)
 	{
 		if (nodeIndex == -1)
@@ -371,15 +388,13 @@ namespace Physics2D
 		if (fineEnough)
 		{
 			if (m_meterToPixel < 400)
-				h = 0.2f;
+				h = 0.5f;
 			else if (m_meterToPixel < 800)
 				h = 0.1f;
 			else if (m_meterToPixel < 1600)
 				h = 0.05f;
-			else if (m_meterToPixel < 4000)
-				h = 0.02f;
 			else
-				h = 0.005f;
+				h = 0.05f;
 
 			lines.clear();
 			lines.reserve(static_cast<size_t>(m_axisPointCount * 2.0f / 0.2f));

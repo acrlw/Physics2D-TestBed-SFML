@@ -43,6 +43,7 @@ namespace Physics2D
         void onResized(sf::Event &event);
         void onClosed(sf::Event &event);
         void onKeyReleased(sf::Event &event);
+		void onKeyPressed(sf::Event& event);
         void onMouseReleased(sf::Event &event);
         void onMouseMoved(sf::Event &event);
         void onMousePressed(sf::Event &event);

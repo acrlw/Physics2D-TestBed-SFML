@@ -56,27 +56,27 @@ namespace Physics2D
 		void render(sf::RenderWindow& window) override
 		{
 			auto pairs = SweepAndPrune::generate(bodyList);
-			sf::Color collisionColor = sf::Color(116, 46, 155);
-			sf::Color hitColor = sf::Color(255, 152, 0);
-			sf::Color regionColor = sf::Color(178, 235, 242);
+			sf::Color collisionColor = RenderConstant::materialPink;
+			sf::Color hitColor = RenderConstant::materialRed;
+			sf::Color regionColor = RenderConstant::materialYellow;
 			for(auto&& elem: pairs)
 			{
 				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
 				RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
 			}
 
-			AABB queryRegion;
-			queryRegion.width = 8;
-			queryRegion.height = 8;
-			auto resultList = SweepAndPrune::query(bodyList, queryRegion);
+			//AABB queryRegion;
+			//queryRegion.width = 8;
+			//queryRegion.height = 8;
+			//auto resultList = SweepAndPrune::query(bodyList, queryRegion);
 
-			Rectangle rect(8, 8);
-			ShapePrimitive sp;
-			sp.shape = &rect;
-			RenderSFMLImpl::renderShape(window, *m_camera, sp, regionColor);
+			//Rectangle rect(8, 8);
+			//ShapePrimitive sp;
+			//sp.shape = &rect;
+			//RenderSFMLImpl::renderShape(window, *m_camera, sp, regionColor);
 
-			for(auto& elem: resultList)
-				RenderSFMLImpl::renderAABB(window, *m_camera, elem->aabb(), hitColor);
+			//for(auto& elem: resultList)
+			//	RenderSFMLImpl::renderAABB(window, *m_camera, elem->aabb(), hitColor);
 
 		}
 	private:

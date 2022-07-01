@@ -1,7 +1,7 @@
 #include "../../../include/collision/broadphase/sap.h"
 
 #include "../../../include/dynamics/body.h"
-
+#include "../../../include/collision/algorithm/sat.h"
 namespace Physics2D
 {
 	std::vector<std::pair<Body*, Body*>> SweepAndPrune::generate(const std::vector<Body*>& bodyList)
@@ -20,7 +20,6 @@ namespace Physics2D
 			});
 
 		
-		
 
 		std::vector<Body::Relation> xPairs;
 		std::vector<Body::Relation> yPairs;
@@ -31,7 +30,7 @@ namespace Physics2D
 			for (auto next = std::next(before); next != sortXAxis.end(); ++next)
 			{
 				AABB aabbNext = (*next)->aabb();
-
+				
 				const real minBefore = aabbBefore.bottomLeft().x;
 				const real maxBefore = aabbBefore.bottomRight().x;
 				const real minNext = aabbNext.bottomLeft().x;

@@ -13,6 +13,12 @@ namespace Physics2D
     class Camera
     {
     public:
+        enum class EasingType
+        {
+            Lerp,
+            Exponential,
+            Uniform
+        };
         struct Viewport
         {
             Viewport() = default;
@@ -31,7 +37,6 @@ namespace Physics2D
         bool& aabbVisible();
         bool& jointVisible();
         bool& bodyVisible();
-        bool& axisVisible();
         bool& gridScaleLineVisible();
         bool& visible();
         bool& treeVisible();
@@ -79,6 +84,9 @@ namespace Physics2D
         ContactMaintainer* maintainer()const;
         void setContactMaintainer(ContactMaintainer* maintainer);
 
+        EasingType easingType()const;
+        void setEasingType(EasingType type);
+
     private:
         void drawGridScaleLine(sf::RenderWindow& window);
         void drawDbvh(DBVH::Node* node, sf::RenderWindow& window);
@@ -89,7 +97,6 @@ namespace Physics2D
         bool m_aabbVisible = false;
         bool m_jointVisible = true;
         bool m_bodyVisible = true;
-        bool m_axisVisible = false;
         bool m_dbvhVisible = false;
         bool m_treeVisible = false;
         bool m_gridScaleLineVisible = false;
@@ -116,8 +123,9 @@ namespace Physics2D
         real m_zoomFactor = 1.0f;
         real m_restitution = 2.0f;
         real m_deltaTime = 15.0f;
-        real m_axisPointCount = 20.0f;
+        real m_axisPointCount = 50.0f;
 
+        EasingType m_easingType = EasingType::Exponential;
 
     };
 
