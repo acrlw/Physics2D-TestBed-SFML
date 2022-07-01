@@ -1,6 +1,7 @@
 #ifndef PHYSICS2D_SCENES_NARROWPHASE_H
 #define PHYSICS2D_SCENES_NARROWPHASE_H
 #include "./include/frame.h"
+
 namespace Physics2D
 {
 	class NarrowphaseFrame : public Frame
@@ -27,6 +28,7 @@ namespace Physics2D
 			shape2.transform.set(1.0f, -5.0f);
 			shape2.rotation = Math::degreeToRadian(30);
 			result = Detector::detect(shape1, shape2);
+
 		}
 		void render(sf::RenderWindow& window) override
 		{
