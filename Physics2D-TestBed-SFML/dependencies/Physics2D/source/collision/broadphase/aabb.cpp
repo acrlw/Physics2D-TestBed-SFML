@@ -19,22 +19,22 @@ namespace Physics2D
 
 	Vector2 AABB::topLeft() const
 	{
-		return Vector2{ -width / 2 + position.x , height / 2 + position.y };
+		return Vector2{ -width * 0.5f + position.x , height * 0.5f + position.y };
 	}
 
 	Vector2 AABB::topRight() const
 	{
-		return Vector2{ width / 2 + position.x , height / 2 + position.y };
+		return Vector2{ width * 0.5f + position.x , height * 0.5f + position.y };
 	}
 
 	Vector2 AABB::bottomLeft() const
 	{
-		return Vector2{ -width / 2 + position.x , -height / 2 + position.y };
+		return Vector2{ -width * 0.5f + position.x , -height * 0.5f + position.y };
 	}
 
 	Vector2 AABB::bottomRight() const
 	{
-		return Vector2{ width / 2 + position.x , -height / 2 + position.y };
+		return Vector2{ width * 0.5f + position.x , -height * 0.5f + position.y };
 	}
 
 	bool AABB::collide(const AABB& other) const
@@ -95,7 +95,7 @@ namespace Physics2D
 		{
 		case Shape::Type::Polygon:
 		{
-			const Polygon* polygon = dynamic_cast<Polygon*>(shape.shape);
+			const Polygon* polygon = static_cast<Polygon*>(shape.shape);
 			real max_x = Constant::NegativeMin, max_y = Constant::NegativeMin, min_x = Constant::Max, min_y = Constant::Max;
 			for (const Vector2& v : polygon->vertices())
 			{
@@ -119,7 +119,7 @@ namespace Physics2D
 		}
 		case Shape::Type::Ellipse:
 		{
-			const Ellipse* ellipse = dynamic_cast<Ellipse*>(shape.shape);
+			const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
 
 			Vector2 top_dir{ 0, 1 };
 			Vector2 left_dir{ -1, 0 };
@@ -147,14 +147,14 @@ namespace Physics2D
 		}
 		case Shape::Type::Circle:
 		{
-			const Circle* circle = dynamic_cast<Circle*>(shape.shape);
+			const Circle* circle = static_cast<Circle*>(shape.shape);
 			aabb.width = circle->radius() * 2;
 			aabb.height = circle->radius() * 2;
 			break;
 		}
 		case Shape::Type::Edge:
 		{
-			const Edge* edge = dynamic_cast<Edge*>(shape.shape);
+			const Edge* edge = static_cast<Edge*>(shape.shape);
 			aabb.width = std::fabs(edge->startPoint().x - edge->endPoint().x);
 			aabb.height = std::fabs(edge->startPoint().y - edge->endPoint().y);
 			aabb.position.set(edge->startPoint().x + edge->endPoint().x, edge->startPoint().y + edge->endPoint().y);
@@ -195,7 +195,7 @@ namespace Physics2D
 			p4 -= shape.transform;
 			aabb.width = p1.x - p3.x;
 			aabb.height = p2.y - p4.y;
-			aabb.position.set({ (p1.x + p3.x) / 2.0f, (p2.y + p4.y) / 2.0f });
+			aabb.position.set({ (p1.x + p3.x) * 0.5f, (p2.y + p4.y) * 0.5f });
 			break;
 		}
 		}
@@ -221,7 +221,7 @@ namespace Physics2D
 		AABB result;
 		result.width = bottomRight.x - topLeft.x;
 		result.height = topLeft.y - bottomRight.y;
-		result.position = (topLeft + bottomRight) / 2.0f;
+		result.position = (topLeft + bottomRight) * 0.5f;
 		return result;
 	}
 

@@ -21,11 +21,13 @@ namespace Physics2D
 		virtual void load() {}
 		virtual void release() {}
 		virtual void render(sf::RenderWindow& window) {}
+		virtual void renderUI() {}
 		virtual void onMousePress(sf::Event& event) {}
 		virtual void onMouseRelease(sf::Event& event) {}
 		virtual void onMouseMove(sf::Event& event) {}
 		virtual void onMouseDoubleClick(sf::Event& event) {}
 		virtual void onKeyRelease(sf::Event& event) {}
+		virtual void onKeyPressed(sf::Event& event) {}
 
 		std::string name()const
 		{
