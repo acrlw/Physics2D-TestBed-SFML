@@ -7,7 +7,7 @@ namespace Physics2D
 		m_startRadian = 0;
 		m_spanRadian = 0;
 		m_radius = 0;
-		m_samplePoints = 8;
+		m_samplePoints = 4;
 	}
 
 	real Sector::startRadian() const
@@ -67,7 +67,7 @@ namespace Physics2D
 			return;
 		m_vertices.emplace_back(Vector2{ 0, 0 });
 		real step = m_spanRadian / m_samplePoints;
-		for(real i = m_startRadian; i <= m_startRadian + m_spanRadian; )
+		for(real i = m_startRadian; i <= m_startRadian + m_spanRadian - step; )
 		{
 			m_vertices.emplace_back(Matrix2x2(i).multiply(Vector2(m_radius, 0)));
 			i += step;
