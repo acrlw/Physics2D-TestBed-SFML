@@ -59,11 +59,11 @@ namespace Physics2D
 			sf::Color collisionColor = RenderConstant::materialPink;
 			sf::Color hitColor = RenderConstant::materialBlue;
 			sf::Color regionColor = RenderConstant::materialYellow;
-			//for(auto&& elem: pairs)
-			//{
-			//	RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
-			//	RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
-			//}
+			for(auto&& elem: pairs)
+			{
+				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
+				RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
+			}
 
 			AABB queryRegion;
 			queryRegion.width = 8;

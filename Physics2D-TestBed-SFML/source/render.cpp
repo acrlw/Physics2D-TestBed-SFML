@@ -254,7 +254,7 @@ namespace Physics2D
 	{
 		assert(shape.shape->type() == Shape::Type::Curve);
 		std::vector<sf::Vertex> vertices;
-
+		
 	}
 	void RenderSFMLImpl::renderAngleLine(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{

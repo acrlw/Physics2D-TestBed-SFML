@@ -15,6 +15,7 @@ namespace Physics2D
 		{
 			edge.set({ -10, 0 }, { 10, 0 });
 			capsule.set(2.0f, 1.0f);
+			sector.set(0.0f, Constant::Pi / 2.0f, 2.0f);
 
 			Body* ground;
 			Body* rect;
@@ -29,7 +30,7 @@ namespace Physics2D
 			m_tree->insert(ground);
 
 			rect = m_world->createBody();
-			rect->setShape(&capsule);
+			rect->setShape(&sector);
 			rect->position().set({ 0, 6 });
 			rect->rotation() = Math::degreeToRadian(45);
 			rect->setMass(1);
@@ -45,6 +46,7 @@ namespace Physics2D
 	private:
 		Capsule capsule;
 		Edge edge;
+		Sector sector;
 
 	};
 }

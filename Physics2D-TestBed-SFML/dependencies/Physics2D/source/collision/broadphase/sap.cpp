@@ -26,7 +26,6 @@ namespace Physics2D
 			});
 
 		
-
 		std::vector<Body::Relation> xPairs;
 		std::vector<Body::Relation> yPairs;
 
@@ -76,7 +75,7 @@ namespace Physics2D
 		auto yPair = yPairs.begin();
 		while (xPair != xPairs.end() && yPair != yPairs.end())
 		{
-			if (xPair->relationID == yPair->relationID)
+			if (xPair->relationID == yPair->relationID && (xPair->bodyA->bitmask() & xPair->bodyB->bitmask()))
 			{
 				result.emplace_back(std::make_pair(xPair->bodyA, xPair->bodyB));
 				xPair = std::next(xPair);

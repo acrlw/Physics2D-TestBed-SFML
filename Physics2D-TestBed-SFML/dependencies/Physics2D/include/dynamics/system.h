@@ -5,6 +5,7 @@
 #include "../collision/detector.h"
 #include "../collision/broadphase/tree.h"
 #include "../collision/continuous/ccd.h"
+#include "../collision/broadphase/sap.h"
 namespace Physics2D
 {
     class PhysicsSystem
