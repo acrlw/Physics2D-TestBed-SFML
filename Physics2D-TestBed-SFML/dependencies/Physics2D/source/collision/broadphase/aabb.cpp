@@ -19,22 +19,42 @@ namespace Physics2D
 
 	Vector2 AABB::topLeft() const
 	{
-		return Vector2{ -width * 0.5f + position.x , height * 0.5f + position.y };
+		return Vector2{ minimumX() , maximumY() };
 	}
 
 	Vector2 AABB::topRight() const
 	{
-		return Vector2{ width * 0.5f + position.x , height * 0.5f + position.y };
+		return Vector2{ maximumX(), maximumY() };
 	}
 
 	Vector2 AABB::bottomLeft() const
 	{
-		return Vector2{ -width * 0.5f + position.x , -height * 0.5f + position.y };
+		return Vector2{ minimumX() , minimumY() };
 	}
 
 	Vector2 AABB::bottomRight() const
 	{
-		return Vector2{ width * 0.5f + position.x , -height * 0.5f + position.y };
+		return Vector2{ maximumX() , minimumY() };
+	}
+
+	real AABB::minimumX() const
+	{
+		return -width * 0.5f + position.x;
+	}
+
+	real AABB::minimumY() const
+	{
+		return -height * 0.5f + position.y;
+	}
+
+	real AABB::maximumX() const
+	{
+		return width * 0.5f + position.x;
+	}
+
+	real AABB::maximumY() const
+	{
+		return height * 0.5f + position.y;
 	}
 
 	bool AABB::collide(const AABB& other) const

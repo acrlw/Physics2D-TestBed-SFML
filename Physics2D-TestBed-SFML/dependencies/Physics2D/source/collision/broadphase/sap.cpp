@@ -18,11 +18,11 @@ namespace Physics2D
 		std::vector<std::pair<Body*, AABB>> sortYAxis = bodyBoxPairList;
 		std::sort(sortXAxis.begin(), sortXAxis.end(), [](const std::pair<Body*, AABB>& left, const std::pair<Body*, AABB>& right)
 			{
-				return left.second.bottomLeft().x < right.second.bottomLeft().x;
+				return left.second.minimumX() < right.second.minimumX();
 			});
 		std::sort(sortYAxis.begin(), sortYAxis.end(), [](const std::pair<Body*, AABB>& left, const std::pair<Body*, AABB>& right)
 			{
-				return left.second.bottomLeft().y < right.second.bottomLeft().y;
+				return left.second.minimumY() < right.second.minimumY();
 			});
 
 		
@@ -33,10 +33,10 @@ namespace Physics2D
 		{
 			for (auto next = std::next(before); next != sortXAxis.end(); ++next)
 			{
-				const real minBefore = before->second.bottomLeft().x;
-				const real maxBefore = before->second.bottomRight().x;
-				const real minNext = next->second.bottomLeft().x;
-				const real maxNext = next->second.bottomRight().x;
+				const real minBefore = before->second.minimumX();
+				const real maxBefore = before->second.maximumX();
+				const real minNext = next->second.minimumX();
+				const real maxNext = next->second.maximumX();
 
 				if (!(maxBefore < minNext || maxNext < minBefore))
 					xPairs.emplace_back(Body::Relation::generateRelation(before->first, next->first));
@@ -49,10 +49,10 @@ namespace Physics2D
 		{
 			for (auto next = std::next(before); next != sortYAxis.end(); ++next)
 			{
-				const real minBefore = before->second.bottomLeft().y;
-				const real maxBefore = before->second.topLeft().y;
-				const real minNext = next->second.bottomLeft().y;
-				const real maxNext = next->second.topLeft().y;
+				const real minBefore = before->second.minimumY();
+				const real maxBefore = before->second.maximumY();
+				const real minNext = next->second.minimumY();
+				const real maxNext = next->second.maximumY();
 
 				if (!(maxBefore < minNext || maxNext < minBefore))
 					yPairs.emplace_back(Body::Relation::generateRelation(before->first, next->first));
