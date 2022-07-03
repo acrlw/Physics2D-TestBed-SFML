@@ -11,6 +11,8 @@ namespace Physics2D
 	struct AABB
 	{
 		AABB() = default;
+		AABB(const Vector2& topLeft, const real& boxWidth, const real& boxHeight);
+		AABB(const Vector2& topLeft, const Vector2& bottomRight);
 		real width = 0;
 		real height = 0;
 		Vector2 position;

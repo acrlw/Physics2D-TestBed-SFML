@@ -2,7 +2,7 @@
 
 namespace Physics2D
 {
-	UniformGrid::UniformGrid(const real& width = 100.0f, const real& height = 100.0f, const int rows = 100, const int columns = 100)
+	UniformGrid::UniformGrid(const real& width, const real& height, const uint32_t rows, const uint32_t columns)
 		:m_width(width), m_height(height), m_rows(rows), m_columns(columns)
 	{
         updateGrid();
@@ -103,16 +103,40 @@ namespace Physics2D
     {
         std::vector<UniformGrid::Position> cells;
         //locate x axis
-
-        real xMin = aabb.minimumX();
-        real xMax = aabb.maximumX();
-
+        real halfWidth = m_width * 0.5f;
+        real halfHeight = m_width * 0.5f;
+        real xMin = Math::clamp(aabb.minimumX(), -halfWidth, halfWidth);
+        real xMax = Math::clamp(aabb.maximumX(), -halfWidth, halfWidth);
+        real lowerXIndex = std::floor((xMin + halfWidth) / m_cellWidth);
+        real upperXIndex = std::floor((halfWidth + xMax) / m_cellWidth);
         //locate y axis
 
-        real yMin = aabb.minimumY();
-        real yMax = aabb.maximumY();
+        real yMin = Math::clamp(aabb.minimumY(), -halfHeight, halfHeight);
+        real yMax = Math::clamp(aabb.maximumY(), -halfHeight, halfHeight);
+        real lowerYIndex = std::ceil((yMin + halfHeight) / m_cellHeight);
+        real upperYIndex = std::ceil((halfHeight + yMax) / m_cellHeight);
+        if (realEqual(lowerXIndex, upperXIndex) || realEqual(lowerYIndex, upperYIndex))
+            return cells;
+
+        for(real i = lowerXIndex; i <= upperXIndex; i += m_cellWidth)
+        {
+            for (real j = lowerYIndex; j <= upperYIndex; j += m_cellHeight)
+            {
+                cells.emplace_back(Position{ static_cast<uint32_t>(i + halfWidth), static_cast<uint32_t>(j + halfHeight) });
+            }
+        }
+
         return cells;
 
     }
-    
+
+    real UniformGrid::cellHeight() const
+    {
+        return m_cellHeight;
+    }
+
+    real UniformGrid::cellWidth() const
+    {
+        return m_cellWidth;
+    }
 }

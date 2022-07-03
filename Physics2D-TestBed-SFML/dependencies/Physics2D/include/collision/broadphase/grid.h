@@ -8,7 +8,7 @@ namespace Physics2D
 	class UniformGrid
 	{
 	public:
-		UniformGrid(const real& width, const real& height, const int rows, const int columns);
+		UniformGrid(const real& width = 100.0f, const real& height = 100.0f, const uint32_t rows = 100, const uint32_t columns = 100);
 		std::vector<std::pair<Body*, Body*>> generate();
 		std::vector<Body*> raycast(const Vector2& p, const Vector2& d);
 		void update(Body* body);
@@ -27,23 +27,33 @@ namespace Physics2D
 		real height()const;
 		void setHeight(const real& size);
 
-		
-	private:
-
 		struct Position
 		{
 			Position() = default;
-			int row = 0;
-			int column = 0;
+			uint32_t x = 0;
+			uint32_t y = 0;
+			bool operator<(const Position& rhs)const
+			{
+				if (x < rhs.x)
+					return true;
+				if (x == rhs.x)
+					return y < rhs.y;
+				return false;
+			}
 		};
+		std::vector<Position> queryCells(const AABB& aabb);
+
+		real cellHeight()const;
+		real cellWidth()const;
+	private:
+
 		void updateGrid();
 		void changeGridSize();
 		void updateBodies();
-		std::vector<Position> queryCells(const AABB& aabb);
-		int m_rows;
-		int m_columns;
 		real m_width;
 		real m_height;
+		uint32_t m_rows;
+		uint32_t m_columns;
 
 		std::vector<std::list<Body*>> m_gridMap;
 		std::map<Body*, std::list<Position>> m_table;

@@ -17,6 +17,18 @@ namespace Physics2D
 		return raycast(*this, start, direction);
 	}
 
+	AABB::AABB(const Vector2& topLeft, const real& boxWidth, const real& boxHeight)
+	{
+		this->width = boxWidth;
+		this->height = boxHeight;
+		this->position = topLeft + Vector2(boxWidth * 0.5f, -boxHeight*0.5f);
+	}
+
+	AABB::AABB(const Vector2& topLeft, const Vector2& bottomRight)
+	{
+		*this = fromBox(topLeft, bottomRight);
+	}
+
 	Vector2 AABB::topLeft() const
 	{
 		return Vector2{ minimumX() , maximumY() };
