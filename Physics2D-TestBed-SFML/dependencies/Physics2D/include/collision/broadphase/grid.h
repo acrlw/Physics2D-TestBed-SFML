@@ -70,6 +70,9 @@ namespace Physics2D
 
 		std::map<Position, std::vector<Body*>> m_cellsToBodies;
 		std::map<Body*, std::vector<Position>> m_bodiesToCells;
+
+		void fullUpdate(Body* body);
+		void incrementalUpdate(Body* body);
 	private:
 		enum class Operation {
 			Add,
