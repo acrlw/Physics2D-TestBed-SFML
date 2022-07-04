@@ -37,7 +37,12 @@ namespace Physics2D
         std::vector<Body*> result;
         return result;
     }
-
+    void UniformGrid::updateAll()
+    {
+        for (auto&& elem : m_bodiesToCells)
+            update(elem.first);
+        
+    }
     void UniformGrid::update(Body* body)
     {
         assert(body != nullptr);
@@ -67,11 +72,16 @@ namespace Physics2D
                 auto& bodyList = m_cellsToBodies[elem.second];
                 bodyList.erase(
                     std::remove_if(bodyList.begin(), bodyList.end(),
-                        body), bodyList.end());
+                        [&body](Body* target) { return body == target; }), bodyList.end());
+
+                if (bodyList.empty())
+                    m_cellsToBodies.erase(elem.second);
+
                 auto& positionList = m_bodiesToCells[body];
                 positionList.erase(
                     std::remove_if(positionList.begin(), positionList.end(),
-                        elem.second), positionList.end());
+                        [&elem](const Position& other) { return elem.second == other; }), positionList.end());
+
                 break;
             }
             }
@@ -175,11 +185,46 @@ namespace Physics2D
     std::vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> UniformGrid::compareCellList(const std::vector<Position>& oldCellList, const std::vector<Position>& newCellList)
     {
         std::vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> result;
-        auto iterOld = oldCellList.begin();
-        auto iterNew = newCellList.begin();
-        while (iterOld != oldCellList.end() || iterNew != newCellList.end())
+        size_t indexOld = 0, indexNew = 0;
+        size_t endIndexOld = oldCellList.size();
+        size_t endIndexNew = newCellList.size();
+        while (true)
         {
-
+            if (indexOld == endIndexOld && indexNew == endIndexNew)
+                break;
+            if (indexNew < endIndexNew && indexOld == endIndexOld)
+            {
+                result.emplace_back(std::make_pair(Operation::Add, newCellList[indexNew]));
+                ++indexNew;
+                continue;
+            }
+            if (indexOld < endIndexOld && indexNew == endIndexNew)
+            {
+                result.emplace_back(std::make_pair(Operation::Delete, oldCellList[indexOld]));
+                ++indexOld;
+                continue;
+            }
+            if (indexOld < endIndexOld && indexNew < endIndexNew)
+            {
+                if (oldCellList[indexOld] == newCellList[indexNew])
+                {
+                    ++indexOld;
+                    ++indexNew;
+                    continue;
+                }
+                if (oldCellList[indexOld] > newCellList[indexNew])
+                {
+                    result.emplace_back(std::make_pair(Operation::Add, newCellList[indexNew]));
+                    ++indexNew;
+                    continue;
+                }
+                if (oldCellList[indexOld] < newCellList[indexNew])
+                {
+                    result.emplace_back(std::make_pair(Operation::Delete, oldCellList[indexOld]));
+                    ++indexOld;
+                    continue;
+                }
+            }
         }
         return result;
     }

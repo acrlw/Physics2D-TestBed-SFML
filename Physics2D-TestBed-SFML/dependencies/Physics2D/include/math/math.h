@@ -89,6 +89,14 @@ namespace Physics2D
 		{
 			return std::clamp(num, low, high);
 		}
+		inline size_t clamp(const size_t& num, const size_t& low, const real& high)
+		{
+			if (num < low)
+				return low;
+			if (num > high)
+				return high;
+			return num;
+		}
 		inline real degreeToRadian(const real& angle)
 		{
 			return angle * (Constant::Pi / 180.0f);

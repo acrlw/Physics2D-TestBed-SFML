@@ -47,7 +47,7 @@ namespace Physics2D
 				body->setShape(shapeArray[dist2(gen)]);
 				body->rotation() = dist3(gen);
 				body->setMass(1);
-				body->setType(Body::BodyType::Static);
+				body->setType(Body::BodyType::Kinematic);
 
 				m_tree->insert(body);
 				grid.insert(body);
@@ -60,6 +60,7 @@ namespace Physics2D
 			//body->setShape(&block);
 			//body->setMass(1);
 			//body->setType(Body::BodyType::Kinematic);
+			//grid.insert(body)
 
 			//m_tree->insert(body);
 
@@ -67,6 +68,7 @@ namespace Physics2D
 		void render(sf::RenderWindow& window) override
 		{
 			//grid spatial hashing
+			grid.updateAll();
 			auto pairs = grid.generate();
 			sf::Color collisionColor = RenderConstant::materialPink;
 			sf::Color hitColor = RenderConstant::materialBlue;

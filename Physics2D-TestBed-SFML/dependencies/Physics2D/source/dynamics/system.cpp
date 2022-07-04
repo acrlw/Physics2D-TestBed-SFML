@@ -35,13 +35,8 @@ namespace Physics2D
     void PhysicsSystem::updateTree()
     {
         //bvh
-        //for (auto& elem : m_world.bodyList())
-        //    m_tree.update(elem.get());
-
-        //uniform grid
-
         for (auto& elem : m_world.bodyList())
-            m_grid.update(elem.get());
+            m_tree.update(elem.get());
     }
     bool PhysicsSystem::solveCCD(const real& dt)
     {
@@ -89,6 +84,7 @@ namespace Physics2D
         //    bodies.emplace_back(elem.get());
         //
         //auto potentialList = SweepAndPrune::generate(bodies);
+
 
         //BVH
         auto potentialList = m_tree.generate();

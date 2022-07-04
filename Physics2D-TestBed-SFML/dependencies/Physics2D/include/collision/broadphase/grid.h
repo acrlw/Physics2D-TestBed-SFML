@@ -16,6 +16,8 @@ namespace Physics2D
 		UniformGrid(const real& width = 100.0f, const real& height = 100.0f, const uint32_t rows = 200, const uint32_t columns = 200);
 		std::vector<std::pair<Body*, Body*>> generate();
 		std::vector<Body*> raycast(const Vector2& p, const Vector2& d);
+
+		void updateAll();
 		void update(Body* body);
 		void insert(Body* body);
 		void remove(Body* body);
@@ -43,6 +45,14 @@ namespace Physics2D
 					return true;
 				if (x == rhs.x)
 					return y < rhs.y;
+				return false;
+			}
+			bool operator>(const Position& rhs)const
+			{
+				if (x > rhs.x)
+					return true;
+				if (x == rhs.x)
+					return y > rhs.y;
 				return false;
 			}
 			bool operator==(const Position& rhs)const
