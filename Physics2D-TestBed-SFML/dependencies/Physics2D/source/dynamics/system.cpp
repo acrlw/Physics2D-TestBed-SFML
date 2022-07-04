@@ -34,8 +34,14 @@ namespace Physics2D
     }
     void PhysicsSystem::updateTree()
     {
+        //bvh
+        //for (auto& elem : m_world.bodyList())
+        //    m_tree.update(elem.get());
+
+        //uniform grid
+
         for (auto& elem : m_world.bodyList())
-            m_tree.update(elem.get());
+            m_grid.update(elem.get());
     }
     bool PhysicsSystem::solveCCD(const real& dt)
     {

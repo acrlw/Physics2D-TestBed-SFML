@@ -6,6 +6,7 @@
 #include "../collision/broadphase/tree.h"
 #include "../collision/continuous/ccd.h"
 #include "../collision/broadphase/sap.h"
+#include "../collision/broadphase/grid.h"
 namespace Physics2D
 {
     class PhysicsSystem
@@ -29,7 +30,7 @@ namespace Physics2D
         PhysicsWorld m_world;
         ContactMaintainer m_maintainer;
         Tree m_tree;
-
+        UniformGrid m_grid;
     };
 
 }

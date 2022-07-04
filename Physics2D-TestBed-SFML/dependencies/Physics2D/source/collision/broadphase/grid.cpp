@@ -11,6 +11,24 @@ namespace Physics2D
     std::vector<std::pair<Body*, Body*>> UniformGrid::generate()
     {
         std::vector<std::pair<Body*, Body*>> result;
+        std::map<Body::Relation::RelationID, std::pair<Body*, Body*>> map;
+        for (auto&& cell : m_cellsToBodies)
+        {
+            if (cell.second.size() > 1)
+            {
+                for (auto iterOuter = cell.second.begin(); iterOuter != cell.second.end() - 1; ++iterOuter)
+                {
+                    for (auto iterInner = iterOuter + 1; iterInner != cell.second.end(); ++iterInner)
+                    {
+                        map[Body::Relation::generateRelationID(*iterInner, *iterOuter)] = std::make_pair(*iterInner, *iterOuter);
+                    }
+                }
+            }
+        }
+        for (auto&& elem : map)
+        {
+            result.emplace_back(elem.second);
+        }
         return result;
     }
 
@@ -23,17 +41,73 @@ namespace Physics2D
     void UniformGrid::update(Body* body)
     {
         assert(body != nullptr);
+        auto iter = m_bodiesToCells.find(body);
+        if (iter == m_bodiesToCells.end())
+            return;
+
+        //Incremental update
+        //cell list must be sorted array
+        auto oldCellList = m_bodiesToCells[body];
+        auto newCellList = queryCells(body->aabb());
+        std::sort(oldCellList.begin(), oldCellList.end(), std::less<Position>());
+        std::sort(newCellList.begin(), newCellList.end(), std::less<Position>());
+        auto changeList = compareCellList(oldCellList, newCellList);
+        for (auto&& elem : changeList)
+        {
+            switch (elem.first)
+            {
+            case Operation::Add:
+            {
+                m_bodiesToCells[body].emplace_back(elem.second);
+                m_cellsToBodies[elem.second].emplace_back(body);
+                break;
+            }
+            case Operation::Delete:
+            {
+                auto& bodyList = m_cellsToBodies[elem.second];
+                bodyList.erase(
+                    std::remove_if(bodyList.begin(), bodyList.end(),
+                        body), bodyList.end());
+                auto& positionList = m_bodiesToCells[body];
+                positionList.erase(
+                    std::remove_if(positionList.begin(), positionList.end(),
+                        elem.second), positionList.end());
+                break;
+            }
+            }
+        }
+
+        //Full update
+        //auto cells = m_bodiesToCells[body];
+        //for (auto&& elem : cells) {
+        //    auto& list = m_cellsToBodies[elem];
+        //    auto bodyIter = std::find(list.begin(), list.end(), body);
+        //    if (bodyIter != list.end())
+        //        list.erase(bodyIter);
+        //    if (list.empty())
+        //        m_cellsToBodies.erase(elem);
+        //}
+        //m_bodiesToCells.erase(iter);
+        //insert(body);
     }
     void UniformGrid::insert(Body* body)
     {
         assert(body != nullptr);
+        auto iter = m_bodiesToCells.find(body);
+        if (iter != m_bodiesToCells.end())
+            return;
+        auto cells = queryCells(body->aabb());
+        m_bodiesToCells[body] = cells;
+        for (auto&& elem : cells)
+            m_cellsToBodies[elem].emplace_back(body);
+        
     }
 
     void UniformGrid::remove(Body* body)
     {
         assert(body != nullptr);
-        auto iter = m_table.find(body);
-        if (iter == m_table.end())
+        auto iter = m_bodiesToCells.find(body);
+        if (iter == m_bodiesToCells.end())
             return;
     }
 
@@ -98,31 +172,47 @@ namespace Physics2D
     {
 
     }
+    std::vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> UniformGrid::compareCellList(const std::vector<Position>& oldCellList, const std::vector<Position>& newCellList)
+    {
+        std::vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> result;
+        auto iterOld = oldCellList.begin();
+        auto iterNew = newCellList.begin();
+        while (iterOld != oldCellList.end() || iterNew != newCellList.end())
+        {
 
+        }
+        return result;
+    }
     std::vector<UniformGrid::Position> UniformGrid::queryCells(const AABB& aabb)
     {
         std::vector<UniformGrid::Position> cells;
         //locate x axis
         real halfWidth = m_width * 0.5f;
-        real halfHeight = m_width * 0.5f;
-        real xMin = Math::clamp(aabb.minimumX(), -halfWidth, halfWidth);
-        real xMax = Math::clamp(aabb.maximumX(), -halfWidth, halfWidth);
+        real halfHeight = m_height * 0.5f;
+        real xRealMin = aabb.minimumX();
+        real xRealMax = aabb.maximumX();
+        real xMin = Math::clamp(xRealMin, -halfWidth, halfWidth - m_cellWidth);
+        real xMax = Math::clamp(xRealMax, -halfWidth, halfWidth - m_cellWidth);
         real lowerXIndex = std::floor((xMin + halfWidth) / m_cellWidth);
-        real upperXIndex = std::floor((halfWidth + xMax) / m_cellWidth);
+        real upperXIndex = std::floor((xMax + halfWidth) / m_cellWidth);
         //locate y axis
 
-        real yMin = Math::clamp(aabb.minimumY(), -halfHeight, halfHeight);
-        real yMax = Math::clamp(aabb.maximumY(), -halfHeight, halfHeight);
+        real yRealMin = aabb.minimumY();
+        real yRealMax = aabb.maximumY();
+        real yMin = Math::clamp(yRealMin, -halfHeight + m_cellHeight, halfHeight);
+        real yMax = Math::clamp(yRealMax, -halfHeight + m_cellHeight, halfHeight);
         real lowerYIndex = std::ceil((yMin + halfHeight) / m_cellHeight);
-        real upperYIndex = std::ceil((halfHeight + yMax) / m_cellHeight);
-        if (realEqual(lowerXIndex, upperXIndex) || realEqual(lowerYIndex, upperYIndex))
+        real upperYIndex = std::ceil((yMax + halfHeight) / m_cellHeight);
+        if (lowerXIndex == upperXIndex && xRealMax < -halfWidth || xRealMin > halfWidth)
+            return cells;
+        if (lowerYIndex == upperYIndex && yRealMax < -halfHeight || yRealMin > halfHeight)
             return cells;
 
-        for(real i = lowerXIndex; i <= upperXIndex; i += m_cellWidth)
+        for(real i = lowerXIndex; i <= upperXIndex; i += 1.0f)
         {
-            for (real j = lowerYIndex; j <= upperYIndex; j += m_cellHeight)
+            for (real j = lowerYIndex; j <= upperYIndex; j += 1.0f)
             {
-                cells.emplace_back(Position{ static_cast<uint32_t>(i + halfWidth), static_cast<uint32_t>(j + halfHeight) });
+                cells.emplace_back(Position{ static_cast<uint32_t>(i), static_cast<uint32_t>(j) });
             }
         }
 

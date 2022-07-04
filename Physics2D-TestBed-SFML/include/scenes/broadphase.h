@@ -40,46 +40,51 @@ namespace Physics2D
 			std::uniform_int_distribution<> dist2(0, 4);
 			std::uniform_real_distribution<> dist3(-Constant::Pi, Constant::Pi);
 
-			//for (int i = 0; i < 200; i++)
-			//{
-			//	Body* body = m_world->createBody();
-			//	body->position().set(dist1(gen), dist1(gen));
-			//	body->setShape(shapeArray[dist2(gen)]);
-			//	body->rotation() = dist3(gen);
-			//	body->setMass(1);
-			//	body->setType(Body::BodyType::Static);
+			for (int i = 0; i < 200; i++)
+			{
+				Body* body = m_world->createBody();
+				body->position().set(dist1(gen), dist1(gen));
+				body->setShape(shapeArray[dist2(gen)]);
+				body->rotation() = dist3(gen);
+				body->setMass(1);
+				body->setType(Body::BodyType::Static);
 
-			//	m_tree->insert(body);
-			//}
-			//for (auto&& elem : m_world->bodyList())
-			//	bodyList.emplace_back(elem.get());
+				m_tree->insert(body);
+				grid.insert(body);
+			}
+			for (auto&& elem : m_world->bodyList())
+				bodyList.emplace_back(elem.get());
 
-			block.set(6.5f, 6.5f);
-			body = m_world->createBody();
-			body->setShape(&block);
-			body->setMass(1);
-			body->setType(Body::BodyType::Kinematic);
-			m_tree->insert(body);
+			//block.set(6.5f, 6.5f);
+			//body = m_world->createBody();
+			//body->setShape(&block);
+			//body->setMass(1);
+			//body->setType(Body::BodyType::Kinematic);
+
+			//m_tree->insert(body);
 
 		}
 		void render(sf::RenderWindow& window) override
 		{
-
-			UniformGrid grid;
-			AABB region = body->aabb();
-			//region.width = 6.5f;
-			//region.height = 6.5f;
-			//region.position.set(0.5f, 1.4f);
-			RenderSFMLImpl::renderAABB(window, *m_camera, region, sf::Color::Yellow);
-			auto list = grid.queryCells(region);
-			for(auto&& elem: list)
+			//grid spatial hashing
+			auto pairs = grid.generate();
+			sf::Color collisionColor = RenderConstant::materialPink;
+			sf::Color hitColor = RenderConstant::materialBlue;
+			sf::Color regionColor = RenderConstant::materialYellow;
+			for (auto&& elem : pairs)
 			{
-				Vector2 topLeft(real(elem.x) * grid.cellWidth() - grid.width(), real(elem.y) * grid.cellHeight() - grid.height());
-				AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
-				cell.scale(0.9f);
-				RenderSFMLImpl::renderAABB(window, *m_camera, cell, sf::Color::Cyan);
-				
+				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
+				RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
 			}
+
+			for (auto&& elem : grid.m_cellsToBodies)
+			{
+				Vector2 topLeft(real(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f, real(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
+				AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
+				//cell.expand(-0.05f);
+				RenderSFMLImpl::renderAABB(window, *m_camera, cell, sf::Color::Cyan);
+			}
+
 
 			//sweep and prune
 			//auto pairs = SweepAndPrune::generate(bodyList);
@@ -107,6 +112,7 @@ namespace Physics2D
 
 		}
 	private:
+		UniformGrid grid;
 		Body* body;
 		Rectangle block;
 		Rectangle rectangle;
