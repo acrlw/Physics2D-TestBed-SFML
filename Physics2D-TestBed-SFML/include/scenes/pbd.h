@@ -34,15 +34,15 @@ namespace Physics2D
 		}
 		void update(real dt) override
 		{
-			for(int i = 0;i < 10;++i)
+			for(size_t i = 0;i < 10;++i)
 			{
 				velocities[i] += dt * gravity;
 				prePositions[i] = positions[i];
 				positions[i] += dt * velocities[i];
 			}
-			for(int j = 0;j < iterations;++j)
+			for(size_t j = 0;j < iterations;++j)
 			{
-				for(int i = 0;i < 9; ++i)
+				for(size_t i = 0;i < 9; ++i)
 				{
 					real k = invMasses[i] / (invMasses[i] + invMasses[i + 1]);
 					Vector2 l = (positions[i + 1] - positions[i]);
@@ -54,7 +54,7 @@ namespace Physics2D
 				}
 			}
 			//update velocities
-			for(int i = 0;i < 10;++i)
+			for(size_t i = 0;i < 10;++i)
 			{
 				velocities[i] = (positions[i] - prePositions[i]) / dt;
 			}
