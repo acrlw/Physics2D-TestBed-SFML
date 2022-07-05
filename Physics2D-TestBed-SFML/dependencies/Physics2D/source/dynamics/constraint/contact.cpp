@@ -140,25 +140,19 @@ namespace Physics2D
 
 	void ContactMaintainer::clearInactivePoints()
 	{
-		std::vector<Body::Relation::RelationID> clearList;
-
 		for (auto&& iter : m_contactTable)
 		{
-			if (iter.second.empty())
-			{
-				clearList.push_back(iter.first);
-				continue;
-			}
 			auto& contactList = iter.second;
-			contactList.erase(std::remove_if(contactList.begin(), contactList.end(), [](ContactConstraintPoint& ccp)
-				{
-					return !ccp.active;
-				}), contactList.end());
-
+			std::erase_if(contactList, [](const ContactConstraintPoint& ccp)
+			{
+				return !ccp.active;
+			});
 		}
-
-		for (auto id : clearList)
-			m_contactTable.erase(id);
+		std::erase_if(m_contactTable, [](const auto& item)
+			{
+				auto const& [key, value] = item;
+				return value.empty();
+			});
 		
 	}
 

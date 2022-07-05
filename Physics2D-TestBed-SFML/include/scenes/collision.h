@@ -15,7 +15,7 @@ namespace Physics2D
 		{
 			edge.set({ -10, 0 }, { 10, 0 });
 			capsule.set(2.0f, 1.0f);
-			sector.set(0.0f, Constant::Pi / 2.0f, 2.0f);
+			sector.set(0.0f, 2.0f * Constant::Pi / 3.0f, 2.0f);
 
 			Body* ground;
 			Body* rect;

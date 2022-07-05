@@ -37,6 +37,7 @@ namespace Physics2D
 		struct Position
 		{
 			Position() = default;
+			Position(const uint32_t& _x, const uint32_t& _y): x(_x), y(_y){}
 			uint32_t x = 0;
 			uint32_t y = 0;
 			bool operator<(const Position& rhs)const

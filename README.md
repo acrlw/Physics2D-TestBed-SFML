@@ -10,7 +10,7 @@ cmake CMakeLists.txt
 
 # Requirement
 
-- C++ 17
+- C++ 20
 - SFML
 - ImGui-SFML
 - ImGui
