@@ -70,6 +70,8 @@ namespace Physics2D
 						color = sf::Color(100, 100, 100);
 					else
 						color = sf::Color::Green;
+					if (body->type() == Body::BodyType::Static)
+						color = RenderConstant::MaterialTeal;
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
 
 					if (m_centerVisible)
