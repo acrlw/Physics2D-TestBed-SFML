@@ -369,13 +369,13 @@ namespace Physics2D
 		Vector2 pa = pointJoint->primitive().bodyA->toWorldPoint(pointJoint->primitive().localPointA);
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
-		sf::Color gray = RenderConstant::MaterialGray;
+		sf::Color point = RenderConstant::MaterialOrange;
 		sf::Color green = sf::Color::Green;
-		gray.a = 204;
+		point.a = 204;
 		green.a = 78;
 
-		renderPoint(window, camera, pa, gray, 2);
-		renderPoint(window, camera, pb, gray, 2);
+		renderPoint(window, camera, pa, point, 2);
+		renderPoint(window, camera, pb, point, 2);
 		renderLine(window, camera, pa, pb, green);
 	}
 	void RenderSFMLImpl::renderOrientationJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
@@ -385,13 +385,13 @@ namespace Physics2D
 		Vector2 pa = pointJoint->primitive().bodyA->position();
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
-		sf::Color gray = RenderConstant::MaterialGray;
+		sf::Color point = RenderConstant::MaterialOrange;
 		sf::Color green = sf::Color::Green;
-		gray.a = 204;
+		point.a = 204;
 		green.a = 78;
 
-		renderPoint(window, camera, pa, gray, 2);
-		renderPoint(window, camera, pb, gray, 2);
+		renderPoint(window, camera, pa, point, 2);
+		renderPoint(window, camera, pb, point, 2);
 		renderLine(window, camera, pa, pb, green);
 	}
 	void RenderSFMLImpl::renderPulleyJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
@@ -407,13 +407,13 @@ namespace Physics2D
 		Vector2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
 		Vector2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
 
-		sf::Color gray = RenderConstant::MaterialGray;
+		sf::Color point = RenderConstant::MaterialOrange;
 		sf::Color green = sf::Color::Green;
-		gray.a = 204;
+		point.a = 204;
 		green.a = 78;
 
-		renderPoint(window, camera, pa, gray, 2);
-		renderPoint(window, camera, pb, gray, 2);
+		renderPoint(window, camera, pa, point, 2);
+		renderPoint(window, camera, pb, point, 2);
 		renderLine(window, camera, pa, pb, green);
 	}
 	void RenderSFMLImpl::renderWheelJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)

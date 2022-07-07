@@ -31,9 +31,9 @@ namespace Physics2D
 			m_tree->insert(ground);
 
 			rect = m_world->createBody();
-			rect->setShape(&rectangle);
+			rect->setShape(&sector);
 			rect->position().set({ 0, 6 });
-			rect->rotation() = Math::degreeToRadian(45);
+			rect->rotation() = Math::degreeToRadian(60);
 			rect->setMass(1);
 			rect->setType(Body::BodyType::Dynamic);
 			rect->setFriction(0.4f);

@@ -26,6 +26,7 @@ namespace Physics2D
         const sf::Color MaterialPink = sf::Color(233, 30, 99);
         const sf::Color MaterialDarkGreen = sf::Color(44, 113, 48);
         const sf::Color MaterialGray = sf::Color(158, 158, 158);
+        const sf::Color MaterialOrange = sf::Color(255, 138, 101);
         static real ScaleFactor = 0.97f;
     }
     class RenderSFMLImpl
