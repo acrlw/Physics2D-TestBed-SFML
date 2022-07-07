@@ -12,12 +12,11 @@ namespace Physics2D
 
 	void ContactMaintainer::solveVelocity(real dt)
 	{
-		for (auto iter = m_contactTable.begin(); iter != m_contactTable.end(); ++iter)
+		for (auto&& elem : m_contactTable)
 		{
-			if (iter->second.empty() || !iter->second[0].active)
+			if (elem.second.empty() || !elem.second[0].active)
 				continue;
-
-			for (auto& ccp : iter->second)
+			for (auto&& ccp : elem.second)
 			{
 				auto& vcp = ccp.vcp;
 
@@ -63,22 +62,19 @@ namespace Physics2D
 
 	void ContactMaintainer::solvePosition(real dt)
 	{
-		for (auto iter = m_contactTable.begin(); iter != m_contactTable.end(); ++iter)
+		for (auto&& elem : m_contactTable)
 		{
-			if (iter->second.empty() || !iter->second[0].active)
+			if (elem.second.empty() || !elem.second[0].active)
 				continue;
-
-			for (auto& ccp : iter->second)
+			for (auto&& ccp : elem.second)
 			{
-				auto& vcp = ccp.vcp;
-
+				auto&& vcp = ccp.vcp;
 				Body* bodyA = ccp.bodyA;
 				Body* bodyB = ccp.bodyB;
 				Vector2 pa = vcp.ra + bodyA->position();
 				Vector2 pb = vcp.rb + bodyB->position();
 				Vector2 c = pb - pa;
-				if (c.dot(vcp.normal) < 0.0f) //already solve by velocity
-					continue;
+
 				real bias = m_biasFactor * Math::max(c.length() - m_maxPenetration, 0.0f);
 				real lambda = vcp.effectiveMassNormal * bias;
 
@@ -94,7 +90,6 @@ namespace Physics2D
 					bodyB->position() -= bodyB->inverseMass() * impulse;
 					bodyB->rotation() -= bodyB->inverseInertia() * vcp.rb.cross(impulse);
 				}
-
 			}
 		}
 	}
@@ -125,6 +120,7 @@ namespace Physics2D
 					existed = true;
 					break;
 				}
+
 			}
 			if (existed)
 				continue;

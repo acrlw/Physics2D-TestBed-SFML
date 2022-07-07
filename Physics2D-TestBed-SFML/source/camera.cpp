@@ -68,10 +68,12 @@ namespace Physics2D
 					primitive.transform = body->position();
 					if (body->sleep())
 						color = sf::Color(100, 100, 100);
+					else
+						color = sf::Color::Green;
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
 
 					if (m_centerVisible)
-						RenderSFMLImpl::renderPoint(window, *this, primitive.transform, RenderConstant::materialGray);
+						RenderSFMLImpl::renderPoint(window, *this, primitive.transform, RenderConstant::MaterialGray);
 
 					if (m_rotationLineVisible)
 						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
@@ -340,10 +342,10 @@ namespace Physics2D
 	}
 	void Camera::drawContacts(sf::RenderWindow& window)
 	{
-		sf::Color pink = RenderConstant::materialPink;
+		sf::Color pink = RenderConstant::MaterialPink;
 		sf::Color yellow = sf::Color::Yellow;
-		pink.a = 128;
-		yellow.a = 128;
+		pink.a = 200;
+		yellow.a = 200;
 
 		for (auto iter = m_maintainer->m_contactTable.begin(); iter != m_maintainer->m_contactTable.end(); ++iter)
 		{
@@ -356,7 +358,7 @@ namespace Physics2D
 	}
 	void Camera::drawGridScaleLine(sf::RenderWindow& window)
 	{
-		sf::Color darkGreen = RenderConstant::materialDarkGreen;
+		sf::Color darkGreen = RenderConstant::MaterialDarkGreen;
 		darkGreen.a = 204;
 		bool fineEnough = m_meterToPixel > 180;
 		real h;

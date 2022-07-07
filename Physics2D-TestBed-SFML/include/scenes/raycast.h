@@ -54,8 +54,8 @@ namespace Physics2D
 		{
 			Vector2 p;
 			Vector2 d = m_mousePos.normal();
-			sf::Color originColor = RenderConstant::materialGray;
-			sf::Color dirColor = RenderConstant::materialDarkGreen;
+			sf::Color originColor = RenderConstant::MaterialGray;
+			sf::Color dirColor = RenderConstant::MaterialDarkGreen;
 			sf::Color hitColor = sf::Color::Cyan;
 
 

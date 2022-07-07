@@ -9,7 +9,7 @@ namespace Physics2D
 	{
 		sf::CircleShape shape(pointSize);
 		shape.setFillColor(color);
-		shape.move(toVector2f(camera.worldToScreen(point)) - sf::Vector2f(RenderConstant::pointSize, RenderConstant::pointSize));
+		shape.move(toVector2f(camera.worldToScreen(point)) - sf::Vector2f(RenderConstant::PointSize, RenderConstant::PointSize));
 		window.draw(shape);
 	}
 	void RenderSFMLImpl::renderLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, const sf::Color& color)
@@ -113,14 +113,14 @@ namespace Physics2D
 		convex.setPointCount(polygon->vertices().size() - 1);
 		for (size_t i = 0; i < polygon->vertices().size() - 1; ++i)
 		{
-			const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(polygon->vertices()[i] * RenderConstant::scaleFactor) + shape.transform;
+			const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(polygon->vertices()[i] * RenderConstant::ScaleFactor) + shape.transform;
 			const Vector2 screenPos = camera.worldToScreen(worldPos);
 			convex.setPoint(i, toVector2f(screenPos));
 		}
 		sf::Color fillColor(color);
-		fillColor.a = RenderConstant::fillAlpha;
+		fillColor.a = RenderConstant::FillAlpha;
 		convex.setFillColor(fillColor);
-		convex.setOutlineThickness(RenderConstant::borderSize);
+		convex.setOutlineThickness(RenderConstant::BorderSize);
 		convex.setOutlineColor(color);
 		window.draw(convex);
 	}
@@ -134,7 +134,7 @@ namespace Physics2D
 
 		Vector2 center = (edge->startPoint() + edge->endPoint()) / 2.0f;
 		center += shape.transform;
-		renderLine(window, camera, center, center + 0.1f * edge->normal(), RenderConstant::materialYellow);
+		renderLine(window, camera, center, center + 0.1f * edge->normal(), RenderConstant::MaterialYellow);
 	}
 	void RenderSFMLImpl::renderRectangle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
@@ -147,14 +147,14 @@ namespace Physics2D
 		assert(shape.shape->type() == Shape::Type::Circle);
 		const Circle* circle = static_cast<Circle*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
-		sf::CircleShape circleShape(circle->radius() * RenderConstant::scaleFactor * camera.meterToPixel());
+		sf::CircleShape circleShape(circle->radius() * RenderConstant::ScaleFactor * camera.meterToPixel());
 		sf::Color fillColor(color);
-		fillColor.a = RenderConstant::fillAlpha;
+		fillColor.a = RenderConstant::FillAlpha;
 		circleShape.move(toVector2f(screenPos) - sf::Vector2f(circleShape.getRadius(), circleShape.getRadius()));
 		circleShape.setFillColor(fillColor);
-		circleShape.setOutlineThickness(RenderConstant::borderSize);
+		circleShape.setOutlineThickness(RenderConstant::BorderSize);
 		circleShape.setOutlineColor(color);
-		circleShape.setPointCount(RenderConstant::basicCirclePointCount + camera.meterToPixel());
+		circleShape.setPointCount(RenderConstant::BasicCirclePointCount + camera.meterToPixel());
 		window.draw(circleShape);
 	}
 	void RenderSFMLImpl::renderCapsule(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
@@ -164,10 +164,10 @@ namespace Physics2D
 
 		const Capsule* capsule = static_cast<Capsule*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
-		int pointCounts = (RenderConstant::basicCirclePointCount + camera.meterToPixel()) / 4;
+		int pointCounts = (RenderConstant::BasicCirclePointCount + camera.meterToPixel()) / 4;
 		sf::Vertex centerVertex = toVector2f(screenPos);
 		sf::Color fillColor(color);
-		fillColor.a = RenderConstant::fillAlpha;
+		fillColor.a = RenderConstant::FillAlpha;
 		centerVertex.color = fillColor;
 		vertices.emplace_back(centerVertex);
 		auto sampling = [&](const Vector2& center, const real& radius, const real& startRadians, const real& endRadians)
@@ -177,7 +177,7 @@ namespace Physics2D
 			{
 				Vector2 point(radius * Math::cosx(radian), radius * Math::sinx(radian));
 				point += center;
-				const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(point * RenderConstant::scaleFactor) + shape.transform;
+				const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
 				const Vector2 screenPos = camera.worldToScreen(worldPos);
 				sf::Vertex vertex;
 				vertex.position = toVector2f(screenPos);
@@ -216,11 +216,11 @@ namespace Physics2D
 
 		const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
-		int pointCounts = (RenderConstant::basicCirclePointCount + camera.meterToPixel()) / 2;
+		int pointCounts = (RenderConstant::BasicCirclePointCount + camera.meterToPixel()) / 2;
 
 		sf::Vertex centerVertex = toVector2f(screenPos);
 		sf::Color fillColor(color);
-		fillColor.a = RenderConstant::fillAlpha;
+		fillColor.a = RenderConstant::FillAlpha;
 		centerVertex.color = fillColor;
 		vertices.emplace_back(centerVertex);
 
@@ -237,7 +237,7 @@ namespace Physics2D
 		{
 			Vector2 point(outerRadius * Math::cosx(radian), innerRadius * Math::sinx(radian));
 
-			const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(point * RenderConstant::scaleFactor) + shape.transform;
+			const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
 			const Vector2 screenPos = camera.worldToScreen(worldPos);
 			sf::Vertex vertex;
 			vertex.position = toVector2f(screenPos);
@@ -285,7 +285,7 @@ namespace Physics2D
 		sf::RectangleShape shape(toVector2f(aabbSize));
 		shape.move(toVector2f(camera.worldToScreen(aabb.topLeft())));
 		shape.setFillColor(sf::Color::Transparent);
-		shape.setOutlineThickness(RenderConstant::borderSize);
+		shape.setOutlineThickness(RenderConstant::BorderSize);
 		shape.setOutlineColor(color);
 		window.draw(shape);
 	}
@@ -349,15 +349,15 @@ namespace Physics2D
 		Vector2 n = (pa - pb).normal();
 		Vector2 minPoint = n * distanceJoint->primitive().minDistance + pb;
 		Vector2 maxPoint = n * distanceJoint->primitive().maxDistance + pb;
-		sf::Color minColor = RenderConstant::materialBlue;
-		sf::Color maxColor = RenderConstant::materialRed;
+		sf::Color minColor = RenderConstant::MaterialBlue;
+		sf::Color maxColor = RenderConstant::MaterialRed;
 		minColor.a = 204;
 		maxColor.a = 204;
-		renderPoint(window, camera, pa, RenderConstant::materialGray);
-		renderPoint(window, camera, pb, RenderConstant::materialGray);
+		renderPoint(window, camera, pa, RenderConstant::MaterialGray);
+		renderPoint(window, camera, pb, RenderConstant::MaterialGray);
 		renderPoint(window, camera, minPoint, minColor);
 		renderPoint(window, camera, maxPoint, maxColor);
-		sf::Color lineColor = RenderConstant::materialGray;
+		sf::Color lineColor = RenderConstant::MaterialGray;
 		lineColor.a = 150;
 		renderLine(window, camera, pa, pb, lineColor);
 
@@ -369,7 +369,7 @@ namespace Physics2D
 		Vector2 pa = pointJoint->primitive().bodyA->toWorldPoint(pointJoint->primitive().localPointA);
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
-		sf::Color gray = RenderConstant::materialGray;
+		sf::Color gray = RenderConstant::MaterialGray;
 		sf::Color green = sf::Color::Green;
 		gray.a = 204;
 		green.a = 78;
@@ -385,7 +385,7 @@ namespace Physics2D
 		Vector2 pa = pointJoint->primitive().bodyA->position();
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
-		sf::Color gray = RenderConstant::materialGray;
+		sf::Color gray = RenderConstant::MaterialGray;
 		sf::Color green = sf::Color::Green;
 		gray.a = 204;
 		green.a = 78;
@@ -407,7 +407,7 @@ namespace Physics2D
 		Vector2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
 		Vector2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
 
-		sf::Color gray = RenderConstant::materialGray;
+		sf::Color gray = RenderConstant::MaterialGray;
 		sf::Color green = sf::Color::Green;
 		gray.a = 204;
 		green.a = 78;

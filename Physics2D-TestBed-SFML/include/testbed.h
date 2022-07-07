@@ -87,6 +87,7 @@ namespace Physics2D
 		bool m_simulateWorkingState = true;
         std::unique_ptr<sf::RenderWindow> m_window;
 
+
     };
 }
 #endif

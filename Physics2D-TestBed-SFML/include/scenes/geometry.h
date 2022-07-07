@@ -37,7 +37,7 @@ namespace Physics2D
 				RenderSFMLImpl::renderLine(window, *m_camera, convex1[i], convex1[i + 1], sf::Color::Green);
 
 			for (int i = 0; i < convex2.size() - 1; i++)
-				RenderSFMLImpl::renderLine(window, *m_camera, convex2[i], convex2[i + 1], RenderConstant::materialBlue);
+				RenderSFMLImpl::renderLine(window, *m_camera, convex2[i], convex2[i + 1], RenderConstant::MaterialBlue);
 
 			for (int i = 0; i < intersectionConvex.size() - 1; i++)
 				RenderSFMLImpl::renderLine(window, *m_camera, intersectionConvex[i], intersectionConvex[i + 1], sf::Color::Yellow);

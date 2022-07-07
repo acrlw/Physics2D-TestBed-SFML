@@ -9,8 +9,8 @@ namespace Physics2D
 	    m_system.world().setAirFrictionCoefficient(0.8f);
 	    m_system.world().setAngularVelocityDamping(0.1f);
 	    m_system.world().setEnableDamping(true);
-		m_system.positionIteration() = 8;
-		m_system.velocityIteration() = 6;
+		m_system.positionIteration() = 6;
+		m_system.velocityIteration() = 8;
 
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
@@ -41,7 +41,7 @@ namespace Physics2D
     void TestBed::onClosed(sf::Event& event)
     {
         m_simulateWorkingState = false;
-        m_physicsThread->wait();
+        //m_physicsThread->wait();
         m_window->close();
     }
     void TestBed::onKeyReleased(sf::Event& event)
@@ -135,6 +135,7 @@ namespace Physics2D
                     prim.targetPoint = m_mousePos;
                     m_mouseJoint->setActive(true);
                     m_mouseJoint->set(prim);
+                    m_selectedBody->setSleep(false);
                     break;
                 }
             }
@@ -213,9 +214,13 @@ namespace Physics2D
                 }
             }
 
+            //if (m_running)
+            //    step();
+
             m_camera.render(*m_window);
             if (m_currentFrame != nullptr && m_userDrawVisible)
                 m_currentFrame->render(*m_window);
+
             renderGUI(*m_window, deltaClock);
 
         }
@@ -254,6 +259,8 @@ namespace Physics2D
 
         ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
         ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.1f);
+        ImGui::SliderFloat("Contact Max Penetration", &m_system.maintainer().m_maxPenetration, 0.001f, 0.1f);
+        ImGui::SliderFloat("Render Scale", &RenderConstant::ScaleFactor, 0.1f, 1.0f);
 
         ImGui::Separator();
         ImGui::Text("Switches");

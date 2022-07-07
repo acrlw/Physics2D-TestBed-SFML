@@ -70,9 +70,9 @@ namespace Physics2D
 			//grid spatial hashing
 			grid.updateAll();
 			auto pairs = grid.generate();
-			sf::Color collisionColor = RenderConstant::materialPink;
-			sf::Color hitColor = RenderConstant::materialBlue;
-			sf::Color regionColor = RenderConstant::materialYellow;
+			sf::Color collisionColor = RenderConstant::MaterialPink;
+			sf::Color hitColor = RenderConstant::MaterialBlue;
+			sf::Color regionColor = RenderConstant::MaterialYellow;
 			for (auto&& elem : pairs)
 			{
 				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);

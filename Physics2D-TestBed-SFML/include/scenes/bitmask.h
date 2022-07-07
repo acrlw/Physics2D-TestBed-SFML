@@ -22,7 +22,7 @@ namespace Physics2D
 				Body* ground = m_world->createBody();
 				ground->setShape(&edge);
 				ground->position().set({ 0, -6 + i * 3.0f });
-				ground->setFriction(0.9f);
+				ground->setFriction(0.4f);
 				ground->setBitmask(mask);
 				ground->setRestitution(0);
 				ground->setMass(Constant::Max);

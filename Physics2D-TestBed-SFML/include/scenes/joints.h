@@ -49,6 +49,7 @@ namespace Physics2D
 			ground->position().set({ 0, -2.0 });
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
+			ground->setFriction(0.9f);
 			m_tree->insert(ground);
 		}
 		void render(sf::RenderWindow& window) override

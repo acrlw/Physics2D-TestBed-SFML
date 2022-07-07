@@ -15,24 +15,24 @@ namespace Physics2D
 {
     namespace RenderConstant
     {
-        const int pointSize = 2;
-        const int borderSize = 1;
-        const int fillAlpha = 38;
-        const int basicCirclePointCount = 60;
-        const real basicDashLength = 2;
-        const real scaleFactor = 1.0f;
-        const sf::Color materialYellow = sf::Color(255, 235, 59);
-        const sf::Color materialRed = sf::Color(244, 67, 54);
-        const sf::Color materialBlue = sf::Color(68, 138, 255);
-        const sf::Color materialPink = sf::Color(233, 30, 99);
-        const sf::Color materialDarkGreen = sf::Color(44, 113, 48);
-        const sf::Color materialGray = sf::Color(158, 158, 158);
+        const int PointSize = 2;
+        const int BorderSize = 1;
+        const int FillAlpha = 38;
+        const int BasicCirclePointCount = 60;
+        const real BasicDashLength = 2;
+        const sf::Color MaterialYellow = sf::Color(255, 235, 59);
+        const sf::Color MaterialRed = sf::Color(244, 67, 54);
+        const sf::Color MaterialBlue = sf::Color(68, 138, 255);
+        const sf::Color MaterialPink = sf::Color(233, 30, 99);
+        const sf::Color MaterialDarkGreen = sf::Color(44, 113, 48);
+        const sf::Color MaterialGray = sf::Color(158, 158, 158);
+        static real ScaleFactor = 0.97f;
     }
     class RenderSFMLImpl
     {
     public:
         static sf::Vector2f toVector2f(const Vector2& vector);
-        static void renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const int pointSize = RenderConstant::pointSize);
+        static void renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const int pointSize = RenderConstant::PointSize);
         static void renderLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, const sf::Color& color);
 
     	static void renderPoints(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& points, const sf::Color& color);

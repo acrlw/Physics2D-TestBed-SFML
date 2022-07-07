@@ -18,6 +18,7 @@ namespace Physics2D
             rect.set(1.0f, 1.0f);
             circle.setRadius(0.1f);
             stick.set(5.0f, 0.5f);
+            wall.set(25.0, 200.0f);
 
             Body* ground = m_world->createBody();
             ground->setShape(&edge);
@@ -34,7 +35,7 @@ namespace Physics2D
                     body->position().set({ i * 1.05f - 2.0f, j * 1.05f - ground->position().y + 0.55f });
                     body->setShape(&rect);
                     body->rotation() = 0.0f;
-                    body->setMass(0.1f);
+                    body->setMass(0.5f);
                     body->setType(Body::BodyType::Dynamic);
                     body->setFriction(0.8f);
                     body->setRestitution(0.0f);
@@ -46,20 +47,35 @@ namespace Physics2D
             bullet->setShape(&stick);
             bullet->position().set({ -100.0f, 6.5f });
             bullet->setType(Body::BodyType::Bullet);
-            bullet->setMass(2.0f);
+            bullet->setMass(4.0f);
             bullet->velocity().set({ 800.0f, 0.0f });
             bullet->angularVelocity() = -100.0f;
             m_tree->insert(bullet);
+
+            Body* wallBody = m_world->createBody();
+            wallBody->setShape(&wall);
+            wallBody->position().set(150.0f, 100.5f);
+            wallBody->setMass(100000);
+            wallBody->setType(Body::BodyType::Static);
+
+            m_tree->insert(wallBody);
+
+            m_camera->setMeterToPixel(10);
 
         }
         void render(sf::RenderWindow& window) override
         {
 
         }
+        void release()override
+        {
+            m_camera->setTargetBody(nullptr);
+        }
     private:
         Edge edge;
         Rectangle rect;
         Rectangle stick;
+        Rectangle wall;
         Circle circle;
     };
 }

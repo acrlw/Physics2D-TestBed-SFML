@@ -13,7 +13,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
-			edge.set({ 0, 0 }, { 10, 0 });
+			edge.set({ 0, 0 }, { 20, 0 });
 			
 			ramp.set({ -10, 4 }, { 0, 0 });
 
@@ -45,7 +45,7 @@ namespace Physics2D
 			{
 				Body* cube = m_world->createBody();
 				cube->setShape(&rectangle);
-				cube->setFriction(i * 0.3f);
+				cube->setFriction(i * 0.05f);
 				cube->setMass(1);
 				cube->position().set(-5.0f, i * 3.5f);
 				cube->setRestitution(0);

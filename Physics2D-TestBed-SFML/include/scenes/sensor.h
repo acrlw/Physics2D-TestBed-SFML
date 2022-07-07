@@ -36,7 +36,7 @@ namespace Physics2D
 				body->rotation() = 0;
 				body->setMass(0.2f);
 				body->setType(Body::BodyType::Dynamic);
-				body->setFriction(0.8f);
+				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
 				m_tree->insert(body);
 			}
@@ -49,7 +49,7 @@ namespace Physics2D
 				body->rotation() = 0;
 				body->setMass(0.2f);
 				body->setType(Body::BodyType::Dynamic);
-				body->setFriction(0.8f);
+				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
 				m_tree->insert(body);
 			}

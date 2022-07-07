@@ -36,8 +36,8 @@ namespace Physics2D
 			RenderSFMLImpl::renderShape(window, *m_camera, shape2, sf::Color::Cyan);
 			for (auto& elem : result.contactList)
 			{
-				RenderSFMLImpl::renderPoint(window, *m_camera, elem.pointA, RenderConstant::materialRed);
-				RenderSFMLImpl::renderPoint(window, *m_camera, elem.pointB, RenderConstant::materialBlue);
+				RenderSFMLImpl::renderPoint(window, *m_camera, elem.pointA, RenderConstant::MaterialRed);
+				RenderSFMLImpl::renderPoint(window, *m_camera, elem.pointB, RenderConstant::MaterialBlue);
 			}
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform, sf::Color::Cyan);
