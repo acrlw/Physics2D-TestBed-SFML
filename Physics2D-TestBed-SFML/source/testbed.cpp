@@ -153,10 +153,9 @@ namespace Physics2D
         sf::ContextSettings settings;
         settings.antialiasingLevel = 8;
         m_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Testbed", sf::Style::Default, settings);
-        m_window->setFramerateLimit(60);
         ImGui::SFML::Init(*m_window);
         m_window->setActive(false);
-
+        m_window->setFramerateLimit(120);
         m_physicsThread->launch();
 
         sf::Clock deltaClock;
@@ -301,7 +300,7 @@ namespace Physics2D
     void TestBed::step()
     {
         real dt = 1.0f / real(m_frequency);
-		m_system.step(dt);
+    	m_system.step(dt);
 	    if(m_currentFrame != nullptr)
 		    m_currentFrame->update(dt);
 
@@ -312,7 +311,7 @@ namespace Physics2D
         {
             if (m_running)
                 step();
-            std::this_thread::sleep_for(std::chrono::milliseconds(3));
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     }
     void TestBed::change()

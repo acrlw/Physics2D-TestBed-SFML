@@ -27,6 +27,8 @@ cmake CMakeLists.txt
   - Zooming
   - Smooth Transition
   - Tracing Specified Body
+- Grid Drawing
+- Basic Test Frame
 
 # Screenshot
 
