@@ -42,8 +42,8 @@ namespace Physics2D
 			{
 				body->forces() += body->mass() * g;
 
-				if (!body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
-					&& !fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
+				if (body->sleep() && !body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
+					|| !fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
 					body->setSleep(false);
 
 				body->velocity() += body->inverseMass() * body->forces() * dt;
@@ -112,14 +112,21 @@ namespace Physics2D
 				body->forces().clear();
 				body->clearTorque();
 
+
+				if (body->sleep())
+					break;
+
 				if (body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
 					&& fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
 					body->sleepCountdown()++;
-				else
+				else 
 					body->sleepCountdown() = 0;
-				if (body->sleepCountdown() >= Constant::SleepCoundown && !body->sleep()) {
+				
+				if (body->sleepCountdown() >= Constant::SleepCountdown) {
 					body->sleepCountdown() = 0;
 					body->setSleep(true);
+					body->velocity().clear();
+					body->angularVelocity() = 0.0f;
 				}
 
 				break;

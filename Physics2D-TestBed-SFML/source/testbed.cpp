@@ -241,7 +241,7 @@ namespace Physics2D
         style.WindowRounding = 5.0f;
         style.Colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 0.55f);
 
-        ImGui::PushItemWidth(300);
+        ImGui::PushItemWidth(150);
         ImGui::SetWindowPos("Panel", ImVec2(0, 0));
         ImGui::SetWindowSize("Panel", ImVec2(480, 800));
         ImGui::Text("Scenes");

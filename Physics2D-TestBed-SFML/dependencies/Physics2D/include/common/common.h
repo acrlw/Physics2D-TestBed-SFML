@@ -33,9 +33,9 @@ namespace Physics2D
 		constexpr real MaxVelocity = 1000.0f;
 		constexpr real MaxAngularVelocity = 1000.0f;
 		constexpr real AABBExpansionFactor = 0.0f;
-		constexpr real MinLinearVelocity = 1e-5;
-		constexpr real MinAngularVelocity = 1e-5;
-		constexpr size_t SleepCoundown = 35;
+		constexpr real MinLinearVelocity = 1e-4f;
+		constexpr real MinAngularVelocity = 1e-4f;
+		constexpr size_t SleepCountdown = 30;
 	}
 #else
 	using real = double;
