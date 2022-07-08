@@ -60,6 +60,7 @@ namespace Physics2D
 
             m_tree->insert(wallBody);
 
+            m_camera->setTargetBody(bullet);
             m_camera->setMeterToPixel(10);
 
         }

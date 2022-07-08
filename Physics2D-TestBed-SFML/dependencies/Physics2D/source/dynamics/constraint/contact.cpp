@@ -80,12 +80,12 @@ namespace Physics2D
 
 				Vector2 impulse = lambda * vcp.normal;
 
-				if (bodyA->type() != Body::BodyType::Static && !ccp.bodyA->sleep())
+				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
 				{
 					bodyA->position() += bodyA->inverseMass() * impulse;
 					bodyA->rotation() += bodyA->inverseInertia() * vcp.ra.cross(impulse);
 				}
-				if (bodyB->type() != Body::BodyType::Static && !ccp.bodyB->sleep())
+				if (bodyB->type() != Body::BodyType::Static && !bodyB->sleep())
 				{
 					bodyB->position() -= bodyB->inverseMass() * impulse;
 					bodyB->rotation() -= bodyB->inverseInertia() * vcp.rb.cross(impulse);

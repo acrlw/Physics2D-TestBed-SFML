@@ -124,8 +124,9 @@ namespace Physics2D
 			//Vector2 pb = bodyB->toWorldPoint(m_primitive.localPointB);
 			//Vector2 rb = pb - bodyB->position();
 
-			//Vector2 bias = (pa - pb) * 0.01f;
+			//Vector2 bias = (pa - pb) * 0.001f;
 			//Vector2 impulse = m_primitive.effectiveMass.multiply(bias);
+
 			//if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
 			//{
 			//	bodyA->position() += bodyA->inverseMass() * impulse;

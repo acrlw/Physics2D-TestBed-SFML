@@ -103,15 +103,14 @@ namespace Physics2D
 				break;
 			case Body::BodyType::Dynamic:
 			{
+				body->forces().clear();
+				body->clearTorque();
+
 				body->lastPosition() = body->position();
 				body->lastRotation() = body->rotation();
 
 				body->position() += body->velocity() * dt;
 				body->rotation() += body->angularVelocity() * dt;
-
-				body->forces().clear();
-				body->clearTorque();
-
 
 				if (body->sleep())
 					break;

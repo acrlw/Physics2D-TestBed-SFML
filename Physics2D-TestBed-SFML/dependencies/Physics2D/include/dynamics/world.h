@@ -12,7 +12,7 @@ namespace Physics2D
     class PhysicsWorld
     {
 		public:
-            PhysicsWorld() : m_gravity(0, -1), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f), m_bias(0.8f),
+            PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f), m_bias(0.8f),
     			m_enableGravity(true), m_linearVelocityThreshold(0.02f), m_angularVelocityThreshold(0.02f), m_airFrictionCoefficient(0.7f)
             {}
             ~PhysicsWorld();

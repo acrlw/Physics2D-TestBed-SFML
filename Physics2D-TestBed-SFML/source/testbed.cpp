@@ -4,7 +4,6 @@ namespace Physics2D
     TestBed::TestBed()
     {
         m_system.world().setEnableGravity(true);
-	    m_system.world().setGravity({ 0, -9.8f });
 	    m_system.world().setLinearVelocityDamping(0.1f);
 	    m_system.world().setAirFrictionCoefficient(0.8f);
 	    m_system.world().setAngularVelocityDamping(0.1f);
@@ -313,7 +312,7 @@ namespace Physics2D
         {
             if (m_running)
                 step();
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            std::this_thread::sleep_for(std::chrono::milliseconds(3));
         }
     }
     void TestBed::change()

@@ -73,6 +73,9 @@ namespace Physics2D
 			sf::Color collisionColor = RenderConstant::MaterialPink;
 			sf::Color hitColor = RenderConstant::MaterialBlue;
 			sf::Color regionColor = RenderConstant::MaterialYellow;
+			sf::Color cellColor = sf::Color::Cyan;
+			cellColor.a = 155;
+			collisionColor.a = 50;
 			for (auto&& elem : pairs)
 			{
 				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
@@ -84,10 +87,16 @@ namespace Physics2D
 				Vector2 topLeft(real(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f, real(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
 				AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
 				//cell.expand(-0.05f);
-				RenderSFMLImpl::renderAABB(window, *m_camera, cell, sf::Color::Cyan);
+
+				RenderSFMLImpl::renderAABB(window, *m_camera, cell, cellColor);
 			}
 
 
+
+			//for (auto&& [key, value] : resultBodies)
+			//{
+			//	RenderSFMLImpl::renderBody(window, *m_camera, value, hitColor);
+			//}
 			//sweep and prune
 			//auto pairs = SweepAndPrune::generate(bodyList);
 			//sf::Color collisionColor = RenderConstant::materialPink;

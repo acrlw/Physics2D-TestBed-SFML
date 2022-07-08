@@ -31,7 +31,7 @@ namespace Physics2D
 			m_tree->insert(ground);
 
 			rect = m_world->createBody();
-			rect->setShape(&sector);
+			rect->setShape(&rectangle);
 			rect->position().set({ 0, 6 });
 			rect->rotation() = Math::degreeToRadian(60);
 			rect->setMass(1);
