@@ -8,10 +8,10 @@ namespace Physics2D
         updateGrid();
 	}
 
-    std::vector<std::pair<Body*, Body*>> UniformGrid::generate()
+    Container::Vector<std::pair<Body*, Body*>> UniformGrid::generate()
     {
-        std::vector<std::pair<Body*, Body*>> result;
-        std::map<Body::Relation::RelationID, std::pair<Body*, Body*>> map;
+        Container::Vector<std::pair<Body*, Body*>> result;
+        Container::Map<Body::Relation::RelationID, std::pair<Body*, Body*>> map;
         for (auto&& cell : m_cellsToBodies)
         {
             if (cell.second.size() > 1)
@@ -32,9 +32,9 @@ namespace Physics2D
         return result;
     }
 
-    std::vector<Body*> UniformGrid::raycast(const Vector2& p, const Vector2& d)
+    Container::Vector<Body*> UniformGrid::raycast(const Vector2& p, const Vector2& d)
     {
-        std::vector<Body*> result;
+        Container::Vector<Body*> result;
         return result;
     }
     void UniformGrid::updateAll()
@@ -193,9 +193,9 @@ namespace Physics2D
             }
         }
     }
-    std::vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> UniformGrid::compareCellList(const std::vector<Position>& oldCellList, const std::vector<Position>& newCellList)
+    Container::Vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> UniformGrid::compareCellList(const Container::Vector<Position>& oldCellList, const Container::Vector<Position>& newCellList)
     {
-        std::vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> result;
+        Container::Vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> result;
         size_t indexOld = 0, indexNew = 0;
         size_t endIndexOld = oldCellList.size();
         size_t endIndexNew = newCellList.size();
@@ -239,9 +239,9 @@ namespace Physics2D
         }
         return result;
     }
-    std::vector<UniformGrid::Position> UniformGrid::queryCells(const AABB& aabb)
+    Container::Vector<UniformGrid::Position> UniformGrid::queryCells(const AABB& aabb)
     {
-        std::vector<UniformGrid::Position> cells;
+        Container::Vector<UniformGrid::Position> cells;
         //locate x axis
         real halfWidth = m_width * 0.5f;
         real halfHeight = m_height * 0.5f;

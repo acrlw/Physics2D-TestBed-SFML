@@ -135,7 +135,7 @@ namespace Physics2D
 		BodyType m_type = BodyType::Static;
 
 		bool m_sleep = false;
-		real m_friction = 0.2f;
+		real m_friction = 0.1f;
 		real m_restitution = 0.0f;
 		
 		uint32_t m_sleepCountdown = 0;

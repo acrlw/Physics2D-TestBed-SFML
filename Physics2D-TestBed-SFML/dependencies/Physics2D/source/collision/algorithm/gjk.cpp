@@ -20,7 +20,7 @@ namespace Physics2D
 		simplex.vertices.emplace_back(diff);
 		direction.negate();
 		size_t iter = 0;
-		std::vector<Minkowski> removed;
+		Container::Vector<Minkowski> removed;
 		while (iter <= iteration)
 		{
 			diff = support(shapeA, shapeB, direction);
@@ -206,7 +206,7 @@ namespace Physics2D
 		return target;
 	}
 
-	std::pair<Vector2, size_t> GJK::findFarthestPoint(const std::vector<Vector2>& vertices, const Vector2& direction)
+	std::pair<Vector2, size_t> GJK::findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
 	{
 		real max = Constant::NegativeMin;
 		Vector2 target;

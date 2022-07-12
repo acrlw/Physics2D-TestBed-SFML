@@ -14,8 +14,8 @@ namespace Physics2D
 	{
 	public:
 		UniformGrid(const real& width = 100.0f, const real& height = 100.0f, const uint32_t rows = 200, const uint32_t columns = 200);
-		std::vector<std::pair<Body*, Body*>> generate();
-		std::vector<Body*> raycast(const Vector2& p, const Vector2& d);
+		Container::Vector<std::pair<Body*, Body*>> generate();
+		Container::Vector<Body*> raycast(const Vector2& p, const Vector2& d);
 
 		void updateAll();
 		void update(Body* body);
@@ -62,15 +62,15 @@ namespace Physics2D
 			}
 		};
 		//AABB query cells
-		std::vector<Position> queryCells(const AABB& aabb);
+		Container::Vector<Position> queryCells(const AABB& aabb);
 
 		//ray cast query cells
-		std::vector<Position> queryCells(const Vector2& start, const Vector2& direction);
+		Container::Vector<Position> queryCells(const Vector2& start, const Vector2& direction);
 		real cellHeight()const;
 		real cellWidth()const;
 
-		std::map<Position, std::vector<Body*>> m_cellsToBodies;
-		std::map<Body*, std::vector<Position>> m_bodiesToCells;
+		Container::Map<Position, Container::Vector<Body*>> m_cellsToBodies;
+		Container::Map<Body*, Container::Vector<Position>> m_bodiesToCells;
 
 		void fullUpdate(Body* body);
 		void incrementalUpdate(Body* body);
@@ -82,7 +82,7 @@ namespace Physics2D
 		void updateGrid();
 		void changeGridSize();
 		void updateBodies();
-		std::vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> compareCellList(const std::vector<Position>& oldCellList, const std::vector<Position>& newCellList);
+		Container::Vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> compareCellList(const Container::Vector<Position>& oldCellList, const Container::Vector<Position>& newCellList);
 		real m_width;
 		real m_height;
 		uint32_t m_rows;

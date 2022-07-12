@@ -51,7 +51,7 @@ namespace Physics2D
 		real m_maxPenetration = 0.005f;
 		real m_biasFactor = 0.02f;
 		bool m_blockSolver = true;
-		std::map<Body::Relation::RelationID, std::vector<ContactConstraintPoint>> m_contactTable;
+		Container::Map<Body::Relation::RelationID, Container::Vector<ContactConstraintPoint>> m_contactTable;
 	private:
 	};
 

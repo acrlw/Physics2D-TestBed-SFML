@@ -8,8 +8,8 @@ namespace Physics2D
 	{
 	public:
 
-		static std::vector<std::pair<Body*, Body*>> generate(const std::vector<Body*>& bodyList);
-		static std::vector<Body*> query(const std::vector<Body*>& bodyList, const AABB& region);
+		static Container::Vector<std::pair<Body*, Body*>> generate(const Container::Vector<Body*>& bodyList);
+		static Container::Vector<Body*> query(const Container::Vector<Body*>& bodyList, const AABB& region);
 	};
 }
 

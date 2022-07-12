@@ -18,7 +18,7 @@ namespace Physics2D
 		real gamma = 0.0;
 		Vector2 bias;
 		Matrix2x2 effectiveMass;
-		Vector2 impulse;
+		Vector2 accumulatedImpulse;
 
 	};
 	class PointJoint : public Joint
@@ -77,7 +77,7 @@ namespace Physics2D
 			m_primitive.effectiveMass = k.invert();
 			//warmstart
 			//m_primitive.impulse *= dt / dt;
-			bodyA->applyImpulse(m_primitive.impulse, ra);
+			bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);
 		}
 		void solveVelocity(const real& dt) override
 		{
@@ -87,18 +87,18 @@ namespace Physics2D
 			Vector2 va = m_primitive.bodyA->velocity() + Vector2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
 			Vector2 jvb = va;
 			jvb += m_primitive.bias;
-			jvb += m_primitive.impulse * m_primitive.gamma;
+			jvb += m_primitive.accumulatedImpulse * m_primitive.gamma;
 			jvb.negate();
 			Vector2 J = m_primitive.effectiveMass.multiply(jvb);
-			Vector2 oldImpulse = m_primitive.impulse;
-			m_primitive.impulse += J;
+			Vector2 oldImpulse = m_primitive.accumulatedImpulse;
+			m_primitive.accumulatedImpulse += J;
 			real maxImpulse = dt * m_primitive.maxForce;
-			if(m_primitive.impulse.lengthSquare() > maxImpulse * maxImpulse)
+			if(m_primitive.accumulatedImpulse.lengthSquare() > maxImpulse * maxImpulse)
 			{
-				m_primitive.impulse.normalize();
-				m_primitive.impulse *= maxImpulse;
+				m_primitive.accumulatedImpulse.normalize();
+				m_primitive.accumulatedImpulse *= maxImpulse;
 			}
-			J = m_primitive.impulse - oldImpulse;
+			J = m_primitive.accumulatedImpulse - oldImpulse;
 			m_primitive.bodyA->applyImpulse(J, ra);
 		}
 		void solvePosition(const real& dt) override

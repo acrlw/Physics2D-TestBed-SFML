@@ -3,6 +3,7 @@ namespace Physics2D
 {
     TestBed::TestBed()
     {
+
         m_system.world().setEnableGravity(true);
 	    m_system.world().setLinearVelocityDamping(0.1f);
 	    m_system.world().setAirFrictionCoefficient(0.8f);

@@ -1,9 +1,9 @@
 #include "../../../include/collision/algorithm/clip.h"
 namespace Physics2D
 {
-	std::vector<Vector2> ContactGenerator::dumpVertices(const ShapePrimitive& primitive)
+	Container::Vector<Vector2> ContactGenerator::dumpVertices(const ShapePrimitive& primitive)
 	{
-		std::vector<Vector2> vertices;
+		Container::Vector<Vector2> vertices;
 		switch (primitive.shape->type())
 		{
 		case Shape::Type::Capsule:
@@ -39,7 +39,7 @@ namespace Physics2D
 		return vertices;
 	}
 
-	ContactGenerator::ClipEdge ContactGenerator::findClipEdge(const std::vector<Vector2>& vertices, size_t index, const Vector2& normal)
+	ContactGenerator::ClipEdge ContactGenerator::findClipEdge(const Container::Vector<Vector2>& vertices, size_t index, const Vector2& normal)
 	{
 		ClipEdge edge1, edge2;
 		edge1.p2 = vertices[index];
@@ -76,7 +76,7 @@ namespace Physics2D
 		return finalEdge;
 	}
 
-	ContactGenerator::ClipEdge ContactGenerator::dumpClipEdge(const ShapePrimitive& shape, const std::vector<Vector2>& vertices, const Vector2& normal)
+	ContactGenerator::ClipEdge ContactGenerator::dumpClipEdge(const ShapePrimitive& shape, const Container::Vector<Vector2>& vertices, const Vector2& normal)
 	{
 		ClipEdge edge;
 		if (vertices.size() == 2)
@@ -102,16 +102,16 @@ namespace Physics2D
 			|| typeB == Shape::Type::Point || typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse)
 			return std::make_pair(ClipEdge(), ClipEdge());
 		//normal: B -> A
-		std::vector<Vector2> verticesA = dumpVertices(shapeA);
-		std::vector<Vector2> verticesB = dumpVertices(shapeB);
+		Container::Vector<Vector2> verticesA = dumpVertices(shapeA);
+		Container::Vector<Vector2> verticesB = dumpVertices(shapeB);
 		ClipEdge edgeA = dumpClipEdge(shapeA, verticesA, -normal);
 		ClipEdge edgeB = dumpClipEdge(shapeB, verticesB, normal);
 		return std::make_pair(edgeA, edgeB);
 	}
 
-	std::vector<PointPair> ContactGenerator::clip(const ClipEdge& clipEdgeA, const ClipEdge& clipEdgeB, const Vector2& normal)
+	Container::Vector<PointPair> ContactGenerator::clip(const ClipEdge& clipEdgeA, const ClipEdge& clipEdgeB, const Vector2& normal)
 	{
-		std::vector<PointPair> result;
+		Container::Vector<PointPair> result;
 		if (clipEdgeA.isEmpty() || clipEdgeB.isEmpty())
 			return result;
 		//find reference edge

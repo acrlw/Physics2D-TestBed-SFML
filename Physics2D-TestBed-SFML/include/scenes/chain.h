@@ -69,6 +69,7 @@ namespace Physics2D
 				revolutePrim.frequency = 10;
 				revolutePrim.maxForce = 10000;
 				m_world->createJoint(revolutePrim);
+
 				rect = rect2;
 			}
 

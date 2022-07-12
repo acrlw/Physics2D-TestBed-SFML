@@ -15,8 +15,8 @@
 #include "math/linear/linear.h"
 #include "math/integrator.h"
 #include "dynamics/world.h"
-#include "dynamics/joint/joint.h"
-#include "dynamics/constraint/contact.h"
+#include "dynamics/joints/joint.h"
+#include "dynamics/contact/contact.h"
 #include "utils/random.h"
 
 

@@ -19,7 +19,7 @@ namespace Physics2D
 			/// <param name="polygon"></param>
 			/// <param name="clipRegion"></param>
 			/// <returns></returns>
-			static std::vector<Vector2> sutherlandHodgmentPolygonClipping(const std::vector<Vector2>& polygon, const std::vector<Vector2>& clipRegion);
+			static Container::Vector<Vector2> sutherlandHodgmentPolygonClipping(const Container::Vector<Vector2>& polygon, const Container::Vector<Vector2>& clipRegion);
 		};
 		/// <summary>
 		/// Check if point a,b,c are collinear using triangle area method
@@ -106,13 +106,13 @@ namespace Physics2D
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <returns></returns>
-		bool isConvexPolygon(const std::vector<Vector2>& vertices);
+		bool isConvexPolygon(const Container::Vector<Vector2>& vertices);
 		/// <summary>
 		/// Convex hull algorithm: Graham Scan. Given a series of points, find the convex polygon that can contains all of these points.
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <returns></returns>
-		std::vector<Vector2> grahamScan(const std::vector<Vector2>& vertices);
+		Container::Vector<Vector2> grahamScan(const Container::Vector<Vector2>& vertices);
 		/// <summary>
 		/// calculate point on line segment ab that is the shortest length to point p
 		/// </summary>
@@ -149,7 +149,7 @@ namespace Physics2D
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <returns></returns>
-		Vector2 calculateCenter(const std::vector<Vector2>& vertices);
+		Vector2 calculateCenter(const Container::Vector<Vector2>& vertices);
 		/// <summary>
 		/// Calculate two points on line segment and ellipse respectively. The length of two points is the shortest distance of line segment and ellipse
 		/// </summary>

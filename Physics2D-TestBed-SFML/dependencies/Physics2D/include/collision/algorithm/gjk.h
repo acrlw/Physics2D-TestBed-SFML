@@ -108,7 +108,7 @@ namespace Physics2D
 		/// <param name="vertices"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static std::pair<Vector2, size_t> findFarthestPoint(const std::vector<Vector2>& vertices, const Vector2& direction);
+		static std::pair<Vector2, size_t> findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
 		/// <summary>
 		/// Adjust triangle simplex, remove the point that can not form a triangle that contains origin
 		/// </summary>

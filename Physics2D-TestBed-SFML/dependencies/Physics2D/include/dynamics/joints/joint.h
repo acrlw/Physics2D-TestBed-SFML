@@ -11,6 +11,7 @@ namespace Physics2D
 		Orientation,
 		Pulley,
 		Prismatic,
+		Weld,
 		Wheel,
 		Revolute
 	};

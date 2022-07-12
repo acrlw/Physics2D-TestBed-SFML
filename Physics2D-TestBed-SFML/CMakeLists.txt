@@ -11,6 +11,8 @@ file(GLOB_RECURSE TESTBED_SOURCE_ALL ./source/*.cpp)
 add_executable (Physics2D-TestBed-SFML "main.cpp" ${PHYSICS2D_ALL} ${TESTBED_HEADER_ALL} 
 ${TESTBED_SOURCE_ALL})
 
+find_package(mimalloc CONFIG REQUIRED)
+target_link_libraries(Physics2D-TestBed-SFML PRIVATE mimalloc mimalloc-static)
 
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 target_link_libraries(Physics2D-TestBed-SFML PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
@@ -20,3 +22,4 @@ target_link_libraries(Physics2D-TestBed-SFML PRIVATE imgui::imgui)
 
 find_package(ImGui-SFML CONFIG REQUIRED)
 target_link_libraries(Physics2D-TestBed-SFML PRIVATE ImGui-SFML::ImGui-SFML)
+

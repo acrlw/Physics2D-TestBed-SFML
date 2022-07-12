@@ -14,7 +14,7 @@ namespace Physics2D
 		bool isColliding = false;
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
-		std::vector<PointPair> contactList;
+		Container::Vector<PointPair> contactList;
 		Vector2 normal;
 		real penetration = 0;
 	};
