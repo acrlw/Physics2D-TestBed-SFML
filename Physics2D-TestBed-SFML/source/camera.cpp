@@ -112,7 +112,7 @@ namespace Physics2D
 				sf::Color color = sf::Color::Green;
 				color.a = 225;
 
-				std::vector<Vector2> axisPoints;
+				Container::Vector<Vector2> axisPoints;
 				axisPoints.reserve(static_cast<size_t>(m_axisPointCount * 2 + 1));
 
 				for (real i = -m_axisPointCount; i <= m_axisPointCount; i += 1.0)
@@ -374,7 +374,7 @@ namespace Physics2D
 		else
 			h = 1.0;
 
-		std::vector<std::pair<Vector2, Vector2>> lines;
+		Container::Vector<std::pair<Vector2, Vector2>> lines;
 		lines.reserve(static_cast<size_t>(m_axisPointCount * 2));
 		for (real i = -m_axisPointCount; i <= m_axisPointCount; i += h)
 		{

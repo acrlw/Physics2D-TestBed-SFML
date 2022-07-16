@@ -38,30 +38,30 @@ namespace Physics2D
 		m_tree.reserve(10);
 	}
 
-	std::vector<Body*> Tree::query(Body* body)
+	Container::Vector<Body*> Tree::query(Body* body)
 	{
-		std::vector<Body*> result;
+		Container::Vector<Body*> result;
 		queryNodes(m_rootIndex, AABB::fromBody(body), result);
 		return result;
 	}
 
-	std::vector<Body*> Tree::query(const AABB& aabb)
+	Container::Vector<Body*> Tree::query(const AABB& aabb)
 	{
-		std::vector<Body*> result;
+		Container::Vector<Body*> result;
 		queryNodes(m_rootIndex, aabb, result);
 		return result;
 	}
 
-	std::vector<Body*> Tree::raycast(const Vector2& point, const Vector2& direction)
+	Container::Vector<Body*> Tree::raycast(const Vector2& point, const Vector2& direction)
 	{
-		std::vector<Body*> result;
+		Container::Vector<Body*> result;
 		raycast(result, m_rootIndex, point, direction);
 		return result;
 	}
 
-	std::vector<std::pair<Body*, Body*>> Tree::generate()
+	Container::Vector<std::pair<Body*, Body*>> Tree::generate()
 	{
-		std::vector<std::pair<Body*, Body*>> pairs;
+		Container::Vector<std::pair<Body*, Body*>> pairs;
 		generate(m_rootIndex, pairs);
 		return pairs;
 	}
@@ -153,12 +153,12 @@ namespace Physics2D
 		return m_rootIndex;
 	}
 
-	const std::vector<Tree::Node>& Tree::tree()
+	const Container::Vector<Tree::Node>& Tree::tree()
 	{
 		return m_tree;
 	}
 
-	void Tree::queryNodes(int nodeIndex, const AABB& aabb, std::vector<Body*>& result)
+	void Tree::queryNodes(int nodeIndex, const AABB& aabb, Container::Vector<Body*>& result)
 	{
 		if (nodeIndex == -1)
 			return;
@@ -272,7 +272,7 @@ namespace Physics2D
 		traverseLowestCost(nodeIndex, lowestCostIndex, lowestCost, finalIndex);
 	}
 
-	void Tree::raycast(std::vector<Body*>& result, int nodeIndex, const Vector2& p, const Vector2& d)
+	void Tree::raycast(Container::Vector<Body*>& result, int nodeIndex, const Vector2& p, const Vector2& d)
 	{
 		if (nodeIndex < 0)
 			return;
@@ -289,7 +289,7 @@ namespace Physics2D
 		}
 	}
 
-	void Tree::generate(int nodeIndex, std::vector<std::pair<Body*, Body*>>& pairs)
+	void Tree::generate(int nodeIndex, Container::Vector<std::pair<Body*, Body*>>& pairs)
 	{
 		if (nodeIndex < 0 || m_tree[nodeIndex].isLeaf())
 			return;
@@ -305,7 +305,7 @@ namespace Physics2D
 		generate(rightIndex, pairs);
 	}
 
-	void Tree::generate(int leftIndex, int rightIndex, std::vector<std::pair<Body*, Body*>>& pairs)
+	void Tree::generate(int leftIndex, int rightIndex, Container::Vector<std::pair<Body*, Body*>>& pairs)
 	{
 		if (leftIndex < 0 || rightIndex < 0)
 			return;

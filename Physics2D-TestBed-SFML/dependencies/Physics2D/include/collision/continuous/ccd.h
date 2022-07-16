@@ -32,14 +32,14 @@ namespace Physics2D
 			real toi = 0.0;
 			Body* body = nullptr;
 		};
-		typedef std::vector<AABBShot> BroadphaseTrajectory;
+		typedef Container::Vector<AABBShot> BroadphaseTrajectory;
 		static std::tuple<BroadphaseTrajectory, AABB> buildTrajectoryAABB(Body* body, const real& dt);
-		static std::tuple<std::vector<AABBShot>, AABB> buildTrajectoryAABB(Body* body, const Vector2& target, const real& dt);
+		static std::tuple<Container::Vector<AABBShot>, AABB> buildTrajectoryAABB(Body* body, const Vector2& target, const real& dt);
 		static std::optional<IndexSection> findBroadphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const real& dt);
 		static std::optional<real> findNarrowphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const IndexSection& index, const real& dt);
-		static std::optional<std::vector<CCDPair>> query(DBVH::Node* root, Body* body, const real& dt);
-        static std::optional<std::vector<CCDPair>> query(Tree& tree, Body* body, const real& dt);
-        static std::optional<real> earliestTOI(const std::vector<CCDPair>& pairs, const real& epsilon = Constant::GeometryEpsilon);
+		static std::optional<Container::Vector<CCDPair>> query(DBVH::Node* root, Body* body, const real& dt);
+        static std::optional<Container::Vector<CCDPair>> query(Tree& tree, Body* body, const real& dt);
+        static std::optional<real> earliestTOI(const Container::Vector<CCDPair>& pairs, const real& epsilon = Constant::GeometryEpsilon);
 	};
 }
 #endif

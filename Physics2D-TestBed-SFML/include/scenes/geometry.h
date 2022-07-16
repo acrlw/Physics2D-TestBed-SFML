@@ -47,11 +47,11 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoints(window, *m_camera, points2, sf::Color::Magenta);
 		}
 	private:
-		std::vector<Vector2> points1;
-		std::vector<Vector2> points2;
-		std::vector<Vector2> convex1;
-		std::vector<Vector2> convex2;
-		std::vector<Vector2> intersectionConvex;
+		Container::Vector<Vector2> points1;
+		Container::Vector<Vector2> points2;
+		Container::Vector<Vector2> convex1;
+		Container::Vector<Vector2> convex2;
+		Container::Vector<Vector2> intersectionConvex;
 	};
 }
 #endif

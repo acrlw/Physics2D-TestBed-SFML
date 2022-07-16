@@ -131,7 +131,7 @@ namespace Physics2D
 		Polygon polygon;
 		Capsule capsule;
 		Polygon triangle;
-		std::vector<Body*> bodyList;
+		Container::Vector<Body*> bodyList;
 	};
 }
 #endif

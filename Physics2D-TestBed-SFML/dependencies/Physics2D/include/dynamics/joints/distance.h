@@ -115,13 +115,13 @@ namespace Physics2D
 			
 		}
 
-		DistanceJointPrimitive primitive()const
+		DistanceJointPrimitive& primitive()
 		{
 			return m_primitive;
 		}
 	private:
-		DistanceJointPrimitive m_primitive;
 		real m_factor = 0.4f;
+		DistanceJointPrimitive m_primitive;
 	};
 	class DistanceConstraint : public Joint
 	{

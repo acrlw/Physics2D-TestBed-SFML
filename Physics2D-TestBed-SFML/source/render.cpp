@@ -23,9 +23,9 @@ namespace Physics2D
 		line[1].color = color;
 		window.draw(line, 2, sf::Lines);
 	}
-	void RenderSFMLImpl::renderPoints(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& points, const sf::Color& color)
+	void RenderSFMLImpl::renderPoints(sf::RenderWindow& window, Camera& camera, const Container::Vector<Vector2>& points, const sf::Color& color)
 	{
-		std::vector<sf::Vertex> vertices;
+		Container::Vector<sf::Vertex> vertices;
 		vertices.reserve(points.size());
 		for (auto& elem : points)
 		{
@@ -40,9 +40,9 @@ namespace Physics2D
 
 
 
-	void RenderSFMLImpl::renderLines(sf::RenderWindow& window, Camera& camera, const std::vector<std::pair<Vector2, Vector2>>& lines, const sf::Color& color)
+	void RenderSFMLImpl::renderLines(sf::RenderWindow& window, Camera& camera, const Container::Vector<std::pair<Vector2, Vector2>>& lines, const sf::Color& color)
 	{
-		std::vector<sf::Vertex> vertices;
+		Container::Vector<sf::Vertex> vertices;
 		vertices.reserve(lines.size() * 2);
 		for (auto& elem : lines)
 		{
@@ -160,7 +160,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderCapsule(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		assert(shape.shape->type() == Shape::Type::Capsule);
-		std::vector<sf::Vertex> vertices;
+		Container::Vector<sf::Vertex> vertices;
 
 		const Capsule* capsule = static_cast<Capsule*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
@@ -206,13 +206,13 @@ namespace Physics2D
 	void RenderSFMLImpl::renderSector(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		assert(shape.shape->type() == Shape::Type::Sector);
-		std::vector<sf::Vertex> vertices;
+		Container::Vector<sf::Vertex> vertices;
 
 	}
 	void RenderSFMLImpl::renderEllipse(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		assert(shape.shape->type() == Shape::Type::Ellipse);
-		std::vector<sf::Vertex> vertices;
+		Container::Vector<sf::Vertex> vertices;
 
 		const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform);
@@ -253,7 +253,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderCurve(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		assert(shape.shape->type() == Shape::Type::Curve);
-		std::vector<sf::Vertex> vertices;
+		Container::Vector<sf::Vertex> vertices;
 		
 	}
 	void RenderSFMLImpl::renderAngleLine(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)

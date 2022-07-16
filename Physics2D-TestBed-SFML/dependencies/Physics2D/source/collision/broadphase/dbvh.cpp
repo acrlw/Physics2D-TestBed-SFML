@@ -18,24 +18,24 @@ namespace Physics2D
 		return m_root;
 	}
 
-	std::vector<std::pair<Body*, Body*>> DBVH::generate()
+	Container::Vector<std::pair<Body*, Body*>> DBVH::generate()
 	{
 		m_profile = 0;
-		std::vector<std::pair<Body*, Body*>> pairs;
+		Container::Vector<std::pair<Body*, Body*>> pairs;
 		generate(m_root, pairs);
 		return pairs;
 	}
-	std::map<Body*, DBVH::Node*>& DBVH::leaves()
+	Container::Map<Body*, DBVH::Node*>& DBVH::leaves()
 	{
 		return m_leaves;
 	}
 
-	void DBVH::query(const AABB& sourceAABB, std::vector<Node*>& nodes, Body* skipBody)const
+	void DBVH::query(const AABB& sourceAABB, Container::Vector<Node*>& nodes, Body* skipBody)const
 	{
 		queryNodes(m_root, sourceAABB, nodes, skipBody);
 	}
 
-	void DBVH::queryNodes(Node* node, const AABB& aabb, std::vector<Node*>& nodes, Body* skipBody)
+	void DBVH::queryNodes(Node* node, const AABB& aabb, Container::Vector<Node*>& nodes, Body* skipBody)
 	{
 		if (node == nullptr || !aabb.collide(node->aabb))
 			return;
@@ -57,7 +57,7 @@ namespace Physics2D
 	}
 	
 
-	void DBVH::raycast(std::vector<Body*>& result, Node* node, const Vector2& start, const Vector2& direction)
+	void DBVH::raycast(Container::Vector<Body*>& result, Node* node, const Vector2& start, const Vector2& direction)
 	{
 		if (node == nullptr)
 			return;
@@ -264,9 +264,9 @@ namespace Physics2D
 		delete target;
 		m_leaves.erase(body);
 	}
-	std::vector<Body*> DBVH::raycast(const Vector2& start, const Vector2& direction)
+	Container::Vector<Body*> DBVH::raycast(const Vector2& start, const Vector2& direction)
 	{
-		std::vector<Body*> result;
+		Container::Vector<Body*> result;
 		raycast(result, m_root, start, direction);
 		return result;
 	}
@@ -429,7 +429,7 @@ namespace Physics2D
 	}
 
 	//check if children collide with each other
-	void DBVH::generate(Node* node, std::vector<std::pair<Body*, Body*>>& pairs)
+	void DBVH::generate(Node* node, Container::Vector<std::pair<Body*, Body*>>& pairs)
 	{
 		if (node == nullptr || node->isLeaf())
 			return;
@@ -443,7 +443,7 @@ namespace Physics2D
 		generate(node->right, pairs);
 	}
 
-	void DBVH::generate(Node* left, Node* right, std::vector<std::pair<Body*, Body*>>& pairs)
+	void DBVH::generate(Node* left, Node* right, Container::Vector<std::pair<Body*, Body*>>& pairs)
 	{
 		if (left == nullptr || right == nullptr)
 			return;

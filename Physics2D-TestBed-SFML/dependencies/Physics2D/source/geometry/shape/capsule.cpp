@@ -118,9 +118,9 @@ namespace Physics2D
 		return -topLeft();
 	}
 
-	std::vector<Vector2> Capsule::boxVertices() const
+	Container::Vector<Vector2> Capsule::boxVertices() const
 	{
-		std::vector<Vector2> vertices;
+		Container::Vector<Vector2> vertices;
 		vertices.reserve(5);
 		vertices.emplace_back(this->topLeft());
 		vertices.emplace_back(this->bottomLeft());

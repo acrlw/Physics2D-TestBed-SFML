@@ -4,9 +4,9 @@
 #include "../dynamics/body.h"
 #include "../math/math.h"
 #include "../math/integrator.h"
-#include "../dynamics/joint/joints.h"
+#include "../dynamics/joints/joints.h"
 #include "../utils/random.h"
-#include "../dynamics/constraint/contact.h"
+#include "../dynamics/contact/contact.h"
 namespace Physics2D
 {
     class PhysicsWorld
@@ -65,9 +65,9 @@ namespace Physics2D
             real bias() const;
             void setBias(const real &bias);
 
-            std::vector<std::unique_ptr<Body>>& bodyList();
+            Container::Vector<std::unique_ptr<Body>>& bodyList();
     	
-            std::vector<std::unique_ptr<Joint>>& jointList();
+            Container::Vector<std::unique_ptr<Joint>>& jointList();
         private:
 
             Vector2 m_gravity;
@@ -81,8 +81,8 @@ namespace Physics2D
     		
     		bool m_enableGravity = true;
     		bool m_enableDamping = true;
-            std::vector<std::unique_ptr<Body>> m_bodyList;
-            std::vector<std::unique_ptr<Joint>> m_jointList;
+            Container::Vector<std::unique_ptr<Body>> m_bodyList;
+            Container::Vector<std::unique_ptr<Joint>> m_jointList;
 
     		
     		

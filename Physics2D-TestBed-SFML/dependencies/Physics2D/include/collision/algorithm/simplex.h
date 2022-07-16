@@ -12,12 +12,12 @@ namespace Physics2D
 	///   2 points: p0 -> p1, construct a segment
 	/// >=4 points: p0 -> p1 -> p2 -> p0, construct a polygon
 	///	ATTENTION:
-	///	  The performance bottleneck results in std::vector. Inserting and reallocating is expensive.
+	///	  The performance bottleneck results in Container::Vector. Inserting and reallocating is expensive.
 	/// </summary>
 	/// <returns></returns>
 	struct Simplex
 	{
-		std::vector<Minkowski> vertices;
+		Container::Vector<Minkowski> vertices;
 		bool isContainOrigin = false;
 		bool containOrigin(bool strict = false);
 		static bool containOrigin(const Simplex& simplex, bool strict = false);

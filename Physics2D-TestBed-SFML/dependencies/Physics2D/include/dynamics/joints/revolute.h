@@ -9,6 +9,7 @@ namespace Physics2D
 		Body* bodyB = nullptr;
 		Vector2 localPointA;
 		Vector2 localPointB;
+
 		real damping = 0.0f;
 		real stiffness = 0.0f;
 		real frequency = 8.0f;
@@ -17,7 +18,7 @@ namespace Physics2D
 		real gamma = 0.0f;
 		Vector2 bias;
 		Matrix2x2 effectiveMass;
-		Vector2 impulse;
+		Vector2 accumulatedImpulse;
 	};
 	class RevoluteJoint : public Joint
 	{
@@ -81,8 +82,8 @@ namespace Physics2D
 			k.e22() += m_primitive.gamma;
 
 			m_primitive.effectiveMass = k.invert();
-			m_primitive.bodyA->applyImpulse(m_primitive.impulse, ra);
-			m_primitive.bodyB->applyImpulse(-m_primitive.impulse, rb);
+			m_primitive.bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);
+			m_primitive.bodyB->applyImpulse(-m_primitive.accumulatedImpulse, rb);
 
 		}
 		void solveVelocity(const real& dt) override
@@ -97,18 +98,18 @@ namespace Physics2D
 
 			Vector2 jvb = va - vb;
 			jvb += m_primitive.bias;
-			jvb += m_primitive.impulse * m_primitive.gamma;
+			jvb += m_primitive.accumulatedImpulse * m_primitive.gamma;
 			jvb.negate();
 			Vector2 J = m_primitive.effectiveMass.multiply(jvb);
-			Vector2 oldImpulse = m_primitive.impulse;
-			m_primitive.impulse += J;
+			Vector2 oldImpulse = m_primitive.accumulatedImpulse;
+			m_primitive.accumulatedImpulse += J;
 			real maxImpulse = dt * m_primitive.maxForce;
-			if (m_primitive.impulse.lengthSquare() > maxImpulse * maxImpulse)
+			if (m_primitive.accumulatedImpulse.lengthSquare() > maxImpulse * maxImpulse)
 			{
-				m_primitive.impulse.normalize();
-				m_primitive.impulse *= maxImpulse;
+				m_primitive.accumulatedImpulse.normalize();
+				m_primitive.accumulatedImpulse *= maxImpulse;
 			}
-			J = m_primitive.impulse - oldImpulse;
+			J = m_primitive.accumulatedImpulse - oldImpulse;
 			m_primitive.bodyA->applyImpulse(J, ra);
 			m_primitive.bodyB->applyImpulse(-J, rb);
 

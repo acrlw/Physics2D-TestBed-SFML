@@ -8,7 +8,7 @@ namespace Physics2D
 		m_vertices.reserve(4);
 	}
 
-	const std::vector<Vector2>& Polygon::vertices() const
+	const Container::Vector<Vector2>& Polygon::vertices() const
 	{
 		return m_vertices;
 	}

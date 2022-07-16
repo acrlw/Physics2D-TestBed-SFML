@@ -5,7 +5,7 @@ namespace Physics2D
 	std::tuple<CCD::BroadphaseTrajectory, AABB> CCD::buildTrajectoryAABB(Body* body, const Vector2& target, const real& dt)
 	{
 		assert(body != nullptr);
-		std::vector<AABBShot> trajectory;
+		Container::Vector<AABBShot> trajectory;
 		AABB result;
 		AABB startBox = AABB::fromBody(body);
 		Body::PhysicsAttribute start = body->physicsAttribute();
@@ -41,7 +41,7 @@ namespace Physics2D
 	std::tuple<CCD::BroadphaseTrajectory, AABB> CCD::buildTrajectoryAABB(Body* body, const real& dt)
 	{
 		assert(body != nullptr);
-		std::vector<AABBShot> trajectory;
+		Container::Vector<AABBShot> trajectory;
 		AABB result;
 		AABB startBox = AABB::fromBody(body);
 		Body::PhysicsAttribute start = body->physicsAttribute();
@@ -184,12 +184,12 @@ namespace Physics2D
 
 		return std::nullopt;
 	}
-	std::optional<std::vector<CCD::CCDPair>> CCD::query(DBVH::Node* root, Body* body, const real& dt)
+	std::optional<Container::Vector<CCD::CCDPair>> CCD::query(DBVH::Node* root, Body* body, const real& dt)
 	{
-		std::vector<CCDPair> queryList;
+		Container::Vector<CCDPair> queryList;
 		assert(root->isRoot() && body != nullptr);
 		auto [trajectoryCCD, aabbCCD] = buildTrajectoryAABB(body, dt);
-		std::vector<DBVH::Node*> potential;
+		Container::Vector<DBVH::Node*> potential;
 		DBVH::queryNodes(root, aabbCCD, potential, body);
 		for(DBVH::Node * element: potential)
 		{
@@ -207,9 +207,9 @@ namespace Physics2D
 			: std::nullopt;
 	}
 
-    std::optional<std::vector<CCD::CCDPair>> CCD::query(Tree& tree, Body* body, const real& dt)
+    std::optional<Container::Vector<CCD::CCDPair>> CCD::query(Tree& tree, Body* body, const real& dt)
     {
-        std::vector<CCDPair> queryList;
+        Container::Vector<CCDPair> queryList;
         assert(body != nullptr);
         auto [trajectoryCCD, aabbCCD] = buildTrajectoryAABB(body, dt);
         auto potentials = tree.query(aabbCCD);
@@ -234,7 +234,7 @@ namespace Physics2D
                                   : std::nullopt;
     }
 
-    std::optional<real> CCD::earliestTOI(const std::vector<CCDPair> &pairs, const real &epsilon) {
+    std::optional<real> CCD::earliestTOI(const Container::Vector<CCDPair> &pairs, const real &epsilon) {
         if(pairs.empty())
             return std::nullopt;
 

@@ -19,7 +19,7 @@ namespace Physics2D
         Vector2 bottomLeft()const;
         Vector2 topRight()const;
         Vector2 bottomRight()const;
-        std::vector<Vector2> boxVertices()const;
+        Container::Vector<Vector2> boxVertices()const;
     private:
         real m_width;
         real m_height;

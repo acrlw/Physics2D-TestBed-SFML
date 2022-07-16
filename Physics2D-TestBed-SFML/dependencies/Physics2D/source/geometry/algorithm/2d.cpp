@@ -2,16 +2,16 @@
 
 namespace Physics2D
 {
-	std::vector<Vector2> GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(const std::vector<Vector2>& polygon, const std::vector<Vector2>& clipRegion)
+	Container::Vector<Vector2> GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(const Container::Vector<Vector2>& polygon, const Container::Vector<Vector2>& clipRegion)
 	{
-		std::vector<Vector2> result = polygon;
+		Container::Vector<Vector2> result = polygon;
 
 		for (size_t i = 0; i < clipRegion.size() - 1; i++)
 		{
 			Vector2 clipPoint1 = clipRegion[i];
 			Vector2 clipPoint2 = clipRegion[i + 1];
 			Vector2 clipDirectionPoint = i + 2 == clipRegion.size() ? clipRegion[1] : clipRegion[i + 2];
-			std::vector<int8_t> testResults;
+			Container::Vector<int8_t> testResults;
 			testResults.reserve(polygon.size());
 
 			for (size_t j = 0; j < result.size(); j++)
@@ -19,7 +19,7 @@ namespace Physics2D
 				bool res = GeometryAlgorithm2D::isPointOnSameSide(clipPoint1, clipPoint2, clipDirectionPoint, result[j]);
 				testResults.emplace_back(res ? 1 : -1);
 			}
-			std::vector<Vector2> newPolygon;
+			Container::Vector<Vector2> newPolygon;
 			newPolygon.reserve(result.size());
 
 			for (size_t j = 1; j < testResults.size(); j++)
@@ -183,7 +183,7 @@ namespace Physics2D
 		return std::make_tuple(p, radius);
 	}
 
-	bool GeometryAlgorithm2D::isConvexPolygon(const std::vector<Vector2>& vertices)
+	bool GeometryAlgorithm2D::isConvexPolygon(const Container::Vector<Vector2>& vertices)
 	{
 		if (vertices.size() == 4)
 			return true;
@@ -198,10 +198,10 @@ namespace Physics2D
 		return true;
 	}
 
-	std::vector<Vector2> GeometryAlgorithm2D::grahamScan(const std::vector<Vector2>& vertices)
+	Container::Vector<Vector2> GeometryAlgorithm2D::grahamScan(const Container::Vector<Vector2>& vertices)
 	{
-		std::vector<Vector2> points = vertices;
-		std::vector<uint32_t> stack;
+		Container::Vector<Vector2> points = vertices;
+		Container::Vector<uint32_t> stack;
 		std::sort(points.begin(), points.end(), [](const Vector2& a, const Vector2& b)
 			{
 				if (atan2l(a.y, a.x) != atan2l(b.y, b.x))
@@ -249,7 +249,7 @@ namespace Physics2D
 			stack.emplace_back(k);
 			k++;
 		}
-		std::vector<Vector2> convex;
+		Container::Vector<Vector2> convex;
 		convex.reserve(stack.size());
 		for (const auto index : stack)
 			convex.emplace_back(points[index]);
@@ -344,7 +344,7 @@ namespace Physics2D
 		return std::fabs(Vector2::crossProduct(a1 - a2, a1 - a3)) / 2.0f;
 	}
 
-	Vector2 GeometryAlgorithm2D::calculateCenter(const std::vector<Vector2>& vertices)
+	Vector2 GeometryAlgorithm2D::calculateCenter(const Container::Vector<Vector2>& vertices)
 	{
 		if (vertices.size() >= 4)
 		{

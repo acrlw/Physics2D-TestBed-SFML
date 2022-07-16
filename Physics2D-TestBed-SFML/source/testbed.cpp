@@ -3,6 +3,7 @@ namespace Physics2D
 {
     TestBed::TestBed()
     {
+
         m_system.world().setEnableGravity(true);
 	    m_system.world().setLinearVelocityDamping(0.1f);
 	    m_system.world().setAirFrictionCoefficient(0.8f);
@@ -40,7 +41,7 @@ namespace Physics2D
     void TestBed::onClosed(sf::Event& event)
     {
         m_simulateWorkingState = false;
-        //m_physicsThread->wait();
+        m_physicsThread->wait();
         m_window->close();
     }
     void TestBed::onKeyReleased(sf::Event& event)
@@ -151,7 +152,7 @@ namespace Physics2D
 	{
         // create the window
         sf::ContextSettings settings;
-        settings.antialiasingLevel = 8;
+        settings.antialiasingLevel = 16;
         m_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Testbed", sf::Style::Default, settings);
         ImGui::SFML::Init(*m_window);
         m_window->setActive(false);
@@ -211,9 +212,6 @@ namespace Physics2D
                     break;
                 }
             }
-
-            //if (m_running)
-            //    step();
 
             m_camera.render(*m_window);
             if (m_currentFrame != nullptr && m_userDrawVisible)
