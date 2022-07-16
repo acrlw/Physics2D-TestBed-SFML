@@ -258,7 +258,6 @@ namespace Physics2D
         ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
         ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.1f);
         ImGui::SliderFloat("Contact Max Penetration", &m_system.maintainer().m_maxPenetration, 0.001f, 0.1f);
-        ImGui::SliderFloat("Render Scale", &RenderConstant::ScaleFactor, 0.1f, 1.0f);
 
         ImGui::Separator();
         ImGui::Text("Switches");

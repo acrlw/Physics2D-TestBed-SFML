@@ -154,7 +154,7 @@ namespace Physics2D
 		circleShape.setFillColor(fillColor);
 		circleShape.setOutlineThickness(RenderConstant::BorderSize);
 		circleShape.setOutlineColor(color);
-		circleShape.setPointCount(RenderConstant::BasicCirclePointCount + camera.meterToPixel());
+		circleShape.setPointCount(RenderConstant::BasicCirclePointCount + size_t(camera.meterToPixel()));
 		window.draw(circleShape);
 	}
 	void RenderSFMLImpl::renderCapsule(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
