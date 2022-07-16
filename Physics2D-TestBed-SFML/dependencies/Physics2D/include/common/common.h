@@ -26,12 +26,6 @@ namespace Physics2D
 		template<typename K, typename V>
 		using Map = std::map<K, V>;
 
-
-		//template<class T>
-		//using Vector = std::vector<T, mi_stl_allocator<T>>;
-
-		//template <class K, class V, class Compare = std::less<K>, class Allocator = mi_stl_allocator<std::pair<const K, V>>>
-		//using Map = std::map<K, V, Compare, Allocator>;
 	}
 #ifdef SINGLE_PRECISION
 	using real = float;
