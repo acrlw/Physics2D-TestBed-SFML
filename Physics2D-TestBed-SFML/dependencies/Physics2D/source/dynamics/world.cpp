@@ -374,6 +374,36 @@ namespace Physics2D
 	{
 	}
 
+	Vec2 DiscretePhysicsWorld::gravity() const
+	{
+		return m_gravity;
+	}
+
+	void DiscretePhysicsWorld::setGravity(const Vec2& gravity)
+	{
+		m_gravity = gravity;
+	}
+
+	Vec2 DiscretePhysicsWorld::linearDamping() const
+	{
+		return m_linearDamping;
+	}
+
+	void DiscretePhysicsWorld::setLinearDamping(real damping)
+	{
+		m_linearDamping = damping;
+	}
+
+	Vec2 DiscretePhysicsWorld::angularDamping() const
+	{
+		return m_angularDamping;
+	}
+
+	void DiscretePhysicsWorld::setAngularDamping(real damping)
+	{
+		m_angularDamping = damping;
+	}
+
 	void DiscretePhysicsWorld::prepareVelocityVelocity(real dt)
 	{
 

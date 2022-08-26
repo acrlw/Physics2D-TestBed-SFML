@@ -94,6 +94,15 @@ namespace Physics2D
         Index createBody();
         Index createJoint();
 
+        Vec2 gravity()const;
+        void setGravity(const Vec2& gravity);
+
+        Vec2 linearDamping()const;
+        void setLinearDamping(real damping);
+
+        Vec2 angularDamping()const;
+        void setAngularDamping(real damping);
+
         void prepareVelocityVelocity(real dt);
         void solveVelocityConstraint(real dt);
         void solvePositionConstraint(real dt);
@@ -101,7 +110,7 @@ namespace Physics2D
         void stepPosition(real dt);
         void stepSleep();
     private:
-        //Body-Index Constraint
+        //Index relates to body
     	std::vector<Vec2> position;
         std::vector<Vec2> velocity;
 
@@ -128,15 +137,13 @@ namespace Physics2D
         std::vector<uint32_t> sleepTimer;
         std::vector<real> energy;
 
-        //Free-Index
+        //Index independent
         std::vector<std::unique_ptr<Shape*>> shapePool;
         std::vector<size_t> freeList;
         
         Vec2 m_gravity = Vec2(0, -9.8f);
         real m_linearDamping = 1.0f;
         real m_angularDamping = 1.0f;
-        bool m_enableGravity = true;
-        bool m_enableDamping = true;
     };
 }
 #endif
