@@ -5,4 +5,5 @@
 #include "point.h"
 #include "pulley.h"
 #include "revolute.h"
+#include "weld.h"
 #endif

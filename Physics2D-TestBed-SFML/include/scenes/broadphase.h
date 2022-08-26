@@ -47,7 +47,7 @@ namespace Physics2D
 				body->setShape(shapeArray[dist2(gen)]);
 				body->rotation() = dist3(gen);
 				body->setMass(1);
-				body->setType(Body::BodyType::Kinematic);
+				body->setType(BodyType::Kinematic);
 
 				m_tree->insert(body);
 				grid.insert(body);
@@ -59,7 +59,7 @@ namespace Physics2D
 			//body = m_world->createBody();
 			//body->setShape(&block);
 			//body->setMass(1);
-			//body->setType(Body::BodyType::Kinematic);
+			//body->setType(BodyType::Kinematic);
 			//grid.insert(body)
 
 			//m_tree->insert(body);

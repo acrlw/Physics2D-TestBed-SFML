@@ -21,7 +21,7 @@ namespace Physics2D
 
 			Body* ground = m_world->createBody();
 			ground->setShape(&edge);
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			ground->setMass(Constant::PosInfty);
 			ground->position().set({ 0, 0.0f });
 			ground->setFriction(0.1f);
@@ -30,7 +30,7 @@ namespace Physics2D
 
 			Body* tile = m_world->createBody();
 			tile->setShape(&floor);
-			tile->setType(Body::BodyType::Static);
+			tile->setType(BodyType::Static);
 			tile->setMass(Constant::PosInfty);
 			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
@@ -40,7 +40,7 @@ namespace Physics2D
 
 			tile = m_world->createBody();
 			tile->setShape(&floor);
-			tile->setType(Body::BodyType::Static);
+			tile->setType(BodyType::Static);
 			tile->setMass(Constant::PosInfty);
 			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
@@ -51,7 +51,7 @@ namespace Physics2D
 
 			tile = m_world->createBody();
 			tile->setShape(&floor);
-			tile->setType(Body::BodyType::Static);
+			tile->setType(BodyType::Static);
 			tile->setMass(Constant::PosInfty);
 			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
@@ -66,7 +66,7 @@ namespace Physics2D
 				card->setMass(5.0f);
 				card->setFriction(0.1f);
 				card->setRestitution(0);
-				card->setType(Body::BodyType::Dynamic);
+				card->setType(BodyType::Dynamic);
 				card->position().set({ -10.0f + i * 1.2f, 12.0f });
 				m_tree->insert(card);
 			}
@@ -75,7 +75,7 @@ namespace Physics2D
 			stammer->setShape(&rectangle);
 			stammer->setMass(2.0f);
 			stammer->setFriction(0.1f);
-			stammer->setType(Body::BodyType::Dynamic);
+			stammer->setType(BodyType::Dynamic);
 			stammer->position().set(-16.0f, 16.0f);
 			m_tree->insert(stammer);
 

@@ -20,7 +20,7 @@ namespace Physics2D
 		real dampingRatio = 0.2f;
 		real gamma = 0.0f;
 		Vec2 bias;
-		Matrix3x3 effectiveMass;
+		Mat3 effectiveMass;
 		Vec2 accumulatedImpulse;
 	};
 	//weld joint comes from revolute and rotation joint
@@ -77,8 +77,8 @@ namespace Physics2D
 			Vec2 rb = pb - bodyB->position();
 
 			m_primitive.bias = (pa - pb) * erp;
-			Matrix3x3 k;
-
+			Mat3 k;
+			k[0][0] = 1;
 
 			m_primitive.effectiveMass = k.invert();
 			m_primitive.bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);

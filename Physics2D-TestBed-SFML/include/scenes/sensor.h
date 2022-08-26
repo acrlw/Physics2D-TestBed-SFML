@@ -23,7 +23,7 @@ namespace Physics2D
 			ground->setShape(&edge);
 			ground->position().set({ 0.0, 0.0 });
 			ground->setMass(Constant::PosInfty);
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			m_tree->insert(ground);
 
 			real offset = 0.0f;
@@ -35,7 +35,7 @@ namespace Physics2D
 				body->setShape(&rectangle);
 				body->rotation() = 0;
 				body->setMass(0.2f);
-				body->setType(Body::BodyType::Dynamic);
+				body->setType(BodyType::Dynamic);
 				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
 				m_tree->insert(body);
@@ -48,7 +48,7 @@ namespace Physics2D
 				body->setShape(&rectangle);
 				body->rotation() = 0;
 				body->setMass(0.2f);
-				body->setType(Body::BodyType::Dynamic);
+				body->setType(BodyType::Dynamic);
 				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
 				m_tree->insert(body);

@@ -126,7 +126,7 @@ namespace Physics2D
             {
                 Vec2 point = m_mousePos - body->position();
                 point = Mat2(-body->rotation()).multiply(point);
-                if (body->shape()->contains(point) && m_selectedBody == nullptr && body->type() != Body::BodyType::Static)
+                if (body->shape()->contains(point) && m_selectedBody == nullptr && body->type() != BodyType::Static)
                 {
                     m_selectedBody = body;
                     auto prim = m_mouseJoint->primitive();

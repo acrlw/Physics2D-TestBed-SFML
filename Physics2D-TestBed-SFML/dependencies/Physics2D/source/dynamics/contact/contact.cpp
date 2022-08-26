@@ -80,12 +80,12 @@ namespace Physics2D
 
 				Vec2 impulse = lambda * vcp.normal;
 
-				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
+				if (bodyA->type() != BodyType::Static && !bodyA->sleep())
 				{
 					bodyA->position() += bodyA->inverseMass() * impulse;
 					bodyA->rotation() += bodyA->inverseInertia() * vcp.ra.cross(impulse);
 				}
-				if (bodyB->type() != Body::BodyType::Static && !bodyB->sleep())
+				if (bodyB->type() != BodyType::Static && !bodyB->sleep())
 				{
 					bodyB->position() -= bodyB->inverseMass() * impulse;
 					bodyB->rotation() -= bodyB->inverseInertia() * vcp.rb.cross(impulse);
@@ -98,7 +98,7 @@ namespace Physics2D
 	{
 		const Body* bodyA = collision.bodyA;
 		const Body* bodyB = collision.bodyB;
-		const auto relation = Body::Relation::generateRelationID(collision.bodyA, collision.bodyB);
+		const auto relation = Relation::generateRelationID(collision.bodyA, collision.bodyB);
 		auto& contactList = m_contactTable[relation];
 		//assert(contactList.size() <= 2);
 

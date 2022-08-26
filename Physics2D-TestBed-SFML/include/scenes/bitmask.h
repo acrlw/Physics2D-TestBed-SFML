@@ -26,7 +26,7 @@ namespace Physics2D
 				ground->setBitmask(mask);
 				ground->setRestitution(0);
 				ground->setMass(Constant::PosInfty);
-				ground->setType(Body::BodyType::Static);
+				ground->setType(BodyType::Static);
 				mask = mask << 1;
 				m_tree->insert(ground);
 			}
@@ -40,7 +40,7 @@ namespace Physics2D
 				body->setBitmask(mask);
 				body->setRestitution(0);
 				body->setMass(1);
-				body->setType(Body::BodyType::Dynamic);
+				body->setType(BodyType::Dynamic);
 				mask = mask << 1;
 				m_tree->insert(body);
 			}

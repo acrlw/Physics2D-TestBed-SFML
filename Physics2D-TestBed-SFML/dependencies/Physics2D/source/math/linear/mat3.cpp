@@ -28,6 +28,24 @@ namespace Physics2D
 			e20, e21, e22);
 	}
 
+	Mat3 Mat3::operator+(const Mat3& rhs)
+	{
+		Mat3 temp(*this);
+		temp.r0 += rhs.r0;
+		temp.r1 += rhs.r1;
+		temp.r2 += rhs.r2;
+		return temp;
+	}
+
+	Mat3 Mat3::operator-(const Mat3& rhs)
+	{
+		Mat3 temp(*this);
+		temp.r0 -= rhs.r0;
+		temp.r1 -= rhs.r1;
+		temp.r2 -= rhs.r2;
+		return temp;
+	}
+
 	Vec3 Mat3::operator[](uint8_t index)
 	{
 		return v[index];
@@ -43,26 +61,34 @@ namespace Physics2D
 
 	Mat3& Mat3::operator+=(const Mat3& rhs)
 	{
-
+		r0 += rhs.r0;
+		r1 += rhs.r1;
+		r2 += rhs.r2;
 		return *this;
 	}
 
 	Mat3& Mat3::operator-=(const Mat3& rhs)
 	{
-
+		r0 -= rhs.r0;
+		r1 -= rhs.r1;
+		r2 -= rhs.r2;
 		return *this;
 	}
 
 	Mat3& Mat3::operator*=(const real& factor)
 	{
-
+		r0 *= factor;
+		r1 *= factor;
+		r2 *= factor;
 		return *this;
 	}
 
 	Mat3& Mat3::operator/=(const real& factor)
 	{
-		assert(!realEqual(factor, 0));
-
+		checkZero(factor);
+		r0 /= factor;
+		r1 /= factor;
+		r2 /= factor;
 		return *this;
 	}
 

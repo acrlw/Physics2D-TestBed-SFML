@@ -26,8 +26,8 @@ namespace Physics2D
 			});
 
 		
-		Container::Vector<Body::Relation> xPairs;
-		Container::Vector<Body::Relation> yPairs;
+		Container::Vector<Relation> xPairs;
+		Container::Vector<Relation> yPairs;
 
 		for (auto before = sortXAxis.begin(); before != sortXAxis.end(); ++before)
 		{
@@ -39,7 +39,7 @@ namespace Physics2D
 				const real maxNext = next->second.maximumX();
 
 				if (!(maxBefore < minNext || maxNext < minBefore))
-					xPairs.emplace_back(Body::Relation::generateRelation(before->first, next->first));
+					xPairs.emplace_back(Relation::generateRelation(before->first, next->first));
 				else
 					break;
 			}
@@ -55,17 +55,17 @@ namespace Physics2D
 				const real maxNext = next->second.maximumY();
 
 				if (!(maxBefore < minNext || maxNext < minBefore))
-					yPairs.emplace_back(Body::Relation::generateRelation(before->first, next->first));
+					yPairs.emplace_back(Relation::generateRelation(before->first, next->first));
 				else
 					break;
 			}
 		}
 
-		std::sort(xPairs.begin(), xPairs.end(), [](const Body::Relation& left, const Body::Relation& right)
+		std::sort(xPairs.begin(), xPairs.end(), [](const Relation& left, const Relation& right)
 			{
 				return left.relationID < right.relationID;
 			});
-		std::sort(yPairs.begin(), yPairs.end(), [](const Body::Relation& left, const Body::Relation& right)
+		std::sort(yPairs.begin(), yPairs.end(), [](const Relation& left, const Relation& right)
 			{
 				return left.relationID < right.relationID;
 			});

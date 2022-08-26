@@ -15,9 +15,9 @@ namespace Physics2D
 	public:
 		struct AABBShot
 		{
-			AABBShot(const AABB& box, const Body::PhysicsAttribute& attr, const real& t) : aabb(box), attribute(attr), time(t){}
+			AABBShot(const AABB& box, const PhysicsTransform& attr, const real& t) : aabb(box), attribute(attr), time(t){}
 			AABB aabb;
-			Body::PhysicsAttribute attribute;
+			PhysicsTransform attribute;
 			real time = 0;
 		};
 		struct IndexSection

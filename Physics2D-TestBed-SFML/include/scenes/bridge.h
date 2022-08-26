@@ -29,13 +29,13 @@ namespace Physics2D
 			rect->setMass(1.0f);
 			rect->setRestitution(0.2f);
 			rect->setFriction(0.01f);
-			rect->setType(Body::BodyType::Dynamic);
+			rect->setType(BodyType::Dynamic);
 
 			ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({ 0, -15.0 });
 			ground->setMass(Constant::PosInfty);
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			m_tree->insert(ground);
 
 			PointJointPrimitive ppm;
@@ -58,7 +58,7 @@ namespace Physics2D
 				rect2->rotation() = 0;
 				rect2->setMass(1.0f);
 				rect2->setFriction(0.01f);
-				rect2->setType(Body::BodyType::Dynamic);
+				rect2->setType(BodyType::Dynamic);
 
 				this->m_tree->insert(rect2);
 				revolutePrim.bodyA = rect;

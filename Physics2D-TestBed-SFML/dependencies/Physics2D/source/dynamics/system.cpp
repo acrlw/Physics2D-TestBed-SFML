@@ -42,7 +42,7 @@ namespace Physics2D
     {
         Container::Vector<Body*> bullets;
         for (auto& body : m_world.bodyList())
-            if (body->type() == Body::BodyType::Bullet)
+            if (body->type() == BodyType::Bullet)
                 bullets.emplace_back(body.get());
 
         for (auto& bullet : bullets)

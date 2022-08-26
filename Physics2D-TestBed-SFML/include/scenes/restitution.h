@@ -23,7 +23,7 @@ namespace Physics2D
 			ground->setRestitution(1.0f);
 			ground->setFriction(0.9f);
 			ground->position().set({ 0, 0 });
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			m_tree->insert(ground);
 
 			for(real i = 0;i < 10.0f;i += 1.0f)
@@ -34,7 +34,7 @@ namespace Physics2D
 				body->setFriction(0.1f);
 				body->setRestitution(i / 10.0f);
 				body->position().set(i * 2.5f - 10, 10.0f);
-				body->setType(Body::BodyType::Dynamic);
+				body->setType(BodyType::Dynamic);
 				m_tree->insert(body);
 			}
 		}

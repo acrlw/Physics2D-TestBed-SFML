@@ -127,12 +127,12 @@ namespace Physics2D
 			//Vec2 bias = (pa - pb) * 0.001f;
 			//Vec2 impulse = m_primitive.effectiveMass.multiply(bias);
 
-			//if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
+			//if (bodyA->type() != BodyType::Static && !bodyA->sleep())
 			//{
 			//	bodyA->position() += bodyA->inverseMass() * impulse;
 			//	bodyA->rotation() += bodyA->inverseInertia() * ra.cross(impulse);
 			//}
-			//if (bodyB->type() != Body::BodyType::Static && !bodyB->sleep())
+			//if (bodyB->type() != BodyType::Static && !bodyB->sleep())
 			//{
 			//	bodyB->position() -= bodyB->inverseMass() * impulse;
 			//	bodyB->rotation() -= bodyB->inverseInertia() * rb.cross(impulse);

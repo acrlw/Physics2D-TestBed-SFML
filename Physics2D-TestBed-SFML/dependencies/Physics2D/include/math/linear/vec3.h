@@ -24,6 +24,7 @@ namespace Physics2D
         Vec3& operator-=(const Vec3& rhs);
         Vec3& operator*=(const real& factor);
         Vec3& operator/=(const real& factor);
+        real& operator[](uint8_t index);
 
         Vec3& fill(const real& number);
         Vec3& set(const real& x, const real& y, const real& z);

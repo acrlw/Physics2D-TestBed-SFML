@@ -32,13 +32,13 @@ namespace Physics2D
 		{
 			switch (body->type())
 			{
-			case Body::BodyType::Static:
+			case BodyType::Static:
 			{
 				body->velocity().clear();
 				body->angularVelocity() = 0;
 				break;
 			}
-			case Body::BodyType::Dynamic:
+			case BodyType::Dynamic:
 			{
 				body->forces() += body->mass() * g;
 
@@ -55,7 +55,7 @@ namespace Physics2D
 
 				break;
 			}
-			case Body::BodyType::Kinematic:
+			case BodyType::Kinematic:
 			{
 				body->velocity() += body->inverseMass() * body->forces() * dt;
 				body->angularVelocity() += body->inverseInertia() * body->torques() * dt;
@@ -64,7 +64,7 @@ namespace Physics2D
 				body->angularVelocity() *= avd;
 				break;
 			}
-			case Body::BodyType::Bullet:
+			case BodyType::Bullet:
 			{
 				body->forces() += body->mass() * g;
 
@@ -99,9 +99,9 @@ namespace Physics2D
 		{
 			switch (body->type())
 			{
-			case Body::BodyType::Static:
+			case BodyType::Static:
 				break;
-			case Body::BodyType::Dynamic:
+			case BodyType::Dynamic:
 			{
 				body->forces().clear();
 				body->clearTorque();
@@ -130,7 +130,7 @@ namespace Physics2D
 
 				break;
 			}
-			case Body::BodyType::Kinematic:
+			case BodyType::Kinematic:
 			{
 				body->position() += body->velocity() * dt;
 				body->rotation() += body->angularVelocity() * dt;
@@ -139,7 +139,7 @@ namespace Physics2D
 				body->clearTorque();
 				break;
 			}
-			case Body::BodyType::Bullet:
+			case BodyType::Bullet:
 			{
 				body->position() += body->velocity() * dt;
 				body->rotation() += body->angularVelocity() * dt;
@@ -149,7 +149,7 @@ namespace Physics2D
 
 				if (body->velocity().magnitudeSquare() < Constant::CCDMinVelocity * Constant::CCDMinVelocity
 					&& body->rotation() < Constant::CCDMinVelocity)
-					body->setType(Body::BodyType::Dynamic);
+					body->setType(BodyType::Dynamic);
 				break;
 			}
 			}
@@ -178,7 +178,8 @@ namespace Physics2D
 	{
 		return m_jointList;
 	}
-	
+
+
 	Vec2 PhysicsWorld::gravity() const
 	{
 		return m_gravity;
@@ -364,5 +365,42 @@ namespace Physics2D
 		m_jointList.emplace_back(std::move(joint));
 		return temp;
 	}
-	
+
+	Index DiscretePhysicsWorld::createBody()
+	{
+	}
+
+	Index DiscretePhysicsWorld::createJoint()
+	{
+	}
+
+	void DiscretePhysicsWorld::prepareVelocityVelocity(real dt)
+	{
+
+	}
+
+	void DiscretePhysicsWorld::solveVelocityConstraint(real dt)
+	{
+
+	}
+
+	void DiscretePhysicsWorld::solvePositionConstraint(real dt)
+	{
+
+	}
+
+	void DiscretePhysicsWorld::stepVelocity(real dt)
+	{
+
+	}
+
+	void DiscretePhysicsWorld::stepPosition(real dt)
+	{
+
+	}
+
+	void DiscretePhysicsWorld::stepSleep()
+	{
+
+	}
 }

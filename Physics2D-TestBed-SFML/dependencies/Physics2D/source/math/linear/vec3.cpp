@@ -79,6 +79,11 @@ namespace Physics2D
 		return *this;
 	}
 
+	real& Vec3::operator[](uint8_t index)
+	{
+		return f[index];
+	}
+
 	Vec3& Vec3::fill(const real& number)
 	{
 		data = _mm_set_ps1(number);

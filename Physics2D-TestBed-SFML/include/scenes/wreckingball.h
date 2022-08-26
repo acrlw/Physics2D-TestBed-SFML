@@ -31,7 +31,7 @@ namespace Physics2D
 			ground->setShape(&edge);
 			ground->position().set({ 0, 0.0 });
 			ground->setMass(Constant::PosInfty);
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			m_tree->insert(ground);
 
 			for (real j = 0; j < 15.0f; j += 1.0f)
@@ -43,7 +43,7 @@ namespace Physics2D
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
 					body->setMass(0.1f);
-					body->setType(Body::BodyType::Dynamic);
+					body->setType(BodyType::Dynamic);
 					body->setFriction(0.8f);
 					body->setRestitution(0.0f);
 					m_tree->insert(body);
@@ -58,7 +58,7 @@ namespace Physics2D
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
 					body->setMass(0.1f);
-					body->setType(Body::BodyType::Dynamic);
+					body->setType(BodyType::Dynamic);
 					body->setFriction(0.8f);
 					body->setRestitution(0.0f);
 					m_tree->insert(body);
@@ -73,7 +73,7 @@ namespace Physics2D
 			rect->setMass(1.0f);
 			rect->setRestitution(0.2f);
 			rect->setFriction(0.8f);
-			rect->setType(Body::BodyType::Dynamic);
+			rect->setType(BodyType::Dynamic);
 
 
 			PointJointPrimitive ppm;
@@ -94,7 +94,7 @@ namespace Physics2D
 				rect2->rotation() = 0;
 				rect2->setMass(1.0f);
 				rect2->setFriction(0.1f);
-				rect2->setType(Body::BodyType::Dynamic);
+				rect2->setType(BodyType::Dynamic);
 
 				m_tree->insert(rect2);
 				RevoluteJointPrimitive revolutePrim;
@@ -114,7 +114,7 @@ namespace Physics2D
 			rect2->rotation() = 0;
 			rect2->setMass(25.0f);
 			rect2->setFriction(0.1f);
-			rect2->setType(Body::BodyType::Dynamic);
+			rect2->setType(BodyType::Dynamic);
 
 			m_tree->insert(rect2);
 			RevoluteJointPrimitive revolutePrim;
@@ -134,7 +134,7 @@ namespace Physics2D
 			rect2->rotation() = 0;
 			rect2->setMass(25.0f);
 			rect2->setFriction(0.1f);
-			rect2->setType(Body::BodyType::Dynamic);
+			rect2->setType(BodyType::Dynamic);
 			m_tree->insert(rect2);
 
 			distancePrim.bodyA = rect2;

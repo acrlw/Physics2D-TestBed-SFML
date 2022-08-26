@@ -24,14 +24,14 @@ namespace Physics2D
 			stick1->setShape(&rectangle);
 			stick1->setMass(2.0f);
 			stick1->setBitmask(mask << 1);
-			stick1->setType(Body::BodyType::Dynamic);
+			stick1->setType(BodyType::Dynamic);
 			stick1->position().set(0, 0);
 
 			stick2 = m_world->createBody();
 			stick2->setShape(&rectangle);
 			stick2->setMass(2.0f);
 			stick2->setBitmask(mask << 2);
-			stick2->setType(Body::BodyType::Dynamic);
+			stick2->setType(BodyType::Dynamic);
 			stick2->position().set(3.0f, 0);
 			stick2->rotation() = 0;
 
@@ -39,7 +39,7 @@ namespace Physics2D
 			stick3->setShape(&rectangle);
 			stick3->setMass(2.0f);
 			stick3->setBitmask(mask << 3);
-			stick3->setType(Body::BodyType::Dynamic);
+			stick3->setType(BodyType::Dynamic);
 			real h = 1.5f * fastInverseSqrt(2.0f);
 			stick3->position().set(3.0f + 1.5f + h, h);
 			stick3->rotation() = degreeToRadian(45);

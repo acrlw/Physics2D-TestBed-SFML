@@ -25,7 +25,7 @@ namespace Physics2D
 			ground->setShape(&edge);
 			ground->position().set({ 0, 0 });
 			ground->setMass(Constant::PosInfty);
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			ground->setFriction(0.7f);
 			ground->setRestitution(1.0);
 			m_tree->insert(ground);
@@ -35,7 +35,7 @@ namespace Physics2D
 			rect->position().set({ 0, 6 });
 			rect->rotation() = degreeToRadian(60);
 			rect->setMass(1);
-			rect->setType(Body::BodyType::Dynamic);
+			rect->setType(BodyType::Dynamic);
 			rect->setFriction(0.4f);
 			rect->setRestitution(0.0f);
 			m_tree->insert(rect);

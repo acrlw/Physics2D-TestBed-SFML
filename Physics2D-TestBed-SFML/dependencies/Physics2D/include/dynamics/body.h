@@ -18,36 +18,35 @@
 
 namespace Physics2D
 {
+	enum class BodyType
+	{
+		Kinematic,
+		Static,
+		Dynamic,
+		Bullet
+	};
+	struct Relation
+	{
+		using RelationID = uint64_t;
+		static RelationID generateRelationID(Body* bodyA, Body* bodyB);
+		static Relation generateRelation(Body* bodyA, Body* bodyB);
+		RelationID relationID;
+		Body* bodyA;
+		Body* bodyB;
+	};
+	struct PhysicsTransform
+	{
+		PhysicsTransform() = default;
+		PhysicsTransform(const Vec2& pos, const Vec2& v, const real& rotate, const real& omega);
+		Vec2 position;
+		Vec2 velocity;
+		real rotation = 0;
+		real angularVelocity = 0;
+		void step(const real& dt);
+	};
 	class Body
 	{
 	public:
-
-		struct Relation
-		{
-			using RelationID = uint64_t;
-			static RelationID generateRelationID(Body* bodyA, Body* bodyB);
-			static Relation generateRelation(Body* bodyA, Body* bodyB);
-			RelationID relationID;
-			Body* bodyA;
-			Body* bodyB;
-		};
-
-		enum class BodyType
-		{
-			Kinematic,
-			Static,
-			Dynamic,
-			Bullet
-		};
-
-		struct PhysicsAttribute
-		{
-			Vec2 position;
-			Vec2 velocity;
-			real rotation = 0;
-			real angularVelocity = 0;
-			void step(const real& dt);
-		};
 
 		Body() = default;
 		Vec2& position();
@@ -89,8 +88,8 @@ namespace Physics2D
 		real inverseMass() const;
 		real inverseInertia() const;
 
-		PhysicsAttribute physicsAttribute() const;
-		void setPhysicsAttribute(const PhysicsAttribute& info);
+		PhysicsTransform physicsTransform() const;
+		void setPhysicsTransform(const PhysicsTransform& info);
 
 		void stepPosition(const real& dt);
 

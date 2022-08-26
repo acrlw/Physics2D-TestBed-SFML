@@ -27,7 +27,7 @@ namespace Physics2D
 				ground->setMass(Constant::PosInfty);
 				ground->position().set(0, i * 3.0f);
 				ground->setRestitution(0);
-				ground->setType(Body::BodyType::Static);
+				ground->setType(BodyType::Static);
 
 				Body* rampBody = m_world->createBody();
 				rampBody->setShape(&ramp);
@@ -35,7 +35,7 @@ namespace Physics2D
 				rampBody->setMass(Constant::PosInfty);
 				rampBody->position().set(0, i * 3.0f);
 				rampBody->setRestitution(0);
-				rampBody->setType(Body::BodyType::Static);
+				rampBody->setType(BodyType::Static);
 
 				m_tree->insert(ground);
 				m_tree->insert(rampBody);
@@ -49,7 +49,7 @@ namespace Physics2D
 				cube->setMass(1);
 				cube->position().set(-5.0f, i * 3.5f);
 				cube->setRestitution(0);
-				cube->setType(Body::BodyType::Dynamic);
+				cube->setType(BodyType::Dynamic);
 				m_tree->insert(cube);
 			}
 

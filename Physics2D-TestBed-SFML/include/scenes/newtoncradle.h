@@ -24,7 +24,7 @@ namespace Physics2D
 			Body* ball = m_world->createBody();
 			ball->setShape(&circle);
 			ball->setMass(1.0f);
-			ball->setType(Body::BodyType::Dynamic);
+			ball->setType(BodyType::Dynamic);
 			ball->position().set(startX, 5.0);
 			ball->setRestitution(1.0f);
 
@@ -41,7 +41,7 @@ namespace Physics2D
 				ball = m_world->createBody();
 				ball->setShape(&circle);
 				ball->setMass(1.0f);
-				ball->setType(Body::BodyType::Dynamic);
+				ball->setType(BodyType::Dynamic);
 				ball->setFriction(0.1f);
 				ball->setRestitution(1.0f);
 				ball->position().set(startX, 5.0);
@@ -55,7 +55,7 @@ namespace Physics2D
 			ball = m_world->createBody();
 			ball->setShape(&circle);
 			ball->setMass(1.0f);
-			ball->setType(Body::BodyType::Dynamic);
+			ball->setType(BodyType::Dynamic);
 			ball->position().set(startX + 5.0f, 10.0f);
 			ball->setRestitution(1.0f);
 

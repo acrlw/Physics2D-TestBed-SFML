@@ -12,8 +12,9 @@ namespace Physics2D
     class PhysicsWorld
     {
 		public:
-            PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f), m_bias(0.8f),
-    			m_enableGravity(true), m_linearVelocityThreshold(0.02f), m_angularVelocityThreshold(0.02f), m_airFrictionCoefficient(0.7f)
+            PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f),
+                             m_linearVelocityThreshold(0.02f),
+                             m_angularVelocityThreshold(0.02f), m_airFrictionCoefficient(0.7f), m_bias(0.8f)
             {}
             ~PhysicsWorld();
             void prepareVelocityConstraint(const real& dt);
@@ -65,9 +66,9 @@ namespace Physics2D
             real bias() const;
             void setBias(const real &bias);
 
-            Container::Vector<std::unique_ptr<Body>>& bodyList();
+            std::vector<std::unique_ptr<Body>>& bodyList();
     	
-            Container::Vector<std::unique_ptr<Joint>>& jointList();
+            std::vector<std::unique_ptr<Joint>>& jointList();
         private:
 
             Vec2 m_gravity;
@@ -81,12 +82,61 @@ namespace Physics2D
     		
     		bool m_enableGravity = true;
     		bool m_enableDamping = true;
-            Container::Vector<std::unique_ptr<Body>> m_bodyList;
-            Container::Vector<std::unique_ptr<Joint>> m_jointList;
-
-    		
+            std::vector<std::unique_ptr<Body>> m_bodyList;
+            std::vector<std::unique_ptr<Joint>> m_jointList;
     		
     };
+    using Index = size_t;
+    class DiscretePhysicsWorld
+    {
+    public:
 
+        Index createBody();
+        Index createJoint();
+
+        void prepareVelocityVelocity(real dt);
+        void solveVelocityConstraint(real dt);
+        void solvePositionConstraint(real dt);
+        void stepVelocity(real dt);
+        void stepPosition(real dt);
+        void stepSleep();
+    private:
+        //Body-Index Constraint
+    	std::vector<Vec2> position;
+        std::vector<Vec2> velocity;
+
+        std::vector<real> rotation;
+        std::vector<real> angularVelocity;
+
+        std::vector<Vec2> lastPosition;
+        std::vector<Vec2> lastRotation;
+
+        std::vector<Vec2> force;
+        std::vector<real> torque;
+
+        std::vector<real> invMass;
+        std::vector<real> invInertia;
+
+        std::vector<real> friction;
+        std::vector<real> restitution;
+
+        std::vector<Shape*> shape;
+        std::vector<uint8_t> sleep;//0: awake, 1: sleep
+        std::vector<BodyType> type;
+        std::vector<uint32_t> bitmask;
+
+        std::vector<uint32_t> sleepTimer;
+        std::vector<real> energy;
+
+        //Free-Index
+        std::vector<std::unique_ptr<Shape*>> shapePool;
+        std::vector<size_t> freeList;
+        
+        Vec2 m_gravity = Vec2(0, -9.8f);
+        real m_linearDamping = 1.0f;
+        real m_angularDamping = 1.0f;
+        bool m_enableGravity = true;
+        bool m_enableDamping = true;
+    };
 }
 #endif

@@ -61,12 +61,12 @@ namespace Physics2D {
         calcInertia();
     }
 
-    Body::BodyType Body::type() const
+    BodyType Body::type() const
     {
         return m_type;
     }
 
-    void Body::setType(const Body::BodyType &type)
+    void Body::setType(const BodyType&type)
     {
         m_type = type;
     }
@@ -132,12 +132,12 @@ namespace Physics2D {
         return m_invInertia;
     }
 
-    Body::PhysicsAttribute Body::physicsAttribute() const
+    PhysicsTransform Body::physicsTransform() const
     {
         return {m_position, m_velocity, m_rotation, m_angularVelocity};
     }
 
-    void Body::setPhysicsAttribute(const PhysicsAttribute& info)
+    void Body::setPhysicsTransform(const PhysicsTransform& info)
     {
         m_position = info.position;
         m_rotation = info.rotation;
@@ -275,7 +275,7 @@ namespace Physics2D {
 			m_invInertia = !realEqual(m_inertia, 0) ? 1.0f / m_inertia : 0;
     }
 
-    Body::Relation::RelationID Body::Relation::generateRelationID(Body* bodyA, Body* bodyB)
+    Relation::RelationID Relation::generateRelationID(Body* bodyA, Body* bodyB)
     {
         assert(bodyA != nullptr && bodyB != nullptr);
         //Combine two 32-bit id into one 64-bit id in binary form
@@ -290,10 +290,10 @@ namespace Physics2D {
         return result;
     }
 
-    Body::Relation Body::Relation::generateRelation(Body* bodyA, Body* bodyB)
+    Relation Relation::generateRelation(Body* bodyA, Body* bodyB)
     {
         assert(bodyA != nullptr && bodyB != nullptr);
-        Body::Relation result;
+        Relation result;
         auto bodyAId = bodyA->id();
         auto bodyBId = bodyB->id();
         if (bodyAId > bodyBId)
@@ -305,9 +305,14 @@ namespace Physics2D {
         return result;
     }
 
+    PhysicsTransform::PhysicsTransform(const Vec2& pos, const Vec2& v, const real& rotate, const real& omega)
+	    :position(pos), velocity(v), rotation(rotate), angularVelocity(omega)
+    {
+        
+    }
 
 
-    void Body::PhysicsAttribute::step(const real& dt)
+    void PhysicsTransform::step(const real& dt)
     {
         position += velocity * dt;
         rotation += angularVelocity * dt;

@@ -27,7 +27,7 @@ namespace Physics2D
 			bodyA = m_world->createBody();
 			bodyA->setShape(&triangle);
 			bodyA->setMass(1.0f);
-			bodyA->setType(Body::BodyType::Dynamic);
+			bodyA->setType(BodyType::Dynamic);
 			bodyA->position().set(0, 2.0f);
 			bodyA->setBitmask(0x01);
 			m_tree->insert(bodyA);
@@ -35,7 +35,7 @@ namespace Physics2D
 			bodyB = m_world->createBody();
 			bodyB->setShape(&capsule);
 			bodyB->setMass(1.0f);
-			bodyB->setType(Body::BodyType::Dynamic);
+			bodyB->setType(BodyType::Dynamic);
 			bodyB->position().set(0, 0.0f);
 			bodyB->setBitmask(0x01);
 			m_tree->insert(bodyB);
@@ -59,7 +59,7 @@ namespace Physics2D
 
 			block = m_world->createBody();
 			block->setShape(&rectangle);
-			block->setType(Body::BodyType::Dynamic);
+			block->setType(BodyType::Dynamic);
 			block->setMass(4.0f);
 			block->position().set(5.0f, 2.0f);
 			block->setBitmask(0x01 << 1);
@@ -73,8 +73,8 @@ namespace Physics2D
 			wheel2->setMass(4.0f);
 			wheel1->position().set(3.0f, 1.0f);
 			wheel2->position().set(7.0f, 1.0f);
-			wheel1->setType(Body::BodyType::Dynamic);
-			wheel2->setType(Body::BodyType::Dynamic);
+			wheel1->setType(BodyType::Dynamic);
+			wheel2->setType(BodyType::Dynamic);
 			wheel1->setBitmask(0x01 << 2 | 0x01);
 			wheel2->setBitmask(0x01 << 3 | 0x01);
 			m_tree->insert(wheel1);
@@ -96,7 +96,7 @@ namespace Physics2D
 			ground->setShape(&edge);
 			ground->position().set({ 0, -2.0 });
 			ground->setMass(Constant::PosInfty);
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			ground->setFriction(0.4f);
 			ground->setBitmask(0x01);
 			m_tree->insert(ground);
@@ -105,7 +105,7 @@ namespace Physics2D
 			ground->setShape(&edge2);
 			ground->position().set(100.0f, -2.0f);
 			ground->setMass(Constant::PosInfty);
-			ground->setType(Body::BodyType::Static);
+			ground->setType(BodyType::Static);
 			ground->setFriction(0.4f);
 			ground->setBitmask(0x01);
 			m_tree->insert(ground);

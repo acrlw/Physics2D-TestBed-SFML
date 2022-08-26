@@ -8,23 +8,23 @@ namespace Physics2D
 		Container::Vector<AABBShot> trajectory;
 		AABB result;
 		AABB startBox = AABB::fromBody(body);
-		Body::PhysicsAttribute start = body->physicsAttribute();
+		PhysicsTransform start = body->physicsTransform();
 		body->stepPosition(dt);
 		
-		Body::PhysicsAttribute end = body->physicsAttribute();
+		PhysicsTransform end = body->physicsTransform();
 		AABB endBox = AABB::fromBody(body);
 
 		if(startBox == endBox && start.velocity.magnitudeSquare() < Constant::CCDMinVelocity && std::fabs(start.angularVelocity) < Constant::CCDMinVelocity)
 		{
-			trajectory.emplace_back(AABBShot( startBox, body->physicsAttribute(), 0));
-			trajectory.emplace_back(AABBShot( endBox, body->physicsAttribute(), dt ));
+			trajectory.emplace_back(AABBShot( startBox, body->physicsTransform(), 0));
+			trajectory.emplace_back(AABBShot( endBox, body->physicsTransform(), dt ));
 			return std::make_tuple(trajectory, result);
 		}
 		
 
 		result.unite(startBox).unite(endBox);
 		
-		body->setPhysicsAttribute(start);
+		body->setPhysicsTransform(start);
 		
 		real slice = 40;
 		real step = dt / slice;
@@ -32,10 +32,10 @@ namespace Physics2D
 		{
 			body->stepPosition(step);
 			AABB aabb = AABB::fromBody(body);
-			trajectory.emplace_back(AABBShot{aabb, body->physicsAttribute(), i});
+			trajectory.emplace_back(AABBShot{aabb, body->physicsTransform(), i});
 			result.unite(aabb);
 		}
-		body->setPhysicsAttribute(start);
+		body->setPhysicsTransform(start);
 		return std::make_tuple(trajectory, result);
 	}
 	std::tuple<CCD::BroadphaseTrajectory, AABB> CCD::buildTrajectoryAABB(Body* body, const real& dt)
@@ -44,23 +44,23 @@ namespace Physics2D
 		Container::Vector<AABBShot> trajectory;
 		AABB result;
 		AABB startBox = AABB::fromBody(body);
-		Body::PhysicsAttribute start = body->physicsAttribute();
+		PhysicsTransform start = body->physicsTransform();
 		body->stepPosition(dt);
 
-		Body::PhysicsAttribute end = body->physicsAttribute();
+		PhysicsTransform end = body->physicsTransform();
 		AABB endBox = AABB::fromBody(body);
 
 		if (startBox == endBox && start.velocity.magnitudeSquare() < Constant::CCDMinVelocity && std::fabs(start.angularVelocity) < Constant::CCDMinVelocity)
 		{
-			trajectory.emplace_back(AABBShot(startBox, body->physicsAttribute(), 0));
-			trajectory.emplace_back(AABBShot(endBox, body->physicsAttribute(), dt));
+			trajectory.emplace_back(AABBShot(startBox, body->physicsTransform(), 0));
+			trajectory.emplace_back(AABBShot(endBox, body->physicsTransform(), dt));
 			return std::make_tuple(trajectory, result);
 		}
 
 
 		result.unite(startBox).unite(endBox);
 
-		body->setPhysicsAttribute(start);
+		body->setPhysicsTransform(start);
 
 		real slice = 40;
 		real step = dt / slice;
@@ -68,11 +68,11 @@ namespace Physics2D
 		{
 			body->stepPosition(step);
 			AABB aabb = AABB::fromBody(body);
-			trajectory.emplace_back(AABBShot{ aabb, body->physicsAttribute(), i });
+			trajectory.emplace_back(AABBShot{ aabb, body->physicsTransform(), i });
 			result.unite(aabb);
 			i += step;
 		}
-		body->setPhysicsAttribute(start);
+		body->setPhysicsTransform(start);
 		return std::make_tuple(trajectory, result);
 	}
 	std::optional<CCD::IndexSection> CCD::findBroadphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const real& dt)
@@ -118,13 +118,13 @@ namespace Physics2D
 		if (dynamicTrajectory.size() < 2)
 			return std::nullopt;
 		
-		Body::PhysicsAttribute staticOrigin = staticBody->physicsAttribute();
-		Body::PhysicsAttribute dynamicOrigin = dynamicBody->physicsAttribute();
+		PhysicsTransform staticOrigin = staticBody->physicsTransform();
+		PhysicsTransform dynamicOrigin = dynamicBody->physicsTransform();
 
 		real startTimestep = 0;
 		real endTimestep = 0;
 
-		dynamicBody->setPhysicsAttribute(dynamicTrajectory[index.forward].attribute);
+		dynamicBody->setPhysicsTransform(dynamicTrajectory[index.forward].attribute);
 		startTimestep = dynamicTrajectory[index.forward].time;
 		endTimestep = dynamicTrajectory[index.backward].time;
 
@@ -132,18 +132,18 @@ namespace Physics2D
 		const real slice = 30.0;
 		real step = (endTimestep - startTimestep) / slice;
 		real forwardSteps = 0;
-		Body::PhysicsAttribute lastAttribute;
+		PhysicsTransform lastAttribute;
 		//forwarding
 		bool isFound = false;
 		while (startTimestep + forwardSteps <= endTimestep)
 		{
-			lastAttribute = dynamicBody->physicsAttribute();
+			lastAttribute = dynamicBody->physicsTransform();
 			dynamicBody->stepPosition(step);
 			forwardSteps += step;
 			if (const bool result = Detector::collide(staticBody, dynamicBody); result)
 			{
 				forwardSteps -= step;
-				dynamicBody->setPhysicsAttribute(lastAttribute);
+				dynamicBody->setPhysicsTransform(lastAttribute);
 				isFound = true;
 				break;
 			}
@@ -151,8 +151,8 @@ namespace Physics2D
 
 		if (!isFound)
 		{
-			staticBody->setPhysicsAttribute(staticOrigin);
-			dynamicBody->setPhysicsAttribute(dynamicOrigin);
+			staticBody->setPhysicsTransform(staticOrigin);
+			dynamicBody->setPhysicsTransform(dynamicOrigin);
 			return std::nullopt;
 		}
 
@@ -162,20 +162,20 @@ namespace Physics2D
 		unsigned int counter = 0;
 		while (startTimestep + forwardSteps <= endTimestep)
 		{
-			lastAttribute = dynamicBody->physicsAttribute();
+			lastAttribute = dynamicBody->physicsTransform();
 			dynamicBody->stepPosition(step);
 			forwardSteps += step;
 			if (const auto result = Detector::detect(staticBody, dynamicBody); result.isColliding)
 			{
 				if (std::fabs(result.penetration) < epsilon || counter >= Constant::CCDMaxIterations)
 				{
-					staticBody->setPhysicsAttribute(staticOrigin);
-					dynamicBody->setPhysicsAttribute(dynamicOrigin);
+					staticBody->setPhysicsTransform(staticOrigin);
+					dynamicBody->setPhysicsTransform(dynamicOrigin);
 					return std::optional(startTimestep + forwardSteps);
 				}
 
 				forwardSteps -= step;
-				dynamicBody->setPhysicsAttribute(lastAttribute);
+				dynamicBody->setPhysicsTransform(lastAttribute);
 				step /= 2.0;
 			}
 			counter++;

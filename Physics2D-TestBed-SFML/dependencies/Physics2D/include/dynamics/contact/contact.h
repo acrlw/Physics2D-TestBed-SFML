@@ -29,7 +29,7 @@ namespace Physics2D
 	struct ContactConstraintPoint
 	{
 		ContactConstraintPoint() = default;
-		Body::Relation::RelationID relation = 0;
+		Relation::RelationID relation = 0;
 		real friction = 0.2f;
 		bool active = true;
 		Vec2 localA;
@@ -51,7 +51,7 @@ namespace Physics2D
 		real m_maxPenetration = 0.005f;
 		real m_biasFactor = 0.02f;
 		bool m_blockSolver = true;
-		Container::Map<Body::Relation::RelationID, Container::Vector<ContactConstraintPoint>> m_contactTable;
+		Container::Map<Relation::RelationID, Container::Vector<ContactConstraintPoint>> m_contactTable;
 	private:
 	};
 

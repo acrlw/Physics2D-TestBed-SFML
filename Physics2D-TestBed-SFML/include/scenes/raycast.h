@@ -44,7 +44,7 @@ namespace Physics2D
 				body->setShape(shapeArray[dist2(gen)]);
 				body->rotation() = dist3(gen);
 				body->setMass(1);
-				body->setType(Body::BodyType::Static);
+				body->setType(BodyType::Static);
 
 				m_tree->insert(body);
 			}
