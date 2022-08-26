@@ -25,8 +25,8 @@ namespace Physics2D
             }
             virtual void scale(const real& factor) = 0;
             virtual ~Shape() {};
-            virtual bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon) = 0;
-            virtual Vector2 center()const = 0;
+            virtual bool contains(const Vec2& point, const real& epsilon = Constant::GeometryEpsilon) = 0;
+            virtual Vec2 center()const = 0;
         protected:
             Type m_type;
     };
@@ -38,11 +38,11 @@ namespace Physics2D
     struct ShapePrimitive
     {
 		Shape* shape;
-        Vector2 transform;
+        Vec2 transform;
         real rotation = 0;
-        Vector2 translate(const Vector2& source)const
+        Vec2 translate(const Vec2& source)const
         {
-            return Matrix2x2(rotation).multiply(source) + transform;
+            return Mat2(rotation).multiply(source) + transform;
         }
     };
 }

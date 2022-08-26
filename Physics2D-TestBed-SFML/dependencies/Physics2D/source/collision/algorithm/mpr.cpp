@@ -2,14 +2,14 @@
 
 namespace Physics2D
 {
-	std::tuple<Vector2, Simplex> MPR::discover(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	std::tuple<Vec2, Simplex> MPR::discover(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
 		Simplex simplex;
-		Vector2 centerA = Matrix2x2(shapeA.rotation).multiply(shapeA.shape->center());
-		Vector2 centerB = Matrix2x2(shapeB.rotation).multiply(shapeB.shape->center());
-		Vector2 origin = shapeB.transform - shapeA.transform;
+		Vec2 centerA = Mat2(shapeA.rotation).multiply(shapeA.shape->center());
+		Vec2 centerB = Mat2(shapeB.rotation).multiply(shapeB.shape->center());
+		Vec2 origin = shapeB.transform - shapeA.transform;
 		Minkowski v0(centerA + shapeA.transform, centerB + shapeB.transform);
-		Vector2 direction = centerB - centerA + origin;
+		Vec2 direction = centerB - centerA + origin;
 		
 		if (direction.fuzzyEqual({ 0, 0 }))
 			direction.set(1, 1);
@@ -24,11 +24,11 @@ namespace Physics2D
 	}
 
 	std::tuple<bool, Simplex> MPR::refine(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
-	                                      const Simplex& source, const Vector2& centerToOrigin, const real& iteration)
+	                                      const Simplex& source, const Vec2& centerToOrigin, const real& iteration)
 	{
 		Simplex simplex = source;
 		bool isColliding = false;
-		Vector2 v1, v2, direction;
+		Vec2 v1, v2, direction;
 		real counter = 0;
 		while (counter++ < iteration)
 		{
@@ -45,8 +45,8 @@ namespace Physics2D
 			if (v1.fuzzyEqual(newVertex.result) || v2.fuzzyEqual(newVertex.result))
 				break;
 
-			const real dist13 = GeometryAlgorithm2D::pointToLineSegment(v1, newVertex.result, { 0, 0 }).lengthSquare();
-			const real dist23 = GeometryAlgorithm2D::pointToLineSegment(v2, newVertex.result, { 0, 0 }).lengthSquare();
+			const real dist13 = GeometryAlgorithm2D::pointToLineSegment(v1, newVertex.result, { 0, 0 }).magnitudeSquare();
+			const real dist23 = GeometryAlgorithm2D::pointToLineSegment(v2, newVertex.result, { 0, 0 }).magnitudeSquare();
 
 			//bool contain1 = GeometryAlgorithm2D::triangleContainsOrigin(simplex.vertices[0].result,
 			//	simplex.vertices[1].result, newVertex.result);

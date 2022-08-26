@@ -11,15 +11,15 @@ namespace Physics2D
 	struct AABB
 	{
 		AABB() = default;
-		AABB(const Vector2& topLeft, const real& boxWidth, const real& boxHeight);
-		AABB(const Vector2& topLeft, const Vector2& bottomRight);
+		AABB(const Vec2& topLeft, const real& boxWidth, const real& boxHeight);
+		AABB(const Vec2& topLeft, const Vec2& bottomRight);
 		real width = 0;
 		real height = 0;
-		Vector2 position;
-		inline Vector2 topLeft()const;
-		inline Vector2 topRight()const;
-		inline Vector2 bottomLeft()const;
-		inline Vector2 bottomRight()const;
+		Vec2 position;
+		inline Vec2 topLeft()const;
+		inline Vec2 topRight()const;
+		inline Vec2 bottomLeft()const;
+		inline Vec2 bottomRight()const;
 
 		inline real minimumX()const;
 		inline real minimumY()const;
@@ -36,7 +36,7 @@ namespace Physics2D
 		bool isSubset(const AABB& other)const;
 		bool isEmpty()const;
 		bool operator==(const AABB& other)const;
-		bool raycast(const Vector2& start, const Vector2& direction)const;
+		bool raycast(const Vec2& start, const Vec2& direction)const;
 		/// <summary>
 		/// Create AABB from shape.
 		/// </summary>
@@ -45,7 +45,7 @@ namespace Physics2D
 		/// <returns></returns>
 		static AABB fromShape(const ShapePrimitive& shape, const real& factor = 0);
 		static AABB fromBody(Body* body, const real& factor = 0);
-		static AABB fromBox(const Vector2& topLeft, const Vector2& bottomRight);
+		static AABB fromBox(const Vec2& topLeft, const Vec2& bottomRight);
 		/// <summary>
 		/// Check if two aabbs are overlapping
 		/// </summary>
@@ -70,7 +70,7 @@ namespace Physics2D
 
 		static void expand(AABB& aabb, const real& factor = 0.0);
 
-		static bool raycast(const AABB& aabb, const Vector2& start, const Vector2& direction);
+		static bool raycast(const AABB& aabb, const Vec2& start, const Vec2& direction);
 		
 	};
 

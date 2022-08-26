@@ -6,7 +6,7 @@ namespace Physics2D
 	struct Minkowski
 	{
 		Minkowski() = default;
-		Minkowski(const Vector2& point_a, const Vector2& point_b) : pointA(point_a), pointB(point_b),
+		Minkowski(const Vec2& point_a, const Vec2& point_b) : pointA(point_a), pointB(point_b),
 			result(pointA - pointB)
 		{
 		}
@@ -21,9 +21,9 @@ namespace Physics2D
 			return !(pointA == rhs.pointA && pointB == rhs.pointB);
 		}
 
-		Vector2 pointA;
-		Vector2 pointB;
-		Vector2 result;
+		Vec2 pointA;
+		Vec2 pointB;
+		Vec2 result;
 	};
 }
 #endif

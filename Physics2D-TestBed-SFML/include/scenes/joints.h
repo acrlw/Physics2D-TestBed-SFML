@@ -19,7 +19,7 @@ namespace Physics2D
 			edge.set({ -100, 0 }, { 100, 0 });
 			edge2.set({ 0, 0 }, { 100, 40 });
 			rectangle.set(4.0f, 2.0f);
-			path.set(Vector2{ -6.0f, 6.0f }, Vector2{ -3.0f, 3.0f }, Vector2{ 3.0f, 9.0f }, Vector2{ 6.0f, 6.0f });
+			path.set(Vec2{ -6.0f, 6.0f }, Vec2{ -3.0f, 3.0f }, Vec2{ 3.0f, 9.0f }, Vec2{ 6.0f, 6.0f });
 			wheel.setRadius(1.0f);
 
 			uint32_t bitmask = 0x01;
@@ -54,7 +54,7 @@ namespace Physics2D
 			RotationJointPrimitive rotationPrim;
 			rotationPrim.bodyA = bodyA;
 			rotationPrim.bodyB = bodyB;
-			rotationPrim.referenceRotation = Math::degreeToRadian(30);
+			rotationPrim.referenceRotation = degreeToRadian(30);
 			m_world->createJoint(rotationPrim);
 
 			block = m_world->createBody();
@@ -95,7 +95,7 @@ namespace Physics2D
 			Body* ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({ 0, -2.0 });
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.4f);
 			ground->setBitmask(0x01);
@@ -104,7 +104,7 @@ namespace Physics2D
 			ground = m_world->createBody();
 			ground->setShape(&edge2);
 			ground->position().set(100.0f, -2.0f);
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.4f);
 			ground->setBitmask(0x01);
@@ -115,7 +115,7 @@ namespace Physics2D
 		{
 			sf::Color color = sf::Color::Cyan;
 			color.a = 155;
-			Vector2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
+			Vec2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
 			RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal, color);
 
 		}
@@ -133,7 +133,7 @@ namespace Physics2D
 			{
 			case sf::Keyboard::D:
 			{
-				wheel1->applyImpulse(Vector2(0.0f, -50.0f), Vector2(1.0f, 0.0f));
+				wheel1->applyImpulse(Vec2(0.0f, -50.0f), Vec2(1.0f, 0.0f));
 				break;
 			}
 			default:
@@ -146,8 +146,8 @@ namespace Physics2D
 		{
 			auto pair = Detector::distance(bodyA, bodyB);
 			normal = (pair.pointA - pair.pointB).normalize();
-			Vector2 pb = pair.pointB + 0.5f * distance * normal;
-			Vector2 pa = pair.pointA - 0.5f * distance * normal;
+			Vec2 pb = pair.pointB + 0.5f * distance * normal;
+			Vec2 pa = pair.pointA - 0.5f * distance * normal;
 			joint->primitive().localPointA = bodyA->toLocalPoint(pa);
 			joint->primitive().localPointB = bodyB->toLocalPoint(pb);
 
@@ -160,7 +160,7 @@ namespace Physics2D
 		Edge edge;
 		Edge edge2;
 		real distance = 2.0f;
-		Vector2 normal;
+		Vec2 normal;
 
 		RevoluteJoint* joint;
 		Body* bodyA;

@@ -52,14 +52,14 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			Vector2 p;
-			Vector2 d = m_mousePos.normal();
+			Vec2 p;
+			Vec2 d = m_mousePos.normal();
 			sf::Color originColor = RenderConstant::MaterialGray;
 			sf::Color dirColor = RenderConstant::MaterialDarkGreen;
 			sf::Color hitColor = sf::Color::Cyan;
 
 
-			RenderSFMLImpl::renderPoint(window, *m_camera, Vector2(0, 0), originColor);
+			RenderSFMLImpl::renderPoint(window, *m_camera, Vec2(0, 0), originColor);
 			RenderSFMLImpl::renderLine(window, *m_camera, p, d * 10.0f, dirColor);
 			auto bodyList = m_tree->raycast(p, d);
 			for(auto& elem: bodyList)
@@ -74,10 +74,10 @@ namespace Physics2D
 		}
 		void onMouseMove(sf::Event& event) override
 		{
-			m_mousePos  = m_camera->screenToWorld(Vector2(event.mouseMove.x, event.mouseMove.y));
+			m_mousePos  = m_camera->screenToWorld(Vec2(event.mouseMove.x, event.mouseMove.y));
 		}
 	private:
-		Vector2 m_mousePos = Vector2(1, 1);
+		Vec2 m_mousePos = Vec2(1, 1);
 		Rectangle rectangle;
 		Circle circle;
 		Polygon polygon;

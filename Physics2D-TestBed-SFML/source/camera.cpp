@@ -19,17 +19,17 @@ namespace Physics2D
 
 			if (m_targetBody != nullptr)
 			{
-				Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
-				Vector2 target(-(m_targetBody->position().x + m_targetBody->shape()->center().x), m_targetBody->position().y + m_targetBody->shape()->center().y);
+				Vec2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
+				Vec2 target(-(m_targetBody->position().x + m_targetBody->shape()->center().x), m_targetBody->position().y + m_targetBody->shape()->center().y);
 				target = worldToScreen(target) - real_origin;
 
-				Vector2 c = target - m_transform;
+				Vec2 c = target - m_transform;
 
 				switch (m_easingType)
 				{
 				case EasingType::Exponential:
 				{
-					if (c.lengthSquare() < 0.1)
+					if (c.magnitudeSquare() < 0.1)
 						m_transform = target;
 					else
 						m_transform -= (1.0 - std::exp(m_restitution * inv_dt)) * c;
@@ -37,7 +37,7 @@ namespace Physics2D
 				}
 				case EasingType::Lerp:
 				{
-					if (c.lengthSquare() < 0.1)
+					if (c.magnitudeSquare() < 0.1)
 						m_transform = target;
 					else
 						m_transform += 0.02 * c;
@@ -112,18 +112,18 @@ namespace Physics2D
 				sf::Color color = sf::Color::Green;
 				color.a = 225;
 
-				Container::Vector<Vector2> axisPoints;
+				Container::Vector<Vec2> axisPoints;
 				axisPoints.reserve(static_cast<size_t>(m_axisPointCount * 2 + 1));
 
 				for (real i = -m_axisPointCount; i <= m_axisPointCount; i += 1.0)
 				{
-					axisPoints.emplace_back(Vector2(0, i));
-					axisPoints.emplace_back(Vector2(i, 0));
+					axisPoints.emplace_back(Vec2(0, i));
+					axisPoints.emplace_back(Vec2(i, 0));
 				}
 				RenderSFMLImpl::renderPoints(window, *this, axisPoints, color);
 				color.a = 100;
-				RenderSFMLImpl::renderLine(window, *this, Vector2(0, -m_axisPointCount), Vector2(0, m_axisPointCount), color);
-				RenderSFMLImpl::renderLine(window, *this, Vector2(-m_axisPointCount, 0), Vector2(m_axisPointCount, 0), color);
+				RenderSFMLImpl::renderLine(window, *this, Vec2(0, -m_axisPointCount), Vec2(0, m_axisPointCount), color);
+				RenderSFMLImpl::renderLine(window, *this, Vec2(-m_axisPointCount, 0), Vec2(m_axisPointCount, 0), color);
 
 				//draw grid
 				drawGridScaleLine(window);
@@ -182,12 +182,12 @@ namespace Physics2D
 		m_targetPixelToMeter = 1.0f / meterToPixel;
 	}
 
-	Vector2 Camera::transform() const
+	Vec2 Camera::transform() const
 	{
 		return m_transform;
 	}
 
-	void Camera::setTransform(const Vector2& transform)
+	void Camera::setTransform(const Vec2& transform)
 	{
 		m_transform = transform;
 	}
@@ -238,15 +238,15 @@ namespace Physics2D
 		m_viewport = viewport;
 		m_origin.set((m_viewport.topLeft.x + m_viewport.bottomRight.x) * (0.5), (m_viewport.topLeft.y + m_viewport.bottomRight.y) * (0.5));
 	}
-	Vector2 Camera::worldToScreen(const Vector2& pos)const
+	Vec2 Camera::worldToScreen(const Vec2& pos)const
 	{
-		Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
-		return Vector2(real_origin.x + pos.x * m_meterToPixel, real_origin.y - pos.y * m_meterToPixel);
+		Vec2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
+		return Vec2(real_origin.x + pos.x * m_meterToPixel, real_origin.y - pos.y * m_meterToPixel);
 	}
-	Vector2 Camera::screenToWorld(const Vector2& pos)const
+	Vec2 Camera::screenToWorld(const Vec2& pos)const
 	{
-		Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
-		Vector2 result = pos - real_origin;
+		Vec2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
+		Vec2 result = pos - real_origin;
 		result.y = -result.y;
 		result *= m_pixelToMeter;
 		return result;
@@ -374,14 +374,14 @@ namespace Physics2D
 		else
 			h = 1.0;
 
-		Container::Vector<std::pair<Vector2, Vector2>> lines;
+		Container::Vector<std::pair<Vec2, Vec2>> lines;
 		lines.reserve(static_cast<size_t>(m_axisPointCount * 2));
 		for (real i = -m_axisPointCount; i <= m_axisPointCount; i += h)
 		{
 			if (realEqual(i, 0.0))
 				continue;
-			Vector2 p1 = { i, m_axisPointCount };
-			Vector2 p2 = { i, -m_axisPointCount };
+			Vec2 p1 = { i, m_axisPointCount };
+			Vec2 p2 = { i, -m_axisPointCount };
 			lines.emplace_back(std::make_pair(p1, p2));
 
 			p1.set(-m_axisPointCount, i);
@@ -409,8 +409,8 @@ namespace Physics2D
 					continue;
 				if (realEqual(i - std::floor(i), 0.0f))
 					continue;
-				Vector2 p1 = { i, m_axisPointCount };
-				Vector2 p2 = { i, -m_axisPointCount };
+				Vec2 p1 = { i, m_axisPointCount };
+				Vec2 p2 = { i, -m_axisPointCount };
 				lines.emplace_back(std::make_pair(p1, p2));
 
 				p1.set(-m_axisPointCount, i);

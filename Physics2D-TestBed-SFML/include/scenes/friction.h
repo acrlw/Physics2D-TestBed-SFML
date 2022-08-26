@@ -24,7 +24,7 @@ namespace Physics2D
 				Body* ground = m_world->createBody();
 				ground->setShape(&edge);
 				ground->setFriction(0.1f);
-				ground->setMass(Constant::Max);
+				ground->setMass(Constant::PosInfty);
 				ground->position().set(0, i * 3.0f);
 				ground->setRestitution(0);
 				ground->setType(Body::BodyType::Static);
@@ -32,7 +32,7 @@ namespace Physics2D
 				Body* rampBody = m_world->createBody();
 				rampBody->setShape(&ramp);
 				rampBody->setFriction(0.1f);
-				rampBody->setMass(Constant::Max);
+				rampBody->setMass(Constant::PosInfty);
 				rampBody->position().set(0, i * 3.0f);
 				rampBody->setRestitution(0);
 				rampBody->setType(Body::BodyType::Static);

@@ -9,13 +9,13 @@ namespace Physics2D
 {
 	struct VelocityConstraintPoint
 	{
-		Vector2 ra;
-		Vector2 rb;
-		Vector2 va;
-		Vector2 vb;
-		Vector2 normal;
-		Vector2 tangent;
-		Vector2 velocityBias;
+		Vec2 ra;
+		Vec2 rb;
+		Vec2 va;
+		Vec2 vb;
+		Vec2 normal;
+		Vec2 tangent;
+		Vec2 velocityBias;
 		real bias = 0;
 		real penetration = 0.0f;
 		real restitution = 0.8f;
@@ -32,8 +32,8 @@ namespace Physics2D
 		Body::Relation::RelationID relation = 0;
 		real friction = 0.2f;
 		bool active = true;
-		Vector2 localA;
-		Vector2 localB;
+		Vec2 localA;
+		Vec2 localB;
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
 		VelocityConstraintPoint vcp;

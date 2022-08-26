@@ -20,25 +20,25 @@ namespace Physics2D
 			{
 				auto& vcp = ccp.vcp;
 
-				Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
-				Vector2 wb = Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
+				Vec2 wa = Vec2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
+				Vec2 wb = Vec2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
 				vcp.va = ccp.bodyA->velocity() + wa;
 				vcp.vb = ccp.bodyB->velocity() + wb;
 
-				Vector2 dv = vcp.va - vcp.vb;
+				Vec2 dv = vcp.va - vcp.vb;
 				real jv = -1.0f * vcp.normal.dot(dv - vcp.velocityBias);
 				real lambda_n = vcp.effectiveMassNormal * jv;
 				real oldImpulse = vcp.accumulatedNormalImpulse;
-				vcp.accumulatedNormalImpulse = Math::max(oldImpulse + lambda_n, 0);
+				vcp.accumulatedNormalImpulse = max(oldImpulse + lambda_n, 0);
 				lambda_n = vcp.accumulatedNormalImpulse - oldImpulse;
 
-				Vector2 impulse_n = lambda_n * vcp.normal;
+				Vec2 impulse_n = lambda_n * vcp.normal;
 
 				ccp.bodyA->applyImpulse(impulse_n, vcp.ra);
 				ccp.bodyB->applyImpulse(-impulse_n, vcp.rb);
 
-				vcp.va = ccp.bodyA->velocity() + Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
-				vcp.vb = ccp.bodyB->velocity() + Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
+				vcp.va = ccp.bodyA->velocity() + Vec2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
+				vcp.vb = ccp.bodyB->velocity() + Vec2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
 				dv = vcp.va - vcp.vb;
 
 				real jvt = vcp.tangent.dot(dv);
@@ -46,11 +46,11 @@ namespace Physics2D
 
 				real maxT = ccp.friction * vcp.accumulatedNormalImpulse;
 				oldImpulse = vcp.accumulatedTangentImpulse;
-				vcp.accumulatedTangentImpulse = Math::clamp(oldImpulse + lambda_t, -maxT, maxT);
+				vcp.accumulatedTangentImpulse = clamp(oldImpulse + lambda_t, -maxT, maxT);
 
 				lambda_t = vcp.accumulatedTangentImpulse - oldImpulse;
 
-				Vector2 impulse_t = lambda_t * vcp.tangent;
+				Vec2 impulse_t = lambda_t * vcp.tangent;
 
 
 				ccp.bodyA->applyImpulse(impulse_t, vcp.ra);
@@ -71,14 +71,14 @@ namespace Physics2D
 				auto&& vcp = ccp.vcp;
 				Body* bodyA = ccp.bodyA;
 				Body* bodyB = ccp.bodyB;
-				Vector2 pa = vcp.ra + bodyA->position();
-				Vector2 pb = vcp.rb + bodyB->position();
-				Vector2 c = pb - pa;
+				Vec2 pa = vcp.ra + bodyA->position();
+				Vec2 pb = vcp.rb + bodyB->position();
+				Vec2 c = pb - pa;
 
-				real bias = m_biasFactor * Math::max(c.length() - m_maxPenetration, 0.0f);
+				real bias = m_biasFactor * max(c.magnitude() - m_maxPenetration, 0.0f);
 				real lambda = vcp.effectiveMassNormal * bias;
 
-				Vector2 impulse = lambda * vcp.normal;
+				Vec2 impulse = lambda * vcp.normal;
 
 				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
 				{
@@ -105,8 +105,8 @@ namespace Physics2D
 		for (const auto& elem : collision.contactList)
 		{
 			bool existed = false;
-			Vector2 localA = bodyA->toLocalPoint(elem.pointA);
-			Vector2 localB = bodyB->toLocalPoint(elem.pointB);
+			Vec2 localA = bodyA->toLocalPoint(elem.pointA);
+			Vec2 localB = bodyB->toLocalPoint(elem.pointB);
 			for (auto& contact : contactList)
 			{
 				const bool isPointA = localA.fuzzyEqual(contact.localA, 0.1f);
@@ -170,7 +170,7 @@ namespace Physics2D
 		ccp.bodyB = collision.bodyB;
 		ccp.active = true;
 
-		ccp.friction = Math::sqrt(ccp.bodyA->friction() * ccp.bodyB->friction());
+		ccp.friction = sqrt(ccp.bodyA->friction() * ccp.bodyB->friction());
 
 		VelocityConstraintPoint& vcp = ccp.vcp;
 		vcp.ra = pair.pointA - collision.bodyA->position();
@@ -200,19 +200,19 @@ namespace Physics2D
 		vcp.effectiveMassTangent = realEqual(kTangent, 0.0f) ? 0 : 1.0f / kTangent;
 
 		//vcp.bias = 0;
-		vcp.restitution = Math::min(ccp.bodyA->restitution(), ccp.bodyB->restitution());
+		vcp.restitution = min(ccp.bodyA->restitution(), ccp.bodyB->restitution());
 		vcp.penetration = collision.penetration;
 
-		Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
-		Vector2 wb = Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
+		Vec2 wa = Vec2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
+		Vec2 wb = Vec2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
 		vcp.va = ccp.bodyA->velocity() + wa;
 		vcp.vb = ccp.bodyB->velocity() + wb;
 
 		vcp.velocityBias = -vcp.restitution * (vcp.va - vcp.vb);
 
 		//accumulate inherited impulse
-		Vector2 impulse = vcp.accumulatedNormalImpulse * vcp.normal + vcp.accumulatedTangentImpulse * vcp.tangent;
-		//Vector2 impulse;
+		Vec2 impulse = vcp.accumulatedNormalImpulse * vcp.normal + vcp.accumulatedTangentImpulse * vcp.tangent;
+		//Vec2 impulse;
 		ccp.bodyA->applyImpulse(impulse, vcp.ra);
 		ccp.bodyB->applyImpulse(-impulse, vcp.rb);
 		

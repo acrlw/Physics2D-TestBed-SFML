@@ -76,7 +76,7 @@ namespace Physics2D
 
 			bool pass = false;
 			for (auto& elem : pairList)
-				if (realEqual((elem.pointA - elem.pointB).lengthSquare(), result.penetration * result.penetration))
+				if (realEqual((elem.pointA - elem.pointB).magnitudeSquare(), result.penetration * result.penetration))
 					pass = true;
 
 			//if fail, there must be a deeper contact point, use it:

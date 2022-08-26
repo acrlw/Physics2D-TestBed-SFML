@@ -1,13 +1,13 @@
 #include "../../include/dynamics/body.h"
 namespace Physics2D {
 
-    Vector2& Body::position()
+    Vec2& Body::position()
     {
         return m_position;
     }
     
 
-    Vector2& Body::velocity() 
+    Vec2& Body::velocity() 
     {
         return m_velocity;
     }
@@ -23,7 +23,7 @@ namespace Physics2D {
         return m_angularVelocity;
     }
 
-    Vector2& Body::forces()
+    Vec2& Body::forces()
     {
         return m_forces;
     }
@@ -38,7 +38,7 @@ namespace Physics2D {
     {
         return m_torques;
     }
-    Vector2& Body::lastPosition()
+    Vec2& Body::lastPosition()
     {
         return m_lastPosition;
     }
@@ -80,7 +80,7 @@ namespace Physics2D {
     {
         m_mass = mass;
     	
-    	if(realEqual(mass,Constant::Max))
+    	if(realEqual(mass,Constant::PosInfty))
             m_invMass = 0;
         else
 			m_invMass = !realEqual(mass, 0) ? 1.0f / mass : 0;
@@ -151,23 +151,23 @@ namespace Physics2D {
         m_rotation += m_angularVelocity * dt;
     }
 
-    void Body::applyImpulse(const Vector2& impulse, const Vector2& r)
+    void Body::applyImpulse(const Vec2& impulse, const Vec2& r)
     {
         m_velocity += m_invMass * impulse;
         m_angularVelocity += m_invInertia * r.cross(impulse);
     }
-    Vector2 Body::toLocalPoint(const Vector2& point)const
+    Vec2 Body::toLocalPoint(const Vec2& point)const
     {
-        return Matrix2x2(-m_rotation).multiply(point - m_position);
+        return Mat2(-m_rotation).multiply(point - m_position);
     }
 
-    Vector2 Body::toWorldPoint(const Vector2& point) const
+    Vec2 Body::toWorldPoint(const Vec2& point) const
     {
-        return Matrix2x2(m_rotation).multiply(point) + m_position;
+        return Mat2(m_rotation).multiply(point) + m_position;
     }
-    Vector2 Body::toActualPoint(const Vector2& point) const
+    Vec2 Body::toActualPoint(const Vec2& point) const
     {
-        return Matrix2x2(m_rotation).multiply(point);
+        return Mat2(m_rotation).multiply(point);
     }
 
     uint32_t Body::id() const
@@ -214,14 +214,14 @@ namespace Physics2D {
         {
             const Polygon* polygon = static_cast<Polygon*>(m_shape);
 
-            const Vector2 center = polygon->center();
+            const Vec2 center = polygon->center();
             real sum1 = 0.0;
             real sum2 = 0.0;
 
             for (uint32_t i = 0; i < polygon->vertices().size() - 1; i++)
             {
-                Vector2 n1 = polygon->vertices()[i] - center;
-                Vector2 n2 = polygon->vertices()[i + 1] - center;
+                Vec2 n1 = polygon->vertices()[i] - center;
+                Vec2 n2 = polygon->vertices()[i + 1] - center;
                 real cross = std::fabs(n1.cross(n2));
                 real dot = n2.dot(n2) + n2.dot(n1) + n1.dot(n1);
                 sum1 += cross * dot;
@@ -269,7 +269,7 @@ namespace Physics2D {
         default:
             break;
         }
-        if (realEqual(m_mass, Constant::Max))
+        if (realEqual(m_mass, Constant::PosInfty))
             m_invInertia = 0;
         else
 			m_invInertia = !realEqual(m_inertia, 0) ? 1.0f / m_inertia : 0;

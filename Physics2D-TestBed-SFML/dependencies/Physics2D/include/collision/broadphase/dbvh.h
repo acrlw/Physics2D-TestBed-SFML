@@ -36,13 +36,13 @@ namespace Physics2D
 			void erase(Body* body);
 			void cleanUp(Node* node);
 			Node* root()const;
-			Container::Vector<Body*> raycast(const Vector2& start, const Vector2& direction);
+			Container::Vector<Body*> raycast(const Vec2& start, const Vec2& direction);
 			Container::Vector<std::pair<Body*, Body*>> generate();
 			Container::Map<Body*, Node*>& leaves();
 			void query(const AABB& sourceAABB, Container::Vector<Node*>& nodes, Body* skipBody = nullptr)const;
 			static void queryNodes(Node* node, const AABB& sourceAABB, Container::Vector<Node*>& nodes, Body* skipBody = nullptr);
 		private:
-			void raycast(Container::Vector<Body*>& result, Node* node, const Vector2& start, const Vector2& direction);
+			void raycast(Container::Vector<Body*>& result, Node* node, const Vec2& start, const Vec2& direction);
 			void insert(Node* node);
 			real deltaCost(Node* node, const AABB& aabb)const;
 			void totalCost(Node* node, const AABB& aabb, real& cost)const;

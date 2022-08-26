@@ -1,5 +1,5 @@
-#ifndef PHYSICS_RANDOM_H
-#define PHYSICS_RANDOM_H
+#ifndef UTILS_RANDOM_H
+#define UTILS_RANDOM_H
 
 #include "random"
 

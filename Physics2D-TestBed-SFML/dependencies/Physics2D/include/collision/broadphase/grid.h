@@ -15,7 +15,7 @@ namespace Physics2D
 	public:
 		UniformGrid(const real& width = 100.0f, const real& height = 100.0f, const uint32_t rows = 200, const uint32_t columns = 200);
 		Container::Vector<std::pair<Body*, Body*>> generate();
-		Container::Vector<Body*> raycast(const Vector2& p, const Vector2& d);
+		Container::Vector<Body*> raycast(const Vec2& p, const Vec2& d);
 
 		void updateAll();
 		void update(Body* body);
@@ -65,7 +65,7 @@ namespace Physics2D
 		Container::Vector<Position> queryCells(const AABB& aabb);
 
 		//ray cast query cells
-		Container::Vector<Position> queryCells(const Vector2& start, const Vector2& direction);
+		Container::Vector<Position> queryCells(const Vec2& start, const Vec2& direction);
 		real cellHeight()const;
 		real cellWidth()const;
 

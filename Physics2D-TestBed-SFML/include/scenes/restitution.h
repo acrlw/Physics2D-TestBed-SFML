@@ -15,11 +15,11 @@ namespace Physics2D
 		{
 			circle.setRadius(1.0f);
 			
-			edge.set(Vector2{ -100.0, 0 }, Vector2{ 100.0, 0 });
+			edge.set(Vec2{ -100.0, 0 }, Vec2{ 100.0, 0 });
 
 			Body* ground = m_world->createBody();
 			ground->setShape(&edge);
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->setRestitution(1.0f);
 			ground->setFriction(0.9f);
 			ground->position().set({ 0, 0 });

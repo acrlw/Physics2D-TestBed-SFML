@@ -84,7 +84,7 @@ namespace Physics2D
 
 			for (auto&& elem : grid.m_cellsToBodies)
 			{
-				Vector2 topLeft(real(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f, real(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
+				Vec2 topLeft(real(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f, real(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
 				AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
 				//cell.expand(-0.05f);
 

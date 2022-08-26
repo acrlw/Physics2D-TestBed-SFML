@@ -8,7 +8,7 @@ namespace Physics2D
 
     public:
         Ellipse(const real& width = 0, const real& height = 0);
-        void set(const Vector2& leftTop, const Vector2& rightBottom);
+        void set(const Vec2& leftTop, const Vec2& rightBottom);
         void set(const real& width, const real& height);
 
         real width()const;
@@ -18,8 +18,8 @@ namespace Physics2D
         void setHeight(const real& height);
 
         void scale(const real& factor) override;
-        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon) override;
-        Vector2 center()const override;
+        bool contains(const Vec2& point, const real& epsilon = Constant::GeometryEpsilon) override;
+        Vec2 center()const override;
         real A()const;
         real B()const;
         real C()const;

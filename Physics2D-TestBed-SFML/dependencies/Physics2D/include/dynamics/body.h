@@ -42,28 +42,28 @@ namespace Physics2D
 
 		struct PhysicsAttribute
 		{
-			Vector2 position;
-			Vector2 velocity;
+			Vec2 position;
+			Vec2 velocity;
 			real rotation = 0;
 			real angularVelocity = 0;
 			void step(const real& dt);
 		};
 
 		Body() = default;
-		Vector2& position();
+		Vec2& position();
 
-		Vector2& velocity();
+		Vec2& velocity();
 
 		real& rotation();
 
 		real& angularVelocity();
 
-		Vector2& forces();
+		Vec2& forces();
 		void clearTorque();
 
 		real& torques();
 
-		Vector2& lastPosition();
+		Vec2& lastPosition();
 		real& lastRotation();
 		uint32_t& sleepCountdown();
 
@@ -94,10 +94,10 @@ namespace Physics2D
 
 		void stepPosition(const real& dt);
 
-		void applyImpulse(const Vector2& impulse, const Vector2& r);
-		Vector2 toLocalPoint(const Vector2& point) const;
-		Vector2 toWorldPoint(const Vector2& point) const;
-		Vector2 toActualPoint(const Vector2& point) const;
+		void applyImpulse(const Vec2& impulse, const Vec2& r);
+		Vec2 toLocalPoint(const Vec2& point) const;
+		Vec2 toWorldPoint(const Vec2& point) const;
+		Vec2 toActualPoint(const Vec2& point) const;
 
 		uint32_t id()const;
 		void setId(const uint32_t& id);
@@ -120,15 +120,15 @@ namespace Physics2D
 		real m_invMass = 0;
 		real m_invInertia = 0;
 
-		Vector2 m_position;
-		Vector2 m_velocity;
+		Vec2 m_position;
+		Vec2 m_velocity;
 		real m_rotation = 0;
 		real m_angularVelocity = 0;
 
-		Vector2 m_lastPosition;
+		Vec2 m_lastPosition;
 		real m_lastRotation = 0;
 
-		Vector2 m_forces;
+		Vec2 m_forces;
 		real m_torques = 0;
 
 		Shape* m_shape;

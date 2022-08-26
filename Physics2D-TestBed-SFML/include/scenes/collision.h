@@ -24,7 +24,7 @@ namespace Physics2D
 			ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({ 0, 0 });
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.7f);
 			ground->setRestitution(1.0);
@@ -33,7 +33,7 @@ namespace Physics2D
 			rect = m_world->createBody();
 			rect->setShape(&rectangle);
 			rect->position().set({ 0, 6 });
-			rect->rotation() = Math::degreeToRadian(60);
+			rect->rotation() = degreeToRadian(60);
 			rect->setMass(1);
 			rect->setType(Body::BodyType::Dynamic);
 			rect->setFriction(0.4f);

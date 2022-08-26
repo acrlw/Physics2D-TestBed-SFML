@@ -40,9 +40,9 @@ namespace Physics2D
 			stick3->setMass(2.0f);
 			stick3->setBitmask(mask << 3);
 			stick3->setType(Body::BodyType::Dynamic);
-			real h = 1.5f * Math::fastInverseSqrt(2.0f);
+			real h = 1.5f * fastInverseSqrt(2.0f);
 			stick3->position().set(3.0f + 1.5f + h, h);
-			stick3->rotation() = Math::degreeToRadian(45);
+			stick3->rotation() = degreeToRadian(45);
 
 			RevoluteJointPrimitive rjp;
 			rjp.bodyA = stick1;
@@ -80,7 +80,7 @@ namespace Physics2D
 		{
 			if (points.size() > 400)
 				points.pop_front();
-			points.emplace_back(stick3->toWorldPoint(Vector2{ 2.0f, 0.0f }));
+			points.emplace_back(stick3->toWorldPoint(Vec2{ 2.0f, 0.0f }));
 
 			for(auto& elem: points)
 				RenderSFMLImpl::renderPoint(window, *m_camera, elem, sf::Color::Cyan);
@@ -93,7 +93,7 @@ namespace Physics2D
 		Body* stick1 = nullptr;
 		Body* stick2 = nullptr;
 		Body* stick3 = nullptr;
-		std::deque<Vector2> points;
+		std::deque<Vec2> points;
 		Rectangle rectangle;
 
 	};

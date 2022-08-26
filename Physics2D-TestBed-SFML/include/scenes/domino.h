@@ -17,12 +17,12 @@ namespace Physics2D
 			floor.set(15.0f, 0.5f);
 			rectangle.set(0.5f, 0.5f);
 			brick.set(0.3f, 3.0f);
-			edge.set(Vector2{ -100.0f, 0 }, Vector2{ 100.0f, 0 });
+			edge.set(Vec2{ -100.0f, 0 }, Vec2{ 100.0f, 0 });
 
 			Body* ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->setType(Body::BodyType::Static);
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->position().set({ 0, 0.0f });
 			ground->setFriction(0.1f);
 			ground->setRestitution(0.0f);
@@ -31,20 +31,20 @@ namespace Physics2D
 			Body* tile = m_world->createBody();
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
-			tile->setMass(Constant::Max);
+			tile->setMass(Constant::PosInfty);
 			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
-			tile->rotation() = Math::degreeToRadian(15);
+			tile->rotation() = degreeToRadian(15);
 			tile->position().set({ 4, 8 });
 			m_tree->insert(tile);
 
 			tile = m_world->createBody();
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
-			tile->setMass(Constant::Max);
+			tile->setMass(Constant::PosInfty);
 			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
-			tile->rotation() = Math::degreeToRadian(-15);
+			tile->rotation() = degreeToRadian(-15);
 			tile->position().set({ -4, 4 });
 			m_tree->insert(tile);
 
@@ -52,7 +52,7 @@ namespace Physics2D
 			tile = m_world->createBody();
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
-			tile->setMass(Constant::Max);
+			tile->setMass(Constant::PosInfty);
 			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = 0;

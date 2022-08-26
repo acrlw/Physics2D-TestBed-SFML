@@ -44,7 +44,7 @@ namespace Physics2D
 		}
 		static real naturalFrequency(real frequency)
 		{
-			return Constant::DoublePi * frequency;
+			return Constant::TwoPi * frequency;
 		}
 		static real springDampingCoefficient(real mass, real naturalFrequency, real dampingRatio)
 		{

@@ -14,7 +14,7 @@ namespace Physics2D
 	struct OrientationJointPrimitive
 	{
 		Body* bodyA;
-		Vector2 targetPoint;
+		Vec2 targetPoint;
 		real referenceRotation = 0;
 		real bias = 0;
 		real effectiveMass = 0;
@@ -89,7 +89,7 @@ namespace Physics2D
 				return;
 
 			Body* bodyA = m_primitive.bodyA;
-			Vector2 point = m_primitive.targetPoint - bodyA->position();
+			Vec2 point = m_primitive.targetPoint - bodyA->position();
 			real targetRotation = point.theta();
 
 			real ii_a = m_primitive.bodyA->inverseInertia();

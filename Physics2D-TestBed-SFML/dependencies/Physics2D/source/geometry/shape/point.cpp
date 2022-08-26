@@ -6,7 +6,7 @@ namespace Physics2D
 		m_type = Type::Point;
 	}
 
-	Vector2 Point::position() const
+	Vec2 Point::position() const
 	{
 		return m_position;
 	}
@@ -15,16 +15,16 @@ namespace Physics2D
 	{
 		m_position *= factor;
 	}
-	bool Point::contains(const Vector2& point, const real& epsilon)
+	bool Point::contains(const Vec2& point, const real& epsilon)
 	{
-		return (m_position - point).lengthSquare() < epsilon;
+		return (m_position - point).magnitudeSquare() < epsilon;
 	}
-	void Point::setPosition(const Vector2& pos)
+	void Point::setPosition(const Vec2& pos)
 	{
 		m_position = pos;
 	}
 
-	Vector2 Point::center()const
+	Vec2 Point::center()const
 	{
 		return m_position;
 	}

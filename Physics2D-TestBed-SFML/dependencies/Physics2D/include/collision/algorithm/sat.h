@@ -8,15 +8,15 @@ namespace Physics2D
 {
     struct ProjectedPoint
     {
-        Vector2 vertex;
+        Vec2 vertex;
         real value = 0;
         int index = -1;
         bool operator==(const ProjectedPoint& rhs);
     };
     struct ProjectedEdge
     {
-        Vector2 vertex1;
-        Vector2 vertex2;
+        Vec2 vertex1;
+        Vec2 vertex2;
     };
     struct ProjectedSegment
     {
@@ -29,7 +29,7 @@ namespace Physics2D
     {
         PointPair contactPair[2];
         uint32_t contactPairCount = 0;
-        Vector2 normal;
+        Vec2 normal;
         real penetration = 0;
         bool isColliding = false;
     };
@@ -57,11 +57,11 @@ namespace Physics2D
 
         static SATResult sectorVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Polygon* polygon, const Vector2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Circle* circle, const Vector2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Ellipse* ellipse, const Vector2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Capsule* capsule, const Vector2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Sector* sector, const Vector2& normal);
+        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Polygon* polygon, const Vec2& normal);
+        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Circle* circle, const Vec2& normal);
+        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Ellipse* ellipse, const Vec2& normal);
+        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Capsule* capsule, const Vec2& normal);
+        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Sector* sector, const Vec2& normal);
 
     };
     

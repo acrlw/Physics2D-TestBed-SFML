@@ -6,7 +6,7 @@ namespace Physics2D
 		m_type = Type::Ellipse;
 	}
 
-	void Ellipse::set(const Vector2& leftTop, const Vector2& rightBottom)
+	void Ellipse::set(const Vec2& leftTop, const Vec2& rightBottom)
 	{
 		m_width = std::fabs(rightBottom.x - leftTop.x);
 		m_height = std::fabs(rightBottom.y - leftTop.y);
@@ -34,14 +34,14 @@ namespace Physics2D
 		m_height *= factor;
 	}
 
-	bool Ellipse::contains(const Vector2& point, const real& epsilon)
+	bool Ellipse::contains(const Vec2& point, const real& epsilon)
 	{
 		return false;
 	}
 
-	Vector2 Ellipse::center()const
+	Vec2 Ellipse::center()const
 	{
-		return Vector2();
+		return Vec2();
 	}
 
 	real Ellipse::width() const

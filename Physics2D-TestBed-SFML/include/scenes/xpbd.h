@@ -24,9 +24,9 @@ namespace Physics2D
 
 		}
 	private:
-		Vector2 positions[10];
-		Vector2 velocities[10];
-		Vector2 masses[10];
+		Vec2 positions[10];
+		Vec2 velocities[10];
+		Vec2 masses[10];
 		real distance = 1;
 		real d;
 		real k;

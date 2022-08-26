@@ -7,29 +7,29 @@ namespace Physics2D
 		m_type = Type::Edge;
 	}
 
-	void Edge::set(const Vector2& start, const Vector2& end)
+	void Edge::set(const Vec2& start, const Vec2& end)
 	{
 		m_startPoint = start;
 		m_endPoint = end;
 		m_normal = (m_endPoint - m_startPoint).perpendicular().normal().negate();
 	}
 
-	void Edge::setStartPoint(const Vector2& start)
+	void Edge::setStartPoint(const Vec2& start)
 	{
 		m_startPoint = start;
 	}
 
-	void Edge::setEndPoint(const Vector2& end)
+	void Edge::setEndPoint(const Vec2& end)
 	{
 		m_endPoint = end;
 	}
 
-	Vector2 Edge::startPoint() const
+	Vec2 Edge::startPoint() const
 	{
 		return m_startPoint;
 	}
 
-	Vector2 Edge::endPoint() const
+	Vec2 Edge::endPoint() const
 	{
 		return m_endPoint;
 	}
@@ -40,22 +40,22 @@ namespace Physics2D
 		m_endPoint *= factor;
 	}
 
-	bool Edge::contains(const Vector2& point, const real& epsilon)
+	bool Edge::contains(const Vec2& point, const real& epsilon)
 	{
 		return GeometryAlgorithm2D::isPointOnSegment(m_startPoint, m_endPoint, point);
 	}
 
-	Vector2 Edge::center()const
+	Vec2 Edge::center()const
 	{
 		return (m_startPoint + m_endPoint) / 2.0f;
 	}
 
-	Vector2 Edge::normal() const
+	Vec2 Edge::normal() const
 	{
 		return m_normal;
 	}
 
-	void Edge::setNormal(const Vector2& normal)
+	void Edge::setNormal(const Vec2& normal)
 	{
 		m_normal = normal;
 	}

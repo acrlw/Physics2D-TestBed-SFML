@@ -20,3 +20,5 @@ target_link_libraries(Physics2D-TestBed-SFML PRIVATE imgui::imgui)
 find_package(ImGui-SFML CONFIG REQUIRED)
 target_link_libraries(Physics2D-TestBed-SFML PRIVATE ImGui-SFML::ImGui-SFML)
 
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(Physics2D-TestBed-SFML PRIVATE spdlog::spdlog spdlog::spdlog_header_only)

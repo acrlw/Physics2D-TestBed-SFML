@@ -45,10 +45,10 @@ namespace Physics2D
 				for(size_t i = 0;i < 9; ++i)
 				{
 					real k = invMasses[i] / (invMasses[i] + invMasses[i + 1]);
-					Vector2 l = (positions[i + 1] - positions[i]);
-					real error = l.length() - distance;
-					Vector2 deltaX1 = k * error * l.normal();
-					Vector2 deltaX2 = -k * error * l.normal();
+					Vec2 l = (positions[i + 1] - positions[i]);
+					real error = l.magnitude() - distance;
+					Vec2 deltaX1 = k * error * l.normal();
+					Vec2 deltaX2 = -k * error * l.normal();
 					positions[i] += deltaX1;
 					positions[i + 1] += deltaX2;
 				}
@@ -64,12 +64,12 @@ namespace Physics2D
 			velocities[9].clear();
 		}
 	private:
-		Vector2 positions[10];
-		Vector2 prePositions[10];
-		Vector2 velocities[10];
+		Vec2 positions[10];
+		Vec2 prePositions[10];
+		Vec2 velocities[10];
 		real invMasses[10];
 		real distance = 2;
-		Vector2 gravity = {0.0, -9.8f};
+		Vec2 gravity = {0.0, -9.8f};
 		uint32_t iterations = 10;
 	};
 }

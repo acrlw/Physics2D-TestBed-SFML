@@ -23,8 +23,8 @@ namespace Physics2D
             void solvePositionConstraint(real dt);
             
 
-            Vector2 gravity() const;
-            void setGravity(const Vector2 &gravity);
+            Vec2 gravity() const;
+            void setGravity(const Vec2 &gravity);
 
             real linearVelocityDamping() const;
             void setLinearVelocityDamping(const real&linearVelocityDamping);
@@ -70,7 +70,7 @@ namespace Physics2D
             Container::Vector<std::unique_ptr<Joint>>& jointList();
         private:
 
-            Vector2 m_gravity;
+            Vec2 m_gravity;
             real m_linearVelocityDamping;
             real m_angularVelocityDamping;
             real m_linearVelocityThreshold;
@@ -87,6 +87,6 @@ namespace Physics2D
     		
     		
     };
-    
+
 }
 #endif

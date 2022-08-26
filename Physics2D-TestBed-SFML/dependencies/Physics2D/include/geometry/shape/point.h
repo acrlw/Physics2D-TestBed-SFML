@@ -8,13 +8,13 @@ namespace Physics2D
     public:
         Point();
 
-        Vector2 position() const;
-        void setPosition(const Vector2& pos);
-        Vector2 center()const override;
+        Vec2 position() const;
+        void setPosition(const Vec2& pos);
+        Vec2 center()const override;
         void scale(const real& factor) override;
-        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon) override;
+        bool contains(const Vec2& point, const real& epsilon = Constant::GeometryEpsilon) override;
     private:
-        Vector2 m_position;
+        Vec2 m_position;
     };
 }
 #endif

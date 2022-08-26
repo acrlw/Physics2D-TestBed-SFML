@@ -1,19 +1,19 @@
 #ifndef MATH_LINEAR_H
 #define MATH_LINEAR_H
-#include "../../math/linear/vector2.h"
-#include "../../math/linear/vector3.h"
-#include "../../math/linear/vector4.h"
-#include "../../math/linear/matrix2x2.h"
-#include "../../math/linear/matrix3x3.h"
-#include "../../math/linear/matrix4x4.h"
+#include "../../math/linear/vec2.h"
+#include "../../math/linear/vec3.h"
+#include "../../math/linear/vec4.h"
+#include "../../math/linear/mat2.h"
+#include "../../math/linear/mat3.h"
+#include "../../math/linear/mat4.h"
 
 namespace Physics2D
 {
-	inline Vector2 operator*(const real& f, const Vector2& v)
+	inline Vec2 operator*(const real& f, const Vec2& v)
 	{
 		return v * f;
 	}
-	inline Vector3 operator*(const real& f, const Vector3& v)
+	inline Vec3 operator*(const real& f, const Vec3& v)
 	{
 		return v * f;
 	}

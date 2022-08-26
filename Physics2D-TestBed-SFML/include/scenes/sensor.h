@@ -22,7 +22,7 @@ namespace Physics2D
 			ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({ 0.0, 0.0 });
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->setType(Body::BodyType::Static);
 			m_tree->insert(ground);
 
@@ -54,7 +54,7 @@ namespace Physics2D
 				m_tree->insert(body);
 			}
 
-			sensorRegion.rotation = Math::degreeToRadian(-45);
+			sensorRegion.rotation = degreeToRadian(-45);
 			sensorRegion.shape = &circle;
 			sensorRegion.transform.set(5.0f, 15.0f);
 		}

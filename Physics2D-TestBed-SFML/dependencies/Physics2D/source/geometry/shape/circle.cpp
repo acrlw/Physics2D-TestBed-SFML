@@ -21,13 +21,13 @@ namespace Physics2D
 		m_radius *= factor;
 	}
 
-	bool Circle::contains(const Vector2& point, const real& epsilon)
+	bool Circle::contains(const Vec2& point, const real& epsilon)
 	{
-		return (m_radius * m_radius - point.lengthSquare()) > epsilon;
+		return (m_radius * m_radius - point.magnitudeSquare()) > epsilon;
 	}
 
-	Vector2 Circle::center()const
+	Vec2 Circle::center()const
 	{
-		return Vector2();
+		return Vec2();
 	}
 }

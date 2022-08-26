@@ -11,7 +11,7 @@ namespace Physics2D
 	{
 		Simplex simplex;
 		bool found = false;
-		Vector2 direction = shapeB.transform - shapeA.transform;
+		Vec2 direction = shapeB.transform - shapeA.transform;
 		
 		if (direction.fuzzyEqual({ 0, 0 }))
 			direction.set(1, 1);
@@ -66,7 +66,7 @@ namespace Physics2D
 		size_t iter = 0;
 		Simplex edge;
 		Simplex simplex = src;
-		Vector2 normal;
+		Vec2 normal;
 		Minkowski p;
 		while (iter <= iteration)
 		{
@@ -94,23 +94,23 @@ namespace Physics2D
 	PenetrationInfo GJK::dumpInfo(const PenetrationSource& source)
 	{
 		PenetrationInfo result;
-		Vector2 edge1 = source.a1 - source.b1;
-		Vector2 edge2 = source.a2 - source.b2;
-		Vector2 normal = calculateDirectionByEdge(edge1, edge2, false).normal();
+		Vec2 edge1 = source.a1 - source.b1;
+		Vec2 edge2 = source.a2 - source.b2;
+		Vec2 normal = calculateDirectionByEdge(edge1, edge2, false).normal();
 		real originToEdge = std::fabs(normal.dot(edge1));
 		result.normal = normal.negate();
 		result.penetration = originToEdge;
 		return result;
 	}
 
-	Minkowski GJK::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
+	Minkowski GJK::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vec2& direction)
 	{
 		return Minkowski(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
 	}
 
 	std::tuple<size_t, size_t> GJK::findEdgeClosestToOrigin(const Simplex& simplex)
 	{
-		real min_dist = Constant::Max;
+		real min_dist = Constant::PosInfty;
 
 		size_t index1 = 0;
 		size_t index2 = 0;
@@ -120,11 +120,11 @@ namespace Physics2D
 
 		for (size_t i = 0; i < simplex.vertices.size() - 1; i++)
 		{
-			Vector2 a = simplex.vertices[i].result;
-			Vector2 b = simplex.vertices[i + 1].result;
+			Vec2 a = simplex.vertices[i].result;
+			Vec2 b = simplex.vertices[i + 1].result;
 
-			const Vector2 p = GeometryAlgorithm2D::pointToLineSegment(a, b, {0, 0});
-			const real projection = p.length();
+			const Vec2 p = GeometryAlgorithm2D::pointToLineSegment(a, b, {0, 0});
+			const real projection = p.magnitude();
 
 
 			if (min_dist > projection)
@@ -135,9 +135,9 @@ namespace Physics2D
 			}
 			else if (realEqual(min_dist, projection))
 			{
-				real length1 = a.lengthSquare() + b.lengthSquare();
-				real length2 = simplex.vertices[index1].result.lengthSquare() + simplex.vertices[index2].result.
-					lengthSquare();
+				real length1 = a.magnitudeSquare() + b.magnitudeSquare();
+				real length2 = simplex.vertices[index1].result.magnitudeSquare() + simplex.vertices[index2].result.
+					magnitudeSquare();
 				if (length1 < length2)
 				{
 					index1 = i;
@@ -148,11 +148,11 @@ namespace Physics2D
 		return std::make_tuple(index1, index2);
 	}
 
-	Vector2 GJK::findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction)
+	Vec2 GJK::findFarthestPoint(const ShapePrimitive& shape, const Vec2& direction)
 	{
-		Vector2 target;
-		Matrix2x2 rot(-shape.rotation);
-		Vector2 rot_dir = rot.multiply(direction);
+		Vec2 target;
+		Mat2 rot(-shape.rotation);
+		Vec2 rot_dir = rot.multiply(direction);
 		switch (shape.shape->type())
 		{
 		case Shape::Type::Polygon:
@@ -176,8 +176,8 @@ namespace Physics2D
 		case Shape::Type::Edge:
 		{
 			const Edge* edge = static_cast<const Edge*>(shape.shape);
-			real dot1 = Vector2::dotProduct(edge->startPoint(), direction);
-			real dot2 = Vector2::dotProduct(edge->endPoint(), direction);
+			real dot1 = Vec2::dotProduct(edge->startPoint(), direction);
+			real dot2 = Vec2::dotProduct(edge->endPoint(), direction);
 			target = dot1 > dot2 ? edge->startPoint() : edge->endPoint();
 			break;
 		}
@@ -206,14 +206,14 @@ namespace Physics2D
 		return target;
 	}
 
-	std::pair<Vector2, size_t> GJK::findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
+	std::pair<Vec2, size_t> GJK::findFarthestPoint(const Container::Vector<Vec2>& vertices, const Vec2& direction)
 	{
-		real max = Constant::NegativeMin;
-		Vector2 target;
+		real max = Constant::NegInfty;
+		Vec2 target;
 		size_t index = 0;
 		for(size_t i = 0;i < vertices.size(); i++)
 		{
-			real result = Vector2::dotProduct(vertices[i], direction);
+			real result = Vec2::dotProduct(vertices[i], direction);
 			if (max < result)
 			{
 				max = result;
@@ -247,13 +247,13 @@ namespace Physics2D
 		}
 	}
 
-	Vector2 GJK::calculateDirectionByEdge(const Vector2& p1, const Vector2& p2, bool pointToOrigin)
+	Vec2 GJK::calculateDirectionByEdge(const Vec2& p1, const Vec2& p2, bool pointToOrigin)
 	{
-		const Vector2 ao = p1 * -1;
-		const Vector2 ab = p2 - p1;
-		Vector2 perpendicularOfAB = ab.perpendicular();
-		if ((Vector2::dotProduct(ao, perpendicularOfAB) < 0 && pointToOrigin) || (
-			Vector2::dotProduct(ao, perpendicularOfAB) > 0 && !pointToOrigin))
+		const Vec2 ao = p1 * -1;
+		const Vec2 ab = p2 - p1;
+		Vec2 perpendicularOfAB = ab.perpendicular();
+		if ((Vec2::dotProduct(ao, perpendicularOfAB) < 0 && pointToOrigin) || (
+			Vec2::dotProduct(ao, perpendicularOfAB) > 0 && !pointToOrigin))
 			perpendicularOfAB.negate();
 		return perpendicularOfAB;
 	}
@@ -263,7 +263,7 @@ namespace Physics2D
 	{
 		PointPair result;
 		Simplex simplex;
-		Vector2 direction = shapeB.transform - shapeA.transform;
+		Vec2 direction = shapeB.transform - shapeA.transform;
 		Minkowski m = support(shapeA, shapeB, direction);
 		simplex.vertices.emplace_back(m);
 		direction.negate();
@@ -305,15 +305,15 @@ namespace Physics2D
 	PointPair GJK::dumpPoints(const PenetrationSource& source)
 	{
 		PointPair result;
-		const Vector2 A_s1 = source.a1;
-		const Vector2 B_s1 = source.a2;
-		const Vector2 A_s2 = source.b1;
-		const Vector2 B_s2 = source.b2;
+		const Vec2 A_s1 = source.a1;
+		const Vec2 B_s1 = source.a2;
+		const Vec2 A_s2 = source.b1;
+		const Vec2 B_s2 = source.b2;
 
-		Vector2 a = source.a1 - source.b1;
-		Vector2 b = source.a2 - source.b2;
+		Vec2 a = source.a1 - source.b1;
+		Vec2 b = source.a2 - source.b2;
 
-		Vector2 l = b - a;
+		Vec2 l = b - a;
 		real ll = l.dot(l);
 		real la = l.dot(a);
 		real lambda2 = -la / ll;

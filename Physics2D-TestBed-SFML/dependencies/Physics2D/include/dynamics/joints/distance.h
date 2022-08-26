@@ -6,9 +6,9 @@ namespace Physics2D
 	struct DistanceJointPrimitive
 	{
 		Body* bodyA = nullptr;
-		Vector2 localPointA;
-		Vector2 targetPoint;
-		Vector2 normal;
+		Vec2 localPointA;
+		Vec2 targetPoint;
+		Vec2 normal;
 		real biasFactor = 0.3f;
 		real bias = 0.0f;
 		real minDistance = 0.0f;
@@ -20,13 +20,13 @@ namespace Physics2D
 	{
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
-		Vector2 nearestPointA;
-		Vector2 nearestPointB;
-		Vector2 ra;
-		Vector2 rb;
-		Vector2 bias;
-		Matrix2x2 effectiveMass;
-		Vector2 impulse;
+		Vec2 nearestPointA;
+		Vec2 nearestPointB;
+		Vec2 ra;
+		Vec2 rb;
+		Vec2 bias;
+		Mat2 effectiveMass;
+		Vec2 impulse;
 		real maxForce = 200.0f;
 	};
 	class DistanceJoint : public Joint
@@ -48,13 +48,13 @@ namespace Physics2D
 		{
 			assert(m_primitive.minDistance <= m_primitive.maxDistance);
 			Body* bodyA = m_primitive.bodyA;
-			Vector2 pa = bodyA->toWorldPoint(m_primitive.localPointA);
-			Vector2 ra = pa - bodyA->position();
-			Vector2 pb = m_primitive.targetPoint;
+			Vec2 pa = bodyA->toWorldPoint(m_primitive.localPointA);
+			Vec2 ra = pa - bodyA->position();
+			Vec2 pb = m_primitive.targetPoint;
 			real im_a = m_primitive.bodyA->inverseMass();
 			real ii_a = m_primitive.bodyA->inverseInertia();
-			Vector2 error = pb - pa;
-			real length = error.length();
+			Vec2 error = pb - pa;
+			real length = error.magnitude();
 			real c = 0;
 
 			m_primitive.normal = error.normal();
@@ -85,7 +85,7 @@ namespace Physics2D
 			m_primitive.effectiveMass = 1.0f / (im_a + ii_a * rn_a * rn_a);
  			m_primitive.bias = m_primitive.biasFactor * c / dt;
 
-			//Vector2 impulse = m_primitive.accumulatedImpulse * m_primitive.normal;
+			//Vec2 impulse = m_primitive.accumulatedImpulse * m_primitive.normal;
 			//m_primitive.bodyA->applyImpulse(impulse, ra);
 			
 		}
@@ -93,19 +93,19 @@ namespace Physics2D
 		{
 			if (m_primitive.bias == 0)
 				return ;
-			Vector2 ra = m_primitive.bodyA->toWorldPoint(m_primitive.localPointA) - m_primitive.bodyA->position();
-			Vector2 va = m_primitive.bodyA->velocity() + Vector2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
+			Vec2 ra = m_primitive.bodyA->toWorldPoint(m_primitive.localPointA) - m_primitive.bodyA->position();
+			Vec2 va = m_primitive.bodyA->velocity() + Vec2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
 
-			Vector2 dv = va;
+			Vec2 dv = va;
 			real jv = m_primitive.normal.dot(dv);
 			real jvb = -jv + m_primitive.bias;
 			real lambda_n = m_primitive.effectiveMass * jvb;
 
 			real oldImpulse = m_primitive.accumulatedImpulse;
-			m_primitive.accumulatedImpulse = Math::max(oldImpulse + lambda_n, 0);
+			m_primitive.accumulatedImpulse = max(oldImpulse + lambda_n, 0);
 			lambda_n = m_primitive.accumulatedImpulse - oldImpulse;
 
-			Vector2 impulse = lambda_n * m_primitive.normal;
+			Vec2 impulse = lambda_n * m_primitive.normal;
 			m_primitive.bodyA->applyImpulse(impulse, ra);
 			//m_primitive.bodyA->velocity() += m_primitive.bodyA->inverseMass() * impulse;
 			//m_primitive.bodyA->angularVelocity() += m_primitive.bodyA->inverseInertia() * ra.cross(impulse);
@@ -151,15 +151,16 @@ namespace Physics2D
 
 			m_primitive.ra = m_primitive.nearestPointA - bodyA->position();
 			m_primitive.rb = m_primitive.nearestPointB - bodyB->position();
-			Vector2& ra = m_primitive.ra;
-			Vector2& rb = m_primitive.rb;
-			Vector2 error = m_primitive.nearestPointA - m_primitive.nearestPointB;
+			Vec2& ra = m_primitive.ra;
+			Vec2& rb = m_primitive.rb;
+			Vec2 error = m_primitive.nearestPointA - m_primitive.nearestPointB;
 
-			Matrix2x2 k;
-			k.e11() = im_a + ra.y * ra.y * ii_a + im_b + rb.y * rb.y * ii_b;
-			k.e12() = -ra.x * ra.y * ii_a - rb.x * rb.y * ii_b;
-			k.e21() = k.e12();
-			k.e22() = im_a + ra.x * ra.x * ii_a + im_b + rb.x * rb.x * ii_b;
+			Mat2 k;
+			k[0][0] = im_a + ra.y * ra.y * ii_a + im_b + rb.y * rb.y * ii_b;
+			k[1][0] = -ra.x * ra.y * ii_a - rb.x * rb.y * ii_b;
+			k[0][1] = k[1][0];
+			k[1][1] = im_a + ra.x * ra.x * ii_a + im_b + rb.x * rb.x * ii_b;
+			
 			m_primitive.bias = error * m_factor;
 			m_primitive.effectiveMass = k.invert();
 
@@ -168,17 +169,17 @@ namespace Physics2D
 		{
 			if (m_primitive.bodyA == nullptr || m_primitive.bodyB == nullptr)
 				return;
-			Vector2 va = m_primitive.bodyA->velocity() + Vector2::crossProduct(m_primitive.bodyA->angularVelocity(), m_primitive.ra);
-			Vector2 vb = m_primitive.bodyB->velocity() + Vector2::crossProduct(m_primitive.bodyB->angularVelocity(), m_primitive.rb);
+			Vec2 va = m_primitive.bodyA->velocity() + Vec2::crossProduct(m_primitive.bodyA->angularVelocity(), m_primitive.ra);
+			Vec2 vb = m_primitive.bodyB->velocity() + Vec2::crossProduct(m_primitive.bodyB->angularVelocity(), m_primitive.rb);
 
-			Vector2 jvb = va - vb;
+			Vec2 jvb = va - vb;
 			jvb += m_primitive.bias;
 			jvb.negate();
-			Vector2 J = m_primitive.effectiveMass.multiply(jvb);
-			Vector2 oldImpulse = m_primitive.impulse;
+			Vec2 J = m_primitive.effectiveMass.multiply(jvb);
+			Vec2 oldImpulse = m_primitive.impulse;
 			m_primitive.impulse += J;
 			real maxImpulse = dt * m_primitive.maxForce;
-			if (m_primitive.impulse.lengthSquare() > maxImpulse * maxImpulse)
+			if (m_primitive.impulse.magnitudeSquare() > maxImpulse * maxImpulse)
 			{
 				m_primitive.impulse.normalize();
 				m_primitive.impulse *= maxImpulse;
@@ -188,7 +189,7 @@ namespace Physics2D
 			m_primitive.bodyB->applyImpulse(-J, m_primitive.rb);
 
 		}
-		void set(const Vector2& pointA, const Vector2& pointB)
+		void set(const Vec2& pointA, const Vec2& pointB)
 		{
 			m_primitive.nearestPointA = pointA;
 			m_primitive.nearestPointB = pointB;

@@ -80,7 +80,7 @@ namespace Physics2D
 		PointJointPrimitive m_pointJointPrimitive;
 		Camera m_camera;
 
-		Vector2 m_mousePos;
+		Vec2 m_mousePos;
 
 		std::unique_ptr<sf::Thread> m_physicsThread;
 

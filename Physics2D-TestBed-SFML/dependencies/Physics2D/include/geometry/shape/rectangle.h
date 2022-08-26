@@ -17,7 +17,7 @@ namespace Physics2D
         void setHeight(const real& height);
 
         void scale(const real& factor) override;
-        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon) override;
+        bool contains(const Vec2& point, const real& epsilon = Constant::GeometryEpsilon) override;
     private:
         void calcVertices();
         real m_width;

@@ -26,7 +26,7 @@ namespace Physics2D
 		bool contains(const Minkowski& minkowski);
 		bool fuzzyContains(const Minkowski& minkowski, const real& epsilon = 0.0001);
 
-		Vector2 lastVertex() const;
+		Vec2 lastVertex() const;
 	};
 }
 #endif

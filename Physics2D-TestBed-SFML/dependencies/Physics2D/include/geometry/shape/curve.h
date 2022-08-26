@@ -8,28 +8,28 @@ namespace Physics2D
 
     public:
         Curve();
-        void set(const Vector2& start, const Vector2& control1, const Vector2& control2, const Vector2& end);
+        void set(const Vec2& start, const Vec2& control1, const Vec2& control2, const Vec2& end);
 
-        Vector2 startPoint() const;
-        void setStartPoint(const Vector2& startPoint);
+        Vec2 startPoint() const;
+        void setStartPoint(const Vec2& startPoint);
 
-        Vector2 control1() const;
-        void setControl1(const Vector2& control1);
+        Vec2 control1() const;
+        void setControl1(const Vec2& control1);
 
-        Vector2 control2() const;
-        void setControl2(const Vector2& control2);
+        Vec2 control2() const;
+        void setControl2(const Vec2& control2);
 
-        Vector2 endPoint() const;
-        void setEndPoint(const Vector2& endPoint);
+        Vec2 endPoint() const;
+        void setEndPoint(const Vec2& endPoint);
 
         void scale(const real& factor) override;
-        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon) override;
-        Vector2 center()const override;
+        bool contains(const Vec2& point, const real& epsilon = Constant::GeometryEpsilon) override;
+        Vec2 center()const override;
     private:
-        Vector2 m_startPoint;
-        Vector2 m_control1;
-        Vector2 m_control2;
-        Vector2 m_endPoint;
+        Vec2 m_startPoint;
+        Vec2 m_control1;
+        Vec2 m_control2;
+        Vec2 m_endPoint;
     };
 }
 #endif

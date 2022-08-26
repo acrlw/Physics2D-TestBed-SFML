@@ -14,7 +14,7 @@ namespace Physics2D
 		void load() override
 		{
 			rectangle.set(1.0f, 1.0f);
-			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
+			edge.set(Vec2{ -10.0f, 0.0f }, Vec2{ 10.0f, 0.0f });
 			
 			uint32_t mask = 0x01;
 			for(real i = 0;i < 3.0;i += 1.0f)
@@ -25,7 +25,7 @@ namespace Physics2D
 				ground->setFriction(0.4f);
 				ground->setBitmask(mask);
 				ground->setRestitution(0);
-				ground->setMass(Constant::Max);
+				ground->setMass(Constant::PosInfty);
 				ground->setType(Body::BodyType::Static);
 				mask = mask << 1;
 				m_tree->insert(ground);

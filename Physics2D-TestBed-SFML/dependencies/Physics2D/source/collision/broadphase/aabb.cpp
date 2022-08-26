@@ -12,41 +12,41 @@ namespace Physics2D
 	{
 		return realEqual(width, 0) && realEqual(height, 0) && position.fuzzyEqual({ 0, 0 });
 	}
-	bool AABB::raycast(const Vector2& start, const Vector2& direction) const
+	bool AABB::raycast(const Vec2& start, const Vec2& direction) const
 	{
 		return raycast(*this, start, direction);
 	}
 
-	AABB::AABB(const Vector2& topLeft, const real& boxWidth, const real& boxHeight)
+	AABB::AABB(const Vec2& topLeft, const real& boxWidth, const real& boxHeight)
 	{
 		this->width = boxWidth;
 		this->height = boxHeight;
-		this->position = topLeft + Vector2(boxWidth * 0.5f, -boxHeight*0.5f);
+		this->position = topLeft + Vec2(boxWidth * 0.5f, -boxHeight*0.5f);
 	}
 
-	AABB::AABB(const Vector2& topLeft, const Vector2& bottomRight)
+	AABB::AABB(const Vec2& topLeft, const Vec2& bottomRight)
 	{
 		*this = fromBox(topLeft, bottomRight);
 	}
 
-	Vector2 AABB::topLeft() const
+	Vec2 AABB::topLeft() const
 	{
-		return Vector2{ minimumX() , maximumY() };
+		return Vec2{ minimumX() , maximumY() };
 	}
 
-	Vector2 AABB::topRight() const
+	Vec2 AABB::topRight() const
 	{
-		return Vector2{ maximumX(), maximumY() };
+		return Vec2{ maximumX(), maximumY() };
 	}
 
-	Vector2 AABB::bottomLeft() const
+	Vec2 AABB::bottomLeft() const
 	{
-		return Vector2{ minimumX() , minimumY() };
+		return Vec2{ minimumX() , minimumY() };
 	}
 
-	Vector2 AABB::bottomRight() const
+	Vec2 AABB::bottomRight() const
 	{
-		return Vector2{ maximumX() , minimumY() };
+		return Vec2{ maximumX() , minimumY() };
 	}
 
 	real AABB::minimumX() const
@@ -128,10 +128,10 @@ namespace Physics2D
 		case Shape::Type::Polygon:
 		{
 			const Polygon* polygon = static_cast<Polygon*>(shape.shape);
-			real max_x = Constant::NegativeMin, max_y = Constant::NegativeMin, min_x = Constant::Max, min_y = Constant::Max;
-			for (const Vector2& v : polygon->vertices())
+			real max_x = Constant::NegInfty, max_y = Constant::NegInfty, min_x = Constant::PosInfty, min_y = Constant::PosInfty;
+			for (const Vec2& v : polygon->vertices())
 			{
-				const Vector2 vertex = Matrix2x2(shape.rotation).multiply(v);
+				const Vec2 vertex = Mat2(shape.rotation).multiply(v);
 				if (max_x < vertex.x)
 					max_x = vertex.x;
 
@@ -153,25 +153,25 @@ namespace Physics2D
 		{
 			const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
 
-			Vector2 top_dir{ 0, 1 };
-			Vector2 left_dir{ -1, 0 };
-			Vector2 bottom_dir{ 0, -1 };
-			Vector2 right_dir{ 1, 0 };
+			Vec2 top_dir{ 0, 1 };
+			Vec2 left_dir{ -1, 0 };
+			Vec2 bottom_dir{ 0, -1 };
+			Vec2 right_dir{ 1, 0 };
 
-			top_dir = Matrix2x2(-shape.rotation).multiply(top_dir);
-			left_dir = Matrix2x2(-shape.rotation).multiply(left_dir);
-			bottom_dir = Matrix2x2(-shape.rotation).multiply(bottom_dir);
-			right_dir = Matrix2x2(-shape.rotation).multiply(right_dir);
+			top_dir = Mat2(-shape.rotation).multiply(top_dir);
+			left_dir = Mat2(-shape.rotation).multiply(left_dir);
+			bottom_dir = Mat2(-shape.rotation).multiply(bottom_dir);
+			right_dir = Mat2(-shape.rotation).multiply(right_dir);
 
-			Vector2 top = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), top_dir);
-			Vector2 left = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), left_dir);
-			Vector2 bottom = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), bottom_dir);
-			Vector2 right = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), right_dir);
+			Vec2 top = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), top_dir);
+			Vec2 left = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), left_dir);
+			Vec2 bottom = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), bottom_dir);
+			Vec2 right = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), right_dir);
 
-			top = Matrix2x2(shape.rotation).multiply(top);
-			left = Matrix2x2(shape.rotation).multiply(left);
-			bottom = Matrix2x2(shape.rotation).multiply(bottom);
-			right = Matrix2x2(shape.rotation).multiply(right);
+			top = Mat2(shape.rotation).multiply(top);
+			left = Mat2(shape.rotation).multiply(left);
+			bottom = Mat2(shape.rotation).multiply(bottom);
+			right = Mat2(shape.rotation).multiply(right);
 
 			aabb.height = std::fabs(top.y - bottom.y);
 			aabb.width = std::fabs(right.x - left.x);
@@ -207,8 +207,8 @@ namespace Physics2D
 		}
 		case Shape::Type::Capsule:
 		{
-			Vector2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
-			Vector2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
+			Vec2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
+			Vec2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
 			p1 -= shape.transform;
 			p2 -= shape.transform;
 			aabb.width = p1.x * 2.0f;
@@ -217,10 +217,10 @@ namespace Physics2D
 		}
 		case Shape::Type::Sector:
 		{
-			Vector2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
-			Vector2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
-			Vector2 p3 = GJK::findFarthestPoint(shape, { -1, 0 });
-			Vector2 p4 = GJK::findFarthestPoint(shape, { 0, -1 });
+			Vec2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
+			Vec2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
+			Vec2 p3 = GJK::findFarthestPoint(shape, { -1, 0 });
+			Vec2 p4 = GJK::findFarthestPoint(shape, { 0, -1 });
 			p1 -= shape.transform;
 			p2 -= shape.transform;
 			p3 -= shape.transform;
@@ -248,7 +248,7 @@ namespace Physics2D
 		return fromShape(primitive, factor);
 	}
 
-	AABB AABB::fromBox(const Vector2& topLeft, const Vector2& bottomRight)
+	AABB AABB::fromBox(const Vec2& topLeft, const Vec2& bottomRight)
 	{
 		AABB result;
 		result.width = bottomRight.x - topLeft.x;
@@ -259,11 +259,11 @@ namespace Physics2D
 
 	bool AABB::collide(const AABB& src, const AABB& target)
 	{
-		const Vector2 srcTopLeft = src.topLeft();
-		const Vector2 srcBottomRight = src.bottomRight();
+		const Vec2 srcTopLeft = src.topLeft();
+		const Vec2 srcBottomRight = src.bottomRight();
 
-		const Vector2 targetTopLeft = target.topLeft();
-		const Vector2 targetBottomRight = target.bottomRight();
+		const Vec2 targetTopLeft = target.topLeft();
+		const Vec2 targetBottomRight = target.bottomRight();
 
 		return !(srcBottomRight.x < targetTopLeft.x || targetBottomRight.x < srcTopLeft.x || srcTopLeft.y < targetBottomRight.y || targetTopLeft.y < srcBottomRight.y);
 	}
@@ -277,17 +277,17 @@ namespace Physics2D
 			return src;
 
 
-		const Vector2 srcTopLeft = src.topLeft();
-		const Vector2 srcBottomRight = src.bottomRight();
+		const Vec2 srcTopLeft = src.topLeft();
+		const Vec2 srcBottomRight = src.bottomRight();
 
-		const Vector2 targetTopLeft = target.topLeft();
-		const Vector2 targetBottomRight = target.bottomRight();
+		const Vec2 targetTopLeft = target.topLeft();
+		const Vec2 targetBottomRight = target.bottomRight();
 
-		const real low_x = Math::min(srcTopLeft.x, targetTopLeft.x);
-		const real high_x = Math::max(srcBottomRight.x, targetBottomRight.x);
+		const real low_x = min(srcTopLeft.x, targetTopLeft.x);
+		const real high_x = max(srcBottomRight.x, targetBottomRight.x);
 		
-		const real low_y = Math::min(srcBottomRight.y, targetBottomRight.y);
-		const real high_y = Math::max(srcTopLeft.y, targetTopLeft.y);
+		const real low_y = min(srcBottomRight.y, targetBottomRight.y);
+		const real high_y = max(srcTopLeft.y, targetTopLeft.y);
 
 		AABB aabb;
 		aabb.position.set((low_x + high_x) * 0.5f, (low_y + high_y) * 0.5f);
@@ -301,11 +301,11 @@ namespace Physics2D
 	bool AABB::isSubset(const AABB& a, const AABB& b)
 	{
 
-		const Vector2 aTopLeft = a.topLeft();
-		const Vector2 aBottomRight = a.bottomRight();
+		const Vec2 aTopLeft = a.topLeft();
+		const Vec2 aBottomRight = a.bottomRight();
 
-		const Vector2 bTopLeft = b.topLeft();
-		const Vector2 bBottomRight = b.bottomRight();
+		const Vec2 bTopLeft = b.topLeft();
+		const Vec2 bBottomRight = b.bottomRight();
 
 		return aBottomRight.x >= bBottomRight.x && bTopLeft.x >= aTopLeft.x && 
 			aTopLeft.y >= bTopLeft.y && bBottomRight.y >= aBottomRight.y;
@@ -315,7 +315,7 @@ namespace Physics2D
 		aabb.width += factor;
 		aabb.height += factor;
 	}
-	bool AABB::raycast(const AABB& aabb, const Vector2& start, const Vector2& direction)
+	bool AABB::raycast(const AABB& aabb, const Vec2& start, const Vec2& direction)
 	{
 		auto result = GeometryAlgorithm2D::raycastAABB(start, direction, aabb.topLeft(), aabb.bottomRight());
 		if (!result.has_value())

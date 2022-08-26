@@ -30,7 +30,7 @@ namespace Physics2D
 			ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({ 0, 0.0 });
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->setType(Body::BodyType::Static);
 			m_tree->insert(ground);
 
@@ -104,7 +104,7 @@ namespace Physics2D
 				revolutePrim.localPointB.set(-half, 0);
 				revolutePrim.dampingRatio = 0.8f;
 				revolutePrim.frequency = 20;
-				revolutePrim.maxForce = Constant::Max;
+				revolutePrim.maxForce = Constant::PosInfty;
 				m_world->createJoint(revolutePrim);
 				rect = rect2;
 			}
@@ -124,7 +124,7 @@ namespace Physics2D
 			revolutePrim.localPointB.set(-half * 2.0f, 0);
 			revolutePrim.dampingRatio = 0.8f;
 			revolutePrim.frequency = 20;
-			revolutePrim.maxForce = Constant::Max;
+			revolutePrim.maxForce = Constant::PosInfty;
 			m_world->createJoint(revolutePrim);
 
 

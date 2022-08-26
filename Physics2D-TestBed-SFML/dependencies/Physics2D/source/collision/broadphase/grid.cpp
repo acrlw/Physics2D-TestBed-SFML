@@ -32,7 +32,7 @@ namespace Physics2D
         return result;
     }
 
-    Container::Vector<Body*> UniformGrid::raycast(const Vector2& p, const Vector2& d)
+    Container::Vector<Body*> UniformGrid::raycast(const Vec2& p, const Vec2& d)
     {
         Container::Vector<Body*> result;
         return result;
@@ -247,16 +247,16 @@ namespace Physics2D
         real halfHeight = m_height * 0.5f;
         real xRealMin = aabb.minimumX();
         real xRealMax = aabb.maximumX();
-        real xMin = Math::clamp(xRealMin, -halfWidth, halfWidth - m_cellWidth);
-        real xMax = Math::clamp(xRealMax, -halfWidth, halfWidth - m_cellWidth);
+        real xMin = clamp(xRealMin, -halfWidth, halfWidth - m_cellWidth);
+        real xMax = clamp(xRealMax, -halfWidth, halfWidth - m_cellWidth);
         real lowerXIndex = std::floor((xMin + halfWidth) / m_cellWidth);
         real upperXIndex = std::floor((xMax + halfWidth) / m_cellWidth);
         //locate y axis
 
         real yRealMin = aabb.minimumY();
         real yRealMax = aabb.maximumY();
-        real yMin = Math::clamp(yRealMin, -halfHeight + m_cellHeight, halfHeight);
-        real yMax = Math::clamp(yRealMax, -halfHeight + m_cellHeight, halfHeight);
+        real yMin = clamp(yRealMin, -halfHeight + m_cellHeight, halfHeight);
+        real yMax = clamp(yRealMax, -halfHeight + m_cellHeight, halfHeight);
         real lowerYIndex = std::ceil((yMin + halfHeight) / m_cellHeight);
         real upperYIndex = std::ceil((yMax + halfHeight) / m_cellHeight);
         if (lowerXIndex == upperXIndex && xRealMax < -halfWidth || xRealMin > halfWidth)

@@ -1,9 +1,9 @@
 #include "../../../include/collision/algorithm/clip.h"
 namespace Physics2D
 {
-	Container::Vector<Vector2> ContactGenerator::dumpVertices(const ShapePrimitive& primitive)
+	Container::Vector<Vec2> ContactGenerator::dumpVertices(const ShapePrimitive& primitive)
 	{
-		Container::Vector<Vector2> vertices;
+		Container::Vector<Vec2> vertices;
 		switch (primitive.shape->type())
 		{
 		case Shape::Type::Capsule:
@@ -39,7 +39,7 @@ namespace Physics2D
 		return vertices;
 	}
 
-	ContactGenerator::ClipEdge ContactGenerator::findClipEdge(const Container::Vector<Vector2>& vertices, size_t index, const Vector2& normal)
+	ContactGenerator::ClipEdge ContactGenerator::findClipEdge(const Container::Vector<Vec2>& vertices, size_t index, const Vec2& normal)
 	{
 		ClipEdge edge1, edge2;
 		edge1.p2 = vertices[index];
@@ -64,19 +64,19 @@ namespace Physics2D
 		if(std::fabs((edge1.p2 - edge1.p1).dot(normal)) >= std::fabs((edge2.p2 - edge2.p1).dot(normal)))
 		{
 			finalEdge = edge2;
-			Vector2 p = (edge2.p2 - edge2.p1).normal().perpendicular();
+			Vec2 p = (edge2.p2 - edge2.p1).normal().perpendicular();
 			finalEdge.normal = GeometryAlgorithm2D::isPointOnSameSide(edge2.p1, edge2.p2, edge1.p1, edge2.p1 + p) ? p : -p;
 		}
 		else
 		{
 			finalEdge = edge1;
-			Vector2 p = (edge1.p2 - edge1.p1).normal().perpendicular();
+			Vec2 p = (edge1.p2 - edge1.p1).normal().perpendicular();
 			finalEdge.normal = GeometryAlgorithm2D::isPointOnSameSide(edge1.p1, edge1.p2, edge2.p2, edge1.p1 + p) ? p : -p;
 		}
 		return finalEdge;
 	}
 
-	ContactGenerator::ClipEdge ContactGenerator::dumpClipEdge(const ShapePrimitive& shape, const Container::Vector<Vector2>& vertices, const Vector2& normal)
+	ContactGenerator::ClipEdge ContactGenerator::dumpClipEdge(const ShapePrimitive& shape, const Container::Vector<Vec2>& vertices, const Vec2& normal)
 	{
 		ClipEdge edge;
 		if (vertices.size() == 2)
@@ -94,7 +94,7 @@ namespace Physics2D
 		return edge;
 	}
 
-	std::pair<ContactGenerator::ClipEdge, ContactGenerator::ClipEdge> ContactGenerator::recognize(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& normal)
+	std::pair<ContactGenerator::ClipEdge, ContactGenerator::ClipEdge> ContactGenerator::recognize(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vec2& normal)
 	{
 		auto typeA = shapeA.shape->type();
 		auto typeB = shapeB.shape->type();
@@ -102,21 +102,21 @@ namespace Physics2D
 			|| typeB == Shape::Type::Point || typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse)
 			return std::make_pair(ClipEdge(), ClipEdge());
 		//normal: B -> A
-		Container::Vector<Vector2> verticesA = dumpVertices(shapeA);
-		Container::Vector<Vector2> verticesB = dumpVertices(shapeB);
+		Container::Vector<Vec2> verticesA = dumpVertices(shapeA);
+		Container::Vector<Vec2> verticesB = dumpVertices(shapeB);
 		ClipEdge edgeA = dumpClipEdge(shapeA, verticesA, -normal);
 		ClipEdge edgeB = dumpClipEdge(shapeB, verticesB, normal);
 		return std::make_pair(edgeA, edgeB);
 	}
 
-	Container::Vector<PointPair> ContactGenerator::clip(const ClipEdge& clipEdgeA, const ClipEdge& clipEdgeB, const Vector2& normal)
+	Container::Vector<PointPair> ContactGenerator::clip(const ClipEdge& clipEdgeA, const ClipEdge& clipEdgeB, const Vec2& normal)
 	{
 		Container::Vector<PointPair> result;
 		if (clipEdgeA.isEmpty() || clipEdgeB.isEmpty())
 			return result;
 		//find reference edge
-		real d1 = Vector2(clipEdgeA.p1 - clipEdgeA.p2).dot(normal);
-		real d2 = Vector2(clipEdgeB.p1 - clipEdgeB.p2).dot(normal);
+		real d1 = Vec2(clipEdgeA.p1 - clipEdgeA.p2).dot(normal);
+		real d2 = Vec2(clipEdgeB.p1 - clipEdgeB.p2).dot(normal);
 		ClipEdge referenceEdge = clipEdgeA;
 		ClipEdge incidentEdge = clipEdgeB;
 		bool swap = false;
@@ -129,8 +129,8 @@ namespace Physics2D
 		}
 
 		//1. clip left region
-		Vector2 u = (referenceEdge.p2 - referenceEdge.p1).normal();
-		Vector2 refAnchor1 = u.perpendicular() + referenceEdge.p1;
+		Vec2 u = (referenceEdge.p2 - referenceEdge.p1).normal();
+		Vec2 refAnchor1 = u.perpendicular() + referenceEdge.p1;
 		if(!GeometryAlgorithm2D::isPointOnSameSide(referenceEdge.p1, refAnchor1, referenceEdge.p2, incidentEdge.p1))
 			incidentEdge.p1 = GeometryAlgorithm2D::lineIntersection(referenceEdge.p1, refAnchor1, incidentEdge.p1, incidentEdge.p2);
 		if (!GeometryAlgorithm2D::isPointOnSameSide(referenceEdge.p1, refAnchor1, referenceEdge.p2, incidentEdge.p2))
@@ -139,7 +139,7 @@ namespace Physics2D
 
 		//2. clip right region
 		u.negate();
-		Vector2 refAnchor2 = u.perpendicular() + referenceEdge.p2;
+		Vec2 refAnchor2 = u.perpendicular() + referenceEdge.p2;
 		if (!GeometryAlgorithm2D::isPointOnSameSide(referenceEdge.p2, refAnchor2, referenceEdge.p1, incidentEdge.p1))
 			incidentEdge.p1 = GeometryAlgorithm2D::lineIntersection(referenceEdge.p2, refAnchor2, incidentEdge.p1, incidentEdge.p2);
 		if (!GeometryAlgorithm2D::isPointOnSameSide(referenceEdge.p2, refAnchor2, referenceEdge.p1, incidentEdge.p2))
@@ -147,7 +147,7 @@ namespace Physics2D
 
 
 		//3. clip normal region
-		Vector2 refAnchor3 = (referenceEdge.p2 + referenceEdge.p1) / 2.0f + referenceEdge.normal;
+		Vec2 refAnchor3 = (referenceEdge.p2 + referenceEdge.p1) / 2.0f + referenceEdge.normal;
 		
 		bool p1OnClipArea = GeometryAlgorithm2D::isPointOnSameSide(referenceEdge.p1, referenceEdge.p2, refAnchor3, incidentEdge.p1);
 		bool p2OnClipArea = GeometryAlgorithm2D::isPointOnSameSide(referenceEdge.p1, referenceEdge.p2, refAnchor3, incidentEdge.p2);
@@ -164,8 +164,8 @@ namespace Physics2D
 
 		//p1 and p2 are inside, clip nothing, just go to project
 		//4. project to reference edge
-		Vector2 pp1 = GeometryAlgorithm2D::pointToLineSegment(referenceEdge.p1, referenceEdge.p2, incidentEdge.p1);
-		Vector2 pp2 = GeometryAlgorithm2D::pointToLineSegment(referenceEdge.p1, referenceEdge.p2, incidentEdge.p2);
+		Vec2 pp1 = GeometryAlgorithm2D::pointToLineSegment(referenceEdge.p1, referenceEdge.p2, incidentEdge.p1);
+		Vec2 pp2 = GeometryAlgorithm2D::pointToLineSegment(referenceEdge.p1, referenceEdge.p2, incidentEdge.p2);
 		result.reserve(2);
 		PointPair pair1, pair2;
 		if(!swap)

@@ -52,7 +52,7 @@ namespace Physics2D
 		return result;
 	}
 
-	Container::Vector<Body*> Tree::raycast(const Vector2& point, const Vector2& direction)
+	Container::Vector<Body*> Tree::raycast(const Vec2& point, const Vec2& direction)
 	{
 		Container::Vector<Body*> result;
 		raycast(result, m_rootIndex, point, direction);
@@ -272,7 +272,7 @@ namespace Physics2D
 		traverseLowestCost(nodeIndex, lowestCostIndex, lowestCost, finalIndex);
 	}
 
-	void Tree::raycast(Container::Vector<Body*>& result, int nodeIndex, const Vector2& p, const Vector2& d)
+	void Tree::raycast(Container::Vector<Body*>& result, int nodeIndex, const Vec2& p, const Vec2& d)
 	{
 		if (nodeIndex < 0)
 			return;
@@ -524,7 +524,7 @@ namespace Physics2D
 	}
 	int Tree::calculateLowestCostNode(int nodeIndex)
 	{
-		real lowestCost = Constant::Max;
+		real lowestCost = Constant::PosInfty;
 		int targetIndex = -1;
 		//start traverse lowest cost node
 		traverseLowestCost(nodeIndex, m_rootIndex, lowestCost, targetIndex);

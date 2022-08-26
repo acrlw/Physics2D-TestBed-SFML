@@ -2,7 +2,7 @@
 
 namespace Physics2D
 {
-	std::tuple<CCD::BroadphaseTrajectory, AABB> CCD::buildTrajectoryAABB(Body* body, const Vector2& target, const real& dt)
+	std::tuple<CCD::BroadphaseTrajectory, AABB> CCD::buildTrajectoryAABB(Body* body, const Vec2& target, const real& dt)
 	{
 		assert(body != nullptr);
 		Container::Vector<AABBShot> trajectory;
@@ -14,7 +14,7 @@ namespace Physics2D
 		Body::PhysicsAttribute end = body->physicsAttribute();
 		AABB endBox = AABB::fromBody(body);
 
-		if(startBox == endBox && start.velocity.lengthSquare() < Constant::MaxVelocity && std::fabs(start.angularVelocity) < Constant::MaxAngularVelocity)
+		if(startBox == endBox && start.velocity.magnitudeSquare() < Constant::CCDMinVelocity && std::fabs(start.angularVelocity) < Constant::CCDMinVelocity)
 		{
 			trajectory.emplace_back(AABBShot( startBox, body->physicsAttribute(), 0));
 			trajectory.emplace_back(AABBShot( endBox, body->physicsAttribute(), dt ));
@@ -50,7 +50,7 @@ namespace Physics2D
 		Body::PhysicsAttribute end = body->physicsAttribute();
 		AABB endBox = AABB::fromBody(body);
 
-		if (startBox == endBox && start.velocity.lengthSquare() < Constant::MaxVelocity && std::fabs(start.angularVelocity) < Constant::MaxAngularVelocity)
+		if (startBox == endBox && start.velocity.magnitudeSquare() < Constant::CCDMinVelocity && std::fabs(start.angularVelocity) < Constant::CCDMinVelocity)
 		{
 			trajectory.emplace_back(AABBShot(startBox, body->physicsAttribute(), 0));
 			trajectory.emplace_back(AABBShot(endBox, body->physicsAttribute(), dt));
@@ -238,7 +238,7 @@ namespace Physics2D
         if(pairs.empty())
             return std::nullopt;
 
-        real minToi = Constant::Max;
+        real minToi = Constant::PosInfty;
 		for (const auto& elem : pairs) 
 			if (elem.toi < minToi) 
 				minToi = elem.toi;

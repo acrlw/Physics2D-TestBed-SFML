@@ -18,7 +18,7 @@ namespace Physics2D
 
 	void PhysicsWorld::stepVelocity(const real& dt)
 	{
-		const Vector2 g = m_enableGravity ? m_gravity : Vector2{0.0, 0.0};
+		const Vec2 g = m_enableGravity ? m_gravity : Vec2{0.0, 0.0};
 		real lvd = 1.0f;
 		real avd = 1.0f;
 
@@ -147,7 +147,7 @@ namespace Physics2D
 				body->forces().clear();
 				body->clearTorque();
 
-				if (body->velocity().lengthSquare() < Constant::CCDMinVelocity * Constant::CCDMinVelocity
+				if (body->velocity().magnitudeSquare() < Constant::CCDMinVelocity * Constant::CCDMinVelocity
 					&& body->rotation() < Constant::CCDMinVelocity)
 					body->setType(Body::BodyType::Dynamic);
 				break;
@@ -179,12 +179,12 @@ namespace Physics2D
 		return m_jointList;
 	}
 	
-	Vector2 PhysicsWorld::gravity() const
+	Vec2 PhysicsWorld::gravity() const
 	{
 		return m_gravity;
 	}
 
-	void PhysicsWorld::setGravity(const Vector2& gravity)
+	void PhysicsWorld::setGravity(const Vec2& gravity)
 	{
 		m_gravity = gravity;
 	}

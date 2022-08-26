@@ -22,11 +22,11 @@ namespace Physics2D
 
 			shape1.shape = &polygon1;
 			shape1.transform.set(1.0f, 2.0f);
-			shape1.rotation = Math::degreeToRadian(30);
+			shape1.rotation = degreeToRadian(30);
 
 			shape2.shape = &polygon2;
 			shape2.transform.set(1.0f, -5.0f);
-			shape2.rotation = Math::degreeToRadian(30);
+			shape2.rotation = degreeToRadian(30);
 			result = Detector::detect(shape1, shape2);
 
 		}

@@ -20,12 +20,12 @@ namespace Physics2D
 			std::uniform_real_distribution<> dist2(-5.0f, 20.0f);
 
 			for (int i = 0; i < 500; i++)
-				points1.emplace_back(Vector2(dist1(gen), dist1(gen)));
+				points1.emplace_back(Vec2(dist1(gen), dist1(gen)));
 
 			convex1 = GeometryAlgorithm2D::grahamScan(points1);
 
 			for (int i = 0; i < 500; i++)
-				points2.emplace_back(Vector2(dist2(gen), dist2(gen)));
+				points2.emplace_back(Vec2(dist2(gen), dist2(gen)));
 
 			convex2 = GeometryAlgorithm2D::grahamScan(points2);
 			intersectionConvex = GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(convex1, convex2);
@@ -47,11 +47,11 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoints(window, *m_camera, points2, sf::Color::Magenta);
 		}
 	private:
-		Container::Vector<Vector2> points1;
-		Container::Vector<Vector2> points2;
-		Container::Vector<Vector2> convex1;
-		Container::Vector<Vector2> convex2;
-		Container::Vector<Vector2> intersectionConvex;
+		Container::Vector<Vec2> points1;
+		Container::Vector<Vec2> points2;
+		Container::Vector<Vec2> convex1;
+		Container::Vector<Vec2> convex2;
+		Container::Vector<Vec2> intersectionConvex;
 	};
 }
 #endif

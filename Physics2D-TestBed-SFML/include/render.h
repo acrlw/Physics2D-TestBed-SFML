@@ -33,13 +33,13 @@ namespace Physics2D
     class RenderSFMLImpl
     {
     public:
-        static sf::Vector2f toVector2f(const Vector2& vector);
-        static void renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const int pointSize = RenderConstant::PointSize);
-        static void renderLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, const sf::Color& color);
+        static sf::Vector2f toVec2f(const Vec2& vector);
+        static void renderPoint(sf::RenderWindow& window, Camera& camera, const Vec2& point, const sf::Color& color, const int pointSize = RenderConstant::PointSize);
+        static void renderLine(sf::RenderWindow& window, Camera& camera, const Vec2& p1, const Vec2& p2, const sf::Color& color);
 
-    	static void renderPoints(sf::RenderWindow& window, Camera& camera, const Container::Vector<Vector2>& points, const sf::Color& color);
+    	static void renderPoints(sf::RenderWindow& window, Camera& camera, const Container::Vector<Vec2>& points, const sf::Color& color);
         
-    	static void renderLines(sf::RenderWindow& window, Camera& camera, const Container::Vector<std::pair<Vector2, Vector2>>& lines, const sf::Color& color);
+    	static void renderLines(sf::RenderWindow& window, Camera& camera, const Container::Vector<std::pair<Vec2, Vec2>>& lines, const sf::Color& color);
         
         static void renderShape(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
         static void renderPolygon(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);

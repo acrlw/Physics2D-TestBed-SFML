@@ -57,7 +57,7 @@ namespace Physics2D
 	}
 	
 
-	void DBVH::raycast(Container::Vector<Body*>& result, Node* node, const Vector2& start, const Vector2& direction)
+	void DBVH::raycast(Container::Vector<Body*>& result, Node* node, const Vec2& start, const Vec2& direction)
 	{
 		if (node == nullptr)
 			return;
@@ -87,7 +87,7 @@ namespace Physics2D
 		auto getCost = [&](Node* target, const AABB& aabb)
 		{
 			Node* lowCostNode = nullptr;
-			real costValue = Constant::Max;
+			real costValue = Constant::PosInfty;
 			for (auto const& [key, val] : m_leaves)
 			{
 				assert(val != nullptr);
@@ -145,7 +145,7 @@ namespace Physics2D
 		auto getCost = [&](const AABB& aabb)
 		{
 			Node* lowCostNode = nullptr;
-			real costValue = Constant::Max;
+			real costValue = Constant::PosInfty;
 			for (auto const& [key, val] : m_leaves)
 			{
 				assert(val != nullptr);
@@ -264,7 +264,7 @@ namespace Physics2D
 		delete target;
 		m_leaves.erase(body);
 	}
-	Container::Vector<Body*> DBVH::raycast(const Vector2& start, const Vector2& direction)
+	Container::Vector<Body*> DBVH::raycast(const Vec2& start, const Vec2& direction)
 	{
 		Container::Vector<Body*> result;
 		raycast(result, m_root, start, direction);

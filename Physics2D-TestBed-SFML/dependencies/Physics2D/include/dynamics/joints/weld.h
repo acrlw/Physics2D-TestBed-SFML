@@ -7,8 +7,8 @@ namespace Physics2D
 	{
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
-		Vector2 localPointA;
-		Vector2 localPointB;
+		Vec2 localPointA;
+		Vec2 localPointB;
 		real rotation;		//a.rotation() - b.rotation()
 
 		//soft constraint
@@ -19,9 +19,9 @@ namespace Physics2D
 		real maxForce = 5000.0f;
 		real dampingRatio = 0.2f;
 		real gamma = 0.0f;
-		Vector2 bias;
+		Vec2 bias;
 		Matrix3x3 effectiveMass;
-		Vector2 accumulatedImpulse;
+		Vec2 accumulatedImpulse;
 	};
 	//weld joint comes from revolute and rotation joint
 	class WeldJoint : public Joint
@@ -71,10 +71,10 @@ namespace Physics2D
 			m_primitive.gamma = constraintImpulseMixing(dt, m_primitive.stiffness, m_primitive.damping);
 			real erp = errorReductionParameter(dt, m_primitive.stiffness, m_primitive.damping);
 
-			Vector2 pa = bodyA->toWorldPoint(m_primitive.localPointA);
-			Vector2 ra = pa - bodyA->position();
-			Vector2 pb = bodyB->toWorldPoint(m_primitive.localPointB);
-			Vector2 rb = pb - bodyB->position();
+			Vec2 pa = bodyA->toWorldPoint(m_primitive.localPointA);
+			Vec2 ra = pa - bodyA->position();
+			Vec2 pb = bodyB->toWorldPoint(m_primitive.localPointB);
+			Vec2 rb = pb - bodyB->position();
 
 			m_primitive.bias = (pa - pb) * erp;
 			Matrix3x3 k;

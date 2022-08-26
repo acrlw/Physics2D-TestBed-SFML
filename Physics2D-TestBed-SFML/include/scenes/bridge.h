@@ -34,7 +34,7 @@ namespace Physics2D
 			ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({ 0, -15.0 });
-			ground->setMass(Constant::Max);
+			ground->setMass(Constant::PosInfty);
 			ground->setType(Body::BodyType::Static);
 			m_tree->insert(ground);
 
@@ -74,7 +74,7 @@ namespace Physics2D
 
 			ppm.bodyA = rect2;
 			ppm.localPointA.set(0.75f, 0);
-			ppm.targetPoint.set(rect2->toWorldPoint(Vector2(0.75f, 0.0f)));
+			ppm.targetPoint.set(rect2->toWorldPoint(Vec2(0.75f, 0.0f)));
 			ppm.dampingRatio = 0.1f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;

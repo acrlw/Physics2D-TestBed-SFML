@@ -16,7 +16,7 @@ namespace Physics2D
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
         m_mouseJoint->setActive(false);
 
-        m_camera.setViewport(Camera::Viewport(Vector2(0, 0), Vector2(1920, 1080)));
+        m_camera.setViewport(Camera::Viewport(Vec2(0, 0), Vec2(1920, 1080)));
         m_camera.setWorld(&m_system.world());
         m_camera.setDbvh(&m_dbvh);
         m_camera.setTree(&m_system.tree());
@@ -66,7 +66,7 @@ namespace Physics2D
     }
     void TestBed::onMouseReleased(sf::Event& event)
     {
-        Vector2 pos(real(event.mouseButton.x), real(event.mouseButton.y));
+        Vec2 pos(real(event.mouseButton.x), real(event.mouseButton.y));
         m_mousePos = m_camera.screenToWorld(pos);
 
         if (m_currentFrame != nullptr)
@@ -84,9 +84,9 @@ namespace Physics2D
         if (m_currentFrame != nullptr)
             m_currentFrame->onMouseMove(event);
 
-        Vector2 pos(real(event.mouseMove.x), real(event.mouseMove.y));
+        Vec2 pos(real(event.mouseMove.x), real(event.mouseMove.y));
 
-        Vector2 tf = m_camera.screenToWorld(pos) - m_mousePos;
+        Vec2 tf = m_camera.screenToWorld(pos) - m_mousePos;
         if (m_cameraViewportMovement)
         {
             tf *= m_camera.meterToPixel();
@@ -106,7 +106,7 @@ namespace Physics2D
     }
     void TestBed::onMousePressed(sf::Event& event)
     {
-        Vector2 pos(real(event.mouseButton.x), real(event.mouseButton.y));
+        Vec2 pos(real(event.mouseButton.x), real(event.mouseButton.y));
         m_mousePos = m_camera.screenToWorld(pos);
 
         if (event.mouseButton.button == sf::Mouse::Right)
@@ -124,8 +124,8 @@ namespace Physics2D
             auto bodies = m_system.tree().query(mouseBox);
             for (auto& body : bodies)
             {
-                Vector2 point = m_mousePos - body->position();
-                point = Matrix2x2(-body->rotation()).multiply(point);
+                Vec2 point = m_mousePos - body->position();
+                point = Mat2(-body->rotation()).multiply(point);
                 if (body->shape()->contains(point) && m_selectedBody == nullptr && body->type() != Body::BodyType::Static)
                 {
                     m_selectedBody = body;

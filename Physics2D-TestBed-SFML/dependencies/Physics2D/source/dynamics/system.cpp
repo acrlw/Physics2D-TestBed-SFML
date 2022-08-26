@@ -48,7 +48,7 @@ namespace Physics2D
         for (auto& bullet : bullets)
         {
             //check bullet velocity threshold
-            if (bullet->velocity().lengthSquare() < Constant::CCDMinVelocity && bullet->angularVelocity() < Constant::CCDMinVelocity)
+            if (bullet->velocity().magnitudeSquare() < Constant::CCDMinVelocity && bullet->angularVelocity() < Constant::CCDMinVelocity)
                 continue;
             auto potentials = CCD::query(m_tree, bullet, dt);
             if (potentials.has_value())

@@ -7,19 +7,19 @@ namespace Physics2D
     {
     public:
         Capsule(real width = 0.0f, real height = 0.0f);
-        bool contains(const Vector2& point, const real& epsilon) override;
+        bool contains(const Vec2& point, const real& epsilon) override;
         void scale(const real& factor) override;
-        Vector2 center() const override;
+        Vec2 center() const override;
         void set(real width, real height);
         void setWidth(real width);
         void setHeight(real height);
         real width()const;
         real height()const;
-        Vector2 topLeft()const;
-        Vector2 bottomLeft()const;
-        Vector2 topRight()const;
-        Vector2 bottomRight()const;
-        Container::Vector<Vector2> boxVertices()const;
+        Vec2 topLeft()const;
+        Vec2 bottomLeft()const;
+        Vec2 topRight()const;
+        Vec2 bottomRight()const;
+        Container::Vector<Vec2> boxVertices()const;
     private:
         real m_width;
         real m_height;

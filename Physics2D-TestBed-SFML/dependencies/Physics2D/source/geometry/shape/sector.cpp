@@ -65,15 +65,15 @@ namespace Physics2D
 	{
 		if (m_spanRadian <= 0 && m_samplePoints < 3)
 			return;
-		m_vertices.emplace_back(Vector2{ 0, 0 });
+		m_vertices.emplace_back(Vec2{ 0, 0 });
 		real step = m_spanRadian / m_samplePoints;
 		for(real i = m_startRadian; i <= m_startRadian + m_spanRadian - step; )
 		{
-			m_vertices.emplace_back(Matrix2x2(i).multiply(Vector2(m_radius, 0)));
+			m_vertices.emplace_back(Mat2(i).multiply(Vec2(m_radius, 0)));
 			i += step;
 		}
-		m_vertices.emplace_back(Matrix2x2(m_startRadian + m_spanRadian).multiply(Vector2(m_radius, 0)));
-		m_vertices.emplace_back(Vector2{ 0, 0 });
+		m_vertices.emplace_back(Mat2(m_startRadian + m_spanRadian).multiply(Vec2(m_radius, 0)));
+		m_vertices.emplace_back(Vec2{ 0, 0 });
 		updateVertices();
 	}
 }

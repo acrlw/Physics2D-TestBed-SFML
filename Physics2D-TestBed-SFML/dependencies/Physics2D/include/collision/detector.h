@@ -15,7 +15,7 @@ namespace Physics2D
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
 		Container::Vector<PointPair> contactList;
-		Vector2 normal;
+		Vec2 normal;
 		real penetration = 0;
 	};
 

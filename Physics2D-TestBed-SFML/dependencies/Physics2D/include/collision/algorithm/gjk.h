@@ -19,23 +19,23 @@ namespace Physics2D
 {
 	struct PenetrationInfo
 	{
-		Vector2 normal;
+		Vec2 normal;
 		real penetration = 0;
 	};
 
 	struct PenetrationSource
 	{
-		Vector2 a1;
-		Vector2 a2;
-		Vector2 b1;
-		Vector2 b2;
+		Vec2 a1;
+		Vec2 a2;
+		Vec2 b1;
+		Vec2 b2;
 	};
 
 	struct PointPair
 	{
 		PointPair() = default;
-		Vector2 pointA;
-		Vector2 pointB;
+		Vec2 pointA;
+		Vec2 pointB;
 		bool isEmpty()const
 		{
 			return pointA.fuzzyEqual({ 0, 0 }) && pointB.fuzzyEqual({ 0, 0 });
@@ -88,7 +88,7 @@ namespace Physics2D
 		/// <param name="direction"></param>
 		/// <returns></returns>
 		static Minkowski support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
-		                         const Vector2& direction);
+		                         const Vec2& direction);
 		/// <summary>
 		/// Find two points that can form an edge closest to origin of simplex
 		/// </summary>
@@ -101,14 +101,14 @@ namespace Physics2D
 		/// <param name="shape"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static Vector2 findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction);
+		static Vec2 findFarthestPoint(const ShapePrimitive& shape, const Vec2& direction);
 		/// <summary>
 		/// Find farthest projection point in given direction
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static std::pair<Vector2, size_t> findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
+		static std::pair<Vec2, size_t> findFarthestPoint(const Container::Vector<Vec2>& vertices, const Vec2& direction);
 		/// <summary>
 		/// Adjust triangle simplex, remove the point that can not form a triangle that contains origin
 		/// </summary>
@@ -125,7 +125,7 @@ namespace Physics2D
 		/// <param name="p2"></param>
 		/// <param name="pointToOrigin"></param>
 		/// <returns></returns>
-		static Vector2 calculateDirectionByEdge(const Vector2& p1, const Vector2& p2, bool pointToOrigin = true);
+		static Vec2 calculateDirectionByEdge(const Vec2& p1, const Vec2& p2, bool pointToOrigin = true);
 		/// <summary>
 		/// Calculate the distance of two shape primitive
 		/// </summary>

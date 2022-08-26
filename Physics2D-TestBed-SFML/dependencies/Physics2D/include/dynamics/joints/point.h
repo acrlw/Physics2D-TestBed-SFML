@@ -6,9 +6,9 @@ namespace Physics2D
 	struct PointJointPrimitive
 	{
 		Body* bodyA;
-		Vector2 localPointA;
-		Vector2 targetPoint;
-		Vector2 normal;
+		Vec2 localPointA;
+		Vec2 targetPoint;
+		Vec2 normal;
 
 		real damping = 0.0;
 		real stiffness = 0.0;
@@ -16,9 +16,9 @@ namespace Physics2D
 		real maxForce = 1000;
 		real dampingRatio = 1;
 		real gamma = 0.0;
-		Vector2 bias;
-		Matrix2x2 effectiveMass;
-		Vector2 accumulatedImpulse;
+		Vec2 bias;
+		Mat2 effectiveMass;
+		Vec2 accumulatedImpulse;
 
 	};
 	class PointJoint : public Joint
@@ -60,19 +60,18 @@ namespace Physics2D
 			real erp = errorReductionParameter(dt, m_primitive.stiffness, m_primitive.damping);
 
 
-			Vector2 pa = bodyA->toWorldPoint(m_primitive.localPointA);
-			Vector2 ra = pa - bodyA->position();
-			Vector2 pb = m_primitive.targetPoint;
+			Vec2 pa = bodyA->toWorldPoint(m_primitive.localPointA);
+			Vec2 ra = pa - bodyA->position();
+			Vec2 pb = m_primitive.targetPoint;
 
 			m_primitive.bias = (pa - pb) * erp;
-			Matrix2x2 k;
-			k.e11() = im_a + ra.y * ra.y * ii_a;
-			k.e12() = -ra.x * ra.y * ii_a;
-			k.e21() = k.e12();
-			k.e22() = im_a + ra.x * ra.x * ii_a;
+			Mat2 k;
+			k[0][0] = im_a + ra.y * ra.y * ii_a + m_primitive.gamma;
+			k[0][1] = -ra.x * ra.y * ii_a;
+			k[1][0] = -ra.x * ra.y * ii_a;
+			k[1][1] = im_a + ra.x * ra.x * ii_a + m_primitive.gamma;
 
-			k.e11() += m_primitive.gamma;
-			k.e22() += m_primitive.gamma;
+
 
 			m_primitive.effectiveMass = k.invert();
 			//warmstart
@@ -83,17 +82,17 @@ namespace Physics2D
 		{
 			if (m_primitive.bodyA == nullptr)
 				return;
-			Vector2 ra = m_primitive.bodyA->toWorldPoint(m_primitive.localPointA) - m_primitive.bodyA->position();
-			Vector2 va = m_primitive.bodyA->velocity() + Vector2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
-			Vector2 jvb = va;
+			Vec2 ra = m_primitive.bodyA->toWorldPoint(m_primitive.localPointA) - m_primitive.bodyA->position();
+			Vec2 va = m_primitive.bodyA->velocity() + Vec2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
+			Vec2 jvb = va;
 			jvb += m_primitive.bias;
 			jvb += m_primitive.accumulatedImpulse * m_primitive.gamma;
 			jvb.negate();
-			Vector2 J = m_primitive.effectiveMass.multiply(jvb);
-			Vector2 oldImpulse = m_primitive.accumulatedImpulse;
+			Vec2 J = m_primitive.effectiveMass.multiply(jvb);
+			Vec2 oldImpulse = m_primitive.accumulatedImpulse;
 			m_primitive.accumulatedImpulse += J;
 			real maxImpulse = dt * m_primitive.maxForce;
-			if(m_primitive.accumulatedImpulse.lengthSquare() > maxImpulse * maxImpulse)
+			if(m_primitive.accumulatedImpulse.magnitudeSquare() > maxImpulse * maxImpulse)
 			{
 				m_primitive.accumulatedImpulse.normalize();
 				m_primitive.accumulatedImpulse *= maxImpulse;

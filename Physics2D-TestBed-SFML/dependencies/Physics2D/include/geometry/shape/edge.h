@@ -9,22 +9,22 @@ namespace Physics2D
     public:
         Edge();
 
-        void set(const Vector2& start, const Vector2& end);
+        void set(const Vec2& start, const Vec2& end);
 
-        Vector2 startPoint()const;
-        void setStartPoint(const Vector2& start);
+        Vec2 startPoint()const;
+        void setStartPoint(const Vec2& start);
 
-        Vector2 endPoint()const;
-        void setEndPoint(const Vector2& end);
+        Vec2 endPoint()const;
+        void setEndPoint(const Vec2& end);
         void scale(const real& factor) override;
-        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon) override;
-        Vector2 center()const override;
-        Vector2 normal()const;
-        void setNormal(const Vector2& normal);
+        bool contains(const Vec2& point, const real& epsilon = Constant::GeometryEpsilon) override;
+        Vec2 center()const override;
+        Vec2 normal()const;
+        void setNormal(const Vec2& normal);
     private:
-        Vector2 m_startPoint;
-        Vector2 m_endPoint;
-        Vector2 m_normal;
+        Vec2 m_startPoint;
+        Vec2 m_endPoint;
+        Vec2 m_normal;
     };
 }
 #endif

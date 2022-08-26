@@ -41,7 +41,7 @@ namespace Physics2D
 		m_height *= factor;
 		calcVertices();
 	}
-	bool Rectangle::contains(const Vector2& point, const real& epsilon)
+	bool Rectangle::contains(const Vec2& point, const real& epsilon)
 	{
 		return (point.x < m_width / 2.0 && point.x > -m_width / 2.0) &&
 			point.y < m_height / 2.0 && point.y > -m_height / 2.0;
@@ -49,10 +49,10 @@ namespace Physics2D
 	void Rectangle::calcVertices()
 	{
 		m_vertices.clear();
-		m_vertices.emplace_back(Vector2(-m_width * (0.5f), m_height * (0.5f)));
-		m_vertices.emplace_back(Vector2(-m_width * (0.5f), -m_height * (0.5f)));
-		m_vertices.emplace_back(Vector2(m_width * (0.5f), -m_height * (0.5f)));
-		m_vertices.emplace_back(Vector2(m_width * (0.5f), m_height * (0.5f)));
-		m_vertices.emplace_back(Vector2(-m_width * (0.5f), m_height * (0.5f)));
+		m_vertices.emplace_back(Vec2(-m_width * (0.5f), m_height * (0.5f)));
+		m_vertices.emplace_back(Vec2(-m_width * (0.5f), -m_height * (0.5f)));
+		m_vertices.emplace_back(Vec2(m_width * (0.5f), -m_height * (0.5f)));
+		m_vertices.emplace_back(Vec2(m_width * (0.5f), m_height * (0.5f)));
+		m_vertices.emplace_back(Vec2(-m_width * (0.5f), m_height * (0.5f)));
 	}
 }

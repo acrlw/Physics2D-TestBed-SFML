@@ -6,10 +6,10 @@ namespace Physics2D
 	{
 		m_type = Type::Capsule;
 	}
-	bool Capsule::contains(const Vector2& point, const real& epsilon)
+	bool Capsule::contains(const Vec2& point, const real& epsilon)
 	{
 		real r = 0, h = 0;
-		Vector2 anchorPoint1, anchorPoint2;
+		Vec2 anchorPoint1, anchorPoint2;
 		if (m_width >= m_height)//Horizontal
 		{
 			r = m_height / 2;
@@ -31,8 +31,8 @@ namespace Physics2D
 				&& point.x - r <= epsilon && point.x + r >= epsilon)
 				return true;
 		}
-		if ((anchorPoint1 - point).lengthSquare() - r * r <= epsilon ||
-			(anchorPoint2 - point).lengthSquare() - r * r <= epsilon)
+		if ((anchorPoint1 - point).magnitudeSquare() - r * r <= epsilon ||
+			(anchorPoint2 - point).magnitudeSquare() - r * r <= epsilon)
 			return true;
 
 		return false;
@@ -44,9 +44,9 @@ namespace Physics2D
 		m_height *= factor;
 	}
 
-	Vector2 Capsule::center() const
+	Vec2 Capsule::center() const
 	{
-		return Vector2();
+		return Vec2();
 	}
 
 	void Capsule::set(real width, real height)
@@ -75,9 +75,9 @@ namespace Physics2D
 		return m_height;
 	}
 
-	Vector2 Capsule::topLeft() const
+	Vec2 Capsule::topLeft() const
 	{
-		Vector2 result;
+		Vec2 result;
 		real r;
 		if (m_width >= m_height)//Horizontal
 		{
@@ -91,9 +91,9 @@ namespace Physics2D
 		}
 		return result;
 	}
-	Vector2 Capsule::bottomLeft() const
+	Vec2 Capsule::bottomLeft() const
 	{
-		Vector2 result;
+		Vec2 result;
 		real r;
 		if (m_width >= m_height)//Horizontal
 		{
@@ -108,19 +108,19 @@ namespace Physics2D
 		return result;
 	}
 
-	Vector2 Capsule::topRight() const
+	Vec2 Capsule::topRight() const
 	{
 		return -bottomLeft();
 	}
 
-	Vector2 Capsule::bottomRight() const
+	Vec2 Capsule::bottomRight() const
 	{
 		return -topLeft();
 	}
 
-	Container::Vector<Vector2> Capsule::boxVertices() const
+	Container::Vector<Vec2> Capsule::boxVertices() const
 	{
-		Container::Vector<Vector2> vertices;
+		Container::Vector<Vec2> vertices;
 		vertices.reserve(5);
 		vertices.emplace_back(this->topLeft());
 		vertices.emplace_back(this->bottomLeft());

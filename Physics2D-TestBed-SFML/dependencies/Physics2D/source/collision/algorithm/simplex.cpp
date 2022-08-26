@@ -18,8 +18,8 @@ namespace Physics2D
 		}
 		case 2:
 		{
-			Vector2 oa = simplex.vertices[0].result * -1;
-			Vector2 ob = simplex.vertices[1].result * -1;
+			Vec2 oa = simplex.vertices[0].result * -1;
+			Vec2 ob = simplex.vertices[1].result * -1;
 			return GeometryAlgorithm2D::isPointOnSegment(oa, ob, { 0, 0 });
 
 		}
@@ -43,12 +43,12 @@ namespace Physics2D
 		return std::find_if(std::begin(vertices), std::end(vertices),
 			[=](const Minkowski& element)
 			{
-				return (minkowski.result - element.result).lengthSquare() < epsilon;
+				return (minkowski.result - element.result).magnitudeSquare() < epsilon;
 			})
 			!= std::end(vertices);
 	}
 
-	Vector2 Simplex::lastVertex() const
+	Vec2 Simplex::lastVertex() const
 	{
 		if (vertices.size() == 2)
 			return vertices[vertices.size() - 1].result;

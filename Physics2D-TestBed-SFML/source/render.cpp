@@ -1,37 +1,37 @@
 #include "include/render.h"
 namespace Physics2D
 {
-	sf::Vector2f RenderSFMLImpl::toVector2f(const Vector2& vector)
+	sf::Vector2f RenderSFMLImpl::toVec2f(const Vec2& vector)
 	{
 		return sf::Vector2f(vector.x, vector.y);
 	}
-	void RenderSFMLImpl::renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const int pointSize)
+	void RenderSFMLImpl::renderPoint(sf::RenderWindow& window, Camera& camera, const Vec2& point, const sf::Color& color, const int pointSize)
 	{
 		sf::CircleShape shape(pointSize);
 		shape.setFillColor(color);
-		shape.move(toVector2f(camera.worldToScreen(point)) - sf::Vector2f(RenderConstant::PointSize, RenderConstant::PointSize));
+		shape.move(toVec2f(camera.worldToScreen(point)) - sf::Vector2f(RenderConstant::PointSize, RenderConstant::PointSize));
 		window.draw(shape);
 	}
-	void RenderSFMLImpl::renderLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, const sf::Color& color)
+	void RenderSFMLImpl::renderLine(sf::RenderWindow& window, Camera& camera, const Vec2& p1, const Vec2& p2, const sf::Color& color)
 	{
 		sf::Vertex line[] =
 		{
-			sf::Vertex(toVector2f(camera.worldToScreen(p1))),
-			sf::Vertex(toVector2f(camera.worldToScreen(p2)))
+			sf::Vertex(toVec2f(camera.worldToScreen(p1))),
+			sf::Vertex(toVec2f(camera.worldToScreen(p2)))
 		};
 		line[0].color = color;
 		line[1].color = color;
 		window.draw(line, 2, sf::Lines);
 	}
-	void RenderSFMLImpl::renderPoints(sf::RenderWindow& window, Camera& camera, const Container::Vector<Vector2>& points, const sf::Color& color)
+	void RenderSFMLImpl::renderPoints(sf::RenderWindow& window, Camera& camera, const Container::Vector<Vec2>& points, const sf::Color& color)
 	{
 		Container::Vector<sf::Vertex> vertices;
 		vertices.reserve(points.size());
 		for (auto& elem : points)
 		{
-			Vector2 screenPos = camera.worldToScreen(elem);
+			Vec2 screenPos = camera.worldToScreen(elem);
 			sf::Vertex vertex;
-			vertex.position = toVector2f(screenPos);
+			vertex.position = toVec2f(screenPos);
 			vertex.color = color;
 			vertices.emplace_back(vertex);
 		}
@@ -40,20 +40,20 @@ namespace Physics2D
 
 
 
-	void RenderSFMLImpl::renderLines(sf::RenderWindow& window, Camera& camera, const Container::Vector<std::pair<Vector2, Vector2>>& lines, const sf::Color& color)
+	void RenderSFMLImpl::renderLines(sf::RenderWindow& window, Camera& camera, const Container::Vector<std::pair<Vec2, Vec2>>& lines, const sf::Color& color)
 	{
 		Container::Vector<sf::Vertex> vertices;
 		vertices.reserve(lines.size() * 2);
 		for (auto& elem : lines)
 		{
-			Vector2 screenPos = camera.worldToScreen(elem.first);
+			Vec2 screenPos = camera.worldToScreen(elem.first);
 			sf::Vertex vertex;
-			vertex.position = toVector2f(screenPos);
+			vertex.position = toVec2f(screenPos);
 			vertex.color = color;
 			vertices.emplace_back(vertex);
 
 			screenPos = camera.worldToScreen(elem.second);
-			vertex.position = toVector2f(screenPos);
+			vertex.position = toVec2f(screenPos);
 			vertex.color = color;
 			vertices.emplace_back(vertex);
 		}
@@ -113,9 +113,9 @@ namespace Physics2D
 		convex.setPointCount(polygon->vertices().size() - 1);
 		for (size_t i = 0; i < polygon->vertices().size() - 1; ++i)
 		{
-			const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(polygon->vertices()[i] * RenderConstant::ScaleFactor) + shape.transform;
-			const Vector2 screenPos = camera.worldToScreen(worldPos);
-			convex.setPoint(i, toVector2f(screenPos));
+			const Vec2 worldPos = Mat2(shape.rotation).multiply(polygon->vertices()[i] * RenderConstant::ScaleFactor) + shape.transform;
+			const Vec2 screenPos = camera.worldToScreen(worldPos);
+			convex.setPoint(i, toVec2f(screenPos));
 		}
 		sf::Color fillColor(color);
 		fillColor.a = RenderConstant::FillAlpha;
@@ -132,7 +132,7 @@ namespace Physics2D
 		renderPoint(window, camera, edge->endPoint() + shape.transform, color);
 		renderLine(window, camera, edge->startPoint() + shape.transform, edge->endPoint() + shape.transform, color);
 
-		Vector2 center = (edge->startPoint() + edge->endPoint()) / 2.0f;
+		Vec2 center = (edge->startPoint() + edge->endPoint()) / 2.0f;
 		center += shape.transform;
 		renderLine(window, camera, center, center + 0.1f * edge->normal(), RenderConstant::MaterialYellow);
 	}
@@ -146,11 +146,11 @@ namespace Physics2D
 	{
 		assert(shape.shape->type() == Shape::Type::Circle);
 		const Circle* circle = static_cast<Circle*>(shape.shape);
-		const Vector2 screenPos = camera.worldToScreen(shape.transform);
+		const Vec2 screenPos = camera.worldToScreen(shape.transform);
 		sf::CircleShape circleShape(circle->radius() * RenderConstant::ScaleFactor * camera.meterToPixel());
 		sf::Color fillColor(color);
 		fillColor.a = RenderConstant::FillAlpha;
-		circleShape.move(toVector2f(screenPos) - sf::Vector2f(circleShape.getRadius(), circleShape.getRadius()));
+		circleShape.move(toVec2f(screenPos) - sf::Vector2f(circleShape.getRadius(), circleShape.getRadius()));
 		circleShape.setFillColor(fillColor);
 		circleShape.setOutlineThickness(RenderConstant::BorderSize);
 		circleShape.setOutlineColor(color);
@@ -163,24 +163,24 @@ namespace Physics2D
 		Container::Vector<sf::Vertex> vertices;
 
 		const Capsule* capsule = static_cast<Capsule*>(shape.shape);
-		const Vector2 screenPos = camera.worldToScreen(shape.transform);
+		const Vec2 screenPos = camera.worldToScreen(shape.transform);
 		int pointCounts = (RenderConstant::BasicCirclePointCount + camera.meterToPixel()) / 4;
-		sf::Vertex centerVertex = toVector2f(screenPos);
+		sf::Vertex centerVertex = toVec2f(screenPos);
 		sf::Color fillColor(color);
 		fillColor.a = RenderConstant::FillAlpha;
 		centerVertex.color = fillColor;
 		vertices.emplace_back(centerVertex);
-		auto sampling = [&](const Vector2& center, const real& radius, const real& startRadians, const real& endRadians)
+		auto sampling = [&](const Vec2& center, const real& radius, const real& startRadians, const real& endRadians)
 		{
 			real step = (endRadians - startRadians) / float(pointCounts);
 			for (real radian = startRadians; radian <= endRadians; radian += step)
 			{
-				Vector2 point(radius * Math::cosx(radian), radius * Math::sinx(radian));
+				Vec2 point(radius * cosx(radian), radius * sinx(radian));
 				point += center;
-				const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
-				const Vector2 screenPos = camera.worldToScreen(worldPos);
+				const Vec2 worldPos = Mat2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
+				const Vec2 screenPos = camera.worldToScreen(worldPos);
 				sf::Vertex vertex;
-				vertex.position = toVector2f(screenPos);
+				vertex.position = toVec2f(screenPos);
 				vertex.color = fillColor;
 				vertices.emplace_back(vertex);
 			}
@@ -188,14 +188,14 @@ namespace Physics2D
 		if (capsule->width() > capsule->height())
 		{
 			real radius = capsule->height() / 2.0f;
-			sampling((capsule->bottomLeft() + capsule->topLeft()) / 2.0f, radius, Math::degreeToRadian(90), Math::degreeToRadian(270));
-			sampling((capsule->topRight() + capsule->bottomRight()) / 2.0f, radius, Math::degreeToRadian(270), Math::degreeToRadian(450));
+			sampling((capsule->bottomLeft() + capsule->topLeft()) / 2.0f, radius, degreeToRadian(90), degreeToRadian(270));
+			sampling((capsule->topRight() + capsule->bottomRight()) / 2.0f, radius, degreeToRadian(270), degreeToRadian(450));
 		}
 		else
 		{
 			real radius = capsule->width() / 2.0f;
-			sampling((capsule->topLeft() + capsule->topRight()) / 2.0f, radius, Math::degreeToRadian(0), Math::degreeToRadian(180));
-			sampling((capsule->bottomLeft() + capsule->bottomRight()) / 2.0f, radius, Math::degreeToRadian(180), Math::degreeToRadian(360));
+			sampling((capsule->topLeft() + capsule->topRight()) / 2.0f, radius, degreeToRadian(0), degreeToRadian(180));
+			sampling((capsule->bottomLeft() + capsule->bottomRight()) / 2.0f, radius, degreeToRadian(180), degreeToRadian(360));
 		}
 		vertices.emplace_back(vertices[1]);
 		window.draw(&vertices[0], vertices.size(), sf::TriangleFan);
@@ -215,16 +215,16 @@ namespace Physics2D
 		Container::Vector<sf::Vertex> vertices;
 
 		const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
-		const Vector2 screenPos = camera.worldToScreen(shape.transform);
+		const Vec2 screenPos = camera.worldToScreen(shape.transform);
 		int pointCounts = (RenderConstant::BasicCirclePointCount + camera.meterToPixel()) / 2;
 
-		sf::Vertex centerVertex = toVector2f(screenPos);
+		sf::Vertex centerVertex = toVec2f(screenPos);
 		sf::Color fillColor(color);
 		fillColor.a = RenderConstant::FillAlpha;
 		centerVertex.color = fillColor;
 		vertices.emplace_back(centerVertex);
 
-		real step = Constant::DoublePi / float(pointCounts);
+		real step = Constant::TwoPi / float(pointCounts);
 		real innerRadius, outerRadius;
 		innerRadius = ellipse->A();
 		outerRadius = ellipse->B();
@@ -233,14 +233,14 @@ namespace Physics2D
 			innerRadius = ellipse->B();
 			outerRadius = ellipse->A();
 		}
-		for (real radian = 0; radian <= Constant::DoublePi; radian += step)
+		for (real radian = 0; radian <= Constant::TwoPi; radian += step)
 		{
-			Vector2 point(outerRadius * Math::cosx(radian), innerRadius * Math::sinx(radian));
+			Vec2 point(outerRadius * cosx(radian), innerRadius * sinx(radian));
 
-			const Vector2 worldPos = Matrix2x2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
-			const Vector2 screenPos = camera.worldToScreen(worldPos);
+			const Vec2 worldPos = Mat2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
+			const Vec2 screenPos = camera.worldToScreen(worldPos);
 			sf::Vertex vertex;
-			vertex.position = toVector2f(screenPos);
+			vertex.position = toVec2f(screenPos);
 			vertex.color = fillColor;
 			vertices.emplace_back(vertex);
 		}
@@ -262,11 +262,11 @@ namespace Physics2D
 		sf::Color colorY(255, 235, 59);
 		colorX.a = 204;
 		colorY.a = 204;
-		Vector2 xP(0.1f, 0);
-		Vector2 yP(0, 0.1f);
-		Vector2 mc = Matrix2x2(shape.rotation).multiply(shape.shape->center());
-		xP = Matrix2x2(shape.rotation).multiply(xP) + shape.transform + mc;
-		yP = Matrix2x2(shape.rotation).multiply(yP) + shape.transform + mc;
+		Vec2 xP(0.1f, 0);
+		Vec2 yP(0, 0.1f);
+		Vec2 mc = Mat2(shape.rotation).multiply(shape.shape->center());
+		xP = Mat2(shape.rotation).multiply(xP) + shape.transform + mc;
+		yP = Mat2(shape.rotation).multiply(yP) + shape.transform + mc;
 		renderLine(window, camera, shape.transform + mc, xP, colorX);
 		renderLine(window, camera, shape.transform + mc, yP, colorY);
 	}
@@ -280,10 +280,10 @@ namespace Physics2D
 	}
 	void RenderSFMLImpl::renderAABB(sf::RenderWindow& window, Camera& camera, const AABB& aabb, const sf::Color& color)
 	{
-		Vector2 aabbSize(aabb.width, aabb.height);
+		Vec2 aabbSize(aabb.width, aabb.height);
 		aabbSize *= camera.meterToPixel();
-		sf::RectangleShape shape(toVector2f(aabbSize));
-		shape.move(toVector2f(camera.worldToScreen(aabb.topLeft())));
+		sf::RectangleShape shape(toVec2f(aabbSize));
+		shape.move(toVec2f(camera.worldToScreen(aabb.topLeft())));
 		shape.setFillColor(sf::Color::Transparent);
 		shape.setOutlineThickness(RenderConstant::BorderSize);
 		shape.setOutlineColor(color);
@@ -344,11 +344,11 @@ namespace Physics2D
 	{
 		assert(joint != nullptr);
 		DistanceJoint* distanceJoint = static_cast<DistanceJoint*>(joint);
-		Vector2 pa = distanceJoint->primitive().bodyA->toWorldPoint(distanceJoint->primitive().localPointA);
-		Vector2 pb = distanceJoint->primitive().targetPoint;
-		Vector2 n = (pa - pb).normal();
-		Vector2 minPoint = n * distanceJoint->primitive().minDistance + pb;
-		Vector2 maxPoint = n * distanceJoint->primitive().maxDistance + pb;
+		Vec2 pa = distanceJoint->primitive().bodyA->toWorldPoint(distanceJoint->primitive().localPointA);
+		Vec2 pb = distanceJoint->primitive().targetPoint;
+		Vec2 n = (pa - pb).normal();
+		Vec2 minPoint = n * distanceJoint->primitive().minDistance + pb;
+		Vec2 maxPoint = n * distanceJoint->primitive().maxDistance + pb;
 		sf::Color minColor = RenderConstant::MaterialBlue;
 		sf::Color maxColor = RenderConstant::MaterialRed;
 		minColor.a = 204;
@@ -366,8 +366,8 @@ namespace Physics2D
 	{
 		assert(joint != nullptr);
 		PointJoint* pointJoint = static_cast<PointJoint*>(joint);
-		Vector2 pa = pointJoint->primitive().bodyA->toWorldPoint(pointJoint->primitive().localPointA);
-		Vector2 pb = pointJoint->primitive().targetPoint;
+		Vec2 pa = pointJoint->primitive().bodyA->toWorldPoint(pointJoint->primitive().localPointA);
+		Vec2 pb = pointJoint->primitive().targetPoint;
 
 		sf::Color point = RenderConstant::MaterialOrange;
 		sf::Color green = sf::Color::Green;
@@ -382,8 +382,8 @@ namespace Physics2D
 	{
 		assert(joint != nullptr);
 		OrientationJoint* pointJoint = static_cast<OrientationJoint*>(joint);
-		Vector2 pa = pointJoint->primitive().bodyA->position();
-		Vector2 pb = pointJoint->primitive().targetPoint;
+		Vec2 pa = pointJoint->primitive().bodyA->position();
+		Vec2 pb = pointJoint->primitive().targetPoint;
 
 		sf::Color point = RenderConstant::MaterialOrange;
 		sf::Color green = sf::Color::Green;
@@ -404,8 +404,8 @@ namespace Physics2D
 	{
 		assert(joint != nullptr);
 		RevoluteJoint* revoluteJoint = static_cast<RevoluteJoint*>(joint);
-		Vector2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
-		Vector2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
+		Vec2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
+		Vec2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
 
 		sf::Color point = RenderConstant::MaterialOrange;
 		sf::Color green = sf::Color::Green;

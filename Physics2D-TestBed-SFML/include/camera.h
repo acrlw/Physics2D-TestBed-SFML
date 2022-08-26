@@ -22,9 +22,9 @@ namespace Physics2D
         struct Viewport
         {
             Viewport() = default;
-            Viewport(const Vector2& top_left, const Vector2& bottom_right) : topLeft(top_left), bottomRight(bottom_right) {}
-            Vector2 topLeft = { 0, 0 };
-            Vector2 bottomRight = { 800, 600 };
+            Viewport(const Vec2& top_left, const Vec2& bottom_right) : topLeft(top_left), bottomRight(bottom_right) {}
+            Vec2 topLeft = { 0, 0 };
+            Vec2 bottomRight = { 800, 600 };
             real width();
             real height();
             void setWidth(const real& width);
@@ -51,8 +51,8 @@ namespace Physics2D
         real meterToPixel() const;
         void setMeterToPixel(const real& meterToPixel);
 
-        Vector2 transform() const;
-        void setTransform(const Vector2& transform);
+        Vec2 transform() const;
+        void setTransform(const Vec2& transform);
 
         void setWorld(PhysicsWorld* world);
         PhysicsWorld* world()const;
@@ -67,8 +67,8 @@ namespace Physics2D
         Viewport viewport() const;
         void setViewport(const Viewport& viewport);
 
-        Vector2 worldToScreen(const Vector2& pos)const;
-        Vector2 screenToWorld(const Vector2& pos)const;
+        Vec2 worldToScreen(const Vec2& pos)const;
+        Vec2 screenToWorld(const Vec2& pos)const;
 
         DBVH* dbvh()const;
         void setDbvh(DBVH* dbvh);
@@ -111,8 +111,8 @@ namespace Physics2D
         real m_targetMeterToPixel = 80.0f;
         real m_targetPixelToMeter = 0.02f;
 
-        Vector2 m_transform;
-        Vector2 m_origin;
+        Vec2 m_transform;
+        Vec2 m_origin;
         Viewport m_viewport;
         PhysicsWorld* m_world = nullptr;
         Body* m_targetBody = nullptr;

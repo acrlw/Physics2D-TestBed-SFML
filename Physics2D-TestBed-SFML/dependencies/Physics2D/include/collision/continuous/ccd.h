@@ -34,7 +34,7 @@ namespace Physics2D
 		};
 		typedef Container::Vector<AABBShot> BroadphaseTrajectory;
 		static std::tuple<BroadphaseTrajectory, AABB> buildTrajectoryAABB(Body* body, const real& dt);
-		static std::tuple<Container::Vector<AABBShot>, AABB> buildTrajectoryAABB(Body* body, const Vector2& target, const real& dt);
+		static std::tuple<Container::Vector<AABBShot>, AABB> buildTrajectoryAABB(Body* body, const Vec2& target, const real& dt);
 		static std::optional<IndexSection> findBroadphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const real& dt);
 		static std::optional<real> findNarrowphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const IndexSection& index, const real& dt);
 		static std::optional<Container::Vector<CCDPair>> query(DBVH::Node* root, Body* body, const real& dt);
