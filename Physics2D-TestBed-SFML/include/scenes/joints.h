@@ -6,8 +6,7 @@ namespace Physics2D
 	class JointsFrame : public Frame
 	{
 	public:
-		JointsFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Joints", world, maintainer, tree, dbvh, camera)
+		JointsFrame(PhysicsSystem* system, Camera* camera) : Frame("Joints", system, camera)
 		{
 
 		}
@@ -22,93 +21,93 @@ namespace Physics2D
 			path.set(Vec2{ -6.0f, 6.0f }, Vec2{ -3.0f, 3.0f }, Vec2{ 3.0f, 9.0f }, Vec2{ 6.0f, 6.0f });
 			wheel.setRadius(1.0f);
 
-			uint32_t bitmask = 0x01;
+			//uint32_t bitmask = 0x01;
 
-			bodyA = m_world->createBody();
-			bodyA->setShape(&triangle);
-			bodyA->setMass(1.0f);
-			bodyA->setType(BodyType::Dynamic);
-			bodyA->position().set(0, 2.0f);
-			bodyA->setBitmask(0x01);
-			m_tree->insert(bodyA);
+			//bodyA = m_world->createBody();
+			//bodyA->setShape(&triangle);
+			//bodyA->setMass(1.0f);
+			//bodyA->setType(BodyType::Dynamic);
+			//bodyA->position().set(0, 2.0f);
+			//bodyA->setBitmask(0x01);
+			//m_tree->insert(bodyA);
 
-			bodyB = m_world->createBody();
-			bodyB->setShape(&capsule);
-			bodyB->setMass(1.0f);
-			bodyB->setType(BodyType::Dynamic);
-			bodyB->position().set(0, 0.0f);
-			bodyB->setBitmask(0x01);
-			m_tree->insert(bodyB);
+			//bodyB = m_world->createBody();
+			//bodyB->setShape(&capsule);
+			//bodyB->setMass(1.0f);
+			//bodyB->setType(BodyType::Dynamic);
+			//bodyB->position().set(0, 0.0f);
+			//bodyB->setBitmask(0x01);
+			//m_tree->insert(bodyB);
 
-			RevoluteJointPrimitive rjp;
-			rjp.bodyA = bodyA;
-			rjp.bodyB = bodyB;
-			rjp.dampingRatio = 0.8f;
-			rjp.frequency = 10;
-			rjp.maxForce = 10000;
-			
-			joint = m_world->createJoint(rjp);
+			//RevoluteJointPrimitive rjp;
+			//rjp.bodyA = bodyA;
+			//rjp.bodyB = bodyB;
+			//rjp.dampingRatio = 0.8f;
+			//rjp.frequency = 10;
+			//rjp.maxForce = 10000;
+			//
+			//joint = m_world->createJoint(rjp);
 
-			updateJoint();
+			//updateJoint();
 
-			RotationJointPrimitive rotationPrim;
-			rotationPrim.bodyA = bodyA;
-			rotationPrim.bodyB = bodyB;
-			rotationPrim.referenceRotation = degreeToRadian(30);
-			m_world->createJoint(rotationPrim);
+			//RotationJointPrimitive rotationPrim;
+			//rotationPrim.bodyA = bodyA;
+			//rotationPrim.bodyB = bodyB;
+			//rotationPrim.referenceRotation = degreeToRadian(30);
+			//m_world->createJoint(rotationPrim);
 
-			block = m_world->createBody();
-			block->setShape(&rectangle);
-			block->setType(BodyType::Dynamic);
-			block->setMass(4.0f);
-			block->position().set(5.0f, 2.0f);
-			block->setBitmask(0x01 << 1);
-			m_tree->insert(block);
+			//block = m_world->createBody();
+			//block->setShape(&rectangle);
+			//block->setType(BodyType::Dynamic);
+			//block->setMass(4.0f);
+			//block->position().set(5.0f, 2.0f);
+			//block->setBitmask(0x01 << 1);
+			//m_tree->insert(block);
 
-			wheel1 = m_world->createBody();
-			wheel2 = m_world->createBody();
-			wheel1->setShape(&wheel);
-			wheel2->setShape(&wheel);
-			wheel1->setMass(4.0f);
-			wheel2->setMass(4.0f);
-			wheel1->position().set(3.0f, 1.0f);
-			wheel2->position().set(7.0f, 1.0f);
-			wheel1->setType(BodyType::Dynamic);
-			wheel2->setType(BodyType::Dynamic);
-			wheel1->setBitmask(0x01 << 2 | 0x01);
-			wheel2->setBitmask(0x01 << 3 | 0x01);
-			m_tree->insert(wheel1);
-			m_tree->insert(wheel2);
+			//wheel1 = m_world->createBody();
+			//wheel2 = m_world->createBody();
+			//wheel1->setShape(&wheel);
+			//wheel2->setShape(&wheel);
+			//wheel1->setMass(4.0f);
+			//wheel2->setMass(4.0f);
+			//wheel1->position().set(3.0f, 1.0f);
+			//wheel2->position().set(7.0f, 1.0f);
+			//wheel1->setType(BodyType::Dynamic);
+			//wheel2->setType(BodyType::Dynamic);
+			//wheel1->setBitmask(0x01 << 2 | 0x01);
+			//wheel2->setBitmask(0x01 << 3 | 0x01);
+			//m_tree->insert(wheel1);
+			//m_tree->insert(wheel2);
 
-			RevoluteJointPrimitive rjp1, rjp2;
-			rjp1.bodyA = wheel1;
-			rjp2.bodyA = wheel2;
-			rjp1.bodyB = block;
-			rjp2.bodyB = block;
-			rjp1.localPointA.clear();
-			rjp2.localPointA.clear();
-			rjp1.localPointB.set(-2.0f, -1.0f);
-			rjp2.localPointB.set(2.0f, -1.0f);
-			m_world->createJoint(rjp1);
-			m_world->createJoint(rjp2);
+			//RevoluteJointPrimitive rjp1, rjp2;
+			//rjp1.bodyA = wheel1;
+			//rjp2.bodyA = wheel2;
+			//rjp1.bodyB = block;
+			//rjp2.bodyB = block;
+			//rjp1.localPointA.clear();
+			//rjp2.localPointA.clear();
+			//rjp1.localPointB.set(-2.0f, -1.0f);
+			//rjp2.localPointB.set(2.0f, -1.0f);
+			//m_world->createJoint(rjp1);
+			//m_world->createJoint(rjp2);
 
-			Body* ground = m_world->createBody();
-			ground->setShape(&edge);
-			ground->position().set({ 0, -2.0 });
-			ground->setMass(Constant::PosInfty);
-			ground->setType(BodyType::Static);
-			ground->setFriction(0.4f);
-			ground->setBitmask(0x01);
-			m_tree->insert(ground);
+			//Body* ground = m_world->createBody();
+			//ground->setShape(&edge);
+			//ground->position().set({ 0, -2.0 });
+			//ground->setMass(Constant::PosInfty);
+			//ground->setType(BodyType::Static);
+			//ground->setFriction(0.4f);
+			//ground->setBitmask(0x01);
+			//m_tree->insert(ground);
 
-			ground = m_world->createBody();
-			ground->setShape(&edge2);
-			ground->position().set(100.0f, -2.0f);
-			ground->setMass(Constant::PosInfty);
-			ground->setType(BodyType::Static);
-			ground->setFriction(0.4f);
-			ground->setBitmask(0x01);
-			m_tree->insert(ground);
+			//ground = m_world->createBody();
+			//ground->setShape(&edge2);
+			//ground->position().set(100.0f, -2.0f);
+			//ground->setMass(Constant::PosInfty);
+			//ground->setType(BodyType::Static);
+			//ground->setFriction(0.4f);
+			//ground->setBitmask(0x01);
+			//m_tree->insert(ground);
 
 		}
 		void render(sf::RenderWindow& window) override

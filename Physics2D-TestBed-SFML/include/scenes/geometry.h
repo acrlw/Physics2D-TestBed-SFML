@@ -7,8 +7,8 @@ namespace Physics2D
 	class GeometryFrame : public Frame
 	{
 	public:
-		GeometryFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Geometry", world, maintainer, tree, dbvh, camera)
+
+		GeometryFrame(PhysicsSystem* system, Camera* camera) : Frame("Geometry", system, camera)
 		{
 
 		}

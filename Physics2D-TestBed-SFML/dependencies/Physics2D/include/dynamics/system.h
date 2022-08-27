@@ -13,6 +13,7 @@ namespace Physics2D
     {
     public:
         void step(const real& dt);
+        DiscretePhysicsWorld& physicsWorld();
         PhysicsWorld& world();
         ContactMaintainer& maintainer();
         Tree& tree();
@@ -27,6 +28,7 @@ namespace Physics2D
         int m_positionIteration = 6;
         int m_velocityIteration = 8;
 
+        DiscretePhysicsWorld m_physicsWorld;
         PhysicsWorld m_world;
         ContactMaintainer m_maintainer;
         Tree m_tree;

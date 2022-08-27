@@ -7,8 +7,7 @@ namespace Physics2D
 	class RaycastFrame : public Frame
 	{
 	public:
-		RaycastFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Raycast", world, maintainer, tree, dbvh, camera)
+		RaycastFrame(PhysicsSystem* system, Camera* camera) : Frame("Raycast", system, camera)
 		{
 
 		}
@@ -37,17 +36,17 @@ namespace Physics2D
 			std::uniform_int_distribution<> dist2(0, 4);
 			std::uniform_real_distribution<> dist3(-Constant::Pi, Constant::Pi);
 
-			for(int i = 0;i < 100; i++)
-			{
-				Body* body = m_world->createBody();
-				body->position().set(dist1(gen), dist1(gen));
-				body->setShape(shapeArray[dist2(gen)]);
-				body->rotation() = dist3(gen);
-				body->setMass(1);
-				body->setType(BodyType::Static);
+			//for(int i = 0;i < 100; i++)
+			//{
+			//	Body* body = m_world->createBody();
+			//	body->position().set(dist1(gen), dist1(gen));
+			//	body->setShape(shapeArray[dist2(gen)]);
+			//	body->rotation() = dist3(gen);
+			//	body->setMass(1);
+			//	body->setType(BodyType::Static);
 
-				m_tree->insert(body);
-			}
+			//	m_tree->insert(body);
+			//}
 
 		}
 		void render(sf::RenderWindow& window) override
@@ -61,15 +60,15 @@ namespace Physics2D
 
 			RenderSFMLImpl::renderPoint(window, *m_camera, Vec2(0, 0), originColor);
 			RenderSFMLImpl::renderLine(window, *m_camera, p, d * 10.0f, dirColor);
-			auto bodyList = m_tree->raycast(p, d);
-			for(auto& elem: bodyList)
-			{
-				ShapePrimitive sp;
-				sp.rotation = elem->rotation();
-				sp.transform = elem->position();
-				sp.shape = elem->shape();
-				RenderSFMLImpl::renderShape(window, *m_camera, sp, hitColor);
-			}
+			//auto bodyList = m_tree->raycast(p, d);
+			//for(auto& elem: bodyList)
+			//{
+			//	ShapePrimitive sp;
+			//	sp.rotation = elem->rotation();
+			//	sp.transform = elem->position();
+			//	sp.shape = elem->shape();
+			//	RenderSFMLImpl::renderShape(window, *m_camera, sp, hitColor);
+			//}
 
 		}
 		void onMouseMove(sf::Event& event) override

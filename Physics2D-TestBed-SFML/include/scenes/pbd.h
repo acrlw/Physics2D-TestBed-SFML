@@ -6,8 +6,7 @@ namespace Physics2D
 	class PBDFrame : public Frame
 	{
 	public:
-		PBDFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Position-Based Dynamics", world, maintainer, tree, dbvh, camera)
+		PBDFrame(PhysicsSystem* system, Camera* camera) : Frame("Position-Based Dynamics", system, camera)
 		{
 
 		}

@@ -10,8 +10,7 @@ namespace Physics2D
 	class BroadPhaseFrame : public Frame
 	{
 	public:
-		BroadPhaseFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Broad Phase", world, maintainer, tree, dbvh, camera)
+		BroadPhaseFrame(PhysicsSystem* system, Camera* camera) : Frame("BroadPhase", system, camera)
 		{
 
 		}
@@ -40,20 +39,20 @@ namespace Physics2D
 			std::uniform_int_distribution<> dist2(0, 4);
 			std::uniform_real_distribution<> dist3(-Constant::Pi, Constant::Pi);
 
-			for (int i = 0; i < 200; i++)
-			{
-				Body* body = m_world->createBody();
-				body->position().set(dist1(gen), dist1(gen));
-				body->setShape(shapeArray[dist2(gen)]);
-				body->rotation() = dist3(gen);
-				body->setMass(1);
-				body->setType(BodyType::Kinematic);
+			//for (int i = 0; i < 200; i++)
+			//{
+			//	Body* body = m_world->createBody();
+			//	body->position().set(dist1(gen), dist1(gen));
+			//	body->setShape(shapeArray[dist2(gen)]);
+			//	body->rotation() = dist3(gen);
+			//	body->setMass(1);
+			//	body->setType(BodyType::Kinematic);
 
-				m_tree->insert(body);
-				grid.insert(body);
-			}
-			for (auto&& elem : m_world->bodyList())
-				bodyList.emplace_back(elem.get());
+			//	m_tree->insert(body);
+			//	grid.insert(body);
+			//}
+			//for (auto&& elem : m_world->bodyList())
+			//	bodyList.emplace_back(elem.get());
 
 			//block.set(6.5f, 6.5f);
 			//body = m_world->createBody();
@@ -68,28 +67,28 @@ namespace Physics2D
 		void render(sf::RenderWindow& window) override
 		{
 			//grid spatial hashing
-			grid.updateAll();
-			auto pairs = grid.generate();
-			sf::Color collisionColor = RenderConstant::MaterialPink;
-			sf::Color hitColor = RenderConstant::MaterialBlue;
-			sf::Color regionColor = RenderConstant::MaterialYellow;
-			sf::Color cellColor = sf::Color::Cyan;
-			cellColor.a = 155;
-			collisionColor.a = 50;
-			for (auto&& elem : pairs)
-			{
-				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
-				RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
-			}
+			//grid.updateAll();
+			//auto pairs = grid.generate();
+			//sf::Color collisionColor = RenderConstant::MaterialPink;
+			//sf::Color hitColor = RenderConstant::MaterialBlue;
+			//sf::Color regionColor = RenderConstant::MaterialYellow;
+			//sf::Color cellColor = sf::Color::Cyan;
+			//cellColor.a = 155;
+			//collisionColor.a = 50;
+			//for (auto&& elem : pairs)
+			//{
+			//	RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
+			//	RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
+			//}
 
-			for (auto&& elem : grid.m_cellsToBodies)
-			{
-				Vec2 topLeft(real(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f, real(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
-				AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
-				//cell.expand(-0.05f);
+			//for (auto&& elem : grid.m_cellsToBodies)
+			//{
+			//	Vec2 topLeft(real(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f, real(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
+			//	AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
+			//	//cell.expand(-0.05f);
 
-				RenderSFMLImpl::renderAABB(window, *m_camera, cell, cellColor);
-			}
+			//	RenderSFMLImpl::renderAABB(window, *m_camera, cell, cellColor);
+			//}
 
 
 

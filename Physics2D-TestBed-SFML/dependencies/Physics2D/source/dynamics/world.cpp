@@ -368,10 +368,12 @@ namespace Physics2D
 
 	Index DiscretePhysicsWorld::createBody()
 	{
+		return 0;
 	}
 
 	Index DiscretePhysicsWorld::createJoint()
 	{
+		return 0;
 	}
 
 	Vec2 DiscretePhysicsWorld::gravity() const

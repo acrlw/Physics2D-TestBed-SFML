@@ -109,6 +109,8 @@ namespace Physics2D
         void stepVelocity(real dt);
         void stepPosition(real dt);
         void stepSleep();
+
+
     private:
         //Index relates to body
     	std::vector<Vec2> position;

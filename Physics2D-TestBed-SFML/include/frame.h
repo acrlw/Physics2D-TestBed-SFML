@@ -14,9 +14,7 @@ namespace Physics2D
 	class Frame
 	{
 	public:
-		Frame(std::string name, PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : m_name(name), m_world(world), m_maintainer(maintainer),
-			m_tree(tree), m_dbvh(dbvh), m_camera(camera) {}
+		Frame(std::string name, PhysicsSystem* system, Camera* camera) : m_name(name), m_system(system), m_camera(camera) {}
 		virtual void update(real dt) {}
 		virtual void load() {}
 		virtual void release() {}
@@ -39,10 +37,7 @@ namespace Physics2D
 		}
 	protected:
 		std::string m_name;
-		PhysicsWorld* m_world = nullptr;
-		ContactMaintainer* m_maintainer = nullptr;
-		Tree* m_tree = nullptr;
-		DBVH* m_dbvh = nullptr;
+		PhysicsSystem* m_system;
 		Camera* m_camera = nullptr;
 	};
 }

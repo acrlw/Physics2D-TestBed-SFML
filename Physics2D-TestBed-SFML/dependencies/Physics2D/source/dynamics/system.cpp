@@ -32,6 +32,12 @@ namespace Physics2D
         if(!solveCCD(dt))
             solve(dt);
     }
+
+    DiscretePhysicsWorld& PhysicsSystem::physicsWorld()
+    {
+        return m_physicsWorld;
+    }
+
     void PhysicsSystem::updateTree()
     {
         //bvh
