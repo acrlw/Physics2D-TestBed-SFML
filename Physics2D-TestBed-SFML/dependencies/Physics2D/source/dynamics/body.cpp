@@ -50,7 +50,7 @@ namespace Physics2D {
     {
         return m_sleepCountdown;
     }
-    Shape* Body::shape() const
+    Shape* Body::shape()const
     {
         return m_shape;
     }
@@ -95,11 +95,10 @@ namespace Physics2D {
 
     AABB Body::aabb(const real &factor) const
     {
-        ShapePrimitive primitive;
-        primitive.transform = m_position;
-        primitive.rotation = m_rotation;
-        primitive.shape = m_shape;
-        return AABB::fromShape(primitive, factor);
+        Transform transform;
+        transform.position = m_position;
+        transform.rotation = m_rotation;
+        return AABB::fromShape(transform, m_shape, factor);
     }
 
     real Body::friction() const

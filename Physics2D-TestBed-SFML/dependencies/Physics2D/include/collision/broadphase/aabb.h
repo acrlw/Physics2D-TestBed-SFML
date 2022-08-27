@@ -43,7 +43,7 @@ namespace Physics2D
 		/// <param name="shape">shape source</param>
 		/// <param name="factor">AABB scale factor. Default factor 1 means making tight AABB</param>
 		/// <returns></returns>
-		static AABB fromShape(const ShapePrimitive& shape, const real& factor = 0);
+		static AABB fromShape(const Transform& transform, Shape* shape, const real& factor = 0);
 		static AABB fromBody(Body* body, const real& factor = 0);
 		static AABB fromBox(const Vec2& topLeft, const Vec2& bottomRight);
 		/// <summary>

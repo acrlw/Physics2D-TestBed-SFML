@@ -63,7 +63,7 @@ namespace Physics2D
 			//auto bodyList = m_tree->raycast(p, d);
 			//for(auto& elem: bodyList)
 			//{
-			//	ShapePrimitive sp;
+			//	ShapeTransform sp;
 			//	sp.rotation = elem->rotation();
 			//	sp.transform = elem->position();
 			//	sp.shape = elem->shape();

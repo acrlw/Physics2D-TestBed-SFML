@@ -32,18 +32,13 @@ namespace Physics2D
     };
 
     /// <summary>
-    /// Basic Shape Description Primitive.
-    /// Including vertices/position/angle of shape
+    /// Basic Shape Description in 2D Space.
+    /// Including vertices/position/rotation of shape
     /// </summary>
-    struct ShapePrimitive
+    struct ShapeTransform
     {
-		Shape* shape;
-        Vec2 transform;
-        real rotation = 0;
-        Vec2 translate(const Vec2& source)const
-        {
-            return Mat2(rotation).multiply(source) + transform;
-        }
+		Shape* shape = nullptr;
+        Transform transform;
     };
 }
 #endif

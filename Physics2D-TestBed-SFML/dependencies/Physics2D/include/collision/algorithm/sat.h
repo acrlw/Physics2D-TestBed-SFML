@@ -40,28 +40,28 @@ namespace Physics2D
     class SAT
     {
     public:
-        static SATResult circleVsCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult circleVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult circleVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult circleVsCircle(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult circleVsPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+        static SATResult circleVsCapsule(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+        static SATResult circleVsSector(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+        static SATResult circleVsEdge(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+        static SATResult circleVsCircle(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+        static SATResult circleVsPolygon(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
 
-        static SATResult polygonVsPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-		static SATResult polygonVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult polygonVsCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult polygonVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+        static SATResult polygonVsPolygon(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+		static SATResult polygonVsEdge(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+        static SATResult polygonVsCapsule(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+        static SATResult polygonVsSector(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
         
-        static SATResult capsuleVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult capsuleVsCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-		static SATResult capsuleVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+        static SATResult capsuleVsEdge(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+        static SATResult capsuleVsCapsule(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
+		static SATResult capsuleVsSector(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
 
-        static SATResult sectorVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+        static SATResult sectorVsSector(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB);
 
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Polygon* polygon, const Vec2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Circle* circle, const Vec2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Ellipse* ellipse, const Vec2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Capsule* capsule, const Vec2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Sector* sector, const Vec2& normal);
+        static ProjectedSegment axisProjection(const Transform& transform, Shape* shape, Polygon* polygon, const Vec2& normal);
+        static ProjectedSegment axisProjection(const Transform& transform, Shape* shape, Circle* circle, const Vec2& normal);
+        static ProjectedSegment axisProjection(const Transform& transform, Shape* shape, Ellipse* ellipse, const Vec2& normal);
+        static ProjectedSegment axisProjection(const Transform& transform, Shape* shape, Capsule* capsule, const Vec2& normal);
+        static ProjectedSegment axisProjection(const Transform& transform, Shape* shape, Sector* sector, const Vec2& normal);
 
     };
     

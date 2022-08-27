@@ -9,6 +9,24 @@
 
 namespace Physics2D
 {
+	struct Transform
+	{
+		Vec2 position;
+		real rotation = 0.0f;
+
+		Vec2 transform(const Vec2& source)const
+		{
+			return Mat2(rotation).multiply(source) + position;
+		}
+		Vec2 translate(const Vec2& source)const
+		{
+			return source + position;
+		}
+		Vec2 rotate(const Vec2& source)const
+		{
+			return Mat2(rotation).multiply(source);
+		}
+	};
 	inline Vec2 operator*(const real& f, const Vec2& v)
 	{
 		return v * f;

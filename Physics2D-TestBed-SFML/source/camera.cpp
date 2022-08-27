@@ -62,23 +62,22 @@ namespace Physics2D
 				sf::Color color = sf::Color::Green;
 				for (auto& body : m_world->bodyList())
 				{
-					ShapePrimitive primitive;
-					primitive.shape = body->shape();
-					primitive.rotation = body->rotation();
-					primitive.transform = body->position();
+					Transform transform;
+					transform.rotation = body->rotation();
+					transform.position = body->position();
 					if (body->sleep())
 						color = sf::Color(100, 100, 100);
 					else
 						color = sf::Color::Green;
 					if (body->type() == BodyType::Static)
 						color = RenderConstant::MaterialTeal;
-					RenderSFMLImpl::renderShape(window, *this, primitive, color);
+					RenderSFMLImpl::renderShape(window, *this, transform, body->shape(), color);
 
 					if (m_centerVisible)
-						RenderSFMLImpl::renderPoint(window, *this, primitive.transform, RenderConstant::MaterialGray);
+						RenderSFMLImpl::renderPoint(window, *this, transform.position, RenderConstant::MaterialGray);
 
 					if (m_rotationLineVisible)
-						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
+						RenderSFMLImpl::renderAngleLine(window, *this, transform, body->shape(), sf::Color::Green);
 				}
 			}
 			if (m_jointVisible)

@@ -41,16 +41,16 @@ namespace Physics2D
         
     	static void renderLines(sf::RenderWindow& window, Camera& camera, const Container::Vector<std::pair<Vec2, Vec2>>& lines, const sf::Color& color);
         
-        static void renderShape(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderPolygon(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderEdge(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderRectangle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderCircle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderCapsule(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderSector(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderEllipse(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderCurve(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
-        static void renderAngleLine(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color);
+        static void renderShape(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderPolygon(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderEdge(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderRectangle(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderCircle(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderCapsule(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderSector(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderEllipse(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderCurve(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
+        static void renderAngleLine(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color);
 
         static void renderBody(sf::RenderWindow& window, Camera& camera, Body* body, const sf::Color& color);
         static void renderAABB(sf::RenderWindow& window, Camera& camera, const AABB& aabb, const sf::Color& color);

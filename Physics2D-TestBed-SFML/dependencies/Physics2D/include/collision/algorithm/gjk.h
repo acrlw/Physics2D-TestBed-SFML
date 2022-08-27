@@ -59,7 +59,7 @@ namespace Physics2D
 		/// <param name="shape_B"></param>
 		/// <param name="iteration"></param>
 		/// <returns>return initial simplex and whether collision exists</returns>
-		static std::tuple<bool, Simplex> gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+		static std::tuple<bool, Simplex> gjk(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB,
 		                                     const size_t& iteration = 20);
 		/// <summary>
 		/// Expanding Polygon Algorithm
@@ -70,7 +70,7 @@ namespace Physics2D
 		/// <param name="iteration">iteration times</param>
 		/// <param name="epsilon">epsilon of iterated result</param>
 		/// <returns>return expanded simplex</returns>
-		static Simplex epa(const ShapePrimitive& shapeA, const ShapePrimitive& shapshapeBe_B, const Simplex& src,
+		static Simplex epa(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB, const Simplex& src,
 		                   const size_t& iteration = 20, const real& epsilon = Constant::GeometryEpsilon);
 		/// <summary>
 		/// Dump collision penetration normal and depth
@@ -87,7 +87,7 @@ namespace Physics2D
 		/// <param name="shape_B"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static Minkowski support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+		static Minkowski support(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB,
 		                         const Vec2& direction);
 		/// <summary>
 		/// Find two points that can form an edge closest to origin of simplex
@@ -101,7 +101,7 @@ namespace Physics2D
 		/// <param name="shape"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static Vec2 findFarthestPoint(const ShapePrimitive& shape, const Vec2& direction);
+		static Vec2 findFarthestPoint(const Transform& transform, Shape* shape, const Vec2& direction);
 		/// <summary>
 		/// Find farthest projection point in given direction
 		/// </summary>
@@ -132,7 +132,7 @@ namespace Physics2D
 		/// <param name="shapeA"></param>'
 		/// <param name="shapeB"></param>
 		/// <returns></returns>
-		static PointPair distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+		static PointPair distance(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB,
 		                          const real& iteration = 20, const real& epsilon = Constant::GeometryEpsilon);
 		/// <summary>
 		/// dump collision source point

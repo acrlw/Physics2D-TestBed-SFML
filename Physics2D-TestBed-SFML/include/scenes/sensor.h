@@ -52,21 +52,19 @@ namespace Physics2D
 			//	body->setRestitution(0.0f);
 			//	m_tree->insert(body);
 			//}
-
-			sensorRegion.rotation = degreeToRadian(-45);
-			sensorRegion.shape = &circle;
-			sensorRegion.transform.set(5.0f, 15.0f);
+			transform.rotation = degreeToRadian(-45);
+			transform.position.set(5.0f, 5.0f);
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			RenderSFMLImpl::renderShape(window, *m_camera, sensorRegion, sf::Color::Cyan);
+			RenderSFMLImpl::renderShape(window, *m_camera, transform, &circle, sf::Color::Cyan);
 		}
 		void update(real dt)override
 		{
 			//auto bodyList = m_tree->query(AABB::fromShape(sensorRegion));
 			//for (auto& body : bodyList)
 			//{
-			//	ShapePrimitive primitive;
+			//	ShapeTransform primitive;
 			//	primitive.rotation = body->rotation();
 			//	primitive.shape = body->shape();
 			//	primitive.transform = body->position();
@@ -78,7 +76,7 @@ namespace Physics2D
 		Rectangle rectangle;
 		Edge edge;
 		Circle circle;
-		ShapePrimitive sensorRegion;
+		Transform transform;
 
 	};
 }

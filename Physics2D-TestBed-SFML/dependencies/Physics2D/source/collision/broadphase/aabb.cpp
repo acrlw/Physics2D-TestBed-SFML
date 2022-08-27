@@ -120,18 +120,18 @@ namespace Physics2D
 			realEqual(width, other.width) && realEqual(height, other.height);
 	}
 
-	AABB AABB::fromShape(const ShapePrimitive& shape, const real& factor)
+	AABB AABB::fromShape(const Transform& transform, Shape* shape, const real& factor)
 	{
 		AABB aabb;
-		switch (shape.shape->type())
+		switch (shape->type())
 		{
 		case Shape::Type::Polygon:
 		{
-			const Polygon* polygon = static_cast<Polygon*>(shape.shape);
+			const Polygon* polygon = static_cast<Polygon*>(shape);
 			real max_x = Constant::NegInfty, max_y = Constant::NegInfty, min_x = Constant::PosInfty, min_y = Constant::PosInfty;
 			for (const Vec2& v : polygon->vertices())
 			{
-				const Vec2 vertex = Mat2(shape.rotation).multiply(v);
+				const Vec2 vertex = Mat2(transform.rotation).multiply(v);
 				if (max_x < vertex.x)
 					max_x = vertex.x;
 
@@ -151,27 +151,27 @@ namespace Physics2D
 		}
 		case Shape::Type::Ellipse:
 		{
-			const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
+			const Ellipse* ellipse = static_cast<Ellipse*>(shape);
 
 			Vec2 top_dir{ 0, 1 };
 			Vec2 left_dir{ -1, 0 };
 			Vec2 bottom_dir{ 0, -1 };
 			Vec2 right_dir{ 1, 0 };
 
-			top_dir = Mat2(-shape.rotation).multiply(top_dir);
-			left_dir = Mat2(-shape.rotation).multiply(left_dir);
-			bottom_dir = Mat2(-shape.rotation).multiply(bottom_dir);
-			right_dir = Mat2(-shape.rotation).multiply(right_dir);
+			top_dir = transform.rotate(top_dir);
+			left_dir = transform.rotate(left_dir);
+			bottom_dir = transform.rotate(bottom_dir);
+			right_dir = transform.rotate(right_dir);
 
 			Vec2 top = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), top_dir);
 			Vec2 left = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), left_dir);
 			Vec2 bottom = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), bottom_dir);
 			Vec2 right = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), right_dir);
 
-			top = Mat2(shape.rotation).multiply(top);
-			left = Mat2(shape.rotation).multiply(left);
-			bottom = Mat2(shape.rotation).multiply(bottom);
-			right = Mat2(shape.rotation).multiply(right);
+			top = transform.rotate(top);
+			left = transform.rotate(left);
+			bottom = transform.rotate(bottom);
+			right = transform.rotate(right);
 
 			aabb.height = std::fabs(top.y - bottom.y);
 			aabb.width = std::fabs(right.x - left.x);
@@ -179,14 +179,14 @@ namespace Physics2D
 		}
 		case Shape::Type::Circle:
 		{
-			const Circle* circle = static_cast<Circle*>(shape.shape);
+			const Circle* circle = static_cast<Circle*>(shape);
 			aabb.width = circle->radius() * 2;
 			aabb.height = circle->radius() * 2;
 			break;
 		}
 		case Shape::Type::Edge:
 		{
-			const Edge* edge = static_cast<Edge*>(shape.shape);
+			const Edge* edge = static_cast<Edge*>(shape);
 			aabb.width = std::fabs(edge->startPoint().x - edge->endPoint().x);
 			aabb.height = std::fabs(edge->startPoint().y - edge->endPoint().y);
 			aabb.position.set(edge->startPoint().x + edge->endPoint().x, edge->startPoint().y + edge->endPoint().y);
@@ -207,31 +207,31 @@ namespace Physics2D
 		}
 		case Shape::Type::Capsule:
 		{
-			Vec2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
-			Vec2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
-			p1 -= shape.transform;
-			p2 -= shape.transform;
+			Vec2 p1 = GJK::findFarthestPoint(transform, shape, { 1, 0 });
+			Vec2 p2 = GJK::findFarthestPoint(transform, shape, { 0, 1 });
+			p1 -= transform.position;
+			p2 -= transform.position;
 			aabb.width = p1.x * 2.0f;
 			aabb.height = p2.y * 2.0f;
 			break;
 		}
 		case Shape::Type::Sector:
 		{
-			Vec2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
-			Vec2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
-			Vec2 p3 = GJK::findFarthestPoint(shape, { -1, 0 });
-			Vec2 p4 = GJK::findFarthestPoint(shape, { 0, -1 });
-			p1 -= shape.transform;
-			p2 -= shape.transform;
-			p3 -= shape.transform;
-			p4 -= shape.transform;
+			Vec2 p1 = GJK::findFarthestPoint(transform, shape, { 1, 0 });
+			Vec2 p2 = GJK::findFarthestPoint(transform, shape, { 0, 1 });
+			Vec2 p3 = GJK::findFarthestPoint(transform, shape, { -1, 0 });
+			Vec2 p4 = GJK::findFarthestPoint(transform, shape, { 0, -1 });
+			p1 -= transform.position;
+			p2 -= transform.position;
+			p3 -= transform.position;
+			p4 -= transform.position;
 			aabb.width = p1.x - p3.x;
 			aabb.height = p2.y - p4.y;
 			aabb.position.set({ (p1.x + p3.x) * 0.5f, (p2.y + p4.y) * 0.5f });
 			break;
 		}
 		}
-		aabb.position += shape.transform;
+		aabb.position += transform.position;
 		aabb.expand(factor);
 		return aabb;
 	}
@@ -241,11 +241,10 @@ namespace Physics2D
 		assert(body != nullptr);
 		assert(body->shape() != nullptr);
 		
-		ShapePrimitive primitive;
-		primitive.shape = body->shape();
-		primitive.rotation = body->rotation();
-		primitive.transform = body->position();
-		return fromShape(primitive, factor);
+		Transform transform;
+		transform.position = body->position();
+		transform.rotation = body->rotation();
+		return fromShape(transform, body->shape(), factor);
 	}
 
 	AABB AABB::fromBox(const Vec2& topLeft, const Vec2& bottomRight)

@@ -1,33 +1,33 @@
 #include "../../../include/collision/algorithm/clip.h"
 namespace Physics2D
 {
-	Container::Vector<Vec2> ContactGenerator::dumpVertices(const ShapePrimitive& primitive)
+	Container::Vector<Vec2> ContactGenerator::dumpVertices(const Transform& transform, Shape* shape)
 	{
 		Container::Vector<Vec2> vertices;
-		switch (primitive.shape->type())
+		switch (shape->type())
 		{
 		case Shape::Type::Capsule:
 		{
-			const Capsule* capsule = static_cast<Capsule*>(primitive.shape);
+			const Capsule* capsule = static_cast<Capsule*>(shape);
 			vertices = capsule->boxVertices();
 			break;
 		}
 		case Shape::Type::Polygon:
 		{
-			const Polygon* polygon = static_cast<Polygon*>(primitive.shape);
+			const Polygon* polygon = static_cast<Polygon*>(shape);
 			vertices = polygon->vertices();
 			break;
 		}
 		case Shape::Type::Edge:
 		{
-			const Edge* edge = static_cast<Edge*>(primitive.shape);
+			const Edge* edge = static_cast<Edge*>(shape);
 			vertices.emplace_back(edge->startPoint());
 			vertices.emplace_back(edge->endPoint());
 			break;
 		}
 		case Shape::Type::Sector:
 		{
-			const Sector* sector = static_cast<Sector*>(primitive.shape);
+			const Sector* sector = static_cast<Sector*>(shape);
 			vertices = sector->vertices();
 			break;
 		}
@@ -35,7 +35,7 @@ namespace Physics2D
 			break;
 		}
 		for (auto& elem : vertices)
-			elem = primitive.translate(elem);
+			elem = transform.transform(elem);
 		return vertices;
 	}
 
@@ -76,15 +76,15 @@ namespace Physics2D
 		return finalEdge;
 	}
 
-	ContactGenerator::ClipEdge ContactGenerator::dumpClipEdge(const ShapePrimitive& shape, const Container::Vector<Vec2>& vertices, const Vec2& normal)
+	ContactGenerator::ClipEdge ContactGenerator::dumpClipEdge(const Transform& transform, Shape* shape, const Container::Vector<Vec2>& vertices, const Vec2& normal)
 	{
 		ClipEdge edge;
 		if (vertices.size() == 2)
 		{
 			edge.p1 = vertices[0];
 			edge.p2 = vertices[1];
-			if(shape.shape->type() == Shape::Type::Edge)
-				edge.normal = static_cast<Edge*>(shape.shape)->normal();
+			if(shape->type() == Shape::Type::Edge)
+				edge.normal = static_cast<Edge*>(shape)->normal();
 		}
 		else
 		{
@@ -94,18 +94,18 @@ namespace Physics2D
 		return edge;
 	}
 
-	std::pair<ContactGenerator::ClipEdge, ContactGenerator::ClipEdge> ContactGenerator::recognize(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vec2& normal)
+	std::pair<ContactGenerator::ClipEdge, ContactGenerator::ClipEdge> ContactGenerator::recognize(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB, const Vec2& normal)
 	{
-		auto typeA = shapeA.shape->type();
-		auto typeB = shapeB.shape->type();
+		auto typeA = shapeA->type();
+		auto typeB = shapeB->type();
 		if (typeA == Shape::Type::Point || typeA == Shape::Type::Circle || typeA == Shape::Type::Ellipse
 			|| typeB == Shape::Type::Point || typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse)
 			return std::make_pair(ClipEdge(), ClipEdge());
 		//normal: B -> A
-		Container::Vector<Vec2> verticesA = dumpVertices(shapeA);
-		Container::Vector<Vec2> verticesB = dumpVertices(shapeB);
-		ClipEdge edgeA = dumpClipEdge(shapeA, verticesA, -normal);
-		ClipEdge edgeB = dumpClipEdge(shapeB, verticesB, normal);
+		Container::Vector<Vec2> verticesA = dumpVertices(transformA, shapeA);
+		Container::Vector<Vec2> verticesB = dumpVertices(transformB, shapeB);
+		ClipEdge edgeA = dumpClipEdge(transformA, shapeA, verticesA, -normal);
+		ClipEdge edgeB = dumpClipEdge(transformB, shapeB, verticesB, normal);
 		return std::make_pair(edgeA, edgeB);
 	}
 

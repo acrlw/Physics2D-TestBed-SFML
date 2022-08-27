@@ -6,24 +6,25 @@ namespace Physics2D
 {
 
 
-	std::tuple<bool, Simplex> GJK::gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+	std::tuple<bool, Simplex> GJK::gjk(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB,
 	                                   const size_t& iteration)
 	{
+
 		Simplex simplex;
 		bool found = false;
-		Vec2 direction = shapeB.transform - shapeA.transform;
+		Vec2 direction = transformB.position - transformA.position;
 		
 		if (direction.fuzzyEqual({ 0, 0 }))
 			direction.set(1, 1);
 
-		Minkowski diff = support(shapeA, shapeB, direction);
+		Minkowski diff = support(transformA, shapeA, transformB, shapeB, direction);
 		simplex.vertices.emplace_back(diff);
 		direction.negate();
 		size_t iter = 0;
 		Container::Vector<Minkowski> removed;
 		while (iter <= iteration)
 		{
-			diff = support(shapeA, shapeB, direction);
+			diff = support(transformA, shapeA, transformB, shapeB, direction);
 			simplex.vertices.emplace_back(diff);
 			if (simplex.vertices.size() == 3)
 				simplex.vertices.emplace_back(simplex.vertices[0]);
@@ -60,9 +61,10 @@ namespace Physics2D
 		return std::make_tuple(found, simplex);
 	}
 
-	Simplex GJK::epa(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Simplex& src,
+	Simplex GJK::epa(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB, const Simplex& src,
 	                 const size_t& iteration, const real& epsilon)
 	{
+
 		size_t iter = 0;
 		Simplex edge;
 		Simplex simplex = src;
@@ -80,7 +82,7 @@ namespace Physics2D
 				normal.negate();
 			
 			//new minkowski point
-			p = support(shapeA, shapeB, normal);
+			p = support(transformA, shapeA, transformB, shapeB, normal);
 
 			if (simplex.contains(p) || simplex.fuzzyContains(p, epsilon))
 				break;
@@ -103,9 +105,9 @@ namespace Physics2D
 		return result;
 	}
 
-	Minkowski GJK::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vec2& direction)
+	Minkowski GJK::support(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB, const Vec2& direction)
 	{
-		return Minkowski(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
+		return Minkowski(findFarthestPoint(transformA, shapeA, direction), findFarthestPoint(transformB, shapeB, direction * -1));
 	}
 
 	std::tuple<size_t, size_t> GJK::findEdgeClosestToOrigin(const Simplex& simplex)
@@ -148,34 +150,34 @@ namespace Physics2D
 		return std::make_tuple(index1, index2);
 	}
 
-	Vec2 GJK::findFarthestPoint(const ShapePrimitive& shape, const Vec2& direction)
+	Vec2 GJK::findFarthestPoint(const Transform& transform, Shape* shape, const Vec2& direction)
 	{
 		Vec2 target;
-		Mat2 rot(-shape.rotation);
+		Mat2 rot(-transform.rotation);
 		Vec2 rot_dir = rot.multiply(direction);
-		switch (shape.shape->type())
+		switch (shape->type())
 		{
 		case Shape::Type::Polygon:
 		{
-			const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
+			const Polygon* polygon = static_cast<const Polygon*>(shape);
 			auto [vertex, index] = findFarthestPoint(polygon->vertices(), rot_dir);
 			target = vertex;
 			break;
 		}
 		case Shape::Type::Circle:
 		{
-			const Circle* circle = static_cast<const Circle*>(shape.shape);
-			return direction.normal() * circle->radius() + shape.transform;
+			const Circle* circle = static_cast<const Circle*>(shape);
+			return direction.normal() * circle->radius() + transform.position;
 		}
 		case Shape::Type::Ellipse:
 		{
-			const Ellipse* ellipse = static_cast<const Ellipse*>(shape.shape);
+			const Ellipse* ellipse = static_cast<const Ellipse*>(shape);
 			target = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), rot_dir);
 			break;
 		}
 		case Shape::Type::Edge:
 		{
-			const Edge* edge = static_cast<const Edge*>(shape.shape);
+			const Edge* edge = static_cast<const Edge*>(shape);
 			real dot1 = Vec2::dotProduct(edge->startPoint(), direction);
 			real dot2 = Vec2::dotProduct(edge->endPoint(), direction);
 			target = dot1 > dot2 ? edge->startPoint() : edge->endPoint();
@@ -183,26 +185,26 @@ namespace Physics2D
 		}
 		case Shape::Type::Point:
 		{
-			return static_cast<const Point*>(shape.shape)->position();
+			return static_cast<const Point*>(shape)->position();
 		}
 		case Shape::Type::Capsule:
 		{
-			const Capsule* capsule = static_cast<const Capsule*>(shape.shape);
+			const Capsule* capsule = static_cast<const Capsule*>(shape);
 			target = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), rot_dir);
 			break;
 		}
 		case Shape::Type::Sector:
 		{
-			const Sector* sector = static_cast<const Sector*>(shape.shape);
+			const Sector* sector = static_cast<const Sector*>(shape);
 			target = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), rot_dir);
 			break;
 		}
 		default:
 			break;
 		}
-		rot.set(shape.rotation);
+		rot.set(transform.rotation);
 		target = rot.multiply(target);
-		target += shape.transform;
+		target += transform.position;
 		return target;
 	}
 
@@ -258,22 +260,22 @@ namespace Physics2D
 		return perpendicularOfAB;
 	}
 
-	PointPair GJK::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const real& iteration,
+	PointPair GJK::distance(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB, const real& iteration,
 	                           const real& epsilon)
 	{
 		PointPair result;
 		Simplex simplex;
-		Vec2 direction = shapeB.transform - shapeA.transform;
-		Minkowski m = support(shapeA, shapeB, direction);
+		Vec2 direction = transformB.position - transformA.position;
+		Minkowski m = support(transformA, shapeA, transformB, shapeB, direction);
 		simplex.vertices.emplace_back(m);
 		direction.negate();
-		m = support(shapeA, shapeB, direction);
+		m = support(transformA, shapeA, transformB, shapeB, direction);
 		simplex.vertices.emplace_back(m);
 		int iter = 0;
 		while (iter++ < iteration)
 		{
 			direction = calculateDirectionByEdge(simplex.vertices[0].result, simplex.vertices[1].result, true);
-			m = support(shapeA, shapeB, direction);
+			m = support(transformA, shapeA, transformB, shapeB, direction);
 
 			if (simplex.contains(m))
 				break;

@@ -19,10 +19,10 @@ namespace Physics2D
 				return p1.isOrigin() && p2.isOrigin();
 			}
 		};
-		static Container::Vector<Vec2> dumpVertices(const ShapePrimitive& primitive);
+		static Container::Vector<Vec2> dumpVertices(const Transform& transform, Shape* shape);
 		static ClipEdge findClipEdge(const Container::Vector<Vec2>& vertices, size_t index, const Vec2& normal);
-		static ClipEdge dumpClipEdge(const ShapePrimitive& shape, const Container::Vector<Vec2>& vertices, const Vec2& normal);
-		static std::pair<ClipEdge, ClipEdge> recognize(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vec2& normal);
+		static ClipEdge dumpClipEdge(const Transform& transform, Shape* shape, const Container::Vector<Vec2>& vertices, const Vec2& normal);
+		static std::pair<ClipEdge, ClipEdge> recognize(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB, const Vec2& normal);
 		static Container::Vector<PointPair> clip(const ClipEdge& clipEdgeA, const ClipEdge& clipEdgeB, const Vec2& normal);
 	};
 }

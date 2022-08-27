@@ -2,28 +2,28 @@
 
 namespace Physics2D
 {
-	std::tuple<Vec2, Simplex> MPR::discover(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	std::tuple<Vec2, Simplex> MPR::discover(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB)
 	{
 		Simplex simplex;
-		Vec2 centerA = Mat2(shapeA.rotation).multiply(shapeA.shape->center());
-		Vec2 centerB = Mat2(shapeB.rotation).multiply(shapeB.shape->center());
-		Vec2 origin = shapeB.transform - shapeA.transform;
-		Minkowski v0(centerA + shapeA.transform, centerB + shapeB.transform);
+		Vec2 centerA = Mat2(transformA.rotation).multiply(shapeA->center());
+		Vec2 centerB = Mat2(transformB.rotation).multiply(shapeB->center());
+		Vec2 origin = transformB.position - transformA.position;
+		Minkowski v0(centerA + transformA.position, centerB + transformB.position);
 		Vec2 direction = centerB - centerA + origin;
 		
 		if (direction.fuzzyEqual({ 0, 0 }))
 			direction.set(1, 1);
 		
-		Minkowski v1 = GJK::support(shapeA, shapeB, direction);
+		Minkowski v1 = GJK::support(transformA, shapeA, transformB, shapeB, direction);
 		direction = GJK::calculateDirectionByEdge(v0.result, v1.result, true);
-		Minkowski v2 = GJK::support(shapeA, shapeB, direction);
+		Minkowski v2 = GJK::support(transformA, shapeA, transformB, shapeB, direction);
 		simplex.vertices.emplace_back(v0);
 		simplex.vertices.emplace_back(v1);
 		simplex.vertices.emplace_back(v2);
 		return std::make_tuple(centerB - centerA + origin, simplex);
 	}
 
-	std::tuple<bool, Simplex> MPR::refine(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+	std::tuple<bool, Simplex> MPR::refine(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB,
 	                                      const Simplex& source, const Vec2& centerToOrigin, const real& iteration)
 	{
 		Simplex simplex = source;
@@ -40,7 +40,7 @@ namespace Physics2D
 				direction.negate();
 				isColliding = true;
 			}
-			Minkowski newVertex = GJK::support(shapeA, shapeB, direction);
+			Minkowski newVertex = GJK::support(transformA, shapeA, transformB, shapeB, direction);
 
 			if (v1.fuzzyEqual(newVertex.result) || v2.fuzzyEqual(newVertex.result))
 				break;

@@ -2,11 +2,11 @@
 namespace Physics2D
 {
 
-	bool Detector::collide(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	bool Detector::collide(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB)
 	{
-		auto [isColliding, simplex] = GJK::gjk(shapeA, shapeB);
+		auto [isColliding, simplex] = GJK::gjk(transformA, shapeA, transformB, shapeB);
 
-		if (shapeA.transform.fuzzyEqual(shapeB.transform) && !isColliding)
+		if (transformA.position.fuzzyEqual(transformB.position) && !isColliding)
 			isColliding = simplex.containOrigin(true);
 
 		return isColliding;
@@ -15,47 +15,23 @@ namespace Physics2D
 	{
 		assert(bodyA != nullptr && bodyB != nullptr);
 
-		ShapePrimitive shapeA, shapeB;
-		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		Transform transformA, transformB;
+		transformA.rotation = bodyA->rotation();
+		transformA.position = bodyA->position();
+		
+		transformB.rotation = bodyB->rotation();
+		transformB.position = bodyB->position();
 
-		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
-
-		return collide(shapeA, shapeB);
+		return collide(transformA, bodyA->shape(), transformB, bodyB->shape());
 	}
-	bool Detector::collide(const ShapePrimitive& shapeA, Body* bodyB)
-	{
-		assert(shapeA.shape != nullptr && bodyB != nullptr);
-
-		ShapePrimitive shapeB;
-		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
-
-		return collide(shapeA, shapeB);
-	}
-	bool Detector::collide(Body* bodyA, const ShapePrimitive& shapeB)
-	{
-		assert(shapeB.shape != nullptr && bodyA != nullptr);
-
-		ShapePrimitive shapeA;
-		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
-
-		return collide(shapeA, shapeB);
-	}
-	Collision Detector::detect(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	Collision Detector::detect(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB)
 	{
 		Collision result;
-		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
+		assert(shapeA != nullptr && shapeB != nullptr);
 
-		auto [isColliding, simplex] = GJK::gjk(shapeA, shapeB);
+		auto [isColliding, simplex] = GJK::gjk(transformA, shapeA, transformB, shapeB);
 
-		if (shapeA.transform.fuzzyEqual(shapeB.transform) && !isColliding)
+		if (transformA.position.fuzzyEqual(transformB.position) && !isColliding)
 			isColliding = simplex.containOrigin(true);
 
 		result.isColliding = isColliding;
@@ -64,14 +40,14 @@ namespace Physics2D
 		if (isColliding)
 		{
 			auto oldSimplex = simplex;
-			simplex = GJK::epa(shapeA, shapeB, simplex);
+			simplex = GJK::epa(transformA, shapeA, transformB, shapeB, simplex);
 			PenetrationSource source = GJK::dumpSource(simplex);
 
 			const auto info = GJK::dumpInfo(source);
 			result.normal = info.normal;
 			result.penetration = info.penetration;
 
-			auto [clipEdgeA, clipEdgeB] = ContactGenerator::recognize(shapeA, shapeB, info.normal);
+			auto [clipEdgeA, clipEdgeB] = ContactGenerator::recognize(transformA, shapeA, transformB, shapeB, info.normal);
 			auto pairList = ContactGenerator::clip(clipEdgeA, clipEdgeB, info.normal);
 
 			bool pass = false;
@@ -88,42 +64,7 @@ namespace Physics2D
 		assert(result.contactList.size() != 3);
 		return result;
 	}
-	Collision Detector::detect(Body* bodyA, const ShapePrimitive& shapeB)
-	{
-		Collision result;
 
-		assert(bodyA != nullptr && shapeB.shape != nullptr);
-
-		ShapePrimitive shapeA;
-		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
-
-
-		result = detect(shapeA, shapeB);
-		result.bodyA = bodyA;
-		result.bodyB = nullptr;
-
-		return result;
-
-	}
-	Collision Detector::detect(const ShapePrimitive& shapeA, Body* bodyB)
-	{
-		Collision result;
-
-		assert(shapeA.shape != nullptr && bodyB != nullptr);
-
-		ShapePrimitive shapeB;
-		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
-
-		result = detect(shapeA, shapeB);
-		result.bodyA = nullptr;
-		result.bodyB = bodyB;
-
-		return result;
-	}
 	Collision Detector::detect(Body* bodyA, Body* bodyB)
 	{
 		Collision result;
@@ -141,47 +82,18 @@ namespace Physics2D
 		}
 
 
-		ShapePrimitive shapeA, shapeB;
-		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		Transform transformA, transformB;
 
-		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
-
-		result = detect(shapeA, shapeB);
+		result = detect(transformA, bodyA->shape(), transformB, bodyB->shape());
 		result.bodyA = bodyA;
 		result.bodyB = bodyB;
 
 		return result;
 	}
-	PointPair Detector::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	PointPair Detector::distance(const Transform& transformA, Shape* shapeA, const Transform& transformB, Shape* shapeB)
 	{
-		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
-		return GJK::distance(shapeA, shapeB);
-	}
-	PointPair Detector::distance(Body* bodyA, const ShapePrimitive& shapeB)
-	{
-		assert(bodyA != nullptr && shapeB.shape != nullptr);
-
-		ShapePrimitive shapeA;
-		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
-
-		return GJK::distance(shapeA, shapeB);
-	}
-	PointPair Detector::distance(const ShapePrimitive& shapeA, Body* bodyB)
-	{
-		assert(bodyB != nullptr && shapeA.shape != nullptr);
-
-		ShapePrimitive shapeB;
-		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
-
-		return GJK::distance(shapeA, shapeB);
+		assert(shapeA != nullptr && shapeB != nullptr);
+		return GJK::distance(transformA, shapeA, transformB, shapeB);
 	}
 	PointPair Detector::distance(Body* bodyA, Body* bodyB)
 	{
@@ -191,15 +103,13 @@ namespace Physics2D
 		if (bodyA == bodyB)
 			return result;
 
-		ShapePrimitive shapeA, shapeB;
-		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		Transform transformA, transformB;
+		transformA.rotation = bodyA->rotation();
+		transformA.position = bodyA->position();
 
-		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
+		transformB.rotation = bodyB->rotation();
+		transformB.position = bodyB->position();
 
-		return GJK::distance(shapeA, shapeB);
+		return GJK::distance(transformA, bodyA->shape(), transformB, bodyB->shape());
 	}
 }

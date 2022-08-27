@@ -61,59 +61,59 @@ namespace Physics2D
 	}
 
 
-	void RenderSFMLImpl::renderShape(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderShape(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		switch (shape.shape->type())
+		switch (shape->type())
 		{
 		case Shape::Type::Polygon:
 		{
-			renderPolygon(window, camera, shape, color);
+			renderPolygon(window, camera, transform, shape, color);
 			break;
 		}
 		case Shape::Type::Ellipse:
 		{
-			renderEllipse(window, camera, shape, color);
+			renderEllipse(window, camera, transform, shape, color);
 			break;
 		}
 		case Shape::Type::Circle:
 		{
-			renderCircle(window, camera, shape, color);
+			renderCircle(window, camera, transform, shape, color);
 			break;
 		}
 		case Shape::Type::Curve:
 		{
-			renderCurve(window, camera, shape, color);
+			renderCurve(window, camera, transform, shape, color);
 			break;
 		}
 		case Shape::Type::Edge:
 		{
-			renderEdge(window, camera, shape, color);
+			renderEdge(window, camera, transform, shape, color);
 			break;
 		}
 		case Shape::Type::Capsule:
 		{
-			renderCapsule(window, camera, shape, color);
+			renderCapsule(window, camera, transform, shape, color);
 			break;
 		}
 		case Shape::Type::Sector:
 		{
-			renderSector(window, camera, shape, color);
+			renderSector(window, camera, transform, shape, color);
 			break;
 		}
 		default:
 			break;
 		}
 	}
-	void RenderSFMLImpl::renderPolygon(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderPolygon(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape != nullptr);
-		assert(shape.shape->type() == Shape::Type::Polygon);
+		assert(shape != nullptr);
+		assert(shape->type() == Shape::Type::Polygon);
 		sf::ConvexShape convex;
-		Polygon* polygon = static_cast<Polygon*>(shape.shape);
+		Polygon* polygon = static_cast<Polygon*>(shape);
 		convex.setPointCount(polygon->vertices().size() - 1);
 		for (size_t i = 0; i < polygon->vertices().size() - 1; ++i)
 		{
-			const Vec2 worldPos = Mat2(shape.rotation).multiply(polygon->vertices()[i] * RenderConstant::ScaleFactor) + shape.transform;
+			const Vec2 worldPos = transform.transform(polygon->vertices()[i] * RenderConstant::ScaleFactor);
 			const Vec2 screenPos = camera.worldToScreen(worldPos);
 			convex.setPoint(i, toVec2f(screenPos));
 		}
@@ -124,29 +124,29 @@ namespace Physics2D
 		convex.setOutlineColor(color);
 		window.draw(convex);
 	}
-	void RenderSFMLImpl::renderEdge(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderEdge(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Edge);
-		Edge* edge = static_cast<Edge*>(shape.shape);
-		renderPoint(window, camera, edge->startPoint() + shape.transform, color);
-		renderPoint(window, camera, edge->endPoint() + shape.transform, color);
-		renderLine(window, camera, edge->startPoint() + shape.transform, edge->endPoint() + shape.transform, color);
+		assert(shape->type() == Shape::Type::Edge);
+		Edge* edge = static_cast<Edge*>(shape);
+		renderPoint(window, camera, edge->startPoint() + transform.position, color);
+		renderPoint(window, camera, edge->endPoint() + transform.position, color);
+		renderLine(window, camera, edge->startPoint() + transform.position, edge->endPoint() + transform.position, color);
 
 		Vec2 center = (edge->startPoint() + edge->endPoint()) / 2.0f;
-		center += shape.transform;
+		center += transform.position;
 		renderLine(window, camera, center, center + 0.1f * edge->normal(), RenderConstant::MaterialYellow);
 	}
-	void RenderSFMLImpl::renderRectangle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderRectangle(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape != nullptr);
-		assert(shape.shape->type() == Shape::Type::Polygon); 
-		renderPolygon(window, camera, shape, color);
+		assert(shape != nullptr);
+		assert(shape->type() == Shape::Type::Polygon);
+		renderPolygon(window, camera, transform, shape, color);
 	}
-	void RenderSFMLImpl::renderCircle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderCircle(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Circle);
-		const Circle* circle = static_cast<Circle*>(shape.shape);
-		const Vec2 screenPos = camera.worldToScreen(shape.transform);
+		assert(shape->type() == Shape::Type::Circle);
+		const Circle* circle = static_cast<Circle*>(shape);
+		const Vec2 screenPos = camera.worldToScreen(transform.position);
 		sf::CircleShape circleShape(circle->radius() * RenderConstant::ScaleFactor * camera.meterToPixel());
 		sf::Color fillColor(color);
 		fillColor.a = RenderConstant::FillAlpha;
@@ -157,13 +157,13 @@ namespace Physics2D
 		circleShape.setPointCount(RenderConstant::BasicCirclePointCount + size_t(camera.meterToPixel()));
 		window.draw(circleShape);
 	}
-	void RenderSFMLImpl::renderCapsule(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderCapsule(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Capsule);
+		assert(shape->type() == Shape::Type::Capsule);
 		Container::Vector<sf::Vertex> vertices;
 
-		const Capsule* capsule = static_cast<Capsule*>(shape.shape);
-		const Vec2 screenPos = camera.worldToScreen(shape.transform);
+		const Capsule* capsule = static_cast<Capsule*>(shape);
+		const Vec2 screenPos = camera.worldToScreen(transform.position);
 		int pointCounts = (RenderConstant::BasicCirclePointCount + camera.meterToPixel()) / 4;
 		sf::Vertex centerVertex = toVec2f(screenPos);
 		sf::Color fillColor(color);
@@ -177,7 +177,7 @@ namespace Physics2D
 			{
 				Vec2 point(radius * cosx(radian), radius * sinx(radian));
 				point += center;
-				const Vec2 worldPos = Mat2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
+				const Vec2 worldPos = transform.transform(point * RenderConstant::ScaleFactor);
 				const Vec2 screenPos = camera.worldToScreen(worldPos);
 				sf::Vertex vertex;
 				vertex.position = toVec2f(screenPos);
@@ -203,19 +203,19 @@ namespace Physics2D
 			elem.color = color;
 		window.draw(&vertices[1], vertices.size() - 1, sf::LinesStrip);
 	}
-	void RenderSFMLImpl::renderSector(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderSector(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Sector);
+		assert(shape->type() == Shape::Type::Sector);
 		Container::Vector<sf::Vertex> vertices;
 
 	}
-	void RenderSFMLImpl::renderEllipse(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderEllipse(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Ellipse);
+		assert(shape->type() == Shape::Type::Ellipse);
 		Container::Vector<sf::Vertex> vertices;
 
-		const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
-		const Vec2 screenPos = camera.worldToScreen(shape.transform);
+		const Ellipse* ellipse = static_cast<Ellipse*>(shape);
+		const Vec2 screenPos = camera.worldToScreen(transform.position);
 		int pointCounts = (RenderConstant::BasicCirclePointCount + camera.meterToPixel()) / 2;
 
 		sf::Vertex centerVertex = toVec2f(screenPos);
@@ -237,7 +237,7 @@ namespace Physics2D
 		{
 			Vec2 point(outerRadius * cosx(radian), innerRadius * sinx(radian));
 
-			const Vec2 worldPos = Mat2(shape.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform;
+			const Vec2 worldPos = transform.transform(point * RenderConstant::ScaleFactor);
 			const Vec2 screenPos = camera.worldToScreen(worldPos);
 			sf::Vertex vertex;
 			vertex.position = toVec2f(screenPos);
@@ -250,13 +250,13 @@ namespace Physics2D
 			elem.color = color;
 		window.draw(&vertices[1], vertices.size() - 1, sf::LinesStrip);
 	}
-	void RenderSFMLImpl::renderCurve(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderCurve(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Curve);
+		assert(shape->type() == Shape::Type::Curve);
 		Container::Vector<sf::Vertex> vertices;
 		
 	}
-	void RenderSFMLImpl::renderAngleLine(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
+	void RenderSFMLImpl::renderAngleLine(sf::RenderWindow& window, Camera& camera, const Transform& transform, Shape* shape, const sf::Color& color)
 	{
 		sf::Color colorX(139, 195, 74);
 		sf::Color colorY(255, 235, 59);
@@ -264,19 +264,18 @@ namespace Physics2D
 		colorY.a = 204;
 		Vec2 xP(0.1f, 0);
 		Vec2 yP(0, 0.1f);
-		Vec2 mc = Mat2(shape.rotation).multiply(shape.shape->center());
-		xP = Mat2(shape.rotation).multiply(xP) + shape.transform + mc;
-		yP = Mat2(shape.rotation).multiply(yP) + shape.transform + mc;
-		renderLine(window, camera, shape.transform + mc, xP, colorX);
-		renderLine(window, camera, shape.transform + mc, yP, colorY);
+		Vec2 mc = transform.rotate(shape->center());
+		xP = transform.transform(xP) + mc;
+		yP = transform.transform(yP) + mc;
+		renderLine(window, camera, transform.position + mc, xP, colorX);
+		renderLine(window, camera, transform.position + mc, yP, colorY);
 	}
 	void RenderSFMLImpl::renderBody(sf::RenderWindow& window, Camera& camera, Body* body, const sf::Color& color)
 	{
-		ShapePrimitive primitive;
-		primitive.shape = body->shape();
-		primitive.rotation = body->rotation();
-		primitive.transform = body->position();
-		renderShape(window, camera, primitive, color);
+		Transform transform;
+		transform.rotation = body->rotation();
+		transform.position = body->position();
+		renderShape(window, camera, transform, body->shape(), color);
 	}
 	void RenderSFMLImpl::renderAABB(sf::RenderWindow& window, Camera& camera, const AABB& aabb, const sf::Color& color)
 	{

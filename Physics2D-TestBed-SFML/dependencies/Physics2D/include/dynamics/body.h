@@ -66,7 +66,7 @@ namespace Physics2D
 		real& lastRotation();
 		uint32_t& sleepCountdown();
 
-		Shape* shape() const;
+		Shape* shape()const;
 		void setShape(Shape* shape);
 
 		BodyType type() const;
