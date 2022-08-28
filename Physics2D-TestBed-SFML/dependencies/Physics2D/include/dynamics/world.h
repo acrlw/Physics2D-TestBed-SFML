@@ -1,5 +1,6 @@
 #ifndef PHYSICS2D_WORLD_H
 #define PHYSICS2D_WORLD_H
+
 #include "../common/common.h"
 #include "../dynamics/body.h"
 #include "../math/math.h"
@@ -111,37 +112,39 @@ namespace Physics2D
         void stepSleep();
 
 
+        
+
     private:
         //Index relates to body
-    	std::vector<Vec2> position;
-        std::vector<Vec2> velocity;
+        
+    	std::vector<Vec2> m_position;
+        std::vector<Vec2> m_velocity;
 
-        std::vector<real> rotation;
-        std::vector<real> angularVelocity;
+        std::vector<real> m_rotation;
+        std::vector<real> m_angularVelocity;
 
-        std::vector<Vec2> lastPosition;
-        std::vector<Vec2> lastRotation;
+        std::vector<Vec2> m_lastPosition;
+        std::vector<Vec2> m_lastRotation;
 
-        std::vector<Vec2> force;
-        std::vector<real> torque;
+        std::vector<Vec2> m_force;
+        std::vector<real> m_torque;
 
-        std::vector<real> invMass;
-        std::vector<real> invInertia;
+        std::vector<real> m_invMass;
+        std::vector<real> m_invInertia;
 
-        std::vector<real> friction;
-        std::vector<real> restitution;
+        std::vector<real> m_friction;
+        std::vector<real> m_restitution;
 
-        std::vector<Shape*> shape;
-        std::vector<uint8_t> sleep;//0: awake, 1: sleep
-        std::vector<BodyType> type;
-        std::vector<uint32_t> bitmask;
+        std::vector<Shape*> m_shape;
+        std::vector<uint8_t> m_sleep;//0: awake, 1: sleep
+        std::vector<BodyType> m_type;
+        std::vector<uint32_t> m_bitmask;
 
-        std::vector<uint32_t> sleepTimer;
-        std::vector<real> energy;
+        std::vector<uint32_t> m_sleepTimer;
+        std::vector<real> m_energy;
 
         //Index independent
-        std::vector<std::unique_ptr<Shape*>> shapePool;
-        std::vector<size_t> freeList;
+        std::deque<size_t> m_freeList;
         
         Vec2 m_gravity = Vec2(0, -9.8f);
         real m_linearDamping = 1.0f;

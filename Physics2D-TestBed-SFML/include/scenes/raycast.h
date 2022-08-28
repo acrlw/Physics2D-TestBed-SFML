@@ -52,7 +52,7 @@ namespace Physics2D
 		void render(sf::RenderWindow& window) override
 		{
 			Vec2 p;
-			Vec2 d = m_mousePos.normal();
+			Vec2 d = m_currentPos.normal();
 			sf::Color originColor = RenderConstant::MaterialGray;
 			sf::Color dirColor = RenderConstant::MaterialDarkGreen;
 			sf::Color hitColor = sf::Color::Cyan;
@@ -60,6 +60,7 @@ namespace Physics2D
 
 			RenderSFMLImpl::renderPoint(window, *m_camera, Vec2(0, 0), originColor);
 			RenderSFMLImpl::renderLine(window, *m_camera, p, d * 10.0f, dirColor);
+			m_currentPos = Vec2::lerp(m_currentPos, m_mousePos, 0.1f);
 			//auto bodyList = m_tree->raycast(p, d);
 			//for(auto& elem: bodyList)
 			//{
@@ -76,6 +77,7 @@ namespace Physics2D
 			m_mousePos  = m_camera->screenToWorld(Vec2(event.mouseMove.x, event.mouseMove.y));
 		}
 	private:
+		Vec2 m_currentPos = Vec2(1, 1);
 		Vec2 m_mousePos = Vec2(1, 1);
 		Rectangle rectangle;
 		Circle circle;

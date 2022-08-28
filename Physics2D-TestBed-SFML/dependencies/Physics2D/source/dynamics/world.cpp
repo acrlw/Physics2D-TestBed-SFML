@@ -368,7 +368,14 @@ namespace Physics2D
 
 	Index DiscretePhysicsWorld::createBody()
 	{
-		return 0;
+		if(!m_freeList.empty())
+		{
+			Index front = m_freeList.front();
+			m_freeList.pop_front();
+			return front;
+		}
+
+		return m_position.size() - 1;
 	}
 
 	Index DiscretePhysicsWorld::createJoint()

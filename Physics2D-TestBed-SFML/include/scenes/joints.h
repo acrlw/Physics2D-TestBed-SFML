@@ -112,10 +112,10 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			sf::Color color = sf::Color::Cyan;
-			color.a = 155;
-			Vec2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
-			RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal, color);
+			//sf::Color color = sf::Color::Cyan;
+			//color.a = 155;
+			//Vec2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
+			//RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal, color);
 
 		}
 		void release() override
@@ -132,7 +132,7 @@ namespace Physics2D
 			{
 			case sf::Keyboard::D:
 			{
-				wheel1->applyImpulse(Vec2(0.0f, -50.0f), Vec2(1.0f, 0.0f));
+				//wheel1->applyImpulse(Vec2(0.0f, -50.0f), Vec2(1.0f, 0.0f));
 				break;
 			}
 			default:
@@ -143,12 +143,12 @@ namespace Physics2D
 	private:
 		void updateJoint()
 		{
-			auto pair = Detector::distance(bodyA, bodyB);
-			normal = (pair.pointA - pair.pointB).normalize();
-			Vec2 pb = pair.pointB + 0.5f * distance * normal;
-			Vec2 pa = pair.pointA - 0.5f * distance * normal;
-			joint->primitive().localPointA = bodyA->toLocalPoint(pa);
-			joint->primitive().localPointB = bodyB->toLocalPoint(pb);
+			//auto pair = Detector::distance(bodyA, bodyB);
+			//normal = (pair.pointA - pair.pointB).normalize();
+			//Vec2 pb = pair.pointB + 0.5f * distance * normal;
+			//Vec2 pa = pair.pointA - 0.5f * distance * normal;
+			//joint->primitive().localPointA = bodyA->toLocalPoint(pa);
+			//joint->primitive().localPointB = bodyB->toLocalPoint(pb);
 
 		}
 		Capsule capsule;

@@ -18,6 +18,7 @@ namespace Physics2D
 			uint32_t mask = 0x01;
 			for(real i = 0;i < 3.0;i += 1.0f)
 			{
+				m_system->physicsWorld().createBody();
 				//Body* ground = m_world->createBody();
 				//ground->setShape(&edge);
 				//ground->position().set({ 0, -6 + i * 3.0f });

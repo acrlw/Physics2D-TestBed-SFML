@@ -77,12 +77,12 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			if (points.size() > 400)
-				points.pop_front();
-			points.emplace_back(stick3->toWorldPoint(Vec2{ 2.0f, 0.0f }));
+			//if (points.size() > 400)
+			//	points.pop_front();
+			//points.emplace_back(stick3->toWorldPoint(Vec2{ 2.0f, 0.0f }));
 
-			for(auto& elem: points)
-				RenderSFMLImpl::renderPoint(window, *m_camera, elem, sf::Color::Cyan);
+			//for(auto& elem: points)
+			//	RenderSFMLImpl::renderPoint(window, *m_camera, elem, sf::Color::Cyan);
 		}
 		void release() override
 		{

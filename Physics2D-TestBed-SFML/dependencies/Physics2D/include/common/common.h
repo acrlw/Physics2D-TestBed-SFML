@@ -12,6 +12,7 @@
 #include <memory>
 #include <map>
 #include <xmmintrin.h>
+#include <deque>
 
 
 namespace Physics2D
