@@ -5,7 +5,7 @@ The Testbed of Physics2D, using SFML and ImGui.
 # Build
 
 ```
-cmake CMakeLists.txt
+xmake build
 ```
 
 # Requirement
