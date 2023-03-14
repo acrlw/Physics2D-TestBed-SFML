@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_DOMINO_H
 #define PHYSICS2D_SCENES_DOMINO_H
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class DominoFrame : public Frame

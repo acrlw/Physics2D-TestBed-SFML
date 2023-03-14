@@ -1,5 +1,5 @@
-#include "include/camera.h"
-#include "include/render.h"
+#include "camera.h"
+#include "render.h"
 namespace Physics2D
 {
 	void Camera::render(sf::RenderWindow& window)

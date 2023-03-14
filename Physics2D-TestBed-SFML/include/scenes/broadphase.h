@@ -1,10 +1,9 @@
 #ifndef PHYSICS2D_SCENES_BROADPHASE_H
 #define PHYSICS2D_SCENES_BROADPHASE_H
 #include <random>
-
-#include "dependencies/Physics2D/include/collision/broadphase/grid.h"
-#include "./include/frame.h"
-#include "dependencies/Physics2D/include/collision/broadphase/sap.h"
+#include "../dependencies/Physics2D/grid.h"
+#include "frame.h"
+#include "../dependencies/Physics2D/sap.h"
 namespace Physics2D
 {
 	class BroadPhaseFrame : public Frame

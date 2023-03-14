@@ -1,6 +1,6 @@
 #ifndef FRAME_H
 #define FRAME_H
-#include "../dependencies/Physics2D/include/physics2d.h"
+#include "../dependencies/Physics2D/physics2d.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>

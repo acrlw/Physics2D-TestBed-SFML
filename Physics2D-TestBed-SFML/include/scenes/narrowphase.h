@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_NARROWPHASE_H
 #define PHYSICS2D_SCENES_NARROWPHASE_H
-#include "./include/frame.h"
+#include "frame.h"
 
 namespace Physics2D
 {

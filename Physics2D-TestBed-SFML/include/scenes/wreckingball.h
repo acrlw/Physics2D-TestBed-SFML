@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_WRECKINGBALL_H
 #define PHYSICS2D_SCENES_WRECKINGBALL_H
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class WreckingBallFrame : public Frame
