@@ -4,6 +4,8 @@ The Testbed of Physics2D, using SFML and ImGui.
 
 # Build
 
+Use [XMake](https://github.com/xmake-io/xmake) to build project:
+
 ```
 xmake build
 ```
