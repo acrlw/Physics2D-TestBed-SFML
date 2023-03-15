@@ -3,7 +3,7 @@ set_languages("c++20")
 add_requires("sfml","imgui","imgui-sfml")
 
 target("Physics2D")
-    set_kind("shared")
+    set_kind("static")
     add_headerfiles("Physics2D-TestBed-SFML/dependencies/Physics2D/*.h")
     add_files("Physics2D-TestBed-SFML/dependencies/Physics2D/*.cpp")
 
