@@ -4,7 +4,7 @@ namespace Physics2D
 
 	bool Detector::collide(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
-		auto [isColliding, simplex] = GJK::gjk(shapeA, shapeB);
+		auto [isColliding, simplex] = GJKHelper::gjk(shapeA, shapeB);
 
 		if (shapeA.transform.fuzzyEqual(shapeB.transform) && !isColliding)
 			isColliding = simplex.containOrigin(true);
@@ -53,7 +53,7 @@ namespace Physics2D
 		Collision result;
 		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
 
-		auto [isColliding, simplex] = GJK::gjk(shapeA, shapeB);
+		auto [isColliding, simplex] = GJKHelper::gjk(shapeA, shapeB);
 
 		if (shapeA.transform.fuzzyEqual(shapeB.transform) && !isColliding)
 			isColliding = simplex.containOrigin(true);
@@ -64,10 +64,10 @@ namespace Physics2D
 		if (isColliding)
 		{
 			auto oldSimplex = simplex;
-			simplex = GJK::epa(shapeA, shapeB, simplex);
-			PenetrationSource source = GJK::dumpSource(simplex);
+			simplex = GJKHelper::epa(shapeA, shapeB, simplex);
+			PenetrationSource source = GJKHelper::dumpSource(simplex);
 
-			const auto info = GJK::dumpInfo(source);
+			const auto info = GJKHelper::dumpInfo(source);
 			result.normal = info.normal;
 			result.penetration = info.penetration;
 
@@ -83,7 +83,7 @@ namespace Physics2D
 			if (pass)
 				result.contactList = pairList;
 			else
-				result.contactList.emplace_back(GJK::dumpPoints(source));
+				result.contactList.emplace_back(GJKHelper::dumpPoints(source));
 		}
 		assert(result.contactList.size() != 3);
 		return result;
@@ -159,7 +159,7 @@ namespace Physics2D
 	PointPair Detector::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
 		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
-		return GJK::distance(shapeA, shapeB);
+		return GJKHelper::distance(shapeA, shapeB);
 	}
 	PointPair Detector::distance(Body* bodyA, const ShapePrimitive& shapeB)
 	{
@@ -170,7 +170,7 @@ namespace Physics2D
 		shapeA.rotation = bodyA->rotation();
 		shapeA.transform = bodyA->position();
 
-		return GJK::distance(shapeA, shapeB);
+		return GJKHelper::distance(shapeA, shapeB);
 	}
 	PointPair Detector::distance(const ShapePrimitive& shapeA, Body* bodyB)
 	{
@@ -181,7 +181,7 @@ namespace Physics2D
 		shapeB.rotation = bodyB->rotation();
 		shapeB.transform = bodyB->position();
 
-		return GJK::distance(shapeA, shapeB);
+		return GJKHelper::distance(shapeA, shapeB);
 	}
 	PointPair Detector::distance(Body* bodyA, Body* bodyB)
 	{
@@ -200,6 +200,6 @@ namespace Physics2D
 		shapeB.rotation = bodyB->rotation();
 		shapeB.transform = bodyB->position();
 
-		return GJK::distance(shapeA, shapeB);
+		return GJKHelper::distance(shapeA, shapeB);
 	}
 }

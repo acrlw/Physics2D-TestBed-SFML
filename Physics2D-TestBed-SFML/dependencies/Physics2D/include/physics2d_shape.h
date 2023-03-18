@@ -40,6 +40,11 @@ namespace Physics2D
 		Shape* shape;
         Vector2 transform;
         real rotation = 0;
+        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon)
+        {
+            return shape->contains(Matrix2x2(-rotation).multiply(point - transform), epsilon);
+        }
+
         Vector2 translate(const Vector2& source)const
         {
             return Matrix2x2(rotation).multiply(source) + transform;

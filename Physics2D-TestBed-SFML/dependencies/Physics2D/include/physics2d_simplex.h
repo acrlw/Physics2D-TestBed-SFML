@@ -21,27 +21,25 @@ namespace Physics2D
 		{
 			return !(pointA == rhs.pointA && pointB == rhs.pointB);
 		}
-
+		inline bool isEmpty()const
+		{
+			return pointA.isOrigin() && pointB.isOrigin() && result.isOrigin();
+		}
 		Vector2 pointA;
 		Vector2 pointB;
 		Vector2 result;
 	};
-	/// <summary>
-	/// Simplex structure for gjk/epa test.
-	/// By convention:
-	///   1 points: p0 , construct a single point
-	///   2 points: p0 -> p1, construct a segment
-	/// >=4 points: p0 -> p1 -> p2 -> p0, construct a polygon
-	///	ATTENTION:
-	///	  The performance bottleneck results in Container::Vector. Inserting and reallocating is expensive.
-	/// </summary>
-	/// <returns></returns>
-	struct Simplex
+
+	/**
+	 * \brief Simplex Vertex Array for gjk/epa test
+	 * bottleneck: frequently insert operation
+	 */
+	struct SimplexVertexArray
 	{
 		Container::Vector<SimplexVertex> vertices;
 		bool isContainOrigin = false;
 		bool containOrigin(bool strict = false);
-		static bool containOrigin(const Simplex& simplex, bool strict = false);
+		static bool containOrigin(const SimplexVertexArray& simplex, bool strict = false);
 
 		void insert(const size_t& pos, const SimplexVertex& vertex);
 		bool contains(const SimplexVertex& vertex);
@@ -49,5 +47,20 @@ namespace Physics2D
 
 		Vector2 lastVertex() const;
 	};
+
+	/**
+	 * \brief Simplex structure
+	 */
+	struct Simplex
+	{
+		SimplexVertex vertices[3];
+		size_t count = 0;
+		bool isContainOrigin = false;
+		bool containOrigin(bool strict = false);
+		static bool containOrigin(const Simplex& simplex, bool strict = false);
+		bool contains(const SimplexVertex& vertex, const real& epsilon = 1e-5);
+		void addSimplexVertex(const SimplexVertex& vertex);
+	};
+	
 }
 #endif

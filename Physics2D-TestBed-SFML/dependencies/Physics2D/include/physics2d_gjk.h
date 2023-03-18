@@ -46,10 +46,20 @@ namespace Physics2D
 				|| (other.pointB.fuzzyEqual(this->pointA) && other.pointA.fuzzyEqual(this->pointB));
 		}
 	};
+
+	namespace Narrowphase
+	{
+		Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 20);
+		SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
+		Vector2 findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction);
+		Vector2 calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);
+		std::pair<Vector2, Index> findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
+		void degradeSimplex(Simplex& simplex);
+	}
 	/// <summary>
-	/// GJK Collision Detection Class
+	/// GJKHelper Collision Detection Class
 	/// </summary>
-	class GJK
+	class GJKHelper
 	{
 	public:
 		/// <summary>
@@ -59,7 +69,7 @@ namespace Physics2D
 		/// <param name="shape_B"></param>
 		/// <param name="iteration"></param>
 		/// <returns>return initial simplex and whether collision exists</returns>
-		static std::tuple<bool, Simplex> gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+		static std::tuple<bool, SimplexVertexArray> gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
 		                                     const size_t& iteration = 20);
 		/// <summary>
 		/// Expanding Polygon Algorithm
@@ -70,7 +80,7 @@ namespace Physics2D
 		/// <param name="iteration">iteration times</param>
 		/// <param name="epsilon">epsilon of iterated result</param>
 		/// <returns>return expanded simplex</returns>
-		static Simplex epa(const ShapePrimitive& shapeA, const ShapePrimitive& shapshapeBe_B, const Simplex& src,
+		static SimplexVertexArray epa(const ShapePrimitive& shapeA, const ShapePrimitive& shapshapeBe_B, const SimplexVertexArray& src,
 		                   const size_t& iteration = 20, const real& epsilon = Constant::GeometryEpsilon);
 		/// <summary>
 		/// Dump collision penetration normal and depth
@@ -94,7 +104,7 @@ namespace Physics2D
 		/// </summary>
 		/// <param name="simplex"></param>
 		/// <returns></returns>
-		static std::tuple<size_t, size_t> findEdgeClosestToOrigin(const Simplex& simplex);
+		static std::tuple<size_t, size_t> findEdgeClosestToOrigin(const SimplexVertexArray& simplex);
 		/// <summary>
 		/// Find farthest projection point in given direction
 		/// </summary>
@@ -116,7 +126,7 @@ namespace Physics2D
 		/// <param name="closest_1"></param>
 		/// <param name="closest_2"></param>
 		/// <returns></returns>
-		static std::optional<SimplexVertex> adjustSimplex(Simplex& simplex, const size_t& closest_1,
+		static std::optional<SimplexVertex> adjustSimplex(SimplexVertexArray& simplex, const size_t& closest_1,
 		                                              const size_t& closest_2);
 		/// <summary>
 		/// Given two points, calculate the perpendicular vector and the orientation is user-defined.
@@ -139,7 +149,7 @@ namespace Physics2D
 		/// </summary>
 		/// <param name="simplex"></param>
 		/// <returns></returns>
-		static PenetrationSource dumpSource(const Simplex& simplex);
+		static PenetrationSource dumpSource(const SimplexVertexArray& simplex);
 		/// <summary>
 		/// dump contact points
 		/// </summary>
@@ -147,6 +157,8 @@ namespace Physics2D
 		/// <returns></returns>
 		static PointPair dumpPoints(const PenetrationSource& source);
 	};
+
+
 }
 
 

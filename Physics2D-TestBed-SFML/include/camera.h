@@ -99,7 +99,7 @@ namespace Physics2D
         bool m_bodyVisible = true;
         bool m_dbvhVisible = false;
         bool m_treeVisible = false;
-        bool m_gridScaleLineVisible = false;
+        bool m_gridScaleLineVisible = true;
         bool m_rotationLineVisible = false;
         bool m_centerVisible = false;
         bool m_contactVisible = false;

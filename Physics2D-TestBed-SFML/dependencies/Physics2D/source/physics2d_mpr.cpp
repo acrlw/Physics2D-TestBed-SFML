@@ -2,9 +2,9 @@
 
 namespace Physics2D
 {
-	std::tuple<Vector2, Simplex> MPR::discover(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	std::tuple<Vector2, SimplexVertexArray> MPR::discover(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
-		Simplex simplex;
+		SimplexVertexArray simplex;
 		Vector2 centerA = Matrix2x2(shapeA.rotation).multiply(shapeA.shape->center());
 		Vector2 centerB = Matrix2x2(shapeB.rotation).multiply(shapeB.shape->center());
 		Vector2 origin = shapeB.transform - shapeA.transform;
@@ -14,19 +14,19 @@ namespace Physics2D
 		if (direction.fuzzyEqual({ 0, 0 }))
 			direction.set(1, 1);
 		
-		SimplexVertex v1 = GJK::support(shapeA, shapeB, direction);
-		direction = GJK::calculateDirectionByEdge(v0.result, v1.result, true);
-		SimplexVertex v2 = GJK::support(shapeA, shapeB, direction);
+		SimplexVertex v1 = GJKHelper::support(shapeA, shapeB, direction);
+		direction = GJKHelper::calculateDirectionByEdge(v0.result, v1.result, true);
+		SimplexVertex v2 = GJKHelper::support(shapeA, shapeB, direction);
 		simplex.vertices.emplace_back(v0);
 		simplex.vertices.emplace_back(v1);
 		simplex.vertices.emplace_back(v2);
 		return std::make_tuple(centerB - centerA + origin, simplex);
 	}
 
-	std::tuple<bool, Simplex> MPR::refine(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
-	                                      const Simplex& source, const Vector2& centerToOrigin, const real& iteration)
+	std::tuple<bool, SimplexVertexArray> MPR::refine(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+	                                      const SimplexVertexArray& source, const Vector2& centerToOrigin, const real& iteration)
 	{
-		Simplex simplex = source;
+		SimplexVertexArray simplex = source;
 		bool isColliding = false;
 		Vector2 v1, v2, direction;
 		real counter = 0;
@@ -34,13 +34,13 @@ namespace Physics2D
 		{
 			v1 = simplex.vertices[1].result;
 			v2 = simplex.vertices[2].result;
-			direction = GJK::calculateDirectionByEdge(v1, v2, true);
+			direction = GJKHelper::calculateDirectionByEdge(v1, v2, true);
 			if (direction.dot(centerToOrigin) < 0)
 			{
 				direction.negate();
 				isColliding = true;
 			}
-			SimplexVertex newVertex = GJK::support(shapeA, shapeB, direction);
+			SimplexVertex newVertex = GJKHelper::support(shapeA, shapeB, direction);
 
 			if (v1.fuzzyEqual(newVertex.result) || v2.fuzzyEqual(newVertex.result))
 				break;

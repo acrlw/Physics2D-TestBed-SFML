@@ -27,28 +27,72 @@ namespace Physics2D
 			shape2.shape = &polygon2;
 			shape2.transform.set(1.0f, -5.0f);
 			shape2.rotation = Math::degreeToRadian(30);
-			result = Detector::detect(shape1, shape2);
+			//result = Detector::detect(shape1, shape2);
 
+		}
+		void onMousePress(sf::Event& event) override
+		{
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				mousePos = m_camera->screenToWorld(Vector2(event.mouseButton.x, event.mouseButton.y));
+				if (shape1.contains(mousePos))
+				{
+					isPicked = true;
+					clickObject = &shape1;
+					originTransform = shape1.transform;
+					return;
+				}
+				if (shape2.contains(mousePos))
+				{
+					isPicked = true;
+					clickObject = &shape2;
+					originTransform = shape2.transform;
+				}
+			}
+		}
+		void onMouseMove(sf::Event& event) override
+		{
+			if (!isPicked)
+				return;
+			Vector2 pos(real(event.mouseMove.x), real(event.mouseMove.y));
+			currentPos = m_camera->screenToWorld(pos);
+			Vector2 tf = currentPos - mousePos;
+
+			clickObject->transform = originTransform + tf;
+
+		}
+		void onMouseRelease(sf::Event& event) override
+		{
+			isPicked = false;
+			originTransform.clear();
+			clickObject = nullptr;
 		}
 		void render(sf::RenderWindow& window) override
 		{
 			RenderSFMLImpl::renderShape(window, *m_camera, shape1, sf::Color::Green);
 			RenderSFMLImpl::renderShape(window, *m_camera, shape2, sf::Color::Cyan);
-			for (auto& elem : result.contactList)
-			{
-				RenderSFMLImpl::renderPoint(window, *m_camera, elem.pointA, RenderConstant::MaterialRed);
-				RenderSFMLImpl::renderPoint(window, *m_camera, elem.pointB, RenderConstant::MaterialBlue);
-			}
+
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform, sf::Color::Cyan);
-			RenderSFMLImpl::renderLine(window, *m_camera, shape1.transform, result.normal + shape1.transform, sf::Color::Green);
-			RenderSFMLImpl::renderLine(window, *m_camera, shape2.transform, -result.normal + shape2.transform, sf::Color::Cyan);
+			Simplex simplex = Narrowphase::gjk(shape1, shape2);
+			RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, sf::Color::Red);
+			if(isPicked)
+			{
+				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);
+			}
+			//RenderSFMLImpl::renderLine(window, *m_camera, shape1.transform, result.normal + shape1.transform, sf::Color::Green);
+			//RenderSFMLImpl::renderLine(window, *m_camera, shape2.transform, -result.normal + shape2.transform, sf::Color::Cyan);
 		}
 	private:
 		Polygon polygon1;
 		Polygon polygon2;
 		ShapePrimitive shape1, shape2;
-		Collision result;
+		//Collision result;
+		bool isPicked = false;
+		Vector2 mousePos;
+		Vector2 currentPos;
+		Vector2 originTransform;
+		ShapePrimitive* clickObject = nullptr;
 	};
 }
 #endif

@@ -419,4 +419,54 @@ namespace Physics2D
 	void RenderSFMLImpl::renderWheelJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
 	{
 	}
+
+	void RenderSFMLImpl::renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
+		const sf::Color& color)
+	{
+		sf::Color lineColor = color;
+		lineColor.a = 150;
+		switch (simplex.count)
+		{
+		case 0:
+			break;
+		case 1:
+			renderPoint(window, camera, simplex.vertices[0].result, color);
+			break;
+		case 2:
+			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
+			renderPoint(window, camera, simplex.vertices[0].result, color);
+			renderPoint(window, camera, simplex.vertices[1].result, color);
+			break;
+		case 3:
+			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
+			renderLine(window, camera, simplex.vertices[1].result, simplex.vertices[2].result, lineColor);
+			renderLine(window, camera, simplex.vertices[2].result, simplex.vertices[0].result, lineColor);
+			renderPoint(window, camera, simplex.vertices[0].result, color);
+			renderPoint(window, camera, simplex.vertices[1].result, color);
+			renderPoint(window, camera, simplex.vertices[2].result, color);
+			break;
+		default:
+			assert(false && "Simplex count is more than 3");
+			break;
+		}
+	}
+
+	void RenderSFMLImpl::renderArrow(sf::RenderWindow& window, Camera& camera, const Vector2& start, const Vector2& end,
+		const sf::Color& color, const real& size, const real& degree)
+	{
+		renderLine(window, camera, start, end, color);
+		Vector2 tf = start - end;
+		real scale = size;
+		real length = tf.length();
+		if (tf.length() < 1.0f)
+			scale = length / 2.0f;
+		Vector2 normal = (start - end).normalize() * scale;
+		Matrix2x2 mat(Math::degreeToRadian(degree));
+		Vector2 p1 = mat.multiply(normal);
+		mat.set(Math::degreeToRadian(-degree));
+		Vector2 p2 = mat.multiply(normal);
+
+		renderLine(window, camera, end, end + p1, color);
+		renderLine(window, camera, end, end + p2, color);
+	}
 }

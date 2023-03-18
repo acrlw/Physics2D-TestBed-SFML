@@ -207,8 +207,8 @@ namespace Physics2D
 		}
 		case Shape::Type::Capsule:
 		{
-			Vector2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
-			Vector2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
+			Vector2 p1 = GJKHelper::findFarthestPoint(shape, { 1, 0 });
+			Vector2 p2 = GJKHelper::findFarthestPoint(shape, { 0, 1 });
 			p1 -= shape.transform;
 			p2 -= shape.transform;
 			aabb.width = p1.x * 2.0f;
@@ -217,10 +217,10 @@ namespace Physics2D
 		}
 		case Shape::Type::Sector:
 		{
-			Vector2 p1 = GJK::findFarthestPoint(shape, { 1, 0 });
-			Vector2 p2 = GJK::findFarthestPoint(shape, { 0, 1 });
-			Vector2 p3 = GJK::findFarthestPoint(shape, { -1, 0 });
-			Vector2 p4 = GJK::findFarthestPoint(shape, { 0, -1 });
+			Vector2 p1 = GJKHelper::findFarthestPoint(shape, { 1, 0 });
+			Vector2 p2 = GJKHelper::findFarthestPoint(shape, { 0, 1 });
+			Vector2 p3 = GJKHelper::findFarthestPoint(shape, { -1, 0 });
+			Vector2 p4 = GJKHelper::findFarthestPoint(shape, { 0, -1 });
 			p1 -= shape.transform;
 			p2 -= shape.transform;
 			p3 -= shape.transform;

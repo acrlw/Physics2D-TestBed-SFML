@@ -6,10 +6,10 @@ namespace Physics2D
 {
 
 
-	std::tuple<bool, Simplex> GJK::gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+	std::tuple<bool, SimplexVertexArray> GJKHelper::gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
 	                                   const size_t& iteration)
 	{
-		Simplex simplex;
+		SimplexVertexArray simplex;
 		bool found = false;
 		Vector2 direction = shapeB.transform - shapeA.transform;
 		
@@ -60,12 +60,12 @@ namespace Physics2D
 		return std::make_tuple(found, simplex);
 	}
 
-	Simplex GJK::epa(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Simplex& src,
+	SimplexVertexArray GJKHelper::epa(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const SimplexVertexArray& src,
 	                 const size_t& iteration, const real& epsilon)
 	{
 		size_t iter = 0;
-		Simplex edge;
-		Simplex simplex = src;
+		SimplexVertexArray edge;
+		SimplexVertexArray simplex = src;
 		Vector2 normal;
 		SimplexVertex p;
 		while (iter <= iteration)
@@ -91,7 +91,7 @@ namespace Physics2D
 		return simplex;
 	}
 
-	PenetrationInfo GJK::dumpInfo(const PenetrationSource& source)
+	PenetrationInfo GJKHelper::dumpInfo(const PenetrationSource& source)
 	{
 		PenetrationInfo result;
 		Vector2 edge1 = source.a1 - source.b1;
@@ -103,12 +103,12 @@ namespace Physics2D
 		return result;
 	}
 
-	SimplexVertex GJK::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
+	SimplexVertex GJKHelper::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
 	{
 		return SimplexVertex(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
 	}
 
-	std::tuple<size_t, size_t> GJK::findEdgeClosestToOrigin(const Simplex& simplex)
+	std::tuple<size_t, size_t> GJKHelper::findEdgeClosestToOrigin(const SimplexVertexArray& simplex)
 	{
 		real min_dist = Constant::Max;
 
@@ -148,7 +148,7 @@ namespace Physics2D
 		return std::make_tuple(index1, index2);
 	}
 
-	Vector2 GJK::findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction)
+	Vector2 GJKHelper::findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction)
 	{
 		Vector2 target;
 		Matrix2x2 rot(-shape.rotation);
@@ -206,7 +206,7 @@ namespace Physics2D
 		return target;
 	}
 
-	std::pair<Vector2, size_t> GJK::findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
+	std::pair<Vector2, size_t> GJKHelper::findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
 	{
 		real max = Constant::NegativeMin;
 		Vector2 target;
@@ -224,7 +224,7 @@ namespace Physics2D
 		return std::make_pair(target, index);
 	}
 
-	std::optional<SimplexVertex> GJK::adjustSimplex(Simplex& simplex, const size_t& closest_1, const size_t& closest_2)
+	std::optional<SimplexVertex> GJKHelper::adjustSimplex(SimplexVertexArray& simplex, const size_t& closest_1, const size_t& closest_2)
 	{
 		switch (simplex.vertices.size())
 		{
@@ -247,7 +247,7 @@ namespace Physics2D
 		}
 	}
 
-	Vector2 GJK::calculateDirectionByEdge(const Vector2& p1, const Vector2& p2, bool pointToOrigin)
+	Vector2 GJKHelper::calculateDirectionByEdge(const Vector2& p1, const Vector2& p2, bool pointToOrigin)
 	{
 		const Vector2 ao = p1 * -1;
 		const Vector2 ab = p2 - p1;
@@ -258,11 +258,11 @@ namespace Physics2D
 		return perpendicularOfAB;
 	}
 
-	PointPair GJK::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const real& iteration,
+	PointPair GJKHelper::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const real& iteration,
 	                           const real& epsilon)
 	{
 		PointPair result;
-		Simplex simplex;
+		SimplexVertexArray simplex;
 		Vector2 direction = shapeB.transform - shapeA.transform;
 		SimplexVertex m = support(shapeA, shapeB, direction);
 		simplex.vertices.emplace_back(m);
@@ -291,7 +291,7 @@ namespace Physics2D
 		return dumpPoints(dumpSource(simplex));
 	}
 
-	PenetrationSource GJK::dumpSource(const Simplex& simplex)
+	PenetrationSource GJKHelper::dumpSource(const SimplexVertexArray& simplex)
 	{
 		PenetrationSource result;
 		auto [index1, index2] = findEdgeClosestToOrigin(simplex);
@@ -302,7 +302,7 @@ namespace Physics2D
 		return result;
 	}
 	
-	PointPair GJK::dumpPoints(const PenetrationSource& source)
+	PointPair GJKHelper::dumpPoints(const PenetrationSource& source)
 	{
 		PointPair result;
 		const Vector2 A_s1 = source.a1;
@@ -334,5 +334,185 @@ namespace Physics2D
 		}
 		return result;
 	}
+	Simplex Narrowphase::gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
+	{
+		Simplex simplex;
+		Vector2 direction = shapeB.transform - shapeA.transform;
 
+		if (direction.fuzzyEqual({ 0, 0 }))
+			direction.set(1, 1);
+		//first
+		SimplexVertex vertex = support(shapeA, shapeB, direction);
+		simplex.addSimplexVertex(vertex);
+		//second
+		direction.negate();
+		vertex = support(shapeA, shapeB, direction);
+		simplex.addSimplexVertex(vertex);
+		//check 1d simplex(line segment) contains origin
+		if (simplex.containOrigin())
+			return simplex;
+		//third
+		size_t iter = 0;
+		//while(iter <= iteration)
+		//{
+		//	//default closest edge is index 0 and index 1
+		//	direction = calculateDirectionByEdge(simplex.vertices[0], simplex.vertices[1], true);
+		//	vertex = support(shapeA, shapeB, direction);
+		//	simplex.addSimplexVertex(vertex);
+		//	//check 2d simplex(triangle) contains origin
+		//	if (simplex.containOrigin())
+		//		break;
+
+		//	//no? then readjust simplex, find and reserve closest edge
+
+
+
+		//	iter++;
+		//}
+		return simplex;
+		//SimplexVertex diff = support(shapeA, shapeB, direction);
+		//simplex.vertices.emplace_back(diff);
+		//direction.negate();
+		//size_t iter = 0;
+		//Container::Vector<SimplexVertex> removed;
+		//while (iter <= iteration)
+		//{
+		//	diff = support(shapeA, shapeB, direction);
+		//	simplex.vertices.emplace_back(diff);
+		//	if (simplex.vertices.size() == 3)
+		//		simplex.vertices.emplace_back(simplex.vertices[0]);
+
+		//	if (simplex.lastVertex().dot(direction) <= 0)
+		//		break;
+		//	if (simplex.containOrigin(true))
+		//	{
+		//		found = true;
+		//		break;
+		//	}
+		//	//if not contain origin
+		//	//find edge closest to origin
+		//	//reconstruct simplex
+		//	//find the point that is not belong to the edge closest to origin
+		//	//if found, there is no more SimplexVertex difference, exit loop
+		//	//if not, add the point to the list
+
+		//	auto [index1, index2] = findEdgeClosestToOrigin(simplex);
+		//	direction = calculateDirectionByEdge(simplex.vertices[index1].result,
+		//		simplex.vertices[index2].result, true);
+
+		//	auto result = adjustSimplex(simplex, index1, index2);
+		//	if (result.has_value())
+		//	{
+		//		if (std::find(std::begin(removed), std::end(removed), result.value()) != removed.end())
+		//			break;
+
+		//		removed.emplace_back(result.value());
+		//	}
+		//	iter++;
+		//}
+
+		//return std::make_tuple(found, simplex);
+	}
+
+	SimplexVertex Narrowphase::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
+	{
+		return SimplexVertex(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
+	}
+
+	Vector2 Narrowphase::findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction)
+	{
+		Vector2 target;
+		Matrix2x2 rot(-shape.rotation);
+		Vector2 rot_dir = rot.multiply(direction);
+		switch (shape.shape->type())
+		{
+		case Shape::Type::Polygon:
+		{
+			const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
+			auto [vertex, index] = findFarthestPoint(polygon->vertices(), rot_dir);
+			target = vertex;
+			break;
+		}
+		case Shape::Type::Circle:
+		{
+			const Circle* circle = static_cast<const Circle*>(shape.shape);
+			return direction.normal() * circle->radius() + shape.transform;
+		}
+		case Shape::Type::Ellipse:
+		{
+			const Ellipse* ellipse = static_cast<const Ellipse*>(shape.shape);
+			target = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), rot_dir);
+			break;
+		}
+		case Shape::Type::Edge:
+		{
+			const Edge* edge = static_cast<const Edge*>(shape.shape);
+			real dot1 = Vector2::dotProduct(edge->startPoint(), direction);
+			real dot2 = Vector2::dotProduct(edge->endPoint(), direction);
+			target = dot1 > dot2 ? edge->startPoint() : edge->endPoint();
+			break;
+		}
+		case Shape::Type::Point:
+		{
+			return static_cast<const Point*>(shape.shape)->position();
+		}
+		case Shape::Type::Capsule:
+		{
+			const Capsule* capsule = static_cast<const Capsule*>(shape.shape);
+			target = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), rot_dir);
+			break;
+		}
+		case Shape::Type::Sector:
+		{
+			const Sector* sector = static_cast<const Sector*>(shape.shape);
+			target = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), rot_dir);
+			break;
+		}
+		case Shape::Type::Curve: 
+			assert(false && "Not support curve mapping.");
+			break;
+		}
+		rot.set(shape.rotation);
+		target = rot.multiply(target);
+		target += shape.transform;
+		return target;
+	}
+
+	Vector2 Narrowphase::calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin)
+
+	{
+		const Vector2 p1 = v1.result;
+		const Vector2 p2 = v2.result;
+		const Vector2 ao = p1 * -1;
+		const Vector2 ab = p2 - p1;
+		Vector2 perpendicularOfAB = ab.perpendicular();
+		if ((Vector2::dotProduct(ao, perpendicularOfAB) < 0 && pointToOrigin) || (
+			Vector2::dotProduct(ao, perpendicularOfAB) > 0 && !pointToOrigin))
+			perpendicularOfAB.negate();
+		return perpendicularOfAB;
+	}
+	std::pair<Vector2, Index> Narrowphase::findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
+	{
+		real max = Constant::NegativeMin;
+		Vector2 target;
+		size_t index = 0;
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			real result = Vector2::dotProduct(vertices[i], direction);
+			if (max < result)
+			{
+				max = result;
+				target = vertices[i];
+				index = i;
+			}
+		}
+		return std::make_pair(target, index);
+	}
+	void Narrowphase::degradeSimplex(Simplex& simplex)
+	{
+		//1. use voronoi diagram
+
+	}
 }
+
+

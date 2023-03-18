@@ -66,6 +66,9 @@ namespace Physics2D
         static void renderPrismaticJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
         static void renderRevoluteJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
         static void renderWheelJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
+        static void renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex, const sf::Color& color);
+        static void renderArrow(sf::RenderWindow& window, Camera& camera, const Vector2& start, const Vector2& end, const sf::Color& color, 
+            const real& size = 0.5f, const real& degree = 30);
     };
 }
 #endif
