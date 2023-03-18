@@ -83,7 +83,7 @@ namespace Physics2D
         static Vec4 multiply(const Vec4& lhs, const Mat4& rhs);
         static real determinant(const Mat4& mat);
         static bool invert(Mat4& mat);
-
+        //row major
         union
         {
             struct

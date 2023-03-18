@@ -59,7 +59,7 @@ namespace Physics2D
         static Mat2 multiply(const Mat2& lhs, const Mat2& rhs);
         static real determinant(const Mat2& mat);
         static bool invert(Mat2& mat);
-
+        //row major
         union
         {
             float f[4]; //0 1 2 3 --> x0 y0 x1 y1

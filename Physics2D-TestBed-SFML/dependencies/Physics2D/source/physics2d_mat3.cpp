@@ -247,6 +247,8 @@ namespace Physics2D
 
 	real Mat3::determinant(const Mat3& mat)
 	{
+		//calculate determinant of mat
+
 
 		return real();
 	}
