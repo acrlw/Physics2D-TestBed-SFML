@@ -13,7 +13,7 @@
 # Xmake cache
 .xmake/
 build/
-vs*/*
+vsxmake*/*
 
 # MacOS Cache
 .DS_Store

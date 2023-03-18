@@ -1,5 +1,5 @@
 
-#include "sector.h"
+#include "physics2d_sector.h"
 namespace Physics2D
 {
 	Sector::Sector()

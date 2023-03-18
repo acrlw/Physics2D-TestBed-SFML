@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_BROADPHASE_DBVH_H
 #define PHYSICS2D_BROADPHASE_DBVH_H
-#include "aabb.h"
+#include "physics2d_aabb.h"
 
 namespace Physics2D
 {

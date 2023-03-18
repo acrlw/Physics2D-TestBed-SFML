@@ -1,11 +1,11 @@
 #ifndef PHYSICS2D_DETECTOR_H
 #define PHYSICS2D_DETECTOR_H
-#include "gjk.h"
-#include "sat.h"
-#include "mpr.h"
-#include "math.h"
-#include "shape.h"
-#include "body.h"
+#include "physics2d_gjk.h"
+#include "physics2d_sat.h"
+#include "physics2d_mpr.h"
+#include "physics2d_math.h"
+#include "physics2d_shape.h"
+#include "physics2d_body.h"
 
 namespace Physics2D
 {

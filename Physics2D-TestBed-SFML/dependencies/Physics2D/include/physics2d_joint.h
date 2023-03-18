@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_DYNAMICS_JOINT_JOINT_H
 #define PHYSICS2D_DYNAMICS_JOINT_JOINT_H
-#include "body.h"
+#include "physics2d_body.h"
 namespace Physics2D
 {
 	enum class JointType

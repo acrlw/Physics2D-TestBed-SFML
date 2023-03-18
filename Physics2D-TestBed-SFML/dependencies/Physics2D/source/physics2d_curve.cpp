@@ -1,4 +1,4 @@
-#include "curve.h"
+#include "physics2d_curve.h"
 namespace Physics2D
 {
 	Curve::Curve()

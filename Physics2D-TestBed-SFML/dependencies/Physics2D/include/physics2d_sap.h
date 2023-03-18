@@ -1,6 +1,6 @@
 #ifndef PHYSICS_BROADPHASE_SAP_H
 #define PHYSICS_BROADPHASE_SAP_H
-#include "body.h"
+#include "physics2d_body.h"
 
 namespace Physics2D
 {

@@ -1,5 +1,5 @@
-#include "vector2.h"
-#include "math.h"
+#include "physics2d_vector2.h"
+#include "physics2d_math.h"
 namespace Physics2D
 {
 	Vector2::Vector2(const real& _x, const real& _y) : x(_x), y(_y)

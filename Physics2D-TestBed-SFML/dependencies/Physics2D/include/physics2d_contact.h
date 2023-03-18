@@ -2,9 +2,9 @@
 #define PHYSICS2D_CONSTRAINT_CONTACT_H
 #include <string>
 
-#include "body.h"
-#include "random.h"
-#include "detector.h"
+#include "physics2d_body.h"
+#include "physics2d_random.h"
+#include "physics2d_detector.h"
 namespace Physics2D
 {
 	struct VelocityConstraintPoint

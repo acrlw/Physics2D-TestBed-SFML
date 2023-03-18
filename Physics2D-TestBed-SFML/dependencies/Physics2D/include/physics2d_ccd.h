@@ -1,9 +1,9 @@
 #ifndef PHYSICS2D_COLLISION_CCD_H
 #define PHYSICS2D_COLLISION_CCD_H
-#include "detector.h"
-#include "dbvh.h"
-#include "body.h"
-#include "tree.h"
+#include "physics2d_detector.h"
+#include "physics2d_dbvh.h"
+#include "physics2d_body.h"
+#include "physics2d_tree.h"
 namespace Physics2D
 {
 	/// <summary>

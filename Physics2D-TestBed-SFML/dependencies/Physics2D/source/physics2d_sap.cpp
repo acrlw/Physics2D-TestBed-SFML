@@ -1,7 +1,7 @@
-#include "sap.h"
+#include "physics2d_sap.h"
 
-#include "body.h"
-#include "sat.h"
+#include "physics2d_body.h"
+#include "physics2d_sat.h"
 namespace Physics2D
 {
 	Container::Vector<std::pair<Body*, Body*>> SweepAndPrune::generate(const Container::Vector<Body*>& bodyList)

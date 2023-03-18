@@ -1,12 +1,12 @@
 #ifndef PHYSICS2D_SYSTEM_H
 #define PHYSICS2D_SYSTEM_H
-#include "body.h"
-#include "world.h"
-#include "detector.h"
-#include "tree.h"
-#include "ccd.h"
-#include "sap.h"
-#include "grid.h"
+#include "physics2d_body.h"
+#include "physics2d_world.h"
+#include "physics2d_detector.h"
+#include "physics2d_tree.h"
+#include "physics2d_ccd.h"
+#include "physics2d_sap.h"
+#include "physics2d_grid.h"
 namespace Physics2D
 {
     class PhysicsSystem

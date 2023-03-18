@@ -1,6 +1,6 @@
-#include "dbvh.h"
+#include "physics2d_dbvh.h"
 
-#include "body.h"
+#include "physics2d_body.h"
 
 namespace Physics2D
 {

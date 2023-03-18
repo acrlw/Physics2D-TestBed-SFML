@@ -1,6 +1,6 @@
-#include "tree.h"
+#include "physics2d_tree.h"
 
-#include "body.h"
+#include "physics2d_body.h"
 
 namespace Physics2D
 {

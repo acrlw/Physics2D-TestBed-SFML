@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_DYNAMICS_JOINT_DISTANCE_H
 #define PHYSICS2D_DYNAMICS_JOINT_DISTANCE_H
-#include "joint.h"
+#include "physics2d_joint.h"
 namespace Physics2D
 {
 	struct DistanceJointPrimitive

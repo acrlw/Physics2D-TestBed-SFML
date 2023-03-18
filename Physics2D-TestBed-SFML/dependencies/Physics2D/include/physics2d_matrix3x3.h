@@ -1,9 +1,9 @@
 #ifndef MATH_LINEAR_MATRIX3X3_H
 #define MATH_LINEAR_MATRIX3X3_H
-#include "common.h"
-#include "math.h"
-#include "vector2.h"
-#include "vector3.h"
+#include "physics2d_common.h"
+#include "physics2d_math.h"
+#include "physics2d_vector2.h"
+#include "physics2d_vector3.h"
 namespace Physics2D
 {
 

@@ -1,12 +1,12 @@
 #ifndef PHYSICS2D_WORLD_H
 #define PHYSICS2D_WORLD_H
-#include "common.h"
-#include "body.h"
-#include "math.h"
-#include "integrator.h"
-#include "joints.h"
-#include "random.h"
-#include "contact.h"
+#include "physics2d_common.h"
+#include "physics2d_body.h"
+#include "physics2d_math.h"
+#include "physics2d_integrator.h"
+#include "physics2d_joints.h"
+#include "physics2d_random.h"
+#include "physics2d_contact.h"
 namespace Physics2D
 {
     class PhysicsWorld

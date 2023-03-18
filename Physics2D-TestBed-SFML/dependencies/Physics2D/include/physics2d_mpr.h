@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_MPR_H
 #define PHYSICS2D_MPR_H
-#include "gjk.h"
+#include "physics2d_gjk.h"
 namespace Physics2D
 {
 	/// <summary>

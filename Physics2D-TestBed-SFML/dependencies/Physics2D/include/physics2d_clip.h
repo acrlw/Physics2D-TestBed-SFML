@@ -1,9 +1,9 @@
 #ifndef PHYSICS2D_CLIP_H
 #define PHYSICS2D_CLIP_H
-#include "common.h"
-#include "shape.h"
-#include "linear.h"
-#include "gjk.h"
+#include "physics2d_common.h"
+#include "physics2d_shape.h"
+#include "physics2d_linear.h"
+#include "physics2d_gjk.h"
 namespace Physics2D
 {
 	class ContactGenerator

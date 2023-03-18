@@ -1,4 +1,4 @@
-#include "simplex.h"
+#include "physics2d_simplex.h"
 namespace Physics2D
 {
 	bool Simplex::containOrigin(bool strict)

@@ -1,4 +1,4 @@
-#include "ccd.h"
+#include "physics2d_ccd.h"
 
 namespace Physics2D
 {

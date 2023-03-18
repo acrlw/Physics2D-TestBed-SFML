@@ -1,9 +1,9 @@
-#include "aabb.h"
+#include "physics2d_aabb.h"
 
 
-#include "gjk.h"
-#include "body.h"
-#include "algorithm_2d.h"
+#include "physics2d_gjk.h"
+#include "physics2d_body.h"
+#include "physics2d_algorithm_2d.h"
 
 namespace Physics2D
 {

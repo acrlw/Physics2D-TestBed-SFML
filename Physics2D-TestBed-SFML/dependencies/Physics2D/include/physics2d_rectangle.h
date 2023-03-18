@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SHAPE_RECTANGLE_H
 #define PHYSICS2D_SHAPE_RECTANGLE_H
-#include "polygon.h"
+#include "physics2d_polygon.h"
 namespace Physics2D
 {
     class Rectangle : public Polygon

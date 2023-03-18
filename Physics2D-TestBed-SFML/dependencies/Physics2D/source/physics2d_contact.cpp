@@ -1,4 +1,4 @@
-#include "contact.h"
+#include "physics2d_contact.h"
 
 namespace Physics2D
 {

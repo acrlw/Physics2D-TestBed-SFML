@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SHAPE_POLYGON_H
 #define PHYSICS2D_SHAPE_POLYGON_H
-#include "shape.h"
+#include "physics2d_shape.h"
 namespace Physics2D
 {
     class Polygon : public Shape

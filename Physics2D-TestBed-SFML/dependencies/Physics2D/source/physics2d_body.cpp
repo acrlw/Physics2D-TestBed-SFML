@@ -1,4 +1,4 @@
-#include "body.h"
+#include "physics2d_body.h"
 namespace Physics2D {
 
     Vector2& Body::position()

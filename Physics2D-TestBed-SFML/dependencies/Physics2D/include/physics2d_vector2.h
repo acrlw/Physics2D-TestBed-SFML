@@ -1,6 +1,6 @@
 #ifndef MATH_LINEAR_VECTOR2_H
 #define MATH_LINEAR_VECTOR2_H
-#include "common.h"
+#include "physics2d_common.h"
 namespace Physics2D
 {
 	struct Vector2

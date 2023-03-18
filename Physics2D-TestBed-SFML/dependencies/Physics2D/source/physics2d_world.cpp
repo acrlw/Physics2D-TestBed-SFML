@@ -1,4 +1,4 @@
-#include "world.h"
+#include "physics2d_world.h"
 
 namespace Physics2D
 {

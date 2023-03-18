@@ -1,4 +1,4 @@
-#include "rectangle.h"
+#include "physics2d_rectangle.h"
 namespace Physics2D
 {
 	Rectangle::Rectangle(const real& width, const real& height)

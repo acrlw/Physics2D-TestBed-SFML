@@ -1,7 +1,7 @@
 #ifndef PHYSICS2D_INTEGRATOR_H
 #define PHYSICS2D_INTEGRATOR_H
-#include "common.h"
-#include "linear.h"
+#include "physics2d_common.h"
+#include "physics2d_linear.h"
 namespace Physics2D
 {
 	namespace Integrator

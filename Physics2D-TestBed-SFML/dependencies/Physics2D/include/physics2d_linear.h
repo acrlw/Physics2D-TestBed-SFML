@@ -1,11 +1,11 @@
 #ifndef MATH_LINEAR_H
 #define MATH_LINEAR_H
-#include "vector2.h"
-#include "vector3.h"
-#include "vector4.h"
-#include "matrix2x2.h"
-#include "matrix3x3.h"
-#include "matrix4x4.h"
+#include "physics2d_vector2.h"
+#include "physics2d_vector3.h"
+#include "physics2d_vector4.h"
+#include "physics2d_matrix2x2.h"
+#include "physics2d_matrix3x3.h"
+#include "physics2d_matrix4x4.h"
 
 namespace Physics2D
 {

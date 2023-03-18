@@ -1,4 +1,4 @@
-#include "detector.h"
+#include "physics2d_detector.h"
 namespace Physics2D
 {
 

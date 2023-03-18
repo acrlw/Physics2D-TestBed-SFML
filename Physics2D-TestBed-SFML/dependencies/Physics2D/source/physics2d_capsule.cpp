@@ -1,4 +1,4 @@
-#include "capsule.h"
+#include "physics2d_capsule.h"
 namespace Physics2D
 {
 

@@ -1,6 +1,6 @@
 #ifndef MATH_LINEAR_VECTOR4_H
 #define MATH_LINEAR_VECTOR4_H
-#include "vector3.h"
+#include "physics2d_vector3.h"
 namespace Physics2D
 {
 	struct Vector4

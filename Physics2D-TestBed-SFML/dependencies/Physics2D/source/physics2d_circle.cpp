@@ -1,4 +1,4 @@
-#include "circle.h"
+#include "physics2d_circle.h"
 namespace Physics2D
 {
 	Circle::Circle(real radius) : m_radius(radius)

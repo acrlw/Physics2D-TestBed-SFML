@@ -1,8 +1,8 @@
 #ifndef PHYSICS2D_ALGORITHM_GRAPHICS_2D
 #define PHYSICS2D_ALGORITHM_GRAPHICS_2D
 
-#include "linear.h"
-#include "common.h"
+#include "physics2d_linear.h"
+#include "physics2d_common.h"
 namespace Physics2D
 {
 	namespace GeometryAlgorithm2D

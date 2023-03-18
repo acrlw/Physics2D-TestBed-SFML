@@ -7,7 +7,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "../dependencies/Physics2D/physics2d.h"
+#include "physics2d.h"
 
 #include "camera.h"
 

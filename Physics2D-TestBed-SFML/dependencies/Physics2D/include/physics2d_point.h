@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SHAPE_POINT_H
 #define PHYSICS2D_SHAPE_POINT_H
-#include "shape.h"
+#include "physics2d_shape.h"
 namespace Physics2D
 {
     class Point : public Shape

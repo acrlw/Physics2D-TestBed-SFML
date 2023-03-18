@@ -1,7 +1,7 @@
 #ifndef PHYSICS2D_SIMPLEX_H
 #define PHYSICS2D_SIMPLEX_H
-#include "minkowski.h"
-#include "algorithm_2d.h"
+#include "physics2d_minkowski.h"
+#include "physics2d_algorithm_2d.h"
 namespace Physics2D
 {
 

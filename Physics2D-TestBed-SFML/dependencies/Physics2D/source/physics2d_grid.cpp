@@ -1,4 +1,4 @@
-#include "grid.h"
+#include "physics2d_grid.h"
 
 namespace Physics2D
 {

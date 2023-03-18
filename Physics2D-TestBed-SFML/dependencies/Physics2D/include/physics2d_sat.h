@@ -1,8 +1,8 @@
 #ifndef PHYSICS2D_SAT_H
 #define PHYSICS2D_SAT_H
 
-#include "shape.h"
-#include "clip.h"
+#include "physics2d_shape.h"
+#include "physics2d_clip.h"
 
 namespace Physics2D
 {

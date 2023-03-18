@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SHAPE_SECTOR_H
 #define PHYSICS2D_SHAPE_SECTOR_H
-#include "polygon.h"
+#include "physics2d_polygon.h"
 namespace Physics2D
 {
     class Sector : public Polygon

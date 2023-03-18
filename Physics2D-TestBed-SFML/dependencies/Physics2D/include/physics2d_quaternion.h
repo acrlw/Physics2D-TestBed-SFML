@@ -1,7 +1,7 @@
 #ifndef MATH_LINEAR_QUATERNION_H
 #define MATH_LINEAR_QUATERNION_H
-#include "common.h"
-#include "vector4.h"
+#include "physics2d_common.h"
+#include "physics2d_vector4.h"
 namespace Physics2D
 {
 	struct Quaternion

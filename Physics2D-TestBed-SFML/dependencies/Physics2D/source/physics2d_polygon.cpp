@@ -1,5 +1,5 @@
-#include "polygon.h"
-#include "algorithm_2d.h"
+#include "physics2d_polygon.h"
+#include "physics2d_algorithm_2d.h"
 namespace Physics2D
 {
 	Polygon::Polygon()

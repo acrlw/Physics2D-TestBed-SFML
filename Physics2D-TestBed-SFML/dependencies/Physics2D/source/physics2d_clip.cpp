@@ -1,4 +1,4 @@
-#include "clip.h"
+#include "physics2d_clip.h"
 namespace Physics2D
 {
 	Container::Vector<Vector2> ContactGenerator::dumpVertices(const ShapePrimitive& primitive)

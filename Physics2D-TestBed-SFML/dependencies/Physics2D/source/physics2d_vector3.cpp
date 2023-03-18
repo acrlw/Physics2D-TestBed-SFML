@@ -1,5 +1,5 @@
-#include "vector3.h"
-#include "math.h"
+#include "physics2d_vector3.h"
+#include "physics2d_math.h"
 
 namespace Physics2D
 {

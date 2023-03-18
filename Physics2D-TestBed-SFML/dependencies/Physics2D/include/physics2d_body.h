@@ -1,20 +1,20 @@
 #ifndef PHYSICS2D_BODY_H
 #define PHYSICS2D_BODY_H
-#include "aabb.h"
-#include "math.h"
-#include "common.h"
-#include "shape.h"
-#include "integrator.h"
+#include "physics2d_aabb.h"
+#include "physics2d_math.h"
+#include "physics2d_common.h"
+#include "physics2d_shape.h"
+#include "physics2d_integrator.h"
 
-#include "capsule.h"
-#include "circle.h"
-#include "curve.h"
-#include "edge.h"
-#include "ellipse.h"
-#include "point.h"
-#include "polygon.h"
-#include "rectangle.h"
-#include "sector.h"
+#include "physics2d_capsule.h"
+#include "physics2d_circle.h"
+#include "physics2d_curve.h"
+#include "physics2d_edge.h"
+#include "physics2d_ellipse.h"
+#include "physics2d_point.h"
+#include "physics2d_polygon.h"
+#include "physics2d_rectangle.h"
+#include "physics2d_sector.h"
 
 namespace Physics2D
 {
