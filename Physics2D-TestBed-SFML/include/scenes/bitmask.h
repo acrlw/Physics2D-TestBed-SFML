@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_BITMASK_H
 #define PHYSICS2D_SCENES_BITMASK_H
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class BitmaskFrame : public Frame

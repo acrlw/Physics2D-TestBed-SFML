@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_BRIDGE_H
 #define PHYSICS2D_SCENES_BRIDGE_H
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class BridgeFrame : public Frame

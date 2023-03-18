@@ -1,7 +1,7 @@
 #ifndef PHYSICS2D_SCENES_RAYCAST_H
 #define PHYSICS2D_SCENES_RAYCAST_H
 #include <random>
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class RaycastFrame : public Frame

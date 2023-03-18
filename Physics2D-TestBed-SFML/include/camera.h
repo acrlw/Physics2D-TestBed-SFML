@@ -7,7 +7,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "dependencies/Physics2D/include/physics2d.h"
+#include "physics2d.h"
 namespace Physics2D
 {
     class Camera

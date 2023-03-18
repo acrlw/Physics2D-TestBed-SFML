@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_RESTITUTION_H
 #define PHYSICS2D_SCENES_RESTITUTION_H
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class RestitutionFrame : public Frame

@@ -1,7 +1,7 @@
 #ifndef PHYSICS2D_TESTBED_SCENES_PENDULUM_H
 #define PHYSICS2D_TESTBED_SCENES_PENDULUM_H
 
-#include "./include/frame.h"
+#include "frame.h"
 #include <deque>
 namespace Physics2D
 {

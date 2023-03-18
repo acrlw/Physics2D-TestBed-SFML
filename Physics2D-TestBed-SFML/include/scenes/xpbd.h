@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_XPBD_H
 #define PHYSICS2D_SCENES_XPBD_H
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class XPBDFrame : public Frame

@@ -1,4 +1,4 @@
-#include "..\include\testbed.h"
+#include "testbed.h"
 namespace Physics2D
 {
     TestBed::TestBed()

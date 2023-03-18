@@ -1,0 +1,221 @@
+[
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\aabb.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\aabb.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\aabb.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\basic_math.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\basic_math.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\basic_math.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\boundingsphere.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\boundingsphere.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\boundingsphere.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\ccd.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\ccd.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\ccd.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\clip.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\clip.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\clip.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\collider.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\collider.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\collider.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\common.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\common.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\common.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dbvh.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dbvh.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dbvh.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\detector.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\detector.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\detector.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_body.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_body.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_body.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_contact.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_contact.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_contact.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_system.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_system.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_system.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_world.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_world.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\dynamics_world.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\geometry_algorithm_2d.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\geometry_algorithm_2d.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\geometry_algorithm_2d.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\gjk.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\gjk.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\gjk.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\grid.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\grid.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\grid.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\integrator.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\integrator.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\integrator.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\log.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\log.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\log.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat2.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat2.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat2.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat3.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat3.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat3.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat4.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat4.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mat4.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mpr.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mpr.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\mpr.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\random.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\random.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\random.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\sap.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\sap.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\sap.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\sat.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\sat.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\sat.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_capsule.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_capsule.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_capsule.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_circle.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_circle.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_circle.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_curve.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_curve.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_curve.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_edge.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_edge.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_edge.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_ellipse.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_ellipse.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_ellipse.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_point.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_point.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_point.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_polygon.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_polygon.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_polygon.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_rectangle.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_rectangle.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_rectangle.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_sector.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_sector.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\shape_sector.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\simplex.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\simplex.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\simplex.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\threadpool.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\threadpool.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\threadpool.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\tree.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\tree.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\tree.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec2.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec2.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec2.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec3.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec3.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec3.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\Physics2D.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/EHsc", "/Fobuild\\.objs\\Physics2D\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec4.cpp.obj", "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec4.cpp"],
+  "file": "Physics2D-TestBed-SFML\\dependencies\\Physics2D\\source\\vec4.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.Physics2D-TestBed-SFML.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/IPhysics2D-TestBed-SFML\\include", "/DSFML_STATIC", "/EHsc", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui-sfml\\v2.5\\7a8a5d9992ed4dd79988a512915e5194\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\imgui", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\backends", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\sfml\\2.5.1\\9a922774ed0f414bb9efd13bbcfe36fe\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\spdlog\\v1.11.0\\9f687477cd0342a6895e163907ac0652\\include", "/Fobuild\\.objs\\Physics2D-TestBed-SFML\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\source\\camera.cpp.obj", "Physics2D-TestBed-SFML\\source\\camera.cpp"],
+  "file": "Physics2D-TestBed-SFML\\source\\camera.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.Physics2D-TestBed-SFML.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/IPhysics2D-TestBed-SFML\\include", "/DSFML_STATIC", "/EHsc", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui-sfml\\v2.5\\7a8a5d9992ed4dd79988a512915e5194\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\imgui", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\backends", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\sfml\\2.5.1\\9a922774ed0f414bb9efd13bbcfe36fe\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\spdlog\\v1.11.0\\9f687477cd0342a6895e163907ac0652\\include", "/Fobuild\\.objs\\Physics2D-TestBed-SFML\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\source\\render.cpp.obj", "Physics2D-TestBed-SFML\\source\\render.cpp"],
+  "file": "Physics2D-TestBed-SFML\\source\\render.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.Physics2D-TestBed-SFML.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/IPhysics2D-TestBed-SFML\\include", "/DSFML_STATIC", "/EHsc", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui-sfml\\v2.5\\7a8a5d9992ed4dd79988a512915e5194\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\imgui", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\backends", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\sfml\\2.5.1\\9a922774ed0f414bb9efd13bbcfe36fe\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\spdlog\\v1.11.0\\9f687477cd0342a6895e163907ac0652\\include", "/Fobuild\\.objs\\Physics2D-TestBed-SFML\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\source\\testbed.cpp.obj", "Physics2D-TestBed-SFML\\source\\testbed.cpp"],
+  "file": "Physics2D-TestBed-SFML\\source\\testbed.cpp"
+},
+{
+  "directory": "d:\\Project\\cpp\\Physics2D-TestBed-SFML",
+  "arguments": ["D:\\Visual Studio\\2022\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/Zi", "/FS", "/Fdbuild\\windows\\x64\\debug\\compile.Physics2D-TestBed-SFML.pdb", "/Od", "/std:c++20", "/IPhysics2D-TestBed-SFML\\dependencies\\Physics2D\\include", "/IPhysics2D-TestBed-SFML\\include", "/DSFML_STATIC", "/EHsc", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui-sfml\\v2.5\\7a8a5d9992ed4dd79988a512915e5194\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\imgui", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\i\\imgui\\v1.89.3\\5a9427714d744141b232565d5e57a80e\\include\\backends", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\sfml\\2.5.1\\9a922774ed0f414bb9efd13bbcfe36fe\\include", "/IC:\\Users\\ACRL\\AppData\\Local\\.xmake\\packages\\s\\spdlog\\v1.11.0\\9f687477cd0342a6895e163907ac0652\\include", "/Fobuild\\.objs\\Physics2D-TestBed-SFML\\windows\\x64\\debug\\Physics2D-TestBed-SFML\\main.cpp.obj", "Physics2D-TestBed-SFML\\main.cpp"],
+  "file": "Physics2D-TestBed-SFML\\main.cpp"
+}]

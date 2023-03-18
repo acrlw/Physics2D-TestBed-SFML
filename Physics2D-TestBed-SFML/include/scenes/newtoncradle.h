@@ -1,7 +1,7 @@
 #ifndef PHYSICS2D_TESTBED_SCENES_NEWTONCRADLE_H
 #define PHYSICS2D_TESTBED_SCENES_NEWTONCRADLE_H
 
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class NewtonCradleFrame : public Frame
