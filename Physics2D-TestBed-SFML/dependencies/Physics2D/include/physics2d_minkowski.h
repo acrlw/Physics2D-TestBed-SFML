@@ -3,20 +3,20 @@
 #include "physics2d_linear.h"
 namespace Physics2D
 {
-	struct Minkowski
+	struct MinkowskiDiff
 	{
-		Minkowski() = default;
-		Minkowski(const Vector2& point_a, const Vector2& point_b) : pointA(point_a), pointB(point_b),
+		MinkowskiDiff() = default;
+		MinkowskiDiff(const Vector2& point_a, const Vector2& point_b) : pointA(point_a), pointB(point_b),
 			result(pointA - pointB)
 		{
 		}
 
-		inline bool operator ==(const Minkowski& rhs) const
+		inline bool operator ==(const MinkowskiDiff& rhs) const
 		{
 			return pointA == rhs.pointA && pointB == rhs.pointB;
 		}
 
-		inline bool operator !=(const Minkowski& rhs) const
+		inline bool operator !=(const MinkowskiDiff& rhs) const
 		{
 			return !(pointA == rhs.pointA && pointB == rhs.pointB);
 		}
@@ -25,5 +25,6 @@ namespace Physics2D
 		Vector2 pointB;
 		Vector2 result;
 	};
+
 }
 #endif

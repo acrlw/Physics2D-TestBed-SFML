@@ -28,22 +28,22 @@ namespace Physics2D
 		}
 	}
 
-	void Simplex::insert(const size_t& pos, const Minkowski& vertex)
+	void Simplex::insert(const size_t& pos, const SimplexVertex& vertex)
 	{
 		vertices.insert(vertices.begin() + pos + 1, vertex);
 	}
 
-	bool Simplex::contains(const Minkowski& minkowski)
+	bool Simplex::contains(const SimplexVertex& SimplexVertex)
 	{
-		return std::find(std::begin(vertices), std::end(vertices), minkowski) != std::end(vertices);
+		return std::find(std::begin(vertices), std::end(vertices), SimplexVertex) != std::end(vertices);
 	}
 
-	bool Simplex::fuzzyContains(const Minkowski& minkowski, const real& epsilon)
+	bool Simplex::fuzzyContains(const SimplexVertex& SimplexVertex, const real& epsilon)
 	{
 		return std::find_if(std::begin(vertices), std::end(vertices),
-			[=](const Minkowski& element)
+			[=](const Physics2D::SimplexVertex& element)
 			{
-				return (minkowski.result - element.result).lengthSquare() < epsilon;
+				return (SimplexVertex.result - element.result).lengthSquare() < epsilon;
 			})
 			!= std::end(vertices);
 	}

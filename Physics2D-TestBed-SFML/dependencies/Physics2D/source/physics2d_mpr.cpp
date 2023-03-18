@@ -8,15 +8,15 @@ namespace Physics2D
 		Vector2 centerA = Matrix2x2(shapeA.rotation).multiply(shapeA.shape->center());
 		Vector2 centerB = Matrix2x2(shapeB.rotation).multiply(shapeB.shape->center());
 		Vector2 origin = shapeB.transform - shapeA.transform;
-		Minkowski v0(centerA + shapeA.transform, centerB + shapeB.transform);
+		SimplexVertex v0(centerA + shapeA.transform, centerB + shapeB.transform);
 		Vector2 direction = centerB - centerA + origin;
 		
 		if (direction.fuzzyEqual({ 0, 0 }))
 			direction.set(1, 1);
 		
-		Minkowski v1 = GJK::support(shapeA, shapeB, direction);
+		SimplexVertex v1 = GJK::support(shapeA, shapeB, direction);
 		direction = GJK::calculateDirectionByEdge(v0.result, v1.result, true);
-		Minkowski v2 = GJK::support(shapeA, shapeB, direction);
+		SimplexVertex v2 = GJK::support(shapeA, shapeB, direction);
 		simplex.vertices.emplace_back(v0);
 		simplex.vertices.emplace_back(v1);
 		simplex.vertices.emplace_back(v2);
@@ -40,7 +40,7 @@ namespace Physics2D
 				direction.negate();
 				isColliding = true;
 			}
-			Minkowski newVertex = GJK::support(shapeA, shapeB, direction);
+			SimplexVertex newVertex = GJK::support(shapeA, shapeB, direction);
 
 			if (v1.fuzzyEqual(newVertex.result) || v2.fuzzyEqual(newVertex.result))
 				break;

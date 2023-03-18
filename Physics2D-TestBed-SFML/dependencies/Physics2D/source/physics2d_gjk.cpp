@@ -16,11 +16,11 @@ namespace Physics2D
 		if (direction.fuzzyEqual({ 0, 0 }))
 			direction.set(1, 1);
 
-		Minkowski diff = support(shapeA, shapeB, direction);
+		SimplexVertex diff = support(shapeA, shapeB, direction);
 		simplex.vertices.emplace_back(diff);
 		direction.negate();
 		size_t iter = 0;
-		Container::Vector<Minkowski> removed;
+		Container::Vector<SimplexVertex> removed;
 		while (iter <= iteration)
 		{
 			diff = support(shapeA, shapeB, direction);
@@ -39,7 +39,7 @@ namespace Physics2D
 			//find edge closest to origin
 			//reconstruct simplex
 			//find the point that is not belong to the edge closest to origin
-			//if found, there is no more minkowski difference, exit loop
+			//if found, there is no more SimplexVertex difference, exit loop
 			//if not, add the point to the list
 
 			auto [index1, index2] = findEdgeClosestToOrigin(simplex);
@@ -67,7 +67,7 @@ namespace Physics2D
 		Simplex edge;
 		Simplex simplex = src;
 		Vector2 normal;
-		Minkowski p;
+		SimplexVertex p;
 		while (iter <= iteration)
 		{
 
@@ -79,7 +79,7 @@ namespace Physics2D
 			if (GeometryAlgorithm2D::isPointOnSegment(simplex.vertices[index1].result, simplex.vertices[index2].result, { 0, 0 }))
 				normal.negate();
 			
-			//new minkowski point
+			//new SimplexVertex point
 			p = support(shapeA, shapeB, normal);
 
 			if (simplex.contains(p) || simplex.fuzzyContains(p, epsilon))
@@ -103,9 +103,9 @@ namespace Physics2D
 		return result;
 	}
 
-	Minkowski GJK::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
+	SimplexVertex GJK::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
 	{
-		return Minkowski(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
+		return SimplexVertex(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
 	}
 
 	std::tuple<size_t, size_t> GJK::findEdgeClosestToOrigin(const Simplex& simplex)
@@ -224,7 +224,7 @@ namespace Physics2D
 		return std::make_pair(target, index);
 	}
 
-	std::optional<Minkowski> GJK::adjustSimplex(Simplex& simplex, const size_t& closest_1, const size_t& closest_2)
+	std::optional<SimplexVertex> GJK::adjustSimplex(Simplex& simplex, const size_t& closest_1, const size_t& closest_2)
 	{
 		switch (simplex.vertices.size())
 		{
@@ -236,11 +236,11 @@ namespace Physics2D
 					if (i != closest_1 && i != closest_2)
 						index = i;
 
-				Minkowski target = simplex.vertices[index];
+				SimplexVertex target = simplex.vertices[index];
 
 				simplex.vertices.erase(simplex.vertices.begin() + index);
 				simplex.vertices.erase(simplex.vertices.begin() + simplex.vertices.size() - 1);
-				return std::optional<Minkowski>(target);
+				return std::optional<SimplexVertex>(target);
 			}
 		default:
 			return std::nullopt;
@@ -264,7 +264,7 @@ namespace Physics2D
 		PointPair result;
 		Simplex simplex;
 		Vector2 direction = shapeB.transform - shapeA.transform;
-		Minkowski m = support(shapeA, shapeB, direction);
+		SimplexVertex m = support(shapeA, shapeB, direction);
 		simplex.vertices.emplace_back(m);
 		direction.negate();
 		m = support(shapeA, shapeB, direction);

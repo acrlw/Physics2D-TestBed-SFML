@@ -87,7 +87,7 @@ namespace Physics2D
 		/// <param name="shape_B"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static Minkowski support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+		static SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
 		                         const Vector2& direction);
 		/// <summary>
 		/// Find two points that can form an edge closest to origin of simplex
@@ -116,7 +116,7 @@ namespace Physics2D
 		/// <param name="closest_1"></param>
 		/// <param name="closest_2"></param>
 		/// <returns></returns>
-		static std::optional<Minkowski> adjustSimplex(Simplex& simplex, const size_t& closest_1,
+		static std::optional<SimplexVertex> adjustSimplex(Simplex& simplex, const size_t& closest_1,
 		                                              const size_t& closest_2);
 		/// <summary>
 		/// Given two points, calculate the perpendicular vector and the orientation is user-defined.
