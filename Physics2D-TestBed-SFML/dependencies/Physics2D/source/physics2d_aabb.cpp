@@ -131,7 +131,7 @@ namespace Physics2D
 			real max_x = Constant::NegativeMin, max_y = Constant::NegativeMin, min_x = Constant::Max, min_y = Constant::Max;
 			for (const Vector2& v : polygon->vertices())
 			{
-				const Vector2 vertex = Matrix2x2(shape.rotation).multiply(v);
+				const Vector2 vertex = Matrix2x2(shape.transform.rotation).multiply(v);
 				if (max_x < vertex.x)
 					max_x = vertex.x;
 
@@ -158,20 +158,20 @@ namespace Physics2D
 			Vector2 bottom_dir{ 0, -1 };
 			Vector2 right_dir{ 1, 0 };
 
-			top_dir = Matrix2x2(-shape.rotation).multiply(top_dir);
-			left_dir = Matrix2x2(-shape.rotation).multiply(left_dir);
-			bottom_dir = Matrix2x2(-shape.rotation).multiply(bottom_dir);
-			right_dir = Matrix2x2(-shape.rotation).multiply(right_dir);
+			top_dir = Matrix2x2(-shape.transform.rotation).multiply(top_dir);
+			left_dir = Matrix2x2(-shape.transform.rotation).multiply(left_dir);
+			bottom_dir = Matrix2x2(-shape.transform.rotation).multiply(bottom_dir);
+			right_dir = Matrix2x2(-shape.transform.rotation).multiply(right_dir);
 
 			Vector2 top = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), top_dir);
 			Vector2 left = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), left_dir);
 			Vector2 bottom = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), bottom_dir);
 			Vector2 right = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), right_dir);
 
-			top = Matrix2x2(shape.rotation).multiply(top);
-			left = Matrix2x2(shape.rotation).multiply(left);
-			bottom = Matrix2x2(shape.rotation).multiply(bottom);
-			right = Matrix2x2(shape.rotation).multiply(right);
+			top = Matrix2x2(shape.transform.rotation).multiply(top);
+			left = Matrix2x2(shape.transform.rotation).multiply(left);
+			bottom = Matrix2x2(shape.transform.rotation).multiply(bottom);
+			right = Matrix2x2(shape.transform.rotation).multiply(right);
 
 			aabb.height = std::fabs(top.y - bottom.y);
 			aabb.width = std::fabs(right.x - left.x);
@@ -209,8 +209,8 @@ namespace Physics2D
 		{
 			Vector2 p1 = GJKHelper::findFurthestPoint(shape, { 1, 0 });
 			Vector2 p2 = GJKHelper::findFurthestPoint(shape, { 0, 1 });
-			p1 -= shape.transform;
-			p2 -= shape.transform;
+			p1 -= shape.transform.position;
+			p2 -= shape.transform.position;
 			aabb.width = p1.x * 2.0f;
 			aabb.height = p2.y * 2.0f;
 			break;
@@ -221,17 +221,17 @@ namespace Physics2D
 			Vector2 p2 = GJKHelper::findFurthestPoint(shape, { 0, 1 });
 			Vector2 p3 = GJKHelper::findFurthestPoint(shape, { -1, 0 });
 			Vector2 p4 = GJKHelper::findFurthestPoint(shape, { 0, -1 });
-			p1 -= shape.transform;
-			p2 -= shape.transform;
-			p3 -= shape.transform;
-			p4 -= shape.transform;
+			p1 -= shape.transform.position;
+			p2 -= shape.transform.position;
+			p3 -= shape.transform.position;
+			p4 -= shape.transform.position;
 			aabb.width = p1.x - p3.x;
 			aabb.height = p2.y - p4.y;
 			aabb.position.set({ (p1.x + p3.x) * 0.5f, (p2.y + p4.y) * 0.5f });
 			break;
 		}
 		}
-		aabb.position += shape.transform;
+		aabb.position += shape.transform.position;
 		aabb.expand(factor);
 		return aabb;
 	}
@@ -243,8 +243,8 @@ namespace Physics2D
 		
 		ShapePrimitive primitive;
 		primitive.shape = body->shape();
-		primitive.rotation = body->rotation();
-		primitive.transform = body->position();
+		primitive.transform.rotation = body->rotation();
+		primitive.transform.position = body->position();
 		return fromShape(primitive, factor);
 	}
 

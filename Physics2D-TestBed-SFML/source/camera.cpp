@@ -64,8 +64,8 @@ namespace Physics2D
 				{
 					ShapePrimitive primitive;
 					primitive.shape = body->shape();
-					primitive.rotation = body->rotation();
-					primitive.transform = body->position();
+					primitive.transform.rotation = body->rotation();
+					primitive.transform.position = body->position();
 					if (body->sleep())
 						color = sf::Color(100, 100, 100);
 					else
@@ -75,7 +75,7 @@ namespace Physics2D
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
 
 					if (m_centerVisible)
-						RenderSFMLImpl::renderPoint(window, *this, primitive.transform, RenderConstant::MaterialGray);
+						RenderSFMLImpl::renderPoint(window, *this, primitive.transform.position, RenderConstant::MaterialGray);
 
 					if (m_rotationLineVisible)
 						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);

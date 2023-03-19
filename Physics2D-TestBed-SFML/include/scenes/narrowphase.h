@@ -24,12 +24,12 @@ namespace Physics2D
 			ellipse.set(2.0f, 1.0f);
 
 			shape1.shape = &polygon1;
-			shape1.transform.set(1.0f, 2.0f);
-			shape1.rotation = Math::degreeToRadian(30);
+			shape1.transform.position.set(1.0f, 2.0f);
+			shape1.transform.rotation = Math::degreeToRadian(30);
 
-			shape2.shape = &circle;
-			shape2.transform.set(1.0f, -5.0f);
-			shape2.rotation = Math::degreeToRadian(30);
+			shape2.shape = &polygon2;
+			shape2.transform.position.set(1.0f, -5.0f);
+			shape2.transform.rotation = Math::degreeToRadian(30);
 			//result = Detector::detect(shape1, shape2);
 
 		}
@@ -42,14 +42,14 @@ namespace Physics2D
 				{
 					isPicked = true;
 					clickObject = &shape1;
-					originTransform = shape1.transform;
+					originTransform = shape1.transform.position;
 					return;
 				}
 				if (shape2.contains(mousePos))
 				{
 					isPicked = true;
 					clickObject = &shape2;
-					originTransform = shape2.transform;
+					originTransform = shape2.transform.position;
 				}
 			}
 		}
@@ -61,7 +61,7 @@ namespace Physics2D
 			currentPos = m_camera->screenToWorld(pos);
 			Vector2 tf = currentPos - mousePos;
 
-			clickObject->transform = originTransform + tf;
+			clickObject->transform.position = originTransform + tf;
 
 		}
 		void onMouseRelease(sf::Event& event) override
@@ -75,8 +75,8 @@ namespace Physics2D
 			RenderSFMLImpl::renderShape(window, *m_camera, shape1, sf::Color::Green);
 			RenderSFMLImpl::renderShape(window, *m_camera, shape2, sf::Color::Cyan);
 
-			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform, sf::Color::Green);
-			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform, sf::Color::Cyan);
+			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform.position, sf::Color::Green);
+			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform.position, sf::Color::Cyan);
 			Simplex simplex = Narrowphase::gjk(shape1, shape2);
 			sf::Color color = simplex.isContainOrigin ? sf::Color::Red : sf::Color::Magenta;
 			RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
@@ -84,7 +84,24 @@ namespace Physics2D
 			{
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);
 			}
+			// draw cull
 
+			Container::Vector<Vector2> vertices;
+			vertices.reserve(polygon1.vertices().size() * polygon2.vertices().size());
+			for (const Vector2& v1 : polygon1.vertices())
+			{
+				Vector2 p1 = shape1.transform.translatePoint(v1);
+				for (const Vector2& v2 : polygon2.vertices())
+				{
+					Vector2 p2 = shape2.transform.translatePoint(v2);
+					vertices.emplace_back(p1 - p2);
+				}
+			}
+			Container::Vector<Vector2> newVertices = GeometryAlgorithm2D::grahamScan(vertices);
+			for (auto&& vertex : newVertices)
+			{
+				RenderSFMLImpl::renderPoint(window, *m_camera, vertex, sf::Color::Blue);
+			}
 		}
 	private:
 		Polygon polygon1;

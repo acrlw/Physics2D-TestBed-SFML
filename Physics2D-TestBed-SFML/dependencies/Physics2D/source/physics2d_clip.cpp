@@ -35,7 +35,7 @@ namespace Physics2D
 			break;
 		}
 		for (auto& elem : vertices)
-			elem = primitive.translate(elem);
+			elem = primitive.transform.translatePoint(elem);
 		return vertices;
 	}
 

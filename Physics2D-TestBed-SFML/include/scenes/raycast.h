@@ -65,8 +65,8 @@ namespace Physics2D
 			for(auto& elem: bodyList)
 			{
 				ShapePrimitive sp;
-				sp.rotation = elem->rotation();
-				sp.transform = elem->position();
+				sp.transform.rotation = elem->rotation();
+				sp.transform.position = elem->position();
 				sp.shape = elem->shape();
 				RenderSFMLImpl::renderShape(window, *m_camera, sp, hitColor);
 			}

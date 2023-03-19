@@ -6,7 +6,7 @@ namespace Physics2D
 	{
 		auto [isColliding, simplex] = GJKHelper::gjk(shapeA, shapeB);
 
-		if (shapeA.transform.fuzzyEqual(shapeB.transform) && !isColliding)
+		if (shapeA.transform.position.fuzzyEqual(shapeB.transform.position) && !isColliding)
 			isColliding = simplex.containOrigin(true);
 
 		return isColliding;
@@ -17,12 +17,12 @@ namespace Physics2D
 
 		ShapePrimitive shapeA, shapeB;
 		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		shapeA.transform.rotation = bodyA->rotation();
+		shapeA.transform.position = bodyA->position();
 
 		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
+		shapeB.transform.rotation = bodyB->rotation();
+		shapeB.transform.position = bodyB->position();
 
 		return collide(shapeA, shapeB);
 	}
@@ -32,8 +32,8 @@ namespace Physics2D
 
 		ShapePrimitive shapeB;
 		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
+		shapeB.transform.rotation = bodyB->rotation();
+		shapeB.transform.position = bodyB->position();
 
 		return collide(shapeA, shapeB);
 	}
@@ -43,8 +43,8 @@ namespace Physics2D
 
 		ShapePrimitive shapeA;
 		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		shapeA.transform.rotation = bodyA->rotation();
+		shapeA.transform.position = bodyA->position();
 
 		return collide(shapeA, shapeB);
 	}
@@ -55,7 +55,7 @@ namespace Physics2D
 
 		auto [isColliding, simplex] = GJKHelper::gjk(shapeA, shapeB);
 
-		if (shapeA.transform.fuzzyEqual(shapeB.transform) && !isColliding)
+		if (shapeA.transform.position.fuzzyEqual(shapeB.transform.position) && !isColliding)
 			isColliding = simplex.containOrigin(true);
 
 		result.isColliding = isColliding;
@@ -96,8 +96,8 @@ namespace Physics2D
 
 		ShapePrimitive shapeA;
 		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		shapeA.transform.rotation = bodyA->rotation();
+		shapeA.transform.position = bodyA->position();
 
 
 		result = detect(shapeA, shapeB);
@@ -115,8 +115,8 @@ namespace Physics2D
 
 		ShapePrimitive shapeB;
 		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
+		shapeB.transform.rotation = bodyB->rotation();
+		shapeB.transform.position = bodyB->position();
 
 		result = detect(shapeA, shapeB);
 		result.bodyA = nullptr;
@@ -143,12 +143,12 @@ namespace Physics2D
 
 		ShapePrimitive shapeA, shapeB;
 		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		shapeA.transform.rotation = bodyA->rotation();
+		shapeA.transform.position = bodyA->position();
 
 		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
+		shapeB.transform.rotation = bodyB->rotation();
+		shapeB.transform.position = bodyB->position();
 
 		result = detect(shapeA, shapeB);
 		result.bodyA = bodyA;
@@ -167,8 +167,8 @@ namespace Physics2D
 
 		ShapePrimitive shapeA;
 		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		shapeA.transform.rotation = bodyA->rotation();
+		shapeA.transform.position = bodyA->position();
 
 		return GJKHelper::distance(shapeA, shapeB);
 	}
@@ -178,8 +178,8 @@ namespace Physics2D
 
 		ShapePrimitive shapeB;
 		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
+		shapeB.transform.rotation = bodyB->rotation();
+		shapeB.transform.position = bodyB->position();
 
 		return GJKHelper::distance(shapeA, shapeB);
 	}
@@ -193,12 +193,12 @@ namespace Physics2D
 
 		ShapePrimitive shapeA, shapeB;
 		shapeA.shape = bodyA->shape();
-		shapeA.rotation = bodyA->rotation();
-		shapeA.transform = bodyA->position();
+		shapeA.transform.rotation = bodyA->rotation();
+		shapeA.transform.position = bodyA->position();
 
 		shapeB.shape = bodyB->shape();
-		shapeB.rotation = bodyB->rotation();
-		shapeB.transform = bodyB->position();
+		shapeB.transform.rotation = bodyB->rotation();
+		shapeB.transform.position = bodyB->position();
 
 		return GJKHelper::distance(shapeA, shapeB);
 	}

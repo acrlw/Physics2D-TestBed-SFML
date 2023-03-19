@@ -65,7 +65,7 @@ namespace Physics2D
 		bool isContainOrigin = false;
 		bool containsOrigin(bool strict = false);
 		static bool containOrigin(const Simplex& simplex, bool strict = false);
-		bool contains(const SimplexVertex& vertex);
+		bool contains(const SimplexVertex& vertex, const real& epsilon = Constant::GeometryEpsilon);
 		void addSimplexVertex(const SimplexVertex& vertex);
 		void removeByIndex(const Index& index);
 	};

@@ -32,21 +32,21 @@ namespace Physics2D
 		auto* pointCircle = &result.contactPair[0].pointA;
 		auto* pointEdge = &result.contactPair[0].pointB;
 		
-		Vector2 actualStart = shapeB.transform + edge->startPoint();
-		Vector2 actualEnd = shapeB.transform + edge->endPoint();
+		Vector2 actualStart = shapeB.transform.position + edge->startPoint();
+		Vector2 actualEnd = shapeB.transform.position + edge->endPoint();
 		Vector2 normal = (actualStart - actualEnd).normal();
 
-		if ((actualStart - shapeA.transform).dot(normal) < 0 &&
-			(actualEnd - shapeB.transform).dot(normal) < 0)
+		if ((actualStart - shapeA.transform.position).dot(normal) < 0 &&
+			(actualEnd - shapeB.transform.position).dot(normal) < 0)
 			normal.negate();
 
-		Vector2 projectedPoint = GeometryAlgorithm2D::pointToLineSegment(actualStart, actualEnd, shapeA.transform);
-		Vector2 diff = projectedPoint - shapeA.transform;
+		Vector2 projectedPoint = GeometryAlgorithm2D::pointToLineSegment(actualStart, actualEnd, shapeA.transform.position);
+		Vector2 diff = projectedPoint - shapeA.transform.position;
 		result.normal = diff.normal();
 		real length = diff.length();
 		result.isColliding = length < circle->radius();
 		result.penetration = circle->radius() - length;
-		*pointCircle = shapeA.transform + circle->radius() * result.normal;
+		*pointCircle = shapeA.transform.position + circle->radius() * result.normal;
 		*pointEdge = projectedPoint;
 		result.contactPairCount++;
 		return result;
@@ -61,7 +61,7 @@ namespace Physics2D
 		SATResult result;
 		Circle* circleA = static_cast<Circle*>(shapeA.shape);
 		Circle* circleB = static_cast<Circle*>(shapeB.shape);
-		Vector2 ba = shapeA.transform - shapeB.transform;
+		Vector2 ba = shapeA.transform.position - shapeB.transform.position;
 		real dp = circleA->radius() + circleB->radius();
 		real length = ba.length();
 		if (length <= dp)
@@ -69,8 +69,8 @@ namespace Physics2D
 			result.normal = ba.normal();
 			result.penetration = dp - length;
 			result.isColliding = true;
-			result.contactPair[0].pointA = shapeA.transform - circleA->radius() * result.normal;
-			result.contactPair[0].pointB = shapeB.transform + circleB->radius() * result.normal;
+			result.contactPair[0].pointA = shapeA.transform.position - circleA->radius() * result.normal;
+			result.contactPair[0].pointB = shapeB.transform.position + circleB->radius() * result.normal;
 			result.contactPairCount++;
 		}
 		return result;
@@ -94,8 +94,8 @@ namespace Physics2D
 		Vector2 closest;
 		for (auto& elem : polygonB->vertices())
 		{
-			Vector2 vertex = shapeB.translate(elem);
-			real length = (vertex - shapeA.transform).lengthSquare();
+			Vector2 vertex = shapeB.transform.translatePoint(elem);
+			real length = (vertex - shapeA.transform.position).lengthSquare();
 			if (minLength > length)
 			{
 				minLength = length;
@@ -127,8 +127,8 @@ namespace Physics2D
 		//polygon sat test
 		for(int i = 0;i < polygonB->vertices().size() - 1;i++)
 		{
-			Vector2 v1 = shapeB.translate(polygonB->vertices()[i]);
-			Vector2 v2 = shapeB.translate(polygonB->vertices()[i + 1]);
+			Vector2 v1 = shapeB.transform.translatePoint(polygonB->vertices()[i]);
+			Vector2 v2 = shapeB.transform.translatePoint(polygonB->vertices()[i + 1]);
 			Vector2 edge = v1 - v2;
 			Vector2 normal = edge.perpendicular().normal();
 
@@ -183,8 +183,8 @@ namespace Physics2D
 			ProjectedPoint targetAPoint, targetBPoint;
 			for(int i = 0;i < polyA->vertices().size() - 1;i++)
 			{
-				Vector2 v1 = polygonA.translate(polyA->vertices()[i]);
-				Vector2 v2 = polygonA.translate(polyA->vertices()[i + 1]);
+				Vector2 v1 = polygonA.transform.translatePoint(polyA->vertices()[i]);
+				Vector2 v2 = polygonA.transform.translatePoint(polyA->vertices()[i + 1]);
 				Vector2 edge = v1 - v2;
 				Vector2 normal = edge.perpendicular().normal();
 
@@ -296,7 +296,7 @@ namespace Physics2D
 
 		for(size_t i = 0;i < polygon->vertices().size();i++)
 		{
-			Vector2 vertex = shape.translate(polygon->vertices()[i]);
+			Vector2 vertex = shape.transform.translatePoint(polygon->vertices()[i]);
 			real value = vertex.dot(normal);
 
 			if (value < minPoint.value)
@@ -324,11 +324,11 @@ namespace Physics2D
 	{
 		ProjectedPoint minCircle, maxCircle;
 
-		maxCircle.vertex = shape.transform + normal * circle->radius();
-		maxCircle.value = shape.transform.dot(normal) + circle->radius();
+		maxCircle.vertex = shape.transform.position + normal * circle->radius();
+		maxCircle.value = shape.transform.position.dot(normal) + circle->radius();
 
-		minCircle.vertex = shape.transform - normal * circle->radius();
-		minCircle.value = shape.transform.dot(normal) - circle->radius();
+		minCircle.vertex = shape.transform.position - normal * circle->radius();
+		minCircle.value = shape.transform.position.dot(normal) - circle->radius();
 
 		ProjectedSegment segmentCircle;
 
@@ -341,14 +341,14 @@ namespace Physics2D
 	ProjectedSegment SAT::axisProjection(const ShapePrimitive& shape, Ellipse* ellipse, const Vector2& normal)
 	{
 		ProjectedPoint minEllipse, maxEllipse;
-		Vector2 rot_dir = Matrix2x2(-shape.rotation).multiply(normal);
+		Vector2 rot_dir = Matrix2x2(-shape.transform.rotation).multiply(normal);
 		maxEllipse.vertex = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), rot_dir);
-		maxEllipse.vertex = shape.translate(maxEllipse.vertex);
+		maxEllipse.vertex = shape.transform.translatePoint(maxEllipse.vertex);
 		maxEllipse.value = maxEllipse.vertex.dot(normal);
 		
-		rot_dir = Matrix2x2(-shape.rotation).multiply(-normal);
+		rot_dir = Matrix2x2(-shape.transform.rotation).multiply(-normal);
 		minEllipse.vertex = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), rot_dir);
-		minEllipse.vertex = shape.translate(minEllipse.vertex);
+		minEllipse.vertex = shape.transform.translatePoint(minEllipse.vertex);
 		minEllipse.value = minEllipse.vertex.dot(normal);
 		
 		ProjectedSegment segmentEllipse;
@@ -363,11 +363,11 @@ namespace Physics2D
 	ProjectedSegment SAT::axisProjection(const ShapePrimitive& shape, Capsule* capsule, const Vector2& normal)
 	{
 		ProjectedPoint min, max;
-		Vector2 direction = Matrix2x2(-shape.rotation).multiply(normal);
+		Vector2 direction = Matrix2x2(-shape.transform.rotation).multiply(normal);
 		Vector2 p1 = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), direction);
 		Vector2 p2 = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), -direction);
-		p1 = shape.translate(p1);
-		p2 = shape.translate(p2);
+		p1 = shape.transform.translatePoint(p1);
+		p2 = shape.transform.translatePoint(p2);
 
 		max.vertex = p1;
 		max.value = max.vertex.dot(normal);
@@ -385,11 +385,11 @@ namespace Physics2D
 	ProjectedSegment SAT::axisProjection(const ShapePrimitive& shape, Sector* sector, const Vector2& normal)
 	{
 		ProjectedPoint min, max;
-		Vector2 direction = Matrix2x2(-shape.rotation).multiply(normal);
+		Vector2 direction = Matrix2x2(-shape.transform.rotation).multiply(normal);
 		Vector2 p1 = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), direction);
 		Vector2 p2 = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), -direction);
-		p1 = shape.translate(p1);
-		p2 = shape.translate(p2);
+		p1 = shape.transform.translatePoint(p1);
+		p2 = shape.transform.translatePoint(p2);
 
 		max.vertex = p1;
 		max.value = max.vertex.dot(normal);

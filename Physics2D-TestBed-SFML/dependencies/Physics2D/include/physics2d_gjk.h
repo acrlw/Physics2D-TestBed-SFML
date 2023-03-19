@@ -46,16 +46,7 @@ namespace Physics2D
 				|| (other.pointB.fuzzyEqual(this->pointA) && other.pointA.fuzzyEqual(this->pointB));
 		}
 	};
-
-	namespace Narrowphase
-	{
-		Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 20);
-		SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
-		Vector2 findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
-		Vector2 calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);
-		std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
-		void degradeSimplex(Simplex& simplex);
-	}
+	
 	/// <summary>
 	/// GJKHelper Collision Detection Class
 	/// </summary>

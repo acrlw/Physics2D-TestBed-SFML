@@ -54,9 +54,9 @@ namespace Physics2D
 				m_tree->insert(body);
 			}
 
-			sensorRegion.rotation = Math::degreeToRadian(-45);
+			sensorRegion.transform.rotation = Math::degreeToRadian(-45);
 			sensorRegion.shape = &circle;
-			sensorRegion.transform.set(5.0f, 15.0f);
+			sensorRegion.transform.position.set(5.0f, 15.0f);
 		}
 		void render(sf::RenderWindow& window) override
 		{
@@ -68,11 +68,11 @@ namespace Physics2D
 			for (auto& body : bodyList)
 			{
 				ShapePrimitive primitive;
-				primitive.rotation = body->rotation();
+				primitive.transform.rotation = body->rotation();
 				primitive.shape = body->shape();
-				primitive.transform = body->position();
+				primitive.transform.position = body->position();
 				if (Detector::collide(primitive, sensorRegion))
-					body->forces() += (sensorRegion.transform - body->position()).normal() * 30.0f;
+					body->forces() += (sensorRegion.transform.position - body->position()).normal() * 30.0f;
 			}
 		}
 	private:

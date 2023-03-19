@@ -56,6 +56,14 @@ namespace Physics2D
 		{
 			return std::min(a, b);
 		}
+		inline real tripleMin(const real& a, const real& b, const real& c)
+		{
+			return std::min(std::min(a, b), c);
+		}
+		inline real tripleMax(const real& a, const real& b, const real& c)
+		{
+			return std::max(std::max(a, b), c);
+		}
 		inline real absMax(const real& a, const real& b)
 		{
 			return std::max(std::fabs(a), std::fabs(b));

@@ -96,8 +96,8 @@ namespace Physics2D {
     AABB Body::aabb(const real &factor) const
     {
         ShapePrimitive primitive;
-        primitive.transform = m_position;
-        primitive.rotation = m_rotation;
+        primitive.transform.position = m_position;
+        primitive.transform.rotation = m_rotation;
         primitive.shape = m_shape;
         return AABB::fromShape(primitive, factor);
     }

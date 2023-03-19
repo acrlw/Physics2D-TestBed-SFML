@@ -18,7 +18,7 @@
 #include "physics2d_joint.h"
 #include "physics2d_contact.h"
 #include "physics2d_random.h"
-
+#include "physics2d_narrowphase.h"
 
 
 #endif

@@ -5,10 +5,10 @@ namespace Physics2D
 	std::tuple<Vector2, SimplexVertexArray> MPR::discover(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
 		SimplexVertexArray simplex;
-		Vector2 centerA = Matrix2x2(shapeA.rotation).multiply(shapeA.shape->center());
-		Vector2 centerB = Matrix2x2(shapeB.rotation).multiply(shapeB.shape->center());
-		Vector2 origin = shapeB.transform - shapeA.transform;
-		SimplexVertex v0(centerA + shapeA.transform, centerB + shapeB.transform);
+		Vector2 centerA = Matrix2x2(shapeA.transform.rotation).multiply(shapeA.shape->center());
+		Vector2 centerB = Matrix2x2(shapeB.transform.rotation).multiply(shapeB.shape->center());
+		Vector2 origin = shapeB.transform.position - shapeA.transform.position;
+		SimplexVertex v0(centerA + shapeA.transform.position, centerB + shapeB.transform.position);
 		Vector2 direction = centerB - centerA + origin;
 		
 		if (direction.fuzzyEqual({ 0, 0 }))
