@@ -14,6 +14,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			rectangle.set(3, 4);
 			polygon1.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
 			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f },{0.0f, 4.0f } });
 
@@ -23,11 +24,11 @@ namespace Physics2D
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
 
-			shape1.shape = &ellipse;
+			shape1.shape = &rectangle;
 			shape1.transform.position.set(1.0f, 2.0f);
-			shape1.transform.rotation = Math::degreeToRadian(30);
+			shape1.transform.rotation = Math::degreeToRadian(35);
 
-			shape2.shape = &circle;
+			shape2.shape = &rectangle;
 			shape2.transform.position.set(1.0f, -5.0f);
 			shape2.transform.rotation = Math::degreeToRadian(30);
 			//result = Detector::detect(shape1, shape2);
@@ -83,10 +84,20 @@ namespace Physics2D
 			if(simplex.isContainOrigin)
 			{
 				//draw polytope
-				auto finalSimplex = Narrowphase::epa(simplex, shape1, shape2);
+				auto info = Narrowphase::epa(simplex, shape1, shape2);
 				//
 				
-				RenderSFMLImpl::renderSimplex(window, *m_camera, finalSimplex, sf::Color::Green);
+				RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, sf::Color::Green);
+				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
+
+				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], info.simplex.vertices[1].point[0], sf::Color::Yellow);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], sf::Color::Yellow, 4);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], sf::Color::Yellow);
+
+				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1], info.simplex.vertices[1].point[1], sf::Color::Magenta);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
+				auto pairs = Narrowphase::clip(info.simplex, info.normal, shape1, shape2);
 			}
 			if(isPicked)
 			{
@@ -95,6 +106,8 @@ namespace Physics2D
 			// draw cull
 		}
 	private:
+
+		Rectangle rectangle;
 		Polygon polygon1;
 		Polygon polygon2;
 		Circle circle;

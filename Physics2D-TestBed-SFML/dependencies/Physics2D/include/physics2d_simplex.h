@@ -8,33 +8,53 @@ namespace Physics2D
 	struct SimplexVertex
 	{
 		SimplexVertex() = default;
-		SimplexVertex(const Vector2& point_a, const Vector2& point_b) : pointA(point_a), pointB(point_b),
-			result(pointA - pointB)
+		SimplexVertex(const Vector2& point_a, const Vector2& point_b, const Index& index_a = INT_MAX, const Index& index_b = INT_MAX)
 		{
+			point[0] = point_a;
+			point[1] = point_b;
+			result = point[0] - point[1];
+			index[0] = index_a;
+			index[1] = index_b;
 		}
 
 		inline bool operator ==(const SimplexVertex& rhs) const
 		{
-			return pointA == rhs.pointA && pointB == rhs.pointB;
+			return point[0] == rhs.point[0] && point[1] == rhs.point[1];
 		}
 
 		inline bool operator !=(const SimplexVertex& rhs) const
 		{
-			return !(pointA == rhs.pointA && pointB == rhs.pointB);
+			return !(point[0] == rhs.point[0] && point[1] == rhs.point[1]);
 		}
 		inline bool isEmpty()const
 		{
-			return pointA.isOrigin() && pointB.isOrigin() && result.isOrigin();
+			return point[0].isOrigin() && point[1].isOrigin() && result.isOrigin();
+		}
+		inline bool isIndexAValid()const
+		{
+			return index[0] != INT_MAX;
+		}
+		inline bool isIndexBValid()const
+		{
+			return index[1] != INT_MAX;
 		}
 		inline void clear()
 		{
-			pointA.clear();
-			pointB.clear();
+			point[0].clear();
+			point[1].clear();
 			result.clear();
+			index[0] = INT_MAX;
+			index[1] = INT_MAX;
 		}
-		Vector2 pointA;
-		Vector2 pointB;
+		//point[0] : pointA
+		//point[1] : pointB
+		Vector2 point[2];
 		Vector2 result;
+		//for polygon, the index of the vertex
+		//index[0] : indexA
+		//index[1] : indexB
+		Index index[2];
+
 	};
 
 	/**

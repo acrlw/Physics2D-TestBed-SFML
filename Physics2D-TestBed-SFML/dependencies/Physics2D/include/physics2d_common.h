@@ -18,7 +18,7 @@
 #define SINGLE_PRECISION
 namespace Physics2D
 {
-	using Index = size_t;
+	using Index = uint32_t;
 	namespace Container
 	{
 		template<class T>

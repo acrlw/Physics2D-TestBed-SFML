@@ -295,10 +295,10 @@ namespace Physics2D
 	{
 		PenetrationSource result;
 		auto [index1, index2] = findEdgeClosestToOrigin(simplex);
-		result.a1 = simplex.vertices[index1].pointA;
-		result.a2 = simplex.vertices[index2].pointA;
-		result.b1 = simplex.vertices[index1].pointB;
-		result.b2 = simplex.vertices[index2].pointB;
+		result.a1 = simplex.vertices[index1].point[0];
+		result.a2 = simplex.vertices[index2].point[0];
+		result.b1 = simplex.vertices[index1].point[1];
+		result.b2 = simplex.vertices[index2].point[1];
 		return result;
 	}
 	

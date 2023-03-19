@@ -1,4 +1,5 @@
 #include "physics2d_narrowphase.h"
+#include "physics2d_narrowphase.h"
 
 namespace Physics2D
 {
@@ -112,11 +113,12 @@ namespace Physics2D
 		return simplex;
 	}
 
-	Simplex Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration, const real& epsilon)
+	CollisionInfo Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration, const real& epsilon)
 	{
 		//return 1d simplex with edge closest to origin
-		Simplex result = simplex;
-		result.removeByIndex(2);
+		CollisionInfo info;
+		info.simplex = simplex;
+		info.simplex.removeByIndex(2);
 
 		auto iterNext = [](std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
 			std::list<SimplexVertexWithOriginDistance>& list)
@@ -144,7 +146,8 @@ namespace Physics2D
 				next = simplex.vertices.begin();
 			SimplexVertexWithOriginDistance pair;
 			pair.vertex = *iter;
-			pair.distance = GeometryAlgorithm2D::pointToLineSegmentLength(iter->result, next->result, { 0, 0 });
+			pair.distance = GeometryAlgorithm2D::pointToLineSegment(iter->result, next->result, { 0, 0 })
+				.length();
 			polytope.emplace_back(pair);
 		}
 
@@ -161,26 +164,35 @@ namespace Physics2D
 		while(++iter < iteration)
 		{
 			//closest edge index is set to index 0 and index 1
-			direction = calculateDirectionByEdge(result.vertices[0], result.vertices[1], false);
+			direction = calculateDirectionByEdge(info.simplex.vertices[0], info.simplex.vertices[1], false);
 
 			vertex = support(shapeA, shapeB, direction);
 
 			//cannot find any new vertex
-			if (result.contains(vertex))
-				break;
+			if (info.simplex.contains(vertex))
+			{
+				Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
+					, { 0, 0 });
+				info.penetration = temp.length();
+				info.normal = temp.normal();
+				return info;
+			}
 
 			//set to begin
 			iterTemp = iterStart;
 
 			//calculate distance
 			//iterTemp->vertex = result.vertices[0];
-			iterStart->distance = GeometryAlgorithm2D::pointToLineSegmentLength(result.vertices[0].result, vertex.result, { 0,  0});
+
+			iterStart->distance = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, vertex.result, { 0,  0})
+				.length();
 
 			iterNext(iterTemp, polytope);
 			//insert
 			SimplexVertexWithOriginDistance pair;
 			pair.vertex = vertex;
-			pair.distance = GeometryAlgorithm2D::pointToLineSegmentLength(vertex.result, iterTemp->vertex.result, { 0, 0 });
+			pair.distance = GeometryAlgorithm2D::pointToLineSegment(vertex.result, iterTemp->vertex.result, { 0, 0 })
+				.length();
 			polytope.insert(iterTemp, pair);
 
 			//reset iterTemp for next loop
@@ -207,37 +219,43 @@ namespace Physics2D
 			iterTemp = iterStart;
 			iterNext(iterTemp, polytope);
 			//reset simplex
-			result.vertices[0] = iterStart->vertex;
-			result.vertices[1] = iterTemp->vertex;
+			info.penetration = minDistance;
+			info.simplex.vertices[0] = iterStart->vertex;
+			info.simplex.vertices[1] = iterTemp->vertex;
 
 		}
-
-		return result;
+		info.normal = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
+			, { 0, 0 }).normal();
+		return info;
 	}
 
 	SimplexVertex Narrowphase::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
 	{
-		return SimplexVertex(findFurthestPoint(shapeA, direction), findFurthestPoint(shapeB, direction.negative()));
+		SimplexVertex vertex;
+		std::tie(vertex.point[0], vertex.index[0]) = findFurthestPoint(shapeA, direction);
+		std::tie(vertex.point[1], vertex.index[1]) = findFurthestPoint(shapeB, direction.negative());
+		vertex.result = vertex.point[0] - vertex.point[1];
+		return vertex;
 	}
 
-	Vector2 Narrowphase::findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction)
+	std::pair<Vector2, Index> Narrowphase::findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction)
 	{
 		Vector2 target;
 		Matrix2x2 rot(-shape.transform.rotation);
 		Vector2 rot_dir = rot.multiply(direction);
+		Index finalIndex = INT_MAX;
 		switch (shape.shape->type())
 		{
 		case Shape::Type::Polygon:
 		{
 			const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
-			auto [vertex, index] = findFurthestPoint(polygon->vertices(), rot_dir);
-			target = vertex;
+			std::tie(target, finalIndex) = findFurthestPoint(polygon->vertices(), rot_dir);
 			break;
 		}
 		case Shape::Type::Circle:
 		{
 			const Circle* circle = static_cast<const Circle*>(shape.shape);
-			return direction.normal() * circle->radius() + shape.transform.position;
+			return std::make_pair(direction.normal() * circle->radius() + shape.transform.position, finalIndex);
 		}
 		case Shape::Type::Ellipse:
 		{
@@ -255,7 +273,7 @@ namespace Physics2D
 		}
 		case Shape::Type::Point:
 		{
-			return static_cast<const Point*>(shape.shape)->position();
+			return std::make_pair(static_cast<const Point*>(shape.shape)->position(), finalIndex);
 		}
 		case Shape::Type::Capsule:
 		{
@@ -276,7 +294,7 @@ namespace Physics2D
 		rot.set(shape.transform.rotation);
 		target = rot.multiply(target);
 		target += shape.transform.position;
-		return target;
+		return std::make_pair(target, finalIndex);
 	}
 
 	Vector2 Narrowphase::calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin)
@@ -296,8 +314,8 @@ namespace Physics2D
 	{
 		real max = Constant::NegativeMin;
 		Vector2 target;
-		size_t index = 0;
-		for (size_t i = 0; i < vertices.size(); i++)
+		Index index = 0;
+		for (Index i = 0; i < vertices.size(); i++)
 		{
 			real result = Vector2::dotProduct(vertices[i], direction);
 			if (max < result)
@@ -308,6 +326,37 @@ namespace Physics2D
 			}
 		}
 		return std::make_pair(target, index);
+	}
+
+	ContactPair Narrowphase::clip(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	{
+		ContactPair pair;
+		//find feature
+		const auto [validA, vertexA, indexA1, indexA2] = dumpFeatures(simplex, normal, shapeA, 0);
+		const auto [validB, vertexB, indexB1, indexB2] = dumpFeatures(simplex, normal, shapeB, 1);
+
+		if (validA && validB)
+		{
+			//clip two edge
+		}
+		else if(!validA && validB)
+		{
+			//project a to edge b
+		}
+		else if(validA && !validB)
+		{
+			//project b to edge a
+		}
+		else
+		{
+			assert(false && "Invalid simplex.");
+		}
+		return pair;
+	}
+
+	real Narrowphase::gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
+	{
+		return real();
 	}
 
 	void Narrowphase::sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
@@ -326,5 +375,58 @@ namespace Physics2D
 	void Narrowphase::satPolygonVsEdge(const Polygon& polygonA, const Transform& transformA, const Edge& edgeB, const Transform& transformB)
 	{
 	}
+
+	std::tuple<bool, Vector2, Index, Index> Narrowphase::dumpFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB)
+	{
+		Index index1 = INT_MAX, index2 = INT_MAX;
+		Vector2 vertex;
+		bool valid = simplex.vertices[0].index[AorB] != INT_MAX;
+		if (valid)
+		{
+			if (simplex.vertices[0].point[AorB] == simplex.vertices[0].point[AorB])
+			{
+				//same vertex case
+				//find neighbor index
+
+				const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
+
+				const Index tempIndex = simplex.vertices[0].index[AorB];
+				const Index tempIndexNext = (tempIndex + 1) % polygon->vertices().size();
+				const Index tempIndexPrev = (tempIndex - 1 + polygon->vertices().size()) % polygon->vertices().size();
+
+				//check most perpendicular
+				const Vector2 ab = polygon->vertices()[tempIndexNext] - polygon->vertices()[tempIndexPrev];
+				const Vector2 ac = polygon->vertices()[tempIndex] - polygon->vertices()[tempIndexPrev];
+
+				const Vector2 n = shape.transform.inverseTranslatePoint(normal);
+
+				const real dot1 = Math::abs(Vector2::dotProduct(ab, n));
+				const real dot2 = Math::abs(Vector2::dotProduct(ac, n));
+
+				if (dot1 > dot2)
+				{
+					index1 = tempIndexPrev;
+					index2 = tempIndex;
+				}
+				else
+				{
+					index1 = tempIndex;
+					index2 = tempIndexNext;
+				}
+			}
+			else
+			{
+				//edge case
+				index1 = simplex.vertices[0].index[AorB];
+				index2 = simplex.vertices[1].index[AorB];
+			}
+		}
+		else
+		{
+			//vertex case
+			vertex = simplex.vertices[0].point[AorB];
+		}
+		return { valid, vertex, index1, index2 };
+	};
 
 }

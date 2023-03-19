@@ -66,7 +66,7 @@ namespace Physics2D
 		switch (simplex.count)
 		{
 		case 1:
-			return simplex.vertices[0].result.isOrigin() && !simplex.vertices[0].pointA.isOrigin() && !simplex.vertices[0].pointB.isOrigin();
+			return simplex.vertices[0].result.isOrigin() && !simplex.vertices[0].point[0].isOrigin() && !simplex.vertices[0].point[1].isOrigin();
 		case 2:
 			return GeometryAlgorithm2D::isPointOnSegment(simplex.vertices[0].result, simplex.vertices[1].result, { 0, 0 });
 		case 3:

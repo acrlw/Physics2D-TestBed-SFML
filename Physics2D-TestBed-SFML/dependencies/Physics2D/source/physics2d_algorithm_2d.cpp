@@ -258,25 +258,6 @@ namespace Physics2D
 	}
 
 
-	Vector2 GeometryAlgorithm2D::pointToLineSegment(const Vector2& a, const Vector2& b, const Vector2& p)
-	{
-		//special cases
-		if (a == b)
-			return {};
-
-		if (isCollinear(a, b, p))
-			return p;
-
-		const Vector2 ap = p - a;
-		const Vector2 ab_normal = (b - a).normal();
-		const Vector2 ap_proj = ab_normal.dot(ap) * ab_normal;
-		Vector2 op_proj = a + ap_proj;
-
-		if (fuzzyIsCollinear(a, b, op_proj))
-			return op_proj;
-		return (p - a).lengthSquare() > (p - b).lengthSquare() ? b : a;
-	}
-
 	Vector2 GeometryAlgorithm2D::shortestLengthPointOfEllipse(const real& a, const real& b, const Vector2& p,
 	                                                          const real& epsilon)
 	{
@@ -656,21 +637,28 @@ namespace Physics2D
 		//same side or on the edge
 		return Math::sameSign(u.cross(v), u.cross(w));
 	}
-	real GeometryAlgorithm2D::pointToLineSegmentLength(const Vector2& a, const Vector2& b, const Vector2& p)
+	Vector2 GeometryAlgorithm2D::pointToLineSegment(const Vector2& a, const Vector2& b, const Vector2& p)
 	{
+		if (a == b)
+			return {};
+
+		if (isCollinear(a, b, p))
+			return p;
+
 		const Vector2 ab = b - a;
 		const Vector2 ap = p - a;
 		const Vector2 bp = p - b;
 
 		if (ap.dot(ab) <= 0)
-			return ap.length();
+			return a;
 
 		if (bp.dot(ab) >= 0)
-			return bp.length();
+			return b;
 		
 		const Vector2 ab_normal = ab.normal();
 		const Vector2 ap_proj = ab_normal.dot(ap) * ab_normal;
-		const Vector2 op_proj = ap_proj - ap;
-		return op_proj.length();
+		Vector2 op_proj = a + ap_proj;
+		//return point p_proj
+		return op_proj;
 	}
 }
