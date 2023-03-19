@@ -110,7 +110,7 @@ namespace Physics2D
 		return simplex;
 	}
 
-	std::pair<Simplex, std::list<SimplexVertexWithOriginDistance>> Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration, const real& epsilon)
+	Simplex Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration, const real& epsilon)
 	{
 		//return 1d simplex with edge closest to origin
 		Simplex result = simplex;
@@ -211,7 +211,7 @@ namespace Physics2D
 
 		}
 
-		return std::make_pair(result, polytope);
+		return result;
 	}
 
 	SimplexVertex Narrowphase::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)

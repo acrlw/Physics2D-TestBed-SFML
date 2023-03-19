@@ -2,7 +2,7 @@
 #define PHYSICS2D_SHAPE_H
 #include "physics2d_linear.h"
 #include "physics2d_common.h"
-
+#include "physics2d_algorithm_2d.h"
 namespace Physics2D
 {
     class Shape

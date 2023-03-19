@@ -658,15 +658,19 @@ namespace Physics2D
 	}
 	real GeometryAlgorithm2D::pointToLineSegmentLength(const Vector2& a, const Vector2& b, const Vector2& p)
 	{
-		Vector2 ab = b - a;
-		Vector2 ap = p - a;
-		Vector2 bp = p - b;
-		real e = Vector2::dotProduct(ap, ab);
+		const Vector2 ab = b - a;
+		const Vector2 ap = p - a;
+		const Vector2 bp = p - b;
+		const real e = Vector2::dotProduct(ap, ab);
 		if (e <= 0)
 			return ap.length();
-		real f = Vector2::dotProduct(ab, ab);
+		const real f = Vector2::dotProduct(ab, ab);
 		if (e >= f)
 			return bp.length();
-		return (ab * e / f - ap).length();
+		
+		const Vector2 ab_normal = (b - a).normal();
+		const Vector2 ap_proj = ab_normal.dot(ap) * ab_normal;
+		Vector2 op_proj = a + ap_proj;
+		return op_proj.length();
 	}
 }

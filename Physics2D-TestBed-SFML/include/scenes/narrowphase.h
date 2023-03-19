@@ -21,13 +21,13 @@ namespace Physics2D
 			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f },{0.0f, 4.0f } });
 
 			circle.setRadius(2.0f);
-			ellipse.set(2.0f, 1.0f);
+			ellipse.set(4.0f, 2.0f);
 
-			shape1.shape = &polygon1;
+			shape1.shape = &ellipse;
 			shape1.transform.position.set(1.0f, 2.0f);
 			shape1.transform.rotation = Math::degreeToRadian(30);
 
-			shape2.shape = &polygon2;
+			shape2.shape = &circle;
 			shape2.transform.position.set(1.0f, -5.0f);
 			shape2.transform.rotation = Math::degreeToRadian(30);
 			//result = Detector::detect(shape1, shape2);
@@ -83,7 +83,7 @@ namespace Physics2D
 			if(simplex.isContainOrigin)
 			{
 				//draw polytope
-				auto [finalSimplex, finalList] = Narrowphase::epa(simplex, shape1, shape2);
+				auto finalSimplex = Narrowphase::epa(simplex, shape1, shape2);
 				RenderSFMLImpl::renderSimplex(window, *m_camera, finalSimplex, sf::Color::Yellow);
 			}
 			if(isPicked)
@@ -92,22 +92,7 @@ namespace Physics2D
 			}
 			// draw cull
 
-			Container::Vector<Vector2> vertices;
-			vertices.reserve(polygon1.vertices().size() * polygon2.vertices().size());
-			for (const Vector2& v1 : polygon1.vertices())
-			{
-				Vector2 p1 = shape1.transform.translatePoint(v1);
-				for (const Vector2& v2 : polygon2.vertices())
-				{
-					Vector2 p2 = shape2.transform.translatePoint(v2);
-					vertices.emplace_back(p1 - p2);
-				}
-			}
-			Container::Vector<Vector2> newVertices = GeometryAlgorithm2D::grahamScan(vertices);
-			for (auto&& vertex : newVertices)
-			{
-				RenderSFMLImpl::renderPoint(window, *m_camera, vertex, sf::Color::Cyan);
-			}
+
 		}
 	private:
 		Polygon polygon1;

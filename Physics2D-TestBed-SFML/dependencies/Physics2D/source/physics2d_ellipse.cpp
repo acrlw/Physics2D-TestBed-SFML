@@ -36,7 +36,9 @@ namespace Physics2D
 
 	bool Ellipse::contains(const Vector2& point, const real& epsilon)
 	{
-		return false;
+		Vector2 range = GeometryAlgorithm2D::calculateEllipseProjectionPoint(A(), B(), point);
+		return Math::absMax(range.x, point.x) == range.x && 
+			Math::absMax(range.y, point.y) == range.y;
 	}
 
 	Vector2 Ellipse::center()const
