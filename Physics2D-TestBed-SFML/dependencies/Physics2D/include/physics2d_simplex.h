@@ -26,6 +26,12 @@ namespace Physics2D
 		{
 			return pointA.isOrigin() && pointB.isOrigin() && result.isOrigin();
 		}
+		inline void clear()
+		{
+			pointA.clear();
+			pointB.clear();
+			result.clear();
+		}
 		Vector2 pointA;
 		Vector2 pointB;
 		Vector2 result;
@@ -61,6 +67,7 @@ namespace Physics2D
 		static bool containOrigin(const Simplex& simplex, bool strict = false);
 		bool contains(const SimplexVertex& vertex);
 		void addSimplexVertex(const SimplexVertex& vertex);
+		void removeByIndex(const Index& index);
 	};
 	
 }

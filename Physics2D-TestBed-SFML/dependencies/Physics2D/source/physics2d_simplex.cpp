@@ -90,4 +90,11 @@ namespace Physics2D
 		vertices[count] = vertex;
 		++count;
 	}
+
+	void Simplex::removeByIndex(const Index& index)
+	{
+		assert(index < count);
+		vertices[index].clear();
+		--count;
+	}
 }

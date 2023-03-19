@@ -368,58 +368,67 @@ namespace Physics2D
 				break;
 
 			simplex.addSimplexVertex(vertex);
-			//contain origin
-			if (simplex.containsOrigin())
-				break;
+			
+			//use barycentric coordinates to check contains origin and find closest edge
+			SimplexVertex va = simplex.vertices[0];
+			SimplexVertex vb = simplex.vertices[1];
+			SimplexVertex vc = simplex.vertices[2];
+			Vector2 a = va.result;
+			Vector2 b = vb.result;
+			Vector2 c = vc.result;
+			Vector2 ab = b - a;
+			Vector2 ac = c - a;
+			Vector2 bc = c - b;
 
-			//no? then degrade simplex to 1d case(segment), reserve closest edge
-			degradeSimplex(simplex);
+			real u_ab = -a.dot(ab.normal()) / ab.length();
+			real u_ac = -a.dot(ac.normal()) / ac.length();
+			real u_bc = -b.dot(bc.normal()) / bc.length();
+			real v_ab = 1 - u_ab;
+			real v_ac = 1 - u_ac;
+			real v_bc = 1 - u_bc;
+			/*
+			 * [Ax Bx Cx][u] = [0]
+			 * [Ay By Cy][v] = [0]
+			 * [ 1  1  1][w] = [1]
+			 * solve for u,v,w
+			 */
+			real u, v, w;
+			real det = a.y * b.x - a.x * b.y + a.x * c.y - a.y * c.x + b.y * c.x - c.y * b.x;
+			assert(det != 0.0f);
+			u = (b.y * c.x - c.y * b.x) / det;
+			v = (c.y * a.x - a.y * c.x) / det;
+			w = 1 - u - v;
+			
+			if(u_ab > 0 && v_ab > 0 && w <= 0)
+			{
+				//in region AB, remove c
+				simplex.vertices[0] = va;
+				simplex.vertices[1] = vb;
+			}else if(u_ac > 0 && v_ac > 0 && v <= 0)
+			{
+				//in region AC, remove b
+				simplex.vertices[0] = va;
+				simplex.vertices[1] = vc;
+			}
+			else if(u_bc > 0 && v_bc > 0 && u <= 0)
+			{
+				//in region BC, remove a
 
+				simplex.vertices[0] = vb;
+				simplex.vertices[1] = vc;
+			}
+			else if(u > 0 && v > 0 && w > 0)
+			{
+				//in region ABC, origin is inside simplex
+				simplex.isContainOrigin = true;
+				return simplex;
+			}
+			
+			simplex.removeByIndex(2);
+			
 			iter++;
 		}
 		return simplex;
-		//SimplexVertex diff = support(shapeA, shapeB, direction);
-		//simplex.vertices.emplace_back(diff);
-		//direction.negate();
-		//size_t iter = 0;
-		//Container::Vector<SimplexVertex> removed;
-		//while (iter <= iteration)
-		//{
-		//	diff = support(shapeA, shapeB, direction);
-		//	simplex.vertices.emplace_back(diff);
-		//	if (simplex.vertices.size() == 3)
-		//		simplex.vertices.emplace_back(simplex.vertices[0]);
-
-		//	if (simplex.lastVertex().dot(direction) <= 0)
-		//		break;
-		//	if (simplex.containOrigin(true))
-		//	{
-		//		found = true;
-		//		break;
-		//	}
-		//	//if not contain origin
-		//	//find edge closest to origin
-		//	//reconstruct simplex
-		//	//find the point that is not belong to the edge closest to origin
-		//	//if found, there is no more SimplexVertex difference, exit loop
-		//	//if not, add the point to the list
-
-		//	auto [index1, index2] = findEdgeClosestToOrigin(simplex);
-		//	direction = calculateDirectionByEdge(simplex.vertices[index1].result,
-		//		simplex.vertices[index2].result, true);
-
-		//	auto result = adjustSimplex(simplex, index1, index2);
-		//	if (result.has_value())
-		//	{
-		//		if (std::find(std::begin(removed), std::end(removed), result.value()) != removed.end())
-		//			break;
-
-		//		removed.emplace_back(result.value());
-		//	}
-		//	iter++;
-		//}
-
-		//return std::make_tuple(found, simplex);
 	}
 
 	SimplexVertex Narrowphase::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
@@ -477,7 +486,7 @@ namespace Physics2D
 			break;
 		}
 		case Shape::Type::Curve: 
-			assert(false && "Not support curve mapping.");
+			assert(false && "Mapping for curve is not supported.");
 			break;
 		}
 		rot.set(shape.rotation);
