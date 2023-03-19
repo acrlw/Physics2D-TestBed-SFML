@@ -60,6 +60,7 @@ namespace Physics2D
 	 */
 	struct Simplex
 	{
+		Simplex() = default;
 		std::array<SimplexVertex, 3> vertices;
 		size_t count = 0;
 		bool isContainOrigin = false;

@@ -192,6 +192,7 @@ namespace Physics2D
 		Vector2 calculateSectorProjectionPoint(const real& startRadian, const real& spanRadian, const real& radius, const Vector2& direction);
 		bool triangleContainsOrigin(const Vector2& a, const Vector2& b, const Vector2& c);
 		bool isPointOnSameSide(const Vector2& edgePoint1, const Vector2& edgePoint2, const Vector2& refPoint, const Vector2 targetPoint);
+		real pointToLineSegmentLength(const Vector2& a, const Vector2& b, const Vector2& p);
 	};
 }
 #endif

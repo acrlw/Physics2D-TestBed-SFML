@@ -14,18 +14,32 @@
 #include "physics2d_rectangle.h"
 #include "physics2d_sector.h"
 
-namespace Physics2D::Narrowphase
+namespace Physics2D
 {
-	Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 20);
-	void epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
-		const size_t& iteration = 20, const real& epsilon = Constant::GeometryEpsilon);
-	SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
-	Vector2 findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
-	Vector2 calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);
-	std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
+	struct SimplexVertexWithOriginDistance
+	{
+		SimplexVertex vertex;
+		real distance = 0.0f;
+	};
+	class Narrowphase
+	{
+	public:
+		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 20);
+		static Simplex epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+			const size_t& iteration = 20, const real& epsilon = Constant::GeometryEpsilon);
+		static SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
+		static Vector2 findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
+		static Vector2 calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);
+		static std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
 
-	void sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-	void satPolygonVsPolygon(const Polygon& polygonA, const Polygon& polygonB);
-	
+		static void sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+		static void satPolygonVsPolygon(const Polygon& polygonA, const Transform& transformA, const Polygon& polygonB, const Transform& transformB);
+		static void satPolygonVsCircle(const Polygon& polygonA, const Transform& transformA, const Circle& circleB, const Transform& transformB);
+		static void satPolygonVsEllipse(const Polygon& polygonA, const Transform& transformA, const Ellipse& ellipseB, const Transform& transformB);
+		static void satPolygonVsEdge(const Polygon& polygonA, const Transform& transformA, const Edge& edgeB, const Transform& transformB);
+	private:
+
+	};
+
 }
 #endif

@@ -100,7 +100,7 @@ namespace Physics2D
 			Container::Vector<Vector2> newVertices = GeometryAlgorithm2D::grahamScan(vertices);
 			for (auto&& vertex : newVertices)
 			{
-				RenderSFMLImpl::renderPoint(window, *m_camera, vertex, sf::Color::Blue);
+				RenderSFMLImpl::renderPoint(window, *m_camera, vertex, sf::Color::Cyan);
 			}
 		}
 	private:

@@ -656,4 +656,17 @@ namespace Physics2D
 		//same side or on the edge
 		return Math::sameSign(u.cross(v), u.cross(w));
 	}
+	real GeometryAlgorithm2D::pointToLineSegmentLength(const Vector2& a, const Vector2& b, const Vector2& p)
+	{
+		Vector2 ab = b - a;
+		Vector2 ap = p - a;
+		Vector2 bp = p - b;
+		real e = Vector2::dotProduct(ap, ab);
+		if (e <= 0)
+			return ap.length();
+		real f = Vector2::dotProduct(ab, ab);
+		if (e >= f)
+			return bp.length();
+		return (ab * e / f - ap).length();
+	}
 }
