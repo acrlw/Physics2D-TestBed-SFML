@@ -88,7 +88,7 @@ namespace Physics2D
 		}
 		else
 		{
-			auto [support, index] = GJKHelper::findFarthestPoint(vertices, normal);
+			auto [support, index] = GJKHelper::findFurthestPoint(vertices, normal);
 			edge = findClipEdge(vertices, index, normal);
 		}
 		return edge;

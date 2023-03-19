@@ -75,7 +75,8 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform, sf::Color::Cyan);
 			Simplex simplex = Narrowphase::gjk(shape1, shape2);
-			RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, sf::Color::Red);
+			sf::Color color = simplex.isContainOrigin ? sf::Color::Red : sf::Color::Magenta;
+			RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
 			if(isPicked)
 			{
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);

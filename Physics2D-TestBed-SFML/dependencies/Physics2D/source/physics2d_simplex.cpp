@@ -55,7 +55,7 @@ namespace Physics2D
 		return vertices[vertices.size() - 2].result;
 	}
 
-	bool Simplex::containOrigin(bool strict)
+	bool Simplex::containsOrigin(bool strict)
 	{
 		isContainOrigin = containOrigin(*this, strict);
 		return isContainOrigin;
@@ -77,14 +77,12 @@ namespace Physics2D
 		}
 	}
 
-	bool Simplex::contains(const SimplexVertex& vertex, const real& epsilon)
+	bool Simplex::contains(const SimplexVertex& vertex)
 	{
-		return std::find_if(std::begin(vertices), std::end(vertices),
-			[=](const Physics2D::SimplexVertex& element)
-			{
-				return (vertex.result - element.result).lengthSquare() < epsilon;
-			})
-			!= std::end(vertices);
+		for (SimplexVertex& element : vertices)
+			if (element == vertex)
+				return true;
+		return false;
 	}
 	void Simplex::addSimplexVertex(const SimplexVertex& vertex)
 	{

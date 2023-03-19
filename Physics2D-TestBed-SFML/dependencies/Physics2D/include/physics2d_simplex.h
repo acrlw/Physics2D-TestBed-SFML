@@ -2,6 +2,7 @@
 #define PHYSICS2D_SIMPLEX_H
 
 #include "physics2d_algorithm_2d.h"
+#include <array>
 namespace Physics2D
 {
 	struct SimplexVertex
@@ -53,12 +54,12 @@ namespace Physics2D
 	 */
 	struct Simplex
 	{
-		SimplexVertex vertices[3];
+		std::array<SimplexVertex, 3> vertices;
 		size_t count = 0;
 		bool isContainOrigin = false;
-		bool containOrigin(bool strict = false);
+		bool containsOrigin(bool strict = false);
 		static bool containOrigin(const Simplex& simplex, bool strict = false);
-		bool contains(const SimplexVertex& vertex, const real& epsilon = 1e-5);
+		bool contains(const SimplexVertex& vertex);
 		void addSimplexVertex(const SimplexVertex& vertex);
 	};
 	

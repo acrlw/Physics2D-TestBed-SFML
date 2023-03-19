@@ -456,17 +456,29 @@ namespace Physics2D
 	{
 		renderLine(window, camera, start, end, color);
 		Vector2 tf = start - end;
-		real scale = size;
 		real length = tf.length();
-		if (tf.length() < 1.0f)
-			scale = length / 2.0f;
-		Vector2 normal = (start - end).normalize() * scale;
+		real scale = size;
+		if (length < 1.0f)
+			scale = length * size;
+		Vector2 normal = tf.normal() * scale;
 		Matrix2x2 mat(Math::degreeToRadian(degree));
-		Vector2 p1 = mat.multiply(normal);
+		Vector2 p1 = mat.multiply(normal) + end;
 		mat.set(Math::degreeToRadian(-degree));
-		Vector2 p2 = mat.multiply(normal);
+		Vector2 p2 = mat.multiply(normal) + end;
 
-		renderLine(window, camera, end, end + p1, color);
-		renderLine(window, camera, end, end + p2, color);
+		Vector2 v1 = camera.worldToScreen(end);
+		Vector2 v2 = camera.worldToScreen(p1);
+		Vector2 v3 = camera.worldToScreen(p2);
+
+		sf::ConvexShape convex;
+		convex.setPointCount(3);
+		convex.setPoint(0, toVector2f(v1));
+		convex.setPoint(1, toVector2f(v2));
+		convex.setPoint(2, toVector2f(v3));
+		
+		convex.setFillColor(color);
+		convex.setOutlineThickness(RenderConstant::BorderSize);
+		convex.setOutlineColor(color);
+		window.draw(convex);
 	}
 }

@@ -105,7 +105,7 @@ namespace Physics2D
 
 	SimplexVertex GJKHelper::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
 	{
-		return SimplexVertex(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
+		return SimplexVertex(findFurthestPoint(shapeA, direction), findFurthestPoint(shapeB, direction * -1));
 	}
 
 	std::tuple<size_t, size_t> GJKHelper::findEdgeClosestToOrigin(const SimplexVertexArray& simplex)
@@ -148,7 +148,7 @@ namespace Physics2D
 		return std::make_tuple(index1, index2);
 	}
 
-	Vector2 GJKHelper::findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction)
+	Vector2 GJKHelper::findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction)
 	{
 		Vector2 target;
 		Matrix2x2 rot(-shape.rotation);
@@ -158,7 +158,7 @@ namespace Physics2D
 		case Shape::Type::Polygon:
 		{
 			const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
-			auto [vertex, index] = findFarthestPoint(polygon->vertices(), rot_dir);
+			auto [vertex, index] = findFurthestPoint(polygon->vertices(), rot_dir);
 			target = vertex;
 			break;
 		}
@@ -206,7 +206,7 @@ namespace Physics2D
 		return target;
 	}
 
-	std::pair<Vector2, size_t> GJKHelper::findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
+	std::pair<Vector2, size_t> GJKHelper::findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
 	{
 		real max = Constant::NegativeMin;
 		Vector2 target;
@@ -349,26 +349,34 @@ namespace Physics2D
 		vertex = support(shapeA, shapeB, direction);
 		simplex.addSimplexVertex(vertex);
 		//check 1d simplex(line segment) contains origin
-		if (simplex.containOrigin())
+		if (simplex.containsOrigin())
 			return simplex;
 		//third
 		size_t iter = 0;
-		//while(iter <= iteration)
-		//{
-		//	//default closest edge is index 0 and index 1
-		//	direction = calculateDirectionByEdge(simplex.vertices[0], simplex.vertices[1], true);
-		//	vertex = support(shapeA, shapeB, direction);
-		//	simplex.addSimplexVertex(vertex);
-		//	//check 2d simplex(triangle) contains origin
-		//	if (simplex.containOrigin())
-		//		break;
+		while(iter <= iteration)
+		{
+			//default closest edge is index 0 and index 1
+			direction = calculateDirectionByEdge(simplex.vertices[0], simplex.vertices[1], true);
+			vertex = support(shapeA, shapeB, direction);
 
-		//	//no? then readjust simplex, find and reserve closest edge
+			//find repeated vertex
+			if (simplex.contains(vertex))
+				break;
 
+			//vertex does not pass origin
+			if (vertex.result.dot(direction) <= 0)
+				break;
 
+			simplex.addSimplexVertex(vertex);
+			//contain origin
+			if (simplex.containsOrigin())
+				break;
 
-		//	iter++;
-		//}
+			//no? then degrade simplex to 1d case(segment), reserve closest edge
+			degradeSimplex(simplex);
+
+			iter++;
+		}
 		return simplex;
 		//SimplexVertex diff = support(shapeA, shapeB, direction);
 		//simplex.vertices.emplace_back(diff);
@@ -416,10 +424,10 @@ namespace Physics2D
 
 	SimplexVertex Narrowphase::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
 	{
-		return SimplexVertex(findFarthestPoint(shapeA, direction), findFarthestPoint(shapeB, direction * -1));
+		return SimplexVertex(findFurthestPoint(shapeA, direction), findFurthestPoint(shapeB, direction * -1));
 	}
 
-	Vector2 Narrowphase::findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction)
+	Vector2 Narrowphase::findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction)
 	{
 		Vector2 target;
 		Matrix2x2 rot(-shape.rotation);
@@ -429,7 +437,7 @@ namespace Physics2D
 		case Shape::Type::Polygon:
 		{
 			const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
-			auto [vertex, index] = findFarthestPoint(polygon->vertices(), rot_dir);
+			auto [vertex, index] = findFurthestPoint(polygon->vertices(), rot_dir);
 			target = vertex;
 			break;
 		}
@@ -491,7 +499,7 @@ namespace Physics2D
 			perpendicularOfAB.negate();
 		return perpendicularOfAB;
 	}
-	std::pair<Vector2, Index> Narrowphase::findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
+	std::pair<Vector2, Index> Narrowphase::findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction)
 	{
 		real max = Constant::NegativeMin;
 		Vector2 target;
@@ -511,6 +519,10 @@ namespace Physics2D
 	void Narrowphase::degradeSimplex(Simplex& simplex)
 	{
 		//1. use voronoi diagram
+		assert(simplex.count == 3);
+		Vector2 a = simplex.vertices[0].result;
+		Vector2 b = simplex.vertices[1].result;
+		Vector2 c = simplex.vertices[2].result;
 
 	}
 }

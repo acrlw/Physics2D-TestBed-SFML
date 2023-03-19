@@ -51,9 +51,9 @@ namespace Physics2D
 	{
 		Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 20);
 		SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
-		Vector2 findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction);
+		Vector2 findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
 		Vector2 calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);
-		std::pair<Vector2, Index> findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
+		std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
 		void degradeSimplex(Simplex& simplex);
 	}
 	/// <summary>
@@ -111,14 +111,14 @@ namespace Physics2D
 		/// <param name="shape"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static Vector2 findFarthestPoint(const ShapePrimitive& shape, const Vector2& direction);
+		static Vector2 findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
 		/// <summary>
 		/// Find farthest projection point in given direction
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <param name="direction"></param>
 		/// <returns></returns>
-		static std::pair<Vector2, size_t> findFarthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
+		static std::pair<Vector2, size_t> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
 		/// <summary>
 		/// Adjust triangle simplex, remove the point that can not form a triangle that contains origin
 		/// </summary>
