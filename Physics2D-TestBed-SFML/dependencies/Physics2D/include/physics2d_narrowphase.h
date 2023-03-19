@@ -25,7 +25,7 @@ namespace Physics2D
 	{
 	public:
 		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 20);
-		static Simplex epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+		static std::pair<Simplex, std::list<SimplexVertexWithOriginDistance>> epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
 			const size_t& iteration = 20, const real& epsilon = Constant::GeometryEpsilon);
 		static SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
 		static Vector2 findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);

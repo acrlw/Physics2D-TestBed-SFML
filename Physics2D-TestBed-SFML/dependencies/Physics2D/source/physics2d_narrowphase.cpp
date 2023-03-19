@@ -69,24 +69,13 @@ namespace Physics2D
 			const real v = (c.y * a.x - a.y * c.x) / det;
 			const real w = 1 - u - v;
 
-			if (u_ab > 0 && v_ab > 0 && w <= 0)
+			
+			if (u_ac > 0 && v_ac > 0 && v <= 0)
 			{
-				//in region AB, remove c
-				//simplex.vertices[0] = va;
-				//simplex.vertices[1] = vb;
-
-				//do nothing, default is 0:va, 1:vb
-			}
-			else if (u_ac > 0 && v_ac > 0 && v <= 0)
-			{
-				//in region AC, remove b
-				//simplex.vertices[0] = va;
 				simplex.vertices[1] = vc;
 			}
 			else if (u_bc > 0 && v_bc > 0 && u <= 0)
 			{
-				//in region BC, remove a
-				//simplex.vertices[1] = vb;
 				simplex.vertices[0] = vc;
 			}
 			else if (u > 0 && v > 0 && w > 0)
@@ -110,7 +99,6 @@ namespace Physics2D
 					simplex.vertices[1] = vc;
 					simplex.vertices[2] = vb;
 				}
-				//else, min == h_w, default is abc, do nothing
 
 				return simplex;
 			}
@@ -122,7 +110,7 @@ namespace Physics2D
 		return simplex;
 	}
 
-	Simplex Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration, const real& epsilon)
+	std::pair<Simplex, std::list<SimplexVertexWithOriginDistance>> Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration, const real& epsilon)
 	{
 		//return 1d simplex with edge closest to origin
 		Simplex result = simplex;
@@ -169,7 +157,7 @@ namespace Physics2D
 		auto iterTemp = polytope.begin();
 
 
-		while(iter <= iteration)
+		while(iter++ <= iteration)
 		{
 			//closest edge index is set to index 0 and index 1
 			direction = calculateDirectionByEdge(result.vertices[0], result.vertices[1], false);
@@ -198,16 +186,20 @@ namespace Physics2D
 			iterTemp = iterStart;
 			//find shortest distance and set iterStart
 			real minDistance = Constant::Max;
-			while(iterTemp != iterEnd)
+			auto iterTarget = iterStart;
+			while(true)
 			{
 				if (iterTemp->distance < minDistance)
 				{
 					minDistance = iterTemp->distance;
-					iterStart = iterTemp;
+					iterTarget = iterTemp;
 				}
 				iterNext(iterTemp, polytope);
+				if (iterTemp == iterStart)
+					break;
 			}
-			iterEnd = iterStart;
+			iterStart = iterTarget;
+			iterEnd = iterTarget;
 			iterPrev(iterEnd, polytope);
 
 			//set to begin
@@ -219,7 +211,7 @@ namespace Physics2D
 
 		}
 
-		return result;
+		return std::make_pair(result, polytope);
 	}
 
 	SimplexVertex Narrowphase::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)

@@ -80,6 +80,12 @@ namespace Physics2D
 			Simplex simplex = Narrowphase::gjk(shape1, shape2);
 			sf::Color color = simplex.isContainOrigin ? sf::Color::Red : sf::Color::Magenta;
 			RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
+			if(simplex.isContainOrigin)
+			{
+				//draw polytope
+				auto [finalSimplex, finalList] = Narrowphase::epa(simplex, shape1, shape2);
+				RenderSFMLImpl::renderSimplex(window, *m_camera, finalSimplex, sf::Color::Yellow);
+			}
 			if(isPicked)
 			{
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);
