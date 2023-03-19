@@ -24,6 +24,10 @@ namespace Physics2D
 	namespace Math
 	{
 		//trigonometric function
+		inline real abs(const real& x)
+		{
+			return std::fabs(x);
+		}
 		inline real sinx(const real& x)
 		{
 			return std::sin(x);

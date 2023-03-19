@@ -24,9 +24,9 @@ namespace Physics2D
 	class Narrowphase
 	{
 	public:
-		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 8);
+		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 12);
 		static Simplex epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
-			const size_t& iteration = 8, const real& epsilon = Constant::GeometryEpsilon);
+			const size_t& iteration = 12, const real& epsilon = Constant::GeometryEpsilon);
 		static SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
 		static Vector2 findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
 		static Vector2 calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);

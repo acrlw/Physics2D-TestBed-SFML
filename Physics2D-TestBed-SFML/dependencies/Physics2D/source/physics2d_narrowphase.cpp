@@ -91,11 +91,13 @@ namespace Physics2D
 				const real min = Math::tripleMin(h_u, h_v, h_w);
 				if (min == h_u)
 				{
+					//c b a
 					simplex.vertices[0] = vc;
-					simplex.vertices[2] = va;
+					simplex.vertices[1] = va;
 				}
 				else if (min == h_v)
 				{
+					//a c b
 					simplex.vertices[1] = vc;
 					simplex.vertices[2] = vb;
 				}
@@ -128,8 +130,7 @@ namespace Physics2D
 		{
 			if (targetIter == list.begin())
 				targetIter = list.end();
-			else
-				--targetIter;
+			--targetIter;
 		};
 
 
@@ -157,7 +158,7 @@ namespace Physics2D
 		auto iterTemp = polytope.begin();
 
 
-		while(iter++ <= iteration)
+		while(++iter < iteration)
 		{
 			//closest edge index is set to index 0 and index 1
 			direction = calculateDirectionByEdge(result.vertices[0], result.vertices[1], false);
@@ -216,7 +217,7 @@ namespace Physics2D
 
 	SimplexVertex Narrowphase::support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction)
 	{
-		return SimplexVertex(findFurthestPoint(shapeA, direction), findFurthestPoint(shapeB, direction * -1));
+		return SimplexVertex(findFurthestPoint(shapeA, direction), findFurthestPoint(shapeB, direction.negative()));
 	}
 
 	Vector2 Narrowphase::findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction)
@@ -283,7 +284,7 @@ namespace Physics2D
 	{
 		const Vector2 p1 = v1.result;
 		const Vector2 p2 = v2.result;
-		const Vector2 ao = p1 * -1;
+		const Vector2 ao = p1.negative();
 		const Vector2 ab = p2 - p1;
 		Vector2 perpendicularOfAB = ab.perpendicular();
 		if ((Vector2::dotProduct(ao, perpendicularOfAB) < 0 && pointToOrigin) || (

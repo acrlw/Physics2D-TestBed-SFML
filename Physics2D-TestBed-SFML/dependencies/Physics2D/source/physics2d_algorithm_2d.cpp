@@ -661,16 +661,16 @@ namespace Physics2D
 		const Vector2 ab = b - a;
 		const Vector2 ap = p - a;
 		const Vector2 bp = p - b;
-		const real e = Vector2::dotProduct(ap, ab);
-		if (e <= 0)
+
+		if (ap.dot(ab) <= 0)
 			return ap.length();
-		const real f = Vector2::dotProduct(ab, ab);
-		if (e >= f)
+
+		if (bp.dot(ab) >= 0)
 			return bp.length();
 		
-		const Vector2 ab_normal = (b - a).normal();
+		const Vector2 ab_normal = ab.normal();
 		const Vector2 ap_proj = ab_normal.dot(ap) * ab_normal;
-		Vector2 op_proj = a + ap_proj;
+		const Vector2 op_proj = ap_proj - ap;
 		return op_proj.length();
 	}
 }

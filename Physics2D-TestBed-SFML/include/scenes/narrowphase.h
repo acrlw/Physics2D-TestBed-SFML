@@ -78,21 +78,21 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform.position, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform.position, sf::Color::Cyan);
 			Simplex simplex = Narrowphase::gjk(shape1, shape2);
-			sf::Color color = simplex.isContainOrigin ? sf::Color::Red : sf::Color::Magenta;
+			sf::Color color = simplex.isContainOrigin ? sf::Color::Magenta : sf::Color::Blue;
 			RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
 			if(simplex.isContainOrigin)
 			{
 				//draw polytope
 				auto finalSimplex = Narrowphase::epa(simplex, shape1, shape2);
-				RenderSFMLImpl::renderSimplex(window, *m_camera, finalSimplex, sf::Color::Yellow);
+				//
+				
+				RenderSFMLImpl::renderSimplex(window, *m_camera, finalSimplex, sf::Color::Green);
 			}
 			if(isPicked)
 			{
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);
 			}
 			// draw cull
-
-
 		}
 	private:
 		Polygon polygon1;
