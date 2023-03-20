@@ -21,7 +21,7 @@ namespace Physics2D
 			for(real i = 0;i < 3.0;i += 1.0f)
 			{
 				Body* ground = m_world->createBody();
-				ground->setShape(&block);
+				ground->setShape(&edge);
 				ground->position().set({ 0, -6 + i * 3.0f });
 				ground->setFriction(0.4f);
 				ground->setBitmask(mask);

@@ -14,6 +14,8 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			brick.set(1.5f, 0.5f);
+
 			block.set(10, 0.1f);
 			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
 
@@ -27,11 +29,11 @@ namespace Physics2D
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
 
-			shape1.shape = &rectangle;
+			shape1.shape = &circle;
 			shape1.transform.position.set(0.0f, 2.0f);
-			shape1.transform.rotation = Math::degreeToRadian(35);
+			//shape1.transform.rotation = Math::degreeToRadian(50);
 
-			shape2.shape = &block;
+			shape2.shape = &ellipse;
 			shape2.transform.position.set(0.0f, -5.0f);
 			//shape2.transform.rotation = Math::degreeToRadian(30);
 			//result = Detector::detect(shape1, shape2);
@@ -74,6 +76,13 @@ namespace Physics2D
 			originTransform.clear();
 			clickObject = nullptr;
 		}
+		void onKeyPressed(sf::Event& event) override
+		{
+			if(event.key.code == sf::Keyboard::R)
+			{
+				shape1.transform.rotation += Math::degreeToRadian(1);
+			}
+		}
 		void render(sf::RenderWindow& window) override
 		{
 			RenderSFMLImpl::renderShape(window, *m_camera, shape1, sf::Color::Green);
@@ -83,7 +92,7 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform.position, sf::Color::Cyan);
 			Simplex simplex = Narrowphase::gjk(shape1, shape2);
 			sf::Color color = simplex.isContainOrigin ? sf::Color::Magenta : sf::Color::Blue;
-			RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
+			//RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
 			if(simplex.isContainOrigin)
 			{
 				//draw polytope
@@ -111,7 +120,7 @@ namespace Physics2D
 				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1], info.simplex.vertices[1].point[1], sf::Color::Magenta);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
-				auto pairs = Narrowphase::clip(info.simplex, info.normal, shape1, shape2);
+				auto pairs = Narrowphase::generateContacts(shape1, shape2, info);
 				sf::Color color1 = sf::Color(239, 103, 50);
 				sf::Color color2 = sf::Color(252, 236, 86);
 				if(pairs.count == 2)
@@ -140,6 +149,8 @@ namespace Physics2D
 
 		Edge edge;
 		Rectangle block;
+
+		Rectangle brick;
 
 		Rectangle rectangle;
 		Polygon polygon1;

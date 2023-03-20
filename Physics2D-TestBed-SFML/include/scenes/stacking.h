@@ -20,7 +20,7 @@ namespace Physics2D
 			Body* ground;
 
 			ground = m_world->createBody();
-			ground->setShape(&block);
+			ground->setShape(&edge);
 			ground->position().set({ 0.0, 0.0 });
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);

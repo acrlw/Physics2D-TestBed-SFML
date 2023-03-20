@@ -90,6 +90,7 @@ namespace Physics2D
 		void addSimplexVertex(const SimplexVertex& vertex);
 		void removeByIndex(const Index& index);
 		void removeEnd();
+		void removeAll();
 	};
 	
 }

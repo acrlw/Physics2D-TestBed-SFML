@@ -3,6 +3,8 @@
 
 #include <random>
 
+#include "physics2d_common.h"
+
 namespace Physics2D
 {
 
@@ -14,7 +16,11 @@ namespace Physics2D
 	class RandomGenerator
 	{
 	public:
-		
+		static real uniform(const real& min, const real& max)
+		{
+			std::uniform_real_distribution<real> distribution(min, max);
+			return distribution(randomEngine);
+		}
 		static unsigned int unique()
 		{
 			//return uniformDistribution(randomEngine);

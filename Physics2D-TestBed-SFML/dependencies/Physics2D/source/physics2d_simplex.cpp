@@ -111,4 +111,12 @@ namespace Physics2D
 		vertices[2].clear();
 		--count;
 	}
+
+	void Simplex::removeAll()
+	{
+		vertices[0].clear();
+		vertices[1].clear();
+		vertices[2].clear();
+		count = 0;
+	}
 }

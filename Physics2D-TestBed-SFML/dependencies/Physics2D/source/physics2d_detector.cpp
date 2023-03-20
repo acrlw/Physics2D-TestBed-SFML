@@ -67,7 +67,7 @@ namespace Physics2D
 			result.isColliding = isColliding;
 			result.penetration = info.penetration;
 
-			result.contactList = Narrowphase::clip(info.simplex, info.normal, shapeA, shapeB);
+			result.contactList = Narrowphase::generateContacts(shapeA, shapeB, info);
 		}
 
 		return result;

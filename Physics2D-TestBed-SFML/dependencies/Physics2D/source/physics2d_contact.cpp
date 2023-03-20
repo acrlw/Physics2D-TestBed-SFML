@@ -113,8 +113,8 @@ namespace Physics2D
 			Vector2 localB = bodyB->toLocalPoint(elem.pointB);
 			for (auto& contact : contactList)
 			{
-				const bool isPointA = localA.fuzzyEqual(contact.localA, 0.1f);
-				const bool isPointB = localB.fuzzyEqual(contact.localB, 0.1f);
+				const bool isPointA = localA.fuzzyEqual(contact.localA);
+				const bool isPointB = localB.fuzzyEqual(contact.localB);
 				if (isPointA && isPointB)
 				{
 					//satisfy the condition, transmit the old accumulated value to new value

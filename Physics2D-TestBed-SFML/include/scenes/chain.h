@@ -13,7 +13,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
-			brick.set(1.5f, 0.5f);
+			brick.set(1.6f, 0.5f);
 
 			edge.set({ -100, 0 }, { 100, 0 });
 
