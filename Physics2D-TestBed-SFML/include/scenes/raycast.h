@@ -17,9 +17,9 @@ namespace Physics2D
 			rectangle.set(0.5f, 0.5f);
 			circle.setRadius(0.5f);
 			capsule.set(1.5f, 0.5f);
-			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f},{-1.0f, 1.0f} });
+			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
 			polygon.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
-			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f },{0.0f, 4.0f } });
+			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f }});
 			triangle.scale(0.5f);
 			polygon.scale(0.1f);
 

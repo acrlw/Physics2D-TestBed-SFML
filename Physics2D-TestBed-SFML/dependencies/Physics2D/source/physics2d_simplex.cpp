@@ -93,8 +93,22 @@ namespace Physics2D
 
 	void Simplex::removeByIndex(const Index& index)
 	{
-		assert(index < count);
-		vertices[index].clear();
+		assert(index < 3);
+		if(index == 0)
+		{
+			vertices[0] = vertices[1];
+			vertices[1] = vertices[2];
+		}
+		else if (index == 1)
+			vertices[1] = vertices[2];
+		
+		vertices[2].clear();
+		--count;
+	}
+
+	void Simplex::removeEnd()
+	{
+		vertices[2].clear();
 		--count;
 	}
 }

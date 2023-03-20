@@ -89,6 +89,7 @@ namespace Physics2D
 		bool contains(const SimplexVertex& vertex, const real& epsilon = Constant::GeometryEpsilon);
 		void addSimplexVertex(const SimplexVertex& vertex);
 		void removeByIndex(const Index& index);
+		void removeEnd();
 	};
 	
 }

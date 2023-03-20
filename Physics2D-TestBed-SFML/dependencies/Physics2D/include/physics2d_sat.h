@@ -10,7 +10,7 @@ namespace Physics2D
     {
         Vector2 vertex;
         real value = 0;
-        int index = -1;
+        Index index = -1;
         bool operator==(const ProjectedPoint& rhs);
     };
     struct ProjectedEdge

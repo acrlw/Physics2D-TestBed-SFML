@@ -14,23 +14,26 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			block.set(10, 0.1f);
+			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
+
 			rectangle.set(2, 3);
 			polygon1.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
-			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f },{0.0f, 4.0f } });
+			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f } });
 
 			polygon2.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
-			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f },{0.0f, 4.0f } });
+			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f }});
 
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
 
 			shape1.shape = &rectangle;
-			shape1.transform.position.set(1.0f, 2.0f);
+			shape1.transform.position.set(0.0f, 2.0f);
 			shape1.transform.rotation = Math::degreeToRadian(35);
 
-			shape2.shape = &rectangle;
-			shape2.transform.position.set(1.0f, -5.0f);
-			shape2.transform.rotation = Math::degreeToRadian(30);
+			shape2.shape = &block;
+			shape2.transform.position.set(0.0f, -5.0f);
+			//shape2.transform.rotation = Math::degreeToRadian(30);
 			//result = Detector::detect(shape1, shape2);
 
 		}
@@ -85,7 +88,18 @@ namespace Physics2D
 			{
 				//draw polytope
 				auto info = Narrowphase::epa(simplex, shape1, shape2);
-				//
+
+				for(auto iter = info.polytope.begin(); iter != info.polytope.end(); ++iter)
+				{
+					auto next = iter;
+					++next;
+					if(next == info.polytope.end())
+						next = info.polytope.begin();
+
+					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, sf::Color::Red);
+					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, sf::Color::Red);
+					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, sf::Color::Red);
+				}
 				
 				//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, sf::Color::Green);
 				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
@@ -115,46 +129,6 @@ namespace Physics2D
 					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[2], color1);
 					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[3], color2);
 				}
-				//int i = 0;
-				//color = sf::Color(252, 236, 86);
-				//Vector2 v1 = shape2.transform.translatePoint(rectangle.vertices()[pairs.feature[1].index[0]]);
-				//Vector2 v2 = shape2.transform.translatePoint(rectangle.vertices()[pairs.feature[1].index[1]]);
-				//RenderSFMLImpl::renderLine(window, *m_camera, v1, v2, color);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, v1, color);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, v2, color);
-
-				//color = sf::Color(239, 103, 50);
-				//Vector2 v3 = pairs.feature[0].vertex;
-				//RenderSFMLImpl::renderPoint(window, *m_camera, v3, color);
-
-				//for(auto& elem : pairs.feature)
-				//{
-				//	if(elem.isValid)
-				//	{
-				//		Vector2 v1, v2;
-				//		if(i == 0)
-				//		{
-				//			color = sf::Color(239, 103, 50);
-				//			v1 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[0]]);
-				//			v2 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[1]]);
-				//		}
-				//		else
-				//		{
-				//			color = sf::Color(252, 236, 86);
-				//			v1 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[0]]);
-				//			v2 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[1]]);
-				//		}
-
-				//		RenderSFMLImpl::renderLine(window, *m_camera, v1, v2, color);
-				//		RenderSFMLImpl::renderPoint(window, *m_camera, v1, color);
-				//		RenderSFMLImpl::renderPoint(window, *m_camera, v2, color);
-				//	}
-				//	else
-				//	{
-				//		RenderSFMLImpl::renderPoint(window, *m_camera, elem.vertex, color);
-				//	}
-				//	i++;
-				//}
 			}
 			if(isPicked)
 			{
@@ -163,6 +137,9 @@ namespace Physics2D
 			// draw cull
 		}
 	private:
+
+		Edge edge;
+		Rectangle block;
 
 		Rectangle rectangle;
 		Polygon polygon1;

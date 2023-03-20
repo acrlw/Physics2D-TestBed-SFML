@@ -73,7 +73,6 @@ namespace Physics2D
 			i += step;
 		}
 		m_vertices.emplace_back(Matrix2x2(m_startRadian + m_spanRadian).multiply(Vector2(m_radius, 0)));
-		m_vertices.emplace_back(Vector2{ 0, 0 });
 		updateVertices();
 	}
 }

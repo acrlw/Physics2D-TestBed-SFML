@@ -14,7 +14,7 @@ namespace Physics2D
 		void load() override
 		{
 			capsule.set(1.5f, 0.5f);
-			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f},{-1.0f, 1.0f} });
+			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
 			triangle.scale(0.5f);
 			edge.set({ -100, 0 }, { 100, 0 });
 			edge2.set({ 0, 0 }, { 100, 40 });

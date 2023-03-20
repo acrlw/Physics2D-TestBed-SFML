@@ -4,10 +4,11 @@ namespace Physics2D
 
 	bool Detector::collide(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
-		auto [isColliding, simplex] = GJKHelper::gjk(shapeA, shapeB);
+		Simplex simplex = Narrowphase::gjk(shapeA, shapeB);
+		bool isColliding = simplex.isContainOrigin;
 
 		if (shapeA.transform.position.fuzzyEqual(shapeB.transform.position) && !isColliding)
-			isColliding = simplex.containOrigin(true);
+			isColliding = simplex.containsOrigin(true);
 
 		return isColliding;
 	}
@@ -53,39 +54,22 @@ namespace Physics2D
 		Collision result;
 		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
 
-		auto [isColliding, simplex] = GJKHelper::gjk(shapeA, shapeB);
+		Simplex simplex = Narrowphase::gjk(shapeA, shapeB);
+		bool isColliding = simplex.isContainOrigin;
 
 		if (shapeA.transform.position.fuzzyEqual(shapeB.transform.position) && !isColliding)
-			isColliding = simplex.containOrigin(true);
-
-		result.isColliding = isColliding;
-
+			isColliding = simplex.containsOrigin(true);
 
 		if (isColliding)
 		{
-			auto oldSimplex = simplex;
-			simplex = GJKHelper::epa(shapeA, shapeB, simplex);
-			PenetrationSource source = GJKHelper::dumpSource(simplex);
-
-			const auto info = GJKHelper::dumpInfo(source);
+			CollisionInfo info = Narrowphase::epa(simplex, shapeA, shapeB);
 			result.normal = info.normal;
+			result.isColliding = isColliding;
 			result.penetration = info.penetration;
 
-			auto [clipEdgeA, clipEdgeB] = ContactGenerator::recognize(shapeA, shapeB, info.normal);
-			auto pairList = ContactGenerator::clip(clipEdgeA, clipEdgeB, info.normal);
-
-			bool pass = false;
-			for (auto& elem : pairList)
-				if (realEqual((elem.pointA - elem.pointB).lengthSquare(), result.penetration * result.penetration))
-					pass = true;
-
-			//if fail, there must be a deeper contact point, use it:
-			if (pass)
-				result.contactList = pairList;
-			else
-				result.contactList.emplace_back(GJKHelper::dumpPoints(source));
+			result.contactList = Narrowphase::clip(info.simplex, info.normal, shapeA, shapeB);
 		}
-		assert(result.contactList.size() != 3);
+
 		return result;
 	}
 	Collision Detector::detect(Body* bodyA, const ShapePrimitive& shapeB)

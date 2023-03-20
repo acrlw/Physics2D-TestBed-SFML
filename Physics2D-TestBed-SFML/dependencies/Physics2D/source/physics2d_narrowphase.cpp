@@ -49,8 +49,8 @@ namespace Physics2D
 			const Vector2 ac = c - a;
 			const Vector2 bc = c - b;
 			const real ab_length = ab.length();
-			const real ac_length = ab.length();
-			const real bc_length = ab.length();
+			const real ac_length = ac.length();
+			const real bc_length = bc.length();
 
 			const real u_ab = -a.dot(ab.normal()) / ab_length;
 			const real u_ac = -a.dot(ac.normal()) / ac_length;
@@ -94,7 +94,7 @@ namespace Physics2D
 				{
 					//c b a
 					simplex.vertices[0] = vc;
-					simplex.vertices[1] = va;
+					simplex.vertices[2] = va;
 				}
 				else if (min == h_v)
 				{
@@ -106,7 +106,7 @@ namespace Physics2D
 				return simplex;
 			}
 
-			simplex.removeByIndex(2);
+			simplex.removeEnd();
 
 			iter++;
 		}
@@ -118,7 +118,7 @@ namespace Physics2D
 		//return 1d simplex with edge closest to origin
 		CollisionInfo info;
 		info.simplex = simplex;
-		info.simplex.removeByIndex(2);
+		info.simplex.removeEnd();
 
 		auto iterNext = [](std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
 			std::list<SimplexVertexWithOriginDistance>& list)
@@ -137,7 +137,7 @@ namespace Physics2D
 
 
 		//initiate polytope
-		std::list<SimplexVertexWithOriginDistance> polytope;
+		std::list<SimplexVertexWithOriginDistance> &polytope = info.polytope;
 		for(auto iter = simplex.vertices.begin(); iter != simplex.vertices.end(); ++iter)
 		{
 			auto next = iter;
@@ -344,8 +344,6 @@ namespace Physics2D
 			const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
 			const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
 
-
-
 			ClipVertex incEdge[2];
 			Vector2 refEdge[2];
 
@@ -436,10 +434,11 @@ namespace Physics2D
 					incContact1 = incEdge[0].vertex;
 					refContact1 = GeometryAlgorithm2D::pointToLineSegment(refEdge[0], refEdge[1], incEdge[0].vertex);
 				}
-				if(!swap)
-					pair.addContact(refContact1, incContact1);
-				else
-					pair.addContact(incContact1, refContact1);
+
+				if (swap)
+					std::swap(incContact1, refContact1);
+
+				pair.addContact(refContact1, incContact1);
 
 			}
 			else if(!incEdge[0].isFinalValid && incEdge[1].isFinalValid)
@@ -454,10 +453,10 @@ namespace Physics2D
 					refContact2 = GeometryAlgorithm2D::pointToLineSegment(refEdge[0], refEdge[1], incEdge[1].vertex);
 				}
 
-				if (!swap)
-					pair.addContact(refContact2, incContact2);
-				else
-					pair.addContact(incContact2, refContact2);
+				if (swap)
+					std::swap(incContact2, refContact2);
+
+				pair.addContact(refContact2, incContact2);
 			}
 			else
 			{
@@ -479,16 +478,15 @@ namespace Physics2D
 					incContact2 = incEdge[1].vertex;
 					refContact2 = GeometryAlgorithm2D::pointToLineSegment(refEdge[0], refEdge[1], incEdge[1].vertex);
 				}
-				if(!swap)
+
+				if(swap)
 				{
-					pair.addContact(refContact1, incContact1);
-					pair.addContact(refContact2, incContact2);
+					std::swap(incContact1, refContact1);
+					std::swap(incContact2, refContact2);
 				}
-				else
-				{
-					pair.addContact(incContact1, refContact1);
-					pair.addContact(incContact2, refContact2);
-				}
+
+				pair.addContact(refContact1, incContact1);
+				pair.addContact(refContact2, incContact2);
 			}
 		}
 		else if(!features[0].isValid && features[1].isValid)
@@ -510,9 +508,7 @@ namespace Physics2D
 			pair.addContact(contactA, features[1].vertex);
 		}
 		else
-		{
 			assert(false && "Invalid simplex.");
-		}
 		
 		return pair;
 	}
@@ -553,7 +549,7 @@ namespace Physics2D
 				const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
 
 				const Index tempIndex = simplex.vertices[0].index[AorB];
-				const size_t realSize = polygon->vertices().size() - 1;
+				const size_t realSize = polygon->vertices().size();
 				//TODO: change vertex convention of polygon 
 				const Index tempIndexNext = (tempIndex + 1) % realSize;
 				const Index tempIndexPrev = (tempIndex - 1 + realSize) % realSize;

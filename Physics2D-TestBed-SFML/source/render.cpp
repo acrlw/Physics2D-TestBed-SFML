@@ -110,10 +110,10 @@ namespace Physics2D
 		assert(shape.shape->type() == Shape::Type::Polygon);
 		sf::ConvexShape convex;
 		Polygon* polygon = static_cast<Polygon*>(shape.shape);
-		convex.setPointCount(polygon->vertices().size() - 1);
-		for (size_t i = 0; i < polygon->vertices().size() - 1; ++i)
+		convex.setPointCount(polygon->vertices().size());
+		for (size_t i = 0; i < polygon->vertices().size(); ++i)
 		{
-			const Vector2 worldPos = Matrix2x2(shape.transform.rotation).multiply(polygon->vertices()[i] * RenderConstant::ScaleFactor) + shape.transform.position;
+			const Vector2 worldPos = shape.transform.translatePoint(polygon->vertices()[i] * RenderConstant::ScaleFactor);
 			const Vector2 screenPos = camera.worldToScreen(worldPos);
 			convex.setPoint(i, toVector2f(screenPos));
 		}

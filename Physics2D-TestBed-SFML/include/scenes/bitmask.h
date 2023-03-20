@@ -13,6 +13,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			block.set(20, 1.0f);
 			rectangle.set(1.0f, 1.0f);
 			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
 			
@@ -20,7 +21,7 @@ namespace Physics2D
 			for(real i = 0;i < 3.0;i += 1.0f)
 			{
 				Body* ground = m_world->createBody();
-				ground->setShape(&edge);
+				ground->setShape(&block);
 				ground->position().set({ 0, -6 + i * 3.0f });
 				ground->setFriction(0.4f);
 				ground->setBitmask(mask);
@@ -51,6 +52,7 @@ namespace Physics2D
 		}
 	private:
 		Rectangle rectangle;
+		Rectangle block;
 		Edge edge;
 	};
 }

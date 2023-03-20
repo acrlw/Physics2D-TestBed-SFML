@@ -6,7 +6,7 @@
 #include "physics2d_math.h"
 #include "physics2d_shape.h"
 #include "physics2d_body.h"
-
+#include "physics2d_narrowphase.h"
 namespace Physics2D
 {
 	struct Collision
@@ -14,7 +14,7 @@ namespace Physics2D
 		bool isColliding = false;
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
-		Container::Vector<PointPair> contactList;
+		ContactPair contactList;
 		Vector2 normal;
 		real penetration = 0;
 	};

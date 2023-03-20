@@ -13,13 +13,14 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			block.set(200, 1.0f);
 			edge.set({ -100, 0 }, { 100, 0 });
 			rectangle.set(1.0f, 1.0f);
 
 			Body* ground;
 
 			ground = m_world->createBody();
-			ground->setShape(&edge);
+			ground->setShape(&block);
 			ground->position().set({ 0.0, 0.0 });
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
@@ -51,6 +52,7 @@ namespace Physics2D
 	private:
 		Rectangle rectangle;
 		Edge edge;
+		Rectangle block;
 
 	};
 }

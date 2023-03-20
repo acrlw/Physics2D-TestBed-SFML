@@ -22,8 +22,9 @@ namespace Physics2D
         Vector2 normal()const;
         void setNormal(const Vector2& normal);
     private:
-        Vector2 m_startPoint;
-        Vector2 m_endPoint;
+        //0: start
+        //1: end
+        Vector2 m_point[2];
         Vector2 m_normal;
     };
 }

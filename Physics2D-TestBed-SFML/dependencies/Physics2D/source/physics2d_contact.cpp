@@ -102,8 +102,12 @@ namespace Physics2D
 		auto& contactList = m_contactTable[relation];
 		//assert(contactList.size() <= 2);
 
-		for (const auto& elem : collision.contactList)
+		for(uint8_t i = 0; i < collision.contactList.count; i += 2)
 		{
+			PointPair elem;
+			elem.pointA = collision.contactList.points[i];
+			elem.pointB = collision.contactList.points[i + 1];
+
 			bool existed = false;
 			Vector2 localA = bodyA->toLocalPoint(elem.pointA);
 			Vector2 localB = bodyB->toLocalPoint(elem.pointB);

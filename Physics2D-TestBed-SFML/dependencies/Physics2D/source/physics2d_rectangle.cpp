@@ -53,6 +53,5 @@ namespace Physics2D
 		m_vertices.emplace_back(Vector2(-m_width * (0.5f), -m_height * (0.5f)));
 		m_vertices.emplace_back(Vector2(m_width * (0.5f), -m_height * (0.5f)));
 		m_vertices.emplace_back(Vector2(m_width * (0.5f), m_height * (0.5f)));
-		m_vertices.emplace_back(Vector2(-m_width * (0.5f), m_height * (0.5f)));
 	}
 }

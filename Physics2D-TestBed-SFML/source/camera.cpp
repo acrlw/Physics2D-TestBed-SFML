@@ -110,7 +110,7 @@ namespace Physics2D
 				//draw axis
 
 				sf::Color color = sf::Color::Green;
-				color.a = 225;
+				color.a = 250;
 
 				Container::Vector<Vector2> axisPoints;
 				axisPoints.reserve(static_cast<size_t>(m_axisPointCount * 2 + 1));
@@ -121,7 +121,7 @@ namespace Physics2D
 					axisPoints.emplace_back(Vector2(i, 0));
 				}
 				RenderSFMLImpl::renderPoints(window, *this, axisPoints, color);
-				color.a = 100;
+				color.a = 140;
 				RenderSFMLImpl::renderLine(window, *this, Vector2(0, -m_axisPointCount), Vector2(0, m_axisPointCount), color);
 				RenderSFMLImpl::renderLine(window, *this, Vector2(-m_axisPointCount, 0), Vector2(m_axisPointCount, 0), color);
 
@@ -361,7 +361,7 @@ namespace Physics2D
 	void Camera::drawGridScaleLine(sf::RenderWindow& window)
 	{
 		sf::Color darkGreen = RenderConstant::MaterialDarkGreen;
-		darkGreen.a = 204;
+		darkGreen.a = 210;
 		bool fineEnough = m_meterToPixel > 180;
 		real h;
 
@@ -402,7 +402,7 @@ namespace Physics2D
 
 			lines.clear();
 			lines.reserve(static_cast<size_t>(m_axisPointCount * 2.0f / 0.2f));
-			darkGreen.a = 90;
+			darkGreen.a = 75;
 			for (real i = -m_axisPointCount; i <= m_axisPointCount; i += h)
 			{
 				if (realEqual(i, 0.0f))

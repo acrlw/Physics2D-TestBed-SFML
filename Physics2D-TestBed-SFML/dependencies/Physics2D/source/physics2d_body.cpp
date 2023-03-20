@@ -217,11 +217,14 @@ namespace Physics2D {
             const Vector2 center = polygon->center();
             real sum1 = 0.0;
             real sum2 = 0.0;
-
-            for (uint32_t i = 0; i < polygon->vertices().size() - 1; i++)
+            for (auto iter = polygon->vertices().begin(); iter != polygon->vertices().end(); ++iter)
             {
-                Vector2 n1 = polygon->vertices()[i] - center;
-                Vector2 n2 = polygon->vertices()[i + 1] - center;
+                auto next = iter + 1;
+                if (next == polygon->vertices().end())
+                    next = polygon->vertices().begin();
+
+                Vector2 n1 = *iter - center;
+                Vector2 n2 = *next - center;
                 real cross = std::fabs(n1.cross(n2));
                 real dot = n2.dot(n2) + n2.dot(n1) + n1.dot(n1);
                 sum1 += cross * dot;

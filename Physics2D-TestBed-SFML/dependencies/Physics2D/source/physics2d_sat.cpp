@@ -125,13 +125,14 @@ namespace Physics2D
 		bool onPolygon = false;
 		
 		//polygon sat test
-		for(int i = 0;i < polygonB->vertices().size() - 1;i++)
+		for(auto iter = polygonB->vertices().begin();iter != polygonB->vertices().end();iter++)
 		{
-			Vector2 v1 = shapeB.transform.translatePoint(polygonB->vertices()[i]);
-			Vector2 v2 = shapeB.transform.translatePoint(polygonB->vertices()[i + 1]);
-			Vector2 edge = v1 - v2;
-			Vector2 normal = edge.perpendicular().normal();
+			auto next = iter + 1;
+			if(next == polygonB->vertices().end())
+				next = polygonB->vertices().begin();
 
+			Vector2 v1 = shapeB.transform.translatePoint(*iter);
+			Vector2 v2 = shapeB.transform.translatePoint(*next);
 
 			ProjectedSegment segmentC = axisProjection(shapeA, circleA, normal);
 			ProjectedSegment segmentP = axisProjection(shapeB, polygonB, normal);
@@ -181,10 +182,14 @@ namespace Physics2D
 			ProjectedSegment segment;
 
 			ProjectedPoint targetAPoint, targetBPoint;
-			for(int i = 0;i < polyA->vertices().size() - 1;i++)
+			for(auto iter = polyA->vertices().begin();iter != polyA->vertices().end();iter++)
 			{
-				Vector2 v1 = polygonA.transform.translatePoint(polyA->vertices()[i]);
-				Vector2 v2 = polygonA.transform.translatePoint(polyA->vertices()[i + 1]);
+				auto next = iter + 1;
+				if(next == polyA->vertices().end())
+					next = polyA->vertices().begin();
+
+				Vector2 v1 = polygonA.transform.translatePoint(*iter);
+				Vector2 v2 = polygonA.transform.translatePoint(*next);
 				Vector2 edge = v1 - v2;
 				Vector2 normal = edge.perpendicular().normal();
 
@@ -198,9 +203,9 @@ namespace Physics2D
 				ProjectedPoint polyAPoint, polyBPoint;
 				polyAPoint = segmentA.max == finalSegment.max ? finalSegment.max : finalSegment.min;
 				polyBPoint = segmentB.max == finalSegment.max ? finalSegment.max : finalSegment.min;
-				
 
-				if(minLength > length)
+
+				if (minLength > length)
 				{
 					minLength = length;
 					finalNormal = normal;
@@ -214,7 +219,7 @@ namespace Physics2D
 
 		auto [normal1, length1, axis1, polyAPoint1, polyBPoint1] = test(shapeA, shapeB);
 		auto [normal2, length2, axis2, polyBPoint2, polyAPoint2] = test(shapeB, shapeA);
-		if ( axis1 + axis2 == polyA->vertices().size() + polyB->vertices().size() - 2 )
+		if ( axis1 + axis2 == polyA->vertices().size() + polyB->vertices().size() )
 			result.isColliding = true;
 
 		ProjectedPoint* pointA;

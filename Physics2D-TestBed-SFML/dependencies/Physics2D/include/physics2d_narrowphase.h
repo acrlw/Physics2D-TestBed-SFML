@@ -57,6 +57,7 @@ namespace Physics2D
 		Vector2 normal;
 		real penetration = 0;
 		Simplex simplex;
+		std::list<SimplexVertexWithOriginDistance> polytope;
 	};
 	class Narrowphase
 	{
