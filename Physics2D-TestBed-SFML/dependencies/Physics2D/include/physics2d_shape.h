@@ -44,6 +44,10 @@ namespace Physics2D
         {
         	return Matrix2x2(-rotation).multiply(source - position) / scale;
 		}
+        Vector2 inverseRotatePoint(const Vector2& point)const
+        {
+            return Matrix2x2(-rotation).multiply(point);
+        }
     };
     /// <summary>
     /// Basic Shape Description Primitive.

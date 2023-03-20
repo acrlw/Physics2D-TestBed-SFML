@@ -332,18 +332,19 @@ namespace Physics2D
 	{
 		ContactPair pair;
 		//find feature
-		const auto [validA, vertexA, indexA1, indexA2] = dumpFeatures(simplex, normal, shapeA, 0);
-		const auto [validB, vertexB, indexB1, indexB2] = dumpFeatures(simplex, normal, shapeB, 1);
+		pair.feature[0] = findFeatures(simplex, normal, shapeA, 0);
+		pair.feature[1] = findFeatures(simplex, normal, shapeB, 1);
 
-		if (validA && validB)
+		if (pair.feature[0].isValid && pair.feature[1].isValid)
 		{
 			//clip two edge
 		}
-		else if(!validA && validB)
+		else if(!pair.feature[0].isValid && pair.feature[1].isValid)
 		{
 			//project a to edge b
+			
 		}
-		else if(validA && !validB)
+		else if(pair.feature[0].isValid && !pair.feature[1].isValid)
 		{
 			//project b to edge a
 		}
@@ -351,6 +352,7 @@ namespace Physics2D
 		{
 			assert(false && "Invalid simplex.");
 		}
+		
 		return pair;
 	}
 
@@ -376,14 +378,13 @@ namespace Physics2D
 	{
 	}
 
-	std::tuple<bool, Vector2, Index, Index> Narrowphase::dumpFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB)
+	Feature Narrowphase::findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB)
 	{
-		Index index1 = INT_MAX, index2 = INT_MAX;
-		Vector2 vertex;
-		bool valid = simplex.vertices[0].index[AorB] != INT_MAX;
-		if (valid)
+		Feature feature;
+		feature.isValid = simplex.vertices[0].index[AorB] != INT_MAX;
+		if (feature.isValid)
 		{
-			if (simplex.vertices[0].point[AorB] == simplex.vertices[0].point[AorB])
+			if (simplex.vertices[0].point[AorB] == simplex.vertices[1].point[AorB])
 			{
 				//same vertex case
 				//find neighbor index
@@ -391,42 +392,45 @@ namespace Physics2D
 				const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
 
 				const Index tempIndex = simplex.vertices[0].index[AorB];
-				const Index tempIndexNext = (tempIndex + 1) % polygon->vertices().size();
-				const Index tempIndexPrev = (tempIndex - 1 + polygon->vertices().size()) % polygon->vertices().size();
+				const size_t realSize = polygon->vertices().size() - 1;
+				//TODO: change vertex convention of polygon 
+				const Index tempIndexNext = (tempIndex + 1) % realSize;
+				const Index tempIndexPrev = (tempIndex - 1 + realSize) % realSize;
 
 				//check most perpendicular
-				const Vector2 ab = polygon->vertices()[tempIndexNext] - polygon->vertices()[tempIndexPrev];
+				const Vector2 ab = polygon->vertices()[tempIndexNext] - polygon->vertices()[tempIndex];
 				const Vector2 ac = polygon->vertices()[tempIndex] - polygon->vertices()[tempIndexPrev];
 
-				const Vector2 n = shape.transform.inverseTranslatePoint(normal);
+				const Vector2 n = shape.transform.inverseRotatePoint(normal);
 
 				const real dot1 = Math::abs(Vector2::dotProduct(ab, n));
 				const real dot2 = Math::abs(Vector2::dotProduct(ac, n));
 
 				if (dot1 > dot2)
 				{
-					index1 = tempIndexPrev;
-					index2 = tempIndex;
+					feature.index[0] = tempIndexPrev;
+					feature.index[1] = tempIndex;
 				}
 				else
 				{
-					index1 = tempIndex;
-					index2 = tempIndexNext;
+					feature.index[0] = tempIndex;
+					feature.index[1] = tempIndexNext;
 				}
+				
 			}
 			else
 			{
 				//edge case
-				index1 = simplex.vertices[0].index[AorB];
-				index2 = simplex.vertices[1].index[AorB];
+				feature.index[0] = simplex.vertices[0].index[AorB];
+				feature.index[1] = simplex.vertices[1].index[AorB];
 			}
 		}
 		else
 		{
 			//vertex case
-			vertex = simplex.vertices[0].point[AorB];
+			feature.vertex = simplex.vertices[0].point[AorB];
 		}
-		return { valid, vertex, index1, index2 };
+		return feature;
 	};
 
 }

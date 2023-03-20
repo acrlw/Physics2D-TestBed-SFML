@@ -14,7 +14,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
-			rectangle.set(3, 4);
+			rectangle.set(2, 3);
 			polygon1.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
 			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f },{0.0f, 4.0f } });
 
@@ -24,7 +24,7 @@ namespace Physics2D
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
 
-			shape1.shape = &rectangle;
+			shape1.shape = &polygon1;
 			shape1.transform.position.set(1.0f, 2.0f);
 			shape1.transform.rotation = Math::degreeToRadian(35);
 
@@ -87,17 +87,58 @@ namespace Physics2D
 				auto info = Narrowphase::epa(simplex, shape1, shape2);
 				//
 				
-				RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, sf::Color::Green);
+				//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, sf::Color::Green);
 				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
 
-				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], info.simplex.vertices[1].point[0], sf::Color::Yellow);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], sf::Color::Yellow, 4);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], sf::Color::Yellow);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], info.simplex.vertices[1].point[0], sf::Color::Yellow);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], sf::Color::Yellow, 4);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], sf::Color::Yellow);
 
-				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1], info.simplex.vertices[1].point[1], sf::Color::Magenta);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1], info.simplex.vertices[1].point[1], sf::Color::Magenta);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
 				auto pairs = Narrowphase::clip(info.simplex, info.normal, shape1, shape2);
+				sf::Color color = sf::Color::Magenta;
+				int i = 0;
+				//color = sf::Color(252, 236, 86);
+				//Vector2 v1 = shape2.transform.translatePoint(rectangle.vertices()[pairs.feature[1].index[0]]);
+				//Vector2 v2 = shape2.transform.translatePoint(rectangle.vertices()[pairs.feature[1].index[1]]);
+				//RenderSFMLImpl::renderLine(window, *m_camera, v1, v2, color);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, v1, color);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, v2, color);
+
+				//color = sf::Color(239, 103, 50);
+				//Vector2 v3 = pairs.feature[0].vertex;
+				//RenderSFMLImpl::renderPoint(window, *m_camera, v3, color);
+
+				for(auto& elem : pairs.feature)
+				{
+					if(elem.isValid)
+					{
+						Vector2 v1, v2;
+						if(i == 0)
+						{
+							color = sf::Color(239, 103, 50);
+							v1 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[0]]);
+							v2 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[1]]);
+						}
+						else
+						{
+							color = sf::Color(252, 236, 86);
+							v1 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[0]]);
+							v2 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[1]]);
+						}
+
+						RenderSFMLImpl::renderLine(window, *m_camera, v1, v2, color);
+						RenderSFMLImpl::renderPoint(window, *m_camera, v1, color);
+						RenderSFMLImpl::renderPoint(window, *m_camera, v2, color);
+					}
+					else
+					{
+						RenderSFMLImpl::renderPoint(window, *m_camera, elem.vertex, color);
+					}
+					i++;
+				}
 			}
 			if(isPicked)
 			{

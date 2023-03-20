@@ -21,16 +21,26 @@ namespace Physics2D
 		SimplexVertex vertex;
 		real distance = 0.0f;
 	};
+	struct Feature
+	{
+		bool isValid = false;
+		Vector2 vertex;
+		Index index[2] = { INT_MAX, INT_MAX };
+	};
 	struct ContactPair
 	{
-		Vector2 points[4];
-		uint32_t count = 0;
-		void addContact(const Vector2& pointA, const Vector2& pointB)
-		{
-			assert(count <= 4);
-			points[count++] = pointA;
-			points[count++] = pointB;
-		}
+		//Vector2 points[4];
+		//uint32_t count = 0;
+		//void addContact(const Vector2& pointA, const Vector2& pointB)
+		//{
+		//	assert(count <= 4);
+		//	points[count++] = pointA;
+		//	points[count++] = pointB;
+		//}
+
+		//feature[0] : featureA
+		//feature[1] : featureB
+		Feature feature[2];
 	};
 	struct CollisionInfo
 	{
@@ -58,7 +68,7 @@ namespace Physics2D
 		static void satPolygonVsEllipse(const Polygon& polygonA, const Transform& transformA, const Ellipse& ellipseB, const Transform& transformB);
 		static void satPolygonVsEdge(const Polygon& polygonA, const Transform& transformA, const Edge& edgeB, const Transform& transformB);
 	private:
-		static std::tuple<bool, Vector2, Index, Index> dumpFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
+		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
 	};
 
 }
