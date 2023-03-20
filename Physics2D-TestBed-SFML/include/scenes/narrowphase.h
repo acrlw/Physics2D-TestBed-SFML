@@ -24,7 +24,7 @@ namespace Physics2D
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
 
-			shape1.shape = &polygon1;
+			shape1.shape = &rectangle;
 			shape1.transform.position.set(1.0f, 2.0f);
 			shape1.transform.rotation = Math::degreeToRadian(35);
 
@@ -98,8 +98,24 @@ namespace Physics2D
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
 				auto pairs = Narrowphase::clip(info.simplex, info.normal, shape1, shape2);
-				sf::Color color = sf::Color::Magenta;
-				int i = 0;
+				sf::Color color1 = sf::Color(239, 103, 50);
+				sf::Color color2 = sf::Color(252, 236, 86);
+				if(pairs.count == 2)
+				{
+					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
+					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
+					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
+				}
+				else if(pairs.count == 4)
+				{
+					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
+					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[2], pairs.points[3], sf::Color::Magenta);
+					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
+					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
+					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[2], color1);
+					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[3], color2);
+				}
+				//int i = 0;
 				//color = sf::Color(252, 236, 86);
 				//Vector2 v1 = shape2.transform.translatePoint(rectangle.vertices()[pairs.feature[1].index[0]]);
 				//Vector2 v2 = shape2.transform.translatePoint(rectangle.vertices()[pairs.feature[1].index[1]]);
@@ -111,34 +127,34 @@ namespace Physics2D
 				//Vector2 v3 = pairs.feature[0].vertex;
 				//RenderSFMLImpl::renderPoint(window, *m_camera, v3, color);
 
-				for(auto& elem : pairs.feature)
-				{
-					if(elem.isValid)
-					{
-						Vector2 v1, v2;
-						if(i == 0)
-						{
-							color = sf::Color(239, 103, 50);
-							v1 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[0]]);
-							v2 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[1]]);
-						}
-						else
-						{
-							color = sf::Color(252, 236, 86);
-							v1 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[0]]);
-							v2 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[1]]);
-						}
+				//for(auto& elem : pairs.feature)
+				//{
+				//	if(elem.isValid)
+				//	{
+				//		Vector2 v1, v2;
+				//		if(i == 0)
+				//		{
+				//			color = sf::Color(239, 103, 50);
+				//			v1 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[0]]);
+				//			v2 = shape1.transform.translatePoint(polygon1.vertices()[elem.index[1]]);
+				//		}
+				//		else
+				//		{
+				//			color = sf::Color(252, 236, 86);
+				//			v1 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[0]]);
+				//			v2 = shape2.transform.translatePoint(rectangle.vertices()[elem.index[1]]);
+				//		}
 
-						RenderSFMLImpl::renderLine(window, *m_camera, v1, v2, color);
-						RenderSFMLImpl::renderPoint(window, *m_camera, v1, color);
-						RenderSFMLImpl::renderPoint(window, *m_camera, v2, color);
-					}
-					else
-					{
-						RenderSFMLImpl::renderPoint(window, *m_camera, elem.vertex, color);
-					}
-					i++;
-				}
+				//		RenderSFMLImpl::renderLine(window, *m_camera, v1, v2, color);
+				//		RenderSFMLImpl::renderPoint(window, *m_camera, v1, color);
+				//		RenderSFMLImpl::renderPoint(window, *m_camera, v2, color);
+				//	}
+				//	else
+				//	{
+				//		RenderSFMLImpl::renderPoint(window, *m_camera, elem.vertex, color);
+				//	}
+				//	i++;
+				//}
 			}
 			if(isPicked)
 			{

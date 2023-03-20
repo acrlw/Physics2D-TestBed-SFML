@@ -457,6 +457,7 @@ namespace Physics2D
 		return std::nullopt;
 	}
 
+
 	std::optional<std::pair<Vector2, Vector2>> GeometryAlgorithm2D::raycastAABB(const Vector2& p, const Vector2& dir, const Vector2& topLeft, const Vector2& bottomRight)
 	{
 		const real xmin = topLeft.x;
@@ -637,6 +638,13 @@ namespace Physics2D
 		//same side or on the edge
 		return Math::sameSign(u.cross(v), u.cross(w));
 	}
+	Vector2 GeometryAlgorithm2D::lineSegmentNormal(const Vector2& edgePoint1, const Vector2& edgePoint2, const Vector2& refDirection)
+	{
+		Vector2 normal = (edgePoint2 - edgePoint1).normal().perpendicular();
+		if (refDirection.dot(normal) < 0)
+			normal.negate();
+		return normal;
+	}
 	Vector2 GeometryAlgorithm2D::pointToLineSegment(const Vector2& a, const Vector2& b, const Vector2& p)
 	{
 		if (a == b)
@@ -660,5 +668,14 @@ namespace Physics2D
 		Vector2 op_proj = a + ap_proj;
 		//return point p_proj
 		return op_proj;
+	}
+	Vector2 GeometryAlgorithm2D::rayRayIntersectionUnsafe(const Vector2& p1, const Vector2& dir1, const Vector2& p2, const Vector2& dir2)
+	{
+		//https://stackoverflow.com/a/2932601
+
+		const real det = dir1.y * dir2.x - dir1.x * dir2.y;
+		assert(!realEqual(det, 0));
+		const real u = (dir2.x * (p2.y - p1.y) - dir2.y * (p2.x - p1.x)) / det;
+		return p1 + dir1 * u;
 	}
 }

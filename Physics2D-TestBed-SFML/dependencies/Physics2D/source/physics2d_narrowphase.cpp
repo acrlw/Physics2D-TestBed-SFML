@@ -332,21 +332,182 @@ namespace Physics2D
 	{
 		ContactPair pair;
 		//find feature
-		pair.feature[0] = findFeatures(simplex, normal, shapeA, 0);
-		pair.feature[1] = findFeatures(simplex, normal, shapeB, 1);
+		std::array<Feature, 2> features;
+		features[0] = findFeatures(simplex, normal, shapeA, 0);
+		features[1] = findFeatures(simplex, normal, shapeB, 1);
 
-		if (pair.feature[0].isValid && pair.feature[1].isValid)
+		if (features[0].isValid && features[1].isValid)
 		{
 			//clip two edge
+
+			//get vertices
+			const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
+			const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
+
+
+
+			ClipVertex incEdge[2];
+			Vector2 refEdge[2];
+
+			Vector2 va1 = shapeA.transform.translatePoint(polygonA->vertices()[features[0].index[0]]);
+			Vector2 va2 = shapeA.transform.translatePoint(polygonA->vertices()[features[0].index[1]]);
+			Vector2 vb1 = shapeB.transform.translatePoint(polygonB->vertices()[features[1].index[0]]);
+			Vector2 vb2 = shapeB.transform.translatePoint(polygonB->vertices()[features[1].index[1]]);
+
+			Vector2 refNormal = normal;
+
+			incEdge[0].vertex = vb1;
+			incEdge[1].vertex = vb2;
+
+			refEdge[0] = va1;
+			refEdge[1] = va2;
+
+			const bool swap = Math::abs((va2 - va1).dot(refNormal))
+				>	Math::abs((vb2 - vb1).dot(refNormal));
+			if(swap)
+			{
+				//swap
+				refEdge[0] = vb1;
+				refEdge[1] = vb2;
+				incEdge[0].vertex = va1;
+				incEdge[1].vertex = va2;
+				//notice, default normal is changed.
+				refNormal.negate();
+			}
+
+			Vector2 refEdgeDir = (refEdge[1] - refEdge[0]).normal();
+			Vector2 refEdgeNormal = GeometryAlgorithm2D::lineSegmentNormal(refEdge[0], refEdge[1], refNormal);
+
+			//check ref1
+			const bool isRef1Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[0]) >= 0;
+			const bool isRef1Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[0]) >= 0;
+
+			assert(isRef1Inc1Valid || isRef1Inc2Valid && "Invalid features.");
+
+			if(!isRef1Inc1Valid && isRef1Inc2Valid)
+			{
+				incEdge[0].isClip = true;
+				incEdge[0].vertex = GeometryAlgorithm2D::rayRayIntersectionUnsafe(refEdge[0], refEdgeNormal, 
+					incEdge[0].vertex, incEdge[1].vertex - incEdge[0].vertex);
+				incEdge[0].clipperVertex = refEdge[0];
+			}
+			else if (isRef1Inc1Valid && !isRef1Inc2Valid)
+			{
+				incEdge[1].isClip = true;
+				incEdge[1].vertex = GeometryAlgorithm2D::rayRayIntersectionUnsafe(refEdge[0], refEdgeNormal, 
+					incEdge[0].vertex, incEdge[1].vertex - incEdge[0].vertex);
+				incEdge[1].clipperVertex = refEdge[0];
+			}
+			//check ref2
+			const bool isRef2Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[1]) <= 0;
+			const bool isRef2Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[1]) <= 0;
+
+			assert(isRef2Inc1Valid || isRef2Inc2Valid && "Invalid features.");
+
+			if (!isRef2Inc1Valid && isRef2Inc2Valid)
+			{
+				incEdge[0].isClip = true;
+				incEdge[0].vertex = GeometryAlgorithm2D::rayRayIntersectionUnsafe(refEdge[1], refEdgeNormal, 
+					incEdge[0].vertex, incEdge[1].vertex - incEdge[0].vertex);
+				incEdge[0].clipperVertex = refEdge[1];
+			}
+			else if (isRef2Inc1Valid && !isRef2Inc2Valid)
+			{
+				incEdge[1].isClip = true;
+				incEdge[1].vertex = GeometryAlgorithm2D::rayRayIntersectionUnsafe(refEdge[1], refEdgeNormal, 
+					incEdge[0].vertex, incEdge[1].vertex - incEdge[0].vertex);
+				incEdge[1].clipperVertex = refEdge[1];
+			}
+
+			//check ref normal region
+			incEdge[0].isFinalValid = (incEdge[0].vertex - refEdge[0]).dot(refEdgeNormal) >= 0;
+			incEdge[1].isFinalValid = (incEdge[1].vertex - refEdge[0]).dot(refEdgeNormal) >= 0;
+
+			assert(incEdge[0].isFinalValid || incEdge[1].isFinalValid && "Invalid features.");
+			
+			if(incEdge[0].isFinalValid && !incEdge[1].isFinalValid)
+			{
+				//discard invalid, project valid point to segment
+				Vector2 incContact1 = incEdge[0].vertex;
+				Vector2 refContact1 = incEdge[0].clipperVertex;
+
+				if (!incEdge[0].isClip)
+				{
+					incContact1 = incEdge[0].vertex;
+					refContact1 = GeometryAlgorithm2D::pointToLineSegment(refEdge[0], refEdge[1], incEdge[0].vertex);
+				}
+				if(!swap)
+					pair.addContact(refContact1, incContact1);
+				else
+					pair.addContact(incContact1, refContact1);
+
+			}
+			else if(!incEdge[0].isFinalValid && incEdge[1].isFinalValid)
+			{
+				//discard invalid, project valid point to segment
+				Vector2 incContact2 = incEdge[1].vertex;
+				Vector2 refContact2 = incEdge[1].clipperVertex;
+
+				if (!incEdge[1].isClip)
+				{
+					incContact2 = incEdge[1].vertex;
+					refContact2 = GeometryAlgorithm2D::pointToLineSegment(refEdge[0], refEdge[1], incEdge[1].vertex);
+				}
+
+				if (!swap)
+					pair.addContact(refContact2, incContact2);
+				else
+					pair.addContact(incContact2, refContact2);
+			}
+			else
+			{
+				//both valid, continue to check isClip
+
+				Vector2 incContact1 = incEdge[0].vertex;
+				Vector2 refContact1 = incEdge[0].clipperVertex;
+
+				Vector2 incContact2 = incEdge[1].vertex;
+				Vector2 refContact2 = incEdge[1].clipperVertex;
+
+				if(!incEdge[0].isClip)
+				{
+					incContact1 = incEdge[0].vertex;
+					refContact1 = GeometryAlgorithm2D::pointToLineSegment(refEdge[0], refEdge[1], incEdge[0].vertex);
+				}
+				if (!incEdge[1].isClip)
+				{
+					incContact2 = incEdge[1].vertex;
+					refContact2 = GeometryAlgorithm2D::pointToLineSegment(refEdge[0], refEdge[1], incEdge[1].vertex);
+				}
+				if(!swap)
+				{
+					pair.addContact(refContact1, incContact1);
+					pair.addContact(refContact2, incContact2);
+				}
+				else
+				{
+					pair.addContact(incContact1, refContact1);
+					pair.addContact(incContact2, refContact2);
+				}
+			}
 		}
-		else if(!pair.feature[0].isValid && pair.feature[1].isValid)
+		else if(!features[0].isValid && features[1].isValid)
 		{
 			//project a to edge b
-			
+			const Polygon* polygon = static_cast<const Polygon*>(shapeB.shape);
+			const Vector2 vb1 = shapeB.transform.translatePoint(polygon->vertices()[features[1].index[0]]);
+			const Vector2 vb2 = shapeB.transform.translatePoint(polygon->vertices()[features[1].index[1]]);
+			Vector2 contactB = GeometryAlgorithm2D::pointToLineSegment(vb1, vb2, features[0].vertex);
+			pair.addContact(features[0].vertex, contactB);
 		}
-		else if(pair.feature[0].isValid && !pair.feature[1].isValid)
+		else if(features[0].isValid && !features[1].isValid)
 		{
 			//project b to edge a
+			const Polygon* polygon = static_cast<const Polygon*>(shapeA.shape);
+			const Vector2 va1 = shapeA.transform.translatePoint(polygon->vertices()[features[0].index[0]]);
+			const Vector2 va2 = shapeA.transform.translatePoint(polygon->vertices()[features[0].index[1]]);
+			Vector2 contactA = GeometryAlgorithm2D::pointToLineSegment(va1, va2, features[1].vertex);
+			pair.addContact(contactA, features[1].vertex);
 		}
 		else
 		{

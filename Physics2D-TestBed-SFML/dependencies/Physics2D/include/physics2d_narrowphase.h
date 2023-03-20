@@ -27,20 +27,30 @@ namespace Physics2D
 		Vector2 vertex;
 		Index index[2] = { INT_MAX, INT_MAX };
 	};
+	struct ClipVertex
+	{
+		Vector2 vertex;
+		bool isClip = false;
+		Vector2 clipperVertex;
+		bool isFinalValid = false;
+	};
 	struct ContactPair
 	{
-		//Vector2 points[4];
-		//uint32_t count = 0;
-		//void addContact(const Vector2& pointA, const Vector2& pointB)
-		//{
-		//	assert(count <= 4);
-		//	points[count++] = pointA;
-		//	points[count++] = pointB;
-		//}
+		//contact pair1:
+		//	points[0]: pointA
+		//	points[1]: pointB
 
-		//feature[0] : featureA
-		//feature[1] : featureB
-		Feature feature[2];
+		//if there is second contact pair:
+		//	points[2]: pointA
+		//	points[3]: pointB
+		Vector2 points[4];
+		uint32_t count = 0;
+		void addContact(const Vector2& pointA, const Vector2& pointB)
+		{
+			assert(count <= 4);
+			points[count++] = pointA;
+			points[count++] = pointB;
+		}
 	};
 	struct CollisionInfo
 	{
@@ -51,16 +61,16 @@ namespace Physics2D
 	class Narrowphase
 	{
 	public:
-		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 8);
+		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 10);
 		static CollisionInfo epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
-			const size_t& iteration = 8, const real& epsilon = Constant::GeometryEpsilon);
+			const size_t& iteration = 10, const real& epsilon = Constant::GeometryEpsilon);
 		static SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& direction);
 		static std::pair<Vector2, Index> findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
 		static Vector2 calculateDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);
 		static std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
 		static ContactPair clip(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 
-		static real gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 8);
+		static real gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 10);
 
 		static void sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 		static void satPolygonVsPolygon(const Polygon& polygonA, const Transform& transformA, const Polygon& polygonB, const Transform& transformB);

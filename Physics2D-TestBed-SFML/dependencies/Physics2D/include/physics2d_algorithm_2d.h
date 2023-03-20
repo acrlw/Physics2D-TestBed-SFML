@@ -183,6 +183,14 @@ namespace Physics2D
 		bool triangleContainsOrigin(const Vector2& a, const Vector2& b, const Vector2& c);
 		bool isPointOnSameSide(const Vector2& edgePoint1, const Vector2& edgePoint2, const Vector2& refPoint, const Vector2 targetPoint);
 		/**
+		 * \brief calculate normal of line segment with direction of refDirection
+		 * \param edgePoint1 
+		 * \param edgePoint2 
+		 * \param refDirection 
+		 * \return 
+		 */
+		Vector2 lineSegmentNormal(const Vector2& edgePoint1, const Vector2& edgePoint2, const Vector2& refDirection);
+		/**
 		 * \brief calculate point on line segment ab that is the shortest length to point p
 		 * \param a point a
 		 * \param b point b
@@ -190,6 +198,15 @@ namespace Physics2D
 		 * \return 
 		 */
 		Vector2 pointToLineSegment(const Vector2& a, const Vector2& b, const Vector2& p);
+		/**
+		 * \brief ray-ray intersection with no exception check
+		 * \param p1 
+		 * \param dir1 
+		 * \param p2 
+		 * \param dir2 
+		 * \return 
+		 */
+		Vector2 rayRayIntersectionUnsafe(const Vector2& p1, const Vector2& dir1, const Vector2& p2, const Vector2& dir2);
 	};
 }
 #endif
