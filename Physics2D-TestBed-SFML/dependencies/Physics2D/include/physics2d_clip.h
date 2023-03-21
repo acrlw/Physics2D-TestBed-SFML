@@ -9,7 +9,7 @@ namespace Physics2D
 	class PHYSICS2D_API ContactGenerator
 	{
 	public:
-		struct ClipEdge
+		struct PHYSICS2D_API ClipEdge
 		{
 			Vector2 p1;
 			Vector2 p2;

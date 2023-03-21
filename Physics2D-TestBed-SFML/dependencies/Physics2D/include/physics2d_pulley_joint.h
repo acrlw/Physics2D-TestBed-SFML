@@ -3,11 +3,11 @@
 
 namespace Physics2D
 {
-	struct PulleyJointPrimitive
+	struct PHYSICS2D_API PulleyJointPrimitive
 	{
 		
 	};
-	class PulleyJoint : public Joint
+	class PHYSICS2D_API PulleyJoint : public Joint
 	{
 	public:
 		PulleyJoint()

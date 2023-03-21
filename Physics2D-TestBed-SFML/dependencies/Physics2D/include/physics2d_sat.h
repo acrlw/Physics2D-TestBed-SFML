@@ -6,19 +6,19 @@
 
 namespace Physics2D
 {
-    struct ProjectedPoint
+    struct PHYSICS2D_API ProjectedPoint
     {
         Vector2 vertex;
         real value = 0;
         Index index = -1;
         bool operator==(const ProjectedPoint& rhs);
     };
-    struct ProjectedEdge
+    struct PHYSICS2D_API ProjectedEdge
     {
         Vector2 vertex1;
         Vector2 vertex2;
     };
-    struct ProjectedSegment
+    struct PHYSICS2D_API ProjectedSegment
     {
         ProjectedPoint min;
         ProjectedPoint max;

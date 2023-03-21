@@ -4,7 +4,7 @@
 #include "physics2d_vector4.h"
 namespace Physics2D
 {
-	struct Quaternion
+	struct PHYSICS2D_API Quaternion
 	{
 		Quaternion(const real& s, const real& i, const real& j, const real& k);
 		Quaternion(const Vector4& vec4);

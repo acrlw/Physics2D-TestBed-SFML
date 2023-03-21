@@ -15,19 +15,19 @@
 
 namespace Physics2D
 {
-	struct SimplexVertexWithOriginDistance
+	struct PHYSICS2D_API SimplexVertexWithOriginDistance
 	{
 		SimplexVertex vertex;
 		real distance = 0.0f;
 	};
-	struct Feature
+	struct PHYSICS2D_API Feature
 	{
 		//circle and ellipse, use index 0
 		//edge use index 0 and 1
 		Vector2 vertex[2];
 		Index index[2] = { INT_MAX, INT_MAX };
 	};
-	struct ClipVertex
+	struct PHYSICS2D_API ClipVertex
 	{
 		Vector2 vertex;
 		bool isClip = false;

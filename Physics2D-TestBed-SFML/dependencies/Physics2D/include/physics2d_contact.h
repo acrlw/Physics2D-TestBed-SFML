@@ -7,7 +7,7 @@
 #include "physics2d_detector.h"
 namespace Physics2D
 {
-	struct VelocityConstraintPoint
+	struct PHYSICS2D_API VelocityConstraintPoint
 	{
 		Vector2 ra;
 		Vector2 rb;
@@ -26,7 +26,7 @@ namespace Physics2D
 
 	};
 	
-	struct ContactConstraintPoint
+	struct PHYSICS2D_API ContactConstraintPoint
 	{
 		ContactConstraintPoint() = default;
 		Body::Relation::RelationID relation = 0;
