@@ -4,7 +4,7 @@
 
 namespace Physics2D
 {
-	class SweepAndPrune
+	class PHYSICS2D_API SweepAndPrune
 	{
 	public:
 

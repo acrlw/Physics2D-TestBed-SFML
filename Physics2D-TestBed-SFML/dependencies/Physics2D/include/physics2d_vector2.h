@@ -3,7 +3,7 @@
 #include "physics2d_common.h"
 namespace Physics2D
 {
-	struct Vector2
+	struct PHYSICS2D_API Vector2
 	{
         Vector2(const real& _x = 0.0, const real& _y = 0.0);
         Vector2(const Vector2& copy);

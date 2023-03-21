@@ -38,7 +38,7 @@ namespace Physics2D
 		Body* bodyB = nullptr;
 		VelocityConstraintPoint vcp;
 	};
-	class ContactMaintainer
+	class PHYSICS2D_API ContactMaintainer
 	{
 	public:
 		void clearAll();

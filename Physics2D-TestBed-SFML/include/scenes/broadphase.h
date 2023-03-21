@@ -51,8 +51,10 @@ namespace Physics2D
 				m_tree->insert(body);
 				grid.insert(body);
 			}
-			for (auto&& elem : m_world->bodyList())
-				bodyList.emplace_back(elem.get());
+			for(auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
+			{
+				bodyList.emplace_back(iter->get());
+			}
 
 			//block.set(6.5f, 6.5f);
 			//body = m_world->createBody();

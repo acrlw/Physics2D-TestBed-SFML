@@ -17,11 +17,11 @@
 
 namespace Physics2D
 {
-	class Body
+	class PHYSICS2D_API Body
 	{
 	public:
 
-		struct Relation
+		struct PHYSICS2D_API Relation
 		{
 			using RelationID = uint64_t;
 			static RelationID generateRelationID(Body* bodyA, Body* bodyB);
@@ -31,7 +31,7 @@ namespace Physics2D
 			Body* bodyB;
 		};
 
-		enum class BodyType
+		enum class PHYSICS2D_API BodyType
 		{
 			Kinematic,
 			Static,
@@ -39,7 +39,7 @@ namespace Physics2D
 			Bullet
 		};
 
-		struct PhysicsAttribute
+		struct PHYSICS2D_API PhysicsAttribute
 		{
 			Vector2 position;
 			Vector2 velocity;

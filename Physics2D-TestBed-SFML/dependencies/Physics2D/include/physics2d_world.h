@@ -9,13 +9,17 @@
 #include "physics2d_contact.h"
 namespace Physics2D
 {
-    class PhysicsWorld
+    class PHYSICS2D_API PhysicsWorld
     {
 		public:
+        
             PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f), m_bias(0.8f),
     			m_enableGravity(true), m_linearVelocityThreshold(0.02f), m_angularVelocityThreshold(0.02f), m_airFrictionCoefficient(0.7f)
             {}
             ~PhysicsWorld();
+			//disable copy
+            PhysicsWorld(const PhysicsWorld&) = delete;
+            PhysicsWorld& operator=(const PhysicsWorld&) = delete;
             void prepareVelocityConstraint(const real& dt);
             void stepVelocity(const real& dt);
             void solveVelocityConstraint(real dt);
@@ -84,8 +88,6 @@ namespace Physics2D
             Container::Vector<std::unique_ptr<Body>> m_bodyList;
             Container::Vector<std::unique_ptr<Joint>> m_jointList;
 
-    		
-    		
     };
     
 }

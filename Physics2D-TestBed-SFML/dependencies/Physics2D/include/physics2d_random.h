@@ -7,13 +7,12 @@
 
 namespace Physics2D
 {
-
 	static std::random_device randomDevice;
 	static std::mt19937_64 randomEngine(randomDevice());
 	static std::uniform_int_distribution<uint32_t> uniformDistribution(10000, 99999);
 	static std::vector<uint32_t> m_emptyList;
 	static uint32_t m_startId = 1000;
-	class RandomGenerator
+	class PHYSICS2D_API RandomGenerator
 	{
 	public:
 		static real uniform(const real& min, const real& max)

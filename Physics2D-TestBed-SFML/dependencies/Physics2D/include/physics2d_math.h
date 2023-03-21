@@ -7,109 +7,110 @@ namespace Physics2D
 {
 
 	//basic real utilities
-	inline void realSwap(real& lhs, real& rhs)
+	PHYSICS2D_API inline void realSwap(real& lhs, real& rhs)
 	{
 		const real temp = lhs;
 		lhs = rhs;
 		rhs = temp;
 	}
-	inline bool fuzzyRealEqual(const real& lhs, const real& rhs, const real& epsilon = Constant::GeometryEpsilon)
+	PHYSICS2D_API inline bool fuzzyRealEqual(const real& lhs, const real& rhs, const real& epsilon = Constant::GeometryEpsilon)
 	{
 		return std::fabs(lhs - rhs) < epsilon;
 	}
-	inline bool realEqual(const real& lhs, const real& rhs)
+	PHYSICS2D_API inline bool realEqual(const real& lhs, const real& rhs)
 	{
 		return fuzzyRealEqual(lhs, rhs, Constant::GeometryEpsilon);
 	}
-	namespace Math
+	class Math
 	{
+	public:
 		//trigonometric function
-		inline real abs(const real& x)
+		PHYSICS2D_API static inline real abs(const real& x)
 		{
 			return std::fabs(x);
 		}
-		inline real sinx(const real& x)
+		PHYSICS2D_API static inline real sinx(const real& x)
 		{
 			return std::sin(x);
 		}
-		inline real cosx(const real& x)
+		PHYSICS2D_API static inline real cosx(const real& x)
 		{
 			return std::cos(x);
 		}
-		inline real tanx(const real& x)
+		PHYSICS2D_API static inline real tanx(const real& x)
 		{
 			return std::tan(x);
 		}
-		inline real arcsinx(const real& x)
+		PHYSICS2D_API static inline real arcsinx(const real& x)
 		{
 			return std::asin(x);
 		}
-		inline real arccosx(const real& x)
+		PHYSICS2D_API static inline real arccosx(const real& x)
 		{
 			return std::acos(x);
 		}
-		inline real arctanx(const real& y,const real& x)
+		PHYSICS2D_API static inline real arctanx(const real& y,const real& x)
 		{
 			return std::atan2(y, x);
 		}
-		inline real max(const real& a, const real& b)
+		PHYSICS2D_API static inline real max(const real& a, const real& b)
 		{
 			return std::max(a, b);
 		}
-		inline real min(const real& a, const real& b)
+		PHYSICS2D_API static inline real min(const real& a, const real& b)
 		{
 			return std::min(a, b);
 		}
-		inline real tripleMin(const real& a, const real& b, const real& c)
+		PHYSICS2D_API static inline real tripleMin(const real& a, const real& b, const real& c)
 		{
 			return std::min(std::min(a, b), c);
 		}
-		inline real tripleMax(const real& a, const real& b, const real& c)
+		PHYSICS2D_API static inline real tripleMax(const real& a, const real& b, const real& c)
 		{
 			return std::max(std::max(a, b), c);
 		}
-		inline real absMax(const real& a, const real& b)
+		PHYSICS2D_API static inline real absMax(const real& a, const real& b)
 		{
 			return std::max(std::fabs(a), std::fabs(b));
 		}
-		inline real absMin(const real& a, const real& b)
+		PHYSICS2D_API static inline real absMin(const real& a, const real& b)
 		{
 			return std::min(std::fabs(a), std::fabs(b));
 		}
-		inline real sqrt(const real& x)
+		PHYSICS2D_API static inline real sqrt(const real& x)
 		{
 			return std::sqrt(x);
 		}
-		inline real pow(const real& x, const real& e)
+		PHYSICS2D_API static inline real pow(const real& x, const real& e)
 		{
 			return std::pow(x, e);
 		}
 		//other
-		inline bool sameSign(const real& a, const real& b)
+		PHYSICS2D_API static inline bool sameSign(const real& a, const real& b)
 		{
 			return a >= 0 && b >= 0 || a <= 0 && b <= 0;
 		}
-		inline bool sameSign(const real& a, const real& b, const real& c)
+		PHYSICS2D_API static inline bool sameSign(const real& a, const real& b, const real& c)
 		{
 			return a >= 0 && b >= 0 && c >= 0 || a <= 0 && b <= 0 && c <= 0;
 		}
-		inline int8_t sign(const real& num)
+		PHYSICS2D_API static inline int8_t sign(const real& num)
 		{
 			return num > 0 ? 1 : -1;
 		}
-		inline bool isInRange(const real& value, const real& low, const real& high, const real& epsilon = Constant::GeometryEpsilon)
+		PHYSICS2D_API static inline bool isInRange(const real& value, const real& low, const real& high, const real& epsilon = Constant::GeometryEpsilon)
 		{
 			return value >= low - epsilon && value <= high + epsilon;
 		}
-		inline bool fuzzyIsInRange(const real& value, const real& low, const real& high, const real& epsilon = Constant::GeometryEpsilon)
+		PHYSICS2D_API static inline bool fuzzyIsInRange(const real& value, const real& low, const real& high, const real& epsilon = Constant::GeometryEpsilon)
 		{
 			return value >= low - epsilon && value <= high + epsilon || value <= low + epsilon && low >= high - epsilon;
 		}
-		inline real clamp(const real& num, const real& low, const real& high)
+		PHYSICS2D_API static inline real clamp(const real& num, const real& low, const real& high)
 		{
 			return std::clamp(num, low, high);
 		}
-		inline size_t clamp(const size_t& num, const size_t& low, const size_t& high)
+		PHYSICS2D_API static inline size_t clamp(const size_t& num, const size_t& low, const size_t& high)
 		{
 			if (num < low)
 				return low;
@@ -117,15 +118,15 @@ namespace Physics2D
 				return high;
 			return num;
 		}
-		inline real degreeToRadian(const real& angle)
+		PHYSICS2D_API static inline real degreeToRadian(const real& angle)
 		{
 			return angle * (Constant::Pi / 180.0f);
 		}
-		inline real radianToDegree(const real& radian)
+		PHYSICS2D_API static inline real radianToDegree(const real& radian)
 		{
 			return radian * (180.0f /Constant::Pi);
 		}
-		template <typename T, size_t iterations = 2> inline T fastInverseSqrt(T x) {
+		template <typename T, size_t iterations = 2> PHYSICS2D_API static inline T fastInverseSqrt(T x) {
 			typedef typename std::conditional<sizeof(T) == 8, std::int64_t, std::int32_t>::type Tint;
 			T y = x;
 			T x2 = y * 0.5f;
@@ -136,6 +137,6 @@ namespace Physics2D
 				y = y * (1.5f - (x2 * y * y));
 			return y;
 		}
-	}
+	};
 }
 #endif

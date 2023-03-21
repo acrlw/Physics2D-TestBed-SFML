@@ -3,7 +3,7 @@
 #include "physics2d_shape.h"
 namespace Physics2D
 {
-    class Edge : public Shape
+    class PHYSICS2D_API Edge : public Shape
     {
 
     public:

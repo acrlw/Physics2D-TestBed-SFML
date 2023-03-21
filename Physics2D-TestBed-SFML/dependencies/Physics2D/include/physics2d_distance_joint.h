@@ -3,7 +3,7 @@
 #include "physics2d_joint.h"
 namespace Physics2D
 {
-	struct DistanceJointPrimitive
+	struct PHYSICS2D_API DistanceJointPrimitive
 	{
 		Body* bodyA = nullptr;
 		Vector2 localPointA;
@@ -16,7 +16,7 @@ namespace Physics2D
 		real effectiveMass = 0.0f;
 		real accumulatedImpulse = 0.0f;
 	};
-	struct DistanceConstraintPrimitive
+	struct PHYSICS2D_API DistanceConstraintPrimitive
 	{
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
@@ -29,7 +29,7 @@ namespace Physics2D
 		Vector2 impulse;
 		real maxForce = 200.0f;
 	};
-	class DistanceJoint : public Joint
+	class PHYSICS2D_API DistanceJoint : public Joint
 	{
 	public:
 		DistanceJoint()
@@ -123,7 +123,7 @@ namespace Physics2D
 		real m_factor = 0.4f;
 		DistanceJointPrimitive m_primitive;
 	};
-	class DistanceConstraint : public Joint
+	class PHYSICS2D_API DistanceConstraint : public Joint
 	{
 		DistanceConstraint()
 		{

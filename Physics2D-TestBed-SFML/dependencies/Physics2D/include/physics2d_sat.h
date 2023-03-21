@@ -25,7 +25,7 @@ namespace Physics2D
         static std::tuple<ProjectedSegment, real> intersect(const ProjectedSegment& s1, const ProjectedSegment& s2);
     };
 	
-    struct SATResult
+    struct PHYSICS2D_API SATResult
     {
         PointPair contactPair[2];
         uint32_t contactPairCount = 0;
@@ -37,7 +37,7 @@ namespace Physics2D
     /// <summary>
     /// Separating Axis Theorem
     /// </summary>
-    class SAT
+    class PHYSICS2D_API SAT
     {
     public:
         static SATResult circleVsCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);

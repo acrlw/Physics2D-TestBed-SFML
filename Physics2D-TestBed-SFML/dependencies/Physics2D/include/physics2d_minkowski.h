@@ -3,7 +3,7 @@
 #include "physics2d_linear.h"
 namespace Physics2D
 {
-	struct MinkowskiDiff
+	struct PHYSICS2D_API MinkowskiDiff
 	{
 		MinkowskiDiff() = default;
 		MinkowskiDiff(const Vector2& point_a, const Vector2& point_b) : pointA(point_a), pointB(point_b),

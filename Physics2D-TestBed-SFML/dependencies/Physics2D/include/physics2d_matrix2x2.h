@@ -5,7 +5,7 @@
 namespace Physics2D
 {
 
-	struct Matrix2x2
+	struct PHYSICS2D_API Matrix2x2
 	{
 		Matrix2x2() = default;
         Matrix2x2(const real& radian);

@@ -5,7 +5,7 @@
 #include <array>
 namespace Physics2D
 {
-	struct SimplexVertex
+	struct PHYSICS2D_API SimplexVertex
 	{
 		SimplexVertex() = default;
 		SimplexVertex(const Vector2& point_a, const Vector2& point_b, const Index& index_a = INT_MAX, const Index& index_b = INT_MAX)
@@ -61,7 +61,7 @@ namespace Physics2D
 	 * \brief Simplex Vertex Array for gjk/epa test
 	 * bottleneck: frequently insert operation
 	 */
-	struct SimplexVertexArray
+	struct PHYSICS2D_API SimplexVertexArray
 	{
 		Container::Vector<SimplexVertex> vertices;
 		bool isContainOrigin = false;
@@ -78,7 +78,7 @@ namespace Physics2D
 	/**
 	 * \brief Simplex structure
 	 */
-	struct Simplex
+	struct PHYSICS2D_API Simplex
 	{
 		Simplex() = default;
 		std::array<SimplexVertex, 3> vertices;

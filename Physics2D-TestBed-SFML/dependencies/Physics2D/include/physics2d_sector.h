@@ -3,7 +3,7 @@
 #include "physics2d_polygon.h"
 namespace Physics2D
 {
-    class Sector : public Polygon
+    class PHYSICS2D_API Sector : public Polygon
     {
     public:
         Sector();

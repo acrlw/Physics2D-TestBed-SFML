@@ -3,7 +3,7 @@
 #include "physics2d_shape.h"
 namespace Physics2D
 {
-    class Capsule : public Shape
+    class PHYSICS2D_API Capsule : public Shape
     {
     public:
         Capsule(real width = 0.0f, real height = 0.0f);

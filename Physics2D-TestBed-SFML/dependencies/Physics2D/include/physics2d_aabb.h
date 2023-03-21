@@ -8,7 +8,7 @@ namespace Physics2D
 {
 	class Body;
 
-	struct AABB
+	struct PHYSICS2D_API AABB
 	{
 		AABB() = default;
 		AABB(const Vector2& topLeft, const real& boxWidth, const real& boxHeight);

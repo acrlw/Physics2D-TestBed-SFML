@@ -8,10 +8,10 @@ namespace Physics2D
 	/// Dynamic Bounding Volume Hierarchy
 	///	This is implemented by traditional binary search tree
 	/// </summary>
-	class DBVH
+	class PHYSICS2D_API DBVH
 	{
 		public:
-			struct Node
+			struct PHYSICS2D_API Node
 			{
 				Node(Body* _body, const AABB& _aabb) : body(_body), aabb(_aabb){}
 				Node(const AABB& _aabb) : aabb(_aabb) {}

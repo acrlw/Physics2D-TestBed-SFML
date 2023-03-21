@@ -3,7 +3,7 @@
 #include "physics2d_joint.h"
 namespace Physics2D
 {
-	struct PointJointPrimitive
+	struct PHYSICS2D_API PointJointPrimitive
 	{
 		Body* bodyA;
 		Vector2 localPointA;
@@ -21,7 +21,7 @@ namespace Physics2D
 		Vector2 accumulatedImpulse;
 
 	};
-	class PointJoint : public Joint
+	class PHYSICS2D_API PointJoint : public Joint
 	{
 	public:
 		PointJoint()

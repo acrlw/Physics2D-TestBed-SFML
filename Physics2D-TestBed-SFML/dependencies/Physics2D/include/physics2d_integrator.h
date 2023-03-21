@@ -4,8 +4,9 @@
 #include "physics2d_linear.h"
 namespace Physics2D
 {
-	namespace Integrator
+	class PHYSICS2D_API Integrator
 	{
+	public:
 		struct Timestep
 		{
 			real h0 = 0;
@@ -21,7 +22,7 @@ namespace Physics2D
 			T ddx = 0;
 			Timestep step;
 		};
-		
+
 		template<typename T>
 		class SemiImplicitEuler
 		{
@@ -90,6 +91,6 @@ namespace Physics2D
 
 			}
 		};
-	}
+	};
 }
 #endif

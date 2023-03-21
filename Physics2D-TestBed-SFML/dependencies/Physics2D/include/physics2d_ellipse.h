@@ -3,7 +3,7 @@
 #include "physics2d_shape.h"
 namespace Physics2D
 {
-    class Ellipse : public Shape
+    class PHYSICS2D_API Ellipse : public Shape
     {
 
     public:

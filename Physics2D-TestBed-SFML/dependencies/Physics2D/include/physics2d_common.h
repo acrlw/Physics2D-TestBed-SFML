@@ -14,6 +14,13 @@
 #include <memory>
 #include <map>
 
+#if defined(_WIN32)
+#   define PHYSICS2D_API         __declspec(dllexport)
+#elif defined(__GNUC__) && ((__GNUC__ >= 4) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3))
+#   define PHYSICS2D_API         __attribute__((visibility("default")))
+#else
+#   define PHYSICS2D_API
+#endif
 
 #define SINGLE_PRECISION
 namespace Physics2D

@@ -9,7 +9,7 @@
 #include "physics2d_grid.h"
 namespace Physics2D
 {
-    class PhysicsSystem
+    class PHYSICS2D_API PhysicsSystem
     {
     public:
         void step(const real& dt);

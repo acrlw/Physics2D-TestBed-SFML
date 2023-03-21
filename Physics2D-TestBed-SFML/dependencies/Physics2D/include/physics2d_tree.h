@@ -9,10 +9,10 @@ namespace Physics2D
 	/// Dynamic Bounding Volume Tree
 	///	This is implemented by dynamic array-arranged.
 	/// </summary>
-	class Tree
+	class PHYSICS2D_API Tree
 	{
 	public:
-		struct Node
+		struct PHYSICS2D_API Node
 		{
 			Body* body = nullptr;
 			AABB aabb;

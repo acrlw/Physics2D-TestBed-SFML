@@ -3,7 +3,7 @@
 
 namespace Physics2D
 {
-	struct RevoluteJointPrimitive
+	struct PHYSICS2D_API RevoluteJointPrimitive
 	{
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
@@ -20,7 +20,7 @@ namespace Physics2D
 		Matrix2x2 effectiveMass;
 		Vector2 accumulatedImpulse;
 	};
-	class RevoluteJoint : public Joint
+	class PHYSICS2D_API RevoluteJoint : public Joint
 	{
 	public:
 		RevoluteJoint()

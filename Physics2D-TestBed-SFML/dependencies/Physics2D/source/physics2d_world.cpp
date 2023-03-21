@@ -18,12 +18,12 @@ namespace Physics2D
 
 	void PhysicsWorld::stepVelocity(const real& dt)
 	{
-		const Vector2 g = m_enableGravity ? m_gravity : Vector2{0.0, 0.0};
+		const Vector2 g = m_enableGravity ? m_gravity : Vector2{ 0.0, 0.0 };
 		real lvd = 1.0f;
 		real avd = 1.0f;
 
 		//damping ratio from box2d
-		if(m_enableDamping)
+		if (m_enableDamping)
 		{
 			lvd = 1.0f / (1.0f + dt * m_linearVelocityDamping);
 			avd = 1.0f / (1.0f + dt * m_angularVelocityDamping);
@@ -48,7 +48,7 @@ namespace Physics2D
 
 				body->velocity() += body->inverseMass() * body->forces() * dt;
 				body->angularVelocity() += body->inverseInertia() * body->torques() * dt;
-				
+
 				body->velocity() *= lvd;
 				body->angularVelocity() *= avd;
 
@@ -156,7 +156,7 @@ namespace Physics2D
 		}
 
 	}
-	
+
 	real PhysicsWorld::bias() const
 	{
 		return m_bias;
@@ -168,7 +168,7 @@ namespace Physics2D
 	}
 
 
-	
+
 	Container::Vector<std::unique_ptr<Body>>& PhysicsWorld::bodyList()
 	{
 		return m_bodyList;
@@ -178,7 +178,7 @@ namespace Physics2D
 	{
 		return m_jointList;
 	}
-	
+
 	Vector2 PhysicsWorld::gravity() const
 	{
 		return m_gravity;
@@ -271,9 +271,9 @@ namespace Physics2D
 
 	void PhysicsWorld::removeBody(Body* body)
 	{
-		for(auto iter = m_bodyList.begin(); iter != m_bodyList.end(); ++iter)
+		for (auto iter = m_bodyList.begin(); iter != m_bodyList.end(); ++iter)
 		{
-			if(iter->get() == body)
+			if (iter->get() == body)
 			{
 				RandomGenerator::pop(body->id());
 				iter->release();
@@ -337,7 +337,7 @@ namespace Physics2D
 		m_jointList.emplace_back(std::move(joint));
 		return temp;
 	}
-	
+
 	PulleyJoint* PhysicsWorld::createJoint(const PulleyJointPrimitive& primitive)
 	{
 		auto joint = std::make_unique<PulleyJoint>(primitive);
@@ -364,5 +364,5 @@ namespace Physics2D
 		m_jointList.emplace_back(std::move(joint));
 		return temp;
 	}
-	
+
 }

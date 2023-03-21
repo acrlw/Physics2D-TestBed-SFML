@@ -10,7 +10,7 @@ namespace Physics2D
 	//1. Incremental Update Bodies, calculating the different between two cellList
 	//2. Position combine to u64 and split into two u32
 	//3. Raycast query bodies
-	class UniformGrid
+	class PHYSICS2D_API UniformGrid
 	{
 	public:
 		UniformGrid(const real& width = 100.0f, const real& height = 100.0f, const uint32_t rows = 200, const uint32_t columns = 200);

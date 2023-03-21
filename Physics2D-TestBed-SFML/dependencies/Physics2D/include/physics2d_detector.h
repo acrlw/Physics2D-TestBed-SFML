@@ -9,7 +9,7 @@
 #include "physics2d_narrowphase.h"
 namespace Physics2D
 {
-	struct Collision
+	struct PHYSICS2D_API Collision
 	{
 		bool isColliding = false;
 		Body* bodyA = nullptr;
@@ -19,7 +19,7 @@ namespace Physics2D
 		real penetration = 0;
 	};
 
-	class Detector
+	class PHYSICS2D_API Detector
 	{
 
 	public:

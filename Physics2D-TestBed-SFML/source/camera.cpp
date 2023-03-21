@@ -83,9 +83,11 @@ namespace Physics2D
 			}
 			if (m_jointVisible)
 			{
-				for (auto& joint : m_world->jointList())
-					if (joint->active())
-						RenderSFMLImpl::renderJoint(window, *this, joint.get(), sf::Color::Green);
+				for(auto iter = m_world->jointList().begin(); iter != m_world->jointList().end(); ++iter)
+				{
+					if ((*iter)->active())
+						RenderSFMLImpl::renderJoint(window, *this, (*iter).get(), sf::Color::Green);
+				}
 			}
 
 			if (m_aabbVisible)
@@ -93,9 +95,11 @@ namespace Physics2D
 				for (auto [body, node] : m_dbvh->leaves())
 					RenderSFMLImpl::renderAABB(window, *this, node->aabb, sf::Color::Cyan);
 
-				for (auto& elem : m_world->bodyList())
-					if (elem != nullptr)
-						RenderSFMLImpl::renderAABB(window, *this, elem->aabb(), sf::Color::Cyan);
+				for(auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
+				{
+					if ((*iter).get() != nullptr)
+						RenderSFMLImpl::renderAABB(window, *this, (*iter)->aabb(), sf::Color::Cyan);
+				}
 			}
 			if (m_dbvhVisible)
 			{

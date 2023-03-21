@@ -9,7 +9,7 @@ namespace Physics2D
 	/// The implementation of MPR still remain some bugs when computing deeper object penetration.
 	/// It may causes error penetration depth and normal.
 	/// </summary>
-	class MPR
+	class PHYSICS2D_API MPR
 	{
 	public:
         /// <summary>

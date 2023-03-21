@@ -3,7 +3,7 @@
 #include "physics2d_joint.h"
 namespace Physics2D
 {
-	struct RotationJointPrimitive
+	struct PHYSICS2D_API RotationJointPrimitive
 	{
 		Body* bodyA;
 		Body* bodyB;
@@ -11,7 +11,7 @@ namespace Physics2D
 		real effectiveMass = 0;
 		real bias = 0;
 	};
-	struct OrientationJointPrimitive
+	struct PHYSICS2D_API OrientationJointPrimitive
 	{
 		Body* bodyA;
 		Vector2 targetPoint;
@@ -19,7 +19,7 @@ namespace Physics2D
 		real bias = 0;
 		real effectiveMass = 0;
 	};
-	class RotationJoint: public Joint
+	class PHYSICS2D_API RotationJoint: public Joint
 	{
 	public:
 		RotationJoint()
@@ -67,7 +67,7 @@ namespace Physics2D
 		RotationJointPrimitive m_primitive;
 		real m_factor = 0.2f;
 	};
-	class OrientationJoint : public Joint
+	class PHYSICS2D_API OrientationJoint : public Joint
 	{
 
 	public:

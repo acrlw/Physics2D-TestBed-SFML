@@ -5,7 +5,7 @@
 #include "physics2d_algorithm_2d.h"
 namespace Physics2D
 {
-    class Shape
+    class PHYSICS2D_API Shape
     {
         public:
             enum class Type
@@ -29,7 +29,7 @@ namespace Physics2D
         protected:
             Type m_type;
     };
-    struct Transform
+    struct PHYSICS2D_API Transform
     {
         //refer https://docs.unity3d.com/ScriptReference/Transform.html
         Vector2 position;
@@ -52,7 +52,7 @@ namespace Physics2D
     /// Basic Shape Description Primitive.
     /// Including vertices/position/angle of shape
     /// </summary>
-    struct ShapePrimitive
+    struct PHYSICS2D_API ShapePrimitive
     {
 		Shape* shape;
         Transform transform;

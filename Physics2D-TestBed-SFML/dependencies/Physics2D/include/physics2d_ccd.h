@@ -10,22 +10,22 @@ namespace Physics2D
 	/// Continuous Collision Detection
 	///	This class is implemented by bisection and re-sampling. Both them are costly.
 	/// </summary>
-	class CCD
+	class PHYSICS2D_API CCD
 	{
 	public:
-		struct AABBShot
+		struct PHYSICS2D_API AABBShot
 		{
 			AABBShot(const AABB& box, const Body::PhysicsAttribute& attr, const real& t) : aabb(box), attribute(attr), time(t){}
 			AABB aabb;
 			Body::PhysicsAttribute attribute;
 			real time = 0;
 		};
-		struct IndexSection
+		struct PHYSICS2D_API IndexSection
 		{
 			int forward = -1;
 			int backward = -1;
 		};
-		struct CCDPair
+		struct PHYSICS2D_API CCDPair
 		{
 			CCDPair() = default;
 			CCDPair(const real& time, Body* target) : toi(time), body(target){}

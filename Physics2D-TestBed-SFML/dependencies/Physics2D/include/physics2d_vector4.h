@@ -3,7 +3,7 @@
 #include "physics2d_vector3.h"
 namespace Physics2D
 {
-	struct Vector4
+	struct PHYSICS2D_API Vector4
 	{
 		Vector4(const real& x = 0.0, const real& y = 0.0, const real& z = 0.0, const real& w = 0.0);
 		Vector4& operator=(const Vector4& copy);

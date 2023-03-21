@@ -7,7 +7,7 @@
 namespace Physics2D
 {
 
-	struct Matrix3x3
+	struct PHYSICS2D_API Matrix3x3
 	{
         Matrix3x3() = default;
         Matrix3x3(const Matrix3x3& mat);

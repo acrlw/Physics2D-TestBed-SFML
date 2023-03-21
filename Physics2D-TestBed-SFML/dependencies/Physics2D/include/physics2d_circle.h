@@ -3,7 +3,7 @@
 #include "physics2d_shape.h"
 namespace Physics2D
 {
-    class Circle : public Shape
+    class PHYSICS2D_API Circle : public Shape
     {
 
     public:

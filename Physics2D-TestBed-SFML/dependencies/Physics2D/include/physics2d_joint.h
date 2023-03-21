@@ -3,7 +3,7 @@
 #include "physics2d_body.h"
 namespace Physics2D
 {
-	enum class JointType
+	enum class PHYSICS2D_API JointType
 	{
 		Distance,
 		Point,
@@ -15,7 +15,7 @@ namespace Physics2D
 		Wheel,
 		Revolute
 	};
-	class Joint
+	class PHYSICS2D_API Joint
 	{
 	public:
 		Joint(){}

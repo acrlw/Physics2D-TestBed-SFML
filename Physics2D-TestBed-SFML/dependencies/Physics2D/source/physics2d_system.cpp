@@ -35,13 +35,13 @@ namespace Physics2D
     void PhysicsSystem::updateTree()
     {
         //bvh
-        for (auto& elem : m_world.bodyList())
+        for (const auto& elem : m_world.bodyList())
             m_tree.update(elem.get());
     }
     bool PhysicsSystem::solveCCD(const real& dt)
     {
         Container::Vector<Body*> bullets;
-        for (auto& body : m_world.bodyList())
+        for (const auto& body : m_world.bodyList())
             if (body->type() == Body::BodyType::Bullet)
                 bullets.emplace_back(body.get());
 

@@ -3,7 +3,7 @@
 #include "physics2d_joint.h"
 namespace Physics2D
 {
-	struct WeldJointPrimitive
+	struct PHYSICS2D_API WeldJointPrimitive
 	{
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
@@ -24,7 +24,7 @@ namespace Physics2D
 		Vector2 accumulatedImpulse;
 	};
 	//weld joint comes from revolute and rotation joint
-	class WeldJoint : public Joint
+	class PHYSICS2D_API WeldJoint : public Joint
 	{
 	public:
 		WeldJoint()

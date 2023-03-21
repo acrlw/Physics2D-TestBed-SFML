@@ -6,7 +6,7 @@
 #include "physics2d_gjk.h"
 namespace Physics2D
 {
-	class ContactGenerator
+	class PHYSICS2D_API ContactGenerator
 	{
 	public:
 		struct ClipEdge

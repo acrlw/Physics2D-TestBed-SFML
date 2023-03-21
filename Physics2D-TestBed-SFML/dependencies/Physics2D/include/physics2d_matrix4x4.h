@@ -6,7 +6,7 @@
 #include "physics2d_vector4.h"
 namespace Physics2D
 {
-	struct Matrix4x4
+	struct PHYSICS2D_API Matrix4x4
 	{
 		Matrix4x4() = default;
 		Matrix4x4(const Vector4& col1, const Vector4& col2, const Vector4& col3, const Vector4& col4);

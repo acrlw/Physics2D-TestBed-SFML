@@ -16,13 +16,13 @@
 
 namespace Physics2D
 {
-	struct PenetrationInfo
+	struct PHYSICS2D_API PenetrationInfo
 	{
 		Vector2 normal;
 		real penetration = 0;
 	};
 
-	struct PenetrationSource
+	struct PHYSICS2D_API PenetrationSource
 	{
 		Vector2 a1;
 		Vector2 a2;
@@ -30,7 +30,7 @@ namespace Physics2D
 		Vector2 b2;
 	};
 
-	struct PointPair
+	struct PHYSICS2D_API PointPair
 	{
 		PointPair() = default;
 		Vector2 pointA;
@@ -49,7 +49,7 @@ namespace Physics2D
 	/// <summary>
 	/// GJKHelper Collision Detection Class
 	/// </summary>
-	class GJKHelper
+	class PHYSICS2D_API GJKHelper
 	{
 	public:
 		/// <summary>

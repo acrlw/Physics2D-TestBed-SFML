@@ -34,7 +34,7 @@ namespace Physics2D
 		Vector2 clipperVertex;
 		bool isFinalValid = false;
 	};
-	struct ContactPair
+	struct PHYSICS2D_API ContactPair
 	{
 		//contact pair1:
 		//	points[0]: pointA
@@ -52,14 +52,14 @@ namespace Physics2D
 			points[count++] = pointB;
 		}
 	};
-	struct CollisionInfo
+	struct PHYSICS2D_API CollisionInfo
 	{
 		Vector2 normal;
 		real penetration = 0;
 		Simplex simplex;
 		std::list<SimplexVertexWithOriginDistance> polytope;
 	};
-	class Narrowphase
+	class PHYSICS2D_API Narrowphase
 	{
 	public:
 		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 12);

@@ -5,10 +5,10 @@
 #include "physics2d_common.h"
 namespace Physics2D
 {
-	class GeometryAlgorithm2D
+	class PHYSICS2D_API GeometryAlgorithm2D
 	{
 	public:
-		class Clipper
+		class PHYSICS2D_API Clipper
 		{
 		public:
 			/**
