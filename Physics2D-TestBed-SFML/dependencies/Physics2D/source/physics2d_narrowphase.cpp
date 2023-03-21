@@ -6,6 +6,7 @@ namespace Physics2D
 	Simplex Narrowphase::gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
 	{
 		Simplex simplex;
+
 		Vector2 direction = shapeB.transform.position - shapeA.transform.position;
 
 		if (direction.fuzzyEqual({ 0, 0 }))
@@ -19,13 +20,12 @@ namespace Physics2D
 		simplex.addSimplexVertex(vertex);
 
 		//check 1d simplex(line segment) contains origin
-		//WARN: this can be used to check collision but not friendly with EPA
+		//WARN: this can be used to check collision but not friendly with EPA, here adding perturbation to avoid 1d simplex
 
 		if (simplex.containsOrigin())
 		{
 			//return simplex;
 
-			//add some disturbance
 			direction.set(-direction.y + 1.0f, -direction.x - 1.5f);
 			SimplexVertex v2 = support(shapeA, shapeB, direction);
 			simplex.vertices[2] = v2;
@@ -307,10 +307,6 @@ namespace Physics2D
 			target = dot1 > dot2 ? edge->startPoint() : edge->endPoint();
 			break;
 		}
-		case Shape::Type::Point:
-		{
-			return std::make_pair(static_cast<const Point*>(shape.shape)->position(), finalIndex);
-		}
 		case Shape::Type::Capsule:
 		{
 			const Capsule* capsule = static_cast<const Capsule*>(shape.shape);
@@ -365,7 +361,7 @@ namespace Physics2D
 	}
 
 	ContactPair Narrowphase::generateContacts(const ShapePrimitive& shapeA, 
-		const ShapePrimitive& shapeB, const CollisionInfo& info)
+		const ShapePrimitive& shapeB, CollisionInfo& info)
 	{
 		ContactPair pair;
 		//find feature
@@ -379,7 +375,7 @@ namespace Physics2D
 		Shape::Type typeB = shapeB.shape->type();
 
 		assert(!(typeA == Shape::Type::Edge && typeB == Shape::Type::Edge) && "Not support two edge");
-
+		
 		if((typeA == Shape::Type::Polygon || typeA == Shape::Type::Edge) && 
 			(typeB == Shape::Type::Polygon || typeB == Shape::Type::Edge))
 		{
@@ -491,10 +487,15 @@ namespace Physics2D
 		{
 			const Vector2 v1 = (info.simplex.vertices[0].point[1] - info.simplex.vertices[0].point[0]).normal();
 			const Vector2 v2 = (info.simplex.vertices[1].point[1] - info.simplex.vertices[1].point[0]).normal();
+
 			if(v1.dot(info.normal) > v2.dot(info.normal))
 				pair.addContact(info.simplex.vertices[0].point[0], info.simplex.vertices[0].point[1]);
 			else
 				pair.addContact(info.simplex.vertices[1].point[0], info.simplex.vertices[1].point[1]);
+
+			const Vector2 newNormal = pair.points[1] - pair.points[0];
+			info.penetration = newNormal.length();
+			info.normal = newNormal.normal();
 		}
 		else
 		{

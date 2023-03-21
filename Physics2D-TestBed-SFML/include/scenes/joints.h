@@ -33,7 +33,7 @@ namespace Physics2D
 			m_tree->insert(bodyA);
 
 			bodyB = m_world->createBody();
-			bodyB->setShape(&capsule);
+			bodyB->setShape(&rectangle);
 			bodyB->setMass(1.0f);
 			bodyB->setType(Body::BodyType::Dynamic);
 			bodyB->position().set(0, 0.0f);

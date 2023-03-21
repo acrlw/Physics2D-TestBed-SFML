@@ -36,10 +36,12 @@ namespace Physics2D
 
 	bool Ellipse::contains(const Vector2& point, const real& epsilon)
 	{
-		real a = A();
-		real b = B();
+		const real a = A();
+		const real b = B();
 		assert(!realEqual(a, 0) && !realEqual(b, 0));
-		return (point.x - a) * (point.x - a) / (a * a) + (point.y - b) * (point.y - b) / (b * b) <= 1.0f;
+		const real x = m_width > m_height ? point.x : point.y;
+		const real y = m_width > m_height ? point.y : point.x;
+		return (x / a) * (x / a) + (y / b) * (y / b) <= 1.0f;
 	}
 
 	Vector2 Ellipse::center()const
@@ -59,18 +61,18 @@ namespace Physics2D
 
 	real Ellipse::A() const
 	{
-		return m_width / 2.0f;
+		return m_width > m_height ? m_width / 2.0f : m_height / 2.0f;
 	}
 
 	real Ellipse::B() const
 	{
-		return m_height / 2.0f;
+		return m_width > m_height ? m_height / 2.0f : m_width / 2.0f;
 	}
 
 	real Ellipse::C() const
 	{
-		real a = A();
-		real b = B();
+		const real a = A();
+		const real b = B();
 		return sqrt(a * a - b * b);
 	}
 }

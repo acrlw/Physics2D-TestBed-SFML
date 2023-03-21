@@ -9,7 +9,6 @@
 #include "physics2d_curve.h"
 #include "physics2d_edge.h"
 #include "physics2d_ellipse.h"
-#include "physics2d_point.h"
 #include "physics2d_polygon.h"
 #include "physics2d_rectangle.h"
 #include "physics2d_sector.h"
@@ -70,7 +69,7 @@ namespace Physics2D
 		static std::pair<Vector2, Index> findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);
 		static Vector2 findDirectionByEdge(const SimplexVertex& v1, const SimplexVertex& v2, bool pointToOrigin);
 		static std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
-		static ContactPair generateContacts(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const CollisionInfo& info);
+		static ContactPair generateContacts(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, CollisionInfo& info);
 
 		static real gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 10);
 

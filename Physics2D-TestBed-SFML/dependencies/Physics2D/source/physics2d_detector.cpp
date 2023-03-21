@@ -54,6 +54,10 @@ namespace Physics2D
 		Collision result;
 		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
 
+		//not support two edge
+		if (shapeA.shape->type() == Shape::Type::Edge && shapeB.shape->type() == Shape::Type::Edge)
+			return result;
+
 		Simplex simplex = Narrowphase::gjk(shapeA, shapeB);
 		bool isColliding = simplex.isContainOrigin;
 

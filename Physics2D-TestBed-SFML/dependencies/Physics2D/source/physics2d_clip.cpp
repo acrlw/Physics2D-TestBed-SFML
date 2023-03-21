@@ -98,8 +98,8 @@ namespace Physics2D
 	{
 		auto typeA = shapeA.shape->type();
 		auto typeB = shapeB.shape->type();
-		if (typeA == Shape::Type::Point || typeA == Shape::Type::Circle || typeA == Shape::Type::Ellipse
-			|| typeB == Shape::Type::Point || typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse)
+		if (typeA == Shape::Type::Circle || typeA == Shape::Type::Ellipse
+			|| typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse)
 			return std::make_pair(ClipEdge(), ClipEdge());
 		//normal: B -> A
 		Container::Vector<Vector2> verticesA = dumpVertices(shapeA);

@@ -199,12 +199,6 @@ namespace Physics2D
 
 			break;
 		}
-		case Shape::Type::Point:
-		{
-			aabb.width = 1;
-			aabb.height = 1;
-			break;
-		}
 		case Shape::Type::Capsule:
 		{
 			Vector2 p1 = GJKHelper::findFurthestPoint(shape, { 1, 0 });

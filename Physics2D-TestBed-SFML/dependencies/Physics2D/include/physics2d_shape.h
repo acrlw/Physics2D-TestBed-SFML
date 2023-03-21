@@ -10,7 +10,6 @@ namespace Physics2D
         public:
             enum class Type
                 {
-                Point,
                 Polygon,
                 Circle,
                 Ellipse,

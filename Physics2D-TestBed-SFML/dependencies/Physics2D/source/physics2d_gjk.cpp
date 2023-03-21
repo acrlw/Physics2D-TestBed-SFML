@@ -181,10 +181,6 @@ namespace Physics2D
 			target = dot1 > dot2 ? edge->startPoint() : edge->endPoint();
 			break;
 		}
-		case Shape::Type::Point:
-		{
-			return static_cast<const Point*>(shape.shape)->position();
-		}
 		case Shape::Type::Capsule:
 		{
 			const Capsule* capsule = static_cast<const Capsule*>(shape.shape);
