@@ -14,6 +14,8 @@ namespace Physics2D
         }
         void load() override
         {
+
+            block.set(200, 1.0f);
             edge.set({ -200, 0 }, { 200, 0 });
             rect.set(1.0f, 1.0f);
             circle.setRadius(0.1f);
@@ -74,6 +76,7 @@ namespace Physics2D
         }
     private:
         Edge edge;
+        Rectangle block;
         Rectangle rect;
         Rectangle stick;
         Rectangle wall;

@@ -110,7 +110,27 @@ namespace Physics2D
 					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, sf::Color::Red);
 				}
 				
-				//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, sf::Color::Green);
+				RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, sf::Color::Green);
+				Vector2 p = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result,
+					info.simplex.vertices[1].result, { 0, 0 });
+				RenderSFMLImpl::renderPoint(window, *m_camera, p, sf::Color::Green);
+
+				sf::Color color1 = sf::Color(239, 103, 50);
+				sf::Color color2 = sf::Color(252, 236, 86);
+
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
+				//	info.simplex.vertices[1].point[0], color1);
+
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
+				//	info.simplex.vertices[1].point[1], color2);
+				
+
+				RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, sf::Color::Green);
+
 				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
 
 				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], info.simplex.vertices[1].point[0], sf::Color::Yellow);
@@ -121,8 +141,6 @@ namespace Physics2D
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
 				auto pairs = Narrowphase::generateContacts(shape1, shape2, info);
-				sf::Color color1 = sf::Color(239, 103, 50);
-				sf::Color color2 = sf::Color(252, 236, 86);
 				if(pairs.count == 2)
 				{
 					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);

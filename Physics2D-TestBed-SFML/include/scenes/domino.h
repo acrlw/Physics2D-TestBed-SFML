@@ -14,6 +14,7 @@ namespace Physics2D
 		void load() override
 		{
 
+			block.set(200, 1.0f);
 			floor.set(15.0f, 0.5f);
 			rectangle.set(0.5f, 0.5f);
 			brick.set(0.3f, 3.0f);
@@ -101,6 +102,7 @@ namespace Physics2D
 
 		}
 	private:
+		Rectangle block;
 		Rectangle brick;
 		Rectangle floor;
 		Edge edge;

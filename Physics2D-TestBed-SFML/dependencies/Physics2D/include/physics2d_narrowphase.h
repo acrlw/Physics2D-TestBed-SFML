@@ -81,8 +81,6 @@ namespace Physics2D
 		static void satPolygonVsEdge(const Polygon& polygonA, const Transform& transformA, const Edge& edgeB, const Transform& transformB);
 	private:
 		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
-		static ContactPair clipPolygonPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& normal);
-		static ContactPair clipPolygonEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& normal);
 
 		static ContactPair clipTwoEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap);
 		

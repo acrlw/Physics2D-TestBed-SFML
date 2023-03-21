@@ -489,7 +489,12 @@ namespace Physics2D
 		}
 		else if ((typeA == Shape::Type::Circle || typeA == Shape::Type::Ellipse) && (typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse))
 		{
-			pair.addContact(features[0].vertex[0], features[1].vertex[0]);
+			const Vector2 v1 = (info.simplex.vertices[0].point[1] - info.simplex.vertices[0].point[0]).normal();
+			const Vector2 v2 = (info.simplex.vertices[1].point[1] - info.simplex.vertices[1].point[0]).normal();
+			if(v1.dot(info.normal) > v2.dot(info.normal))
+				pair.addContact(info.simplex.vertices[0].point[0], info.simplex.vertices[0].point[1]);
+			else
+				pair.addContact(info.simplex.vertices[1].point[0], info.simplex.vertices[1].point[1]);
 		}
 		else
 		{
@@ -534,19 +539,6 @@ namespace Physics2D
 
 				const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
 
-				//if(polygon->vertices().size() == 4)
-				//{
-				//	for(auto iter = polygon->vertices().begin(); iter != polygon->vertices().end(); ++iter)
-				//	{
-				//		auto next = iter + 1;
-				//		if(next == polygon->vertices().end())
-				//			next = polygon->vertices().begin();
-
-
-				//	}	
-				//	return feature;
-				//}
-
 				const Index tempIndex = simplex.vertices[0].index[AorB];
 				const size_t realSize = polygon->vertices().size();
 				//TODO: change vertex convention of polygon 
@@ -581,25 +573,12 @@ namespace Physics2D
 				feature.index[1] = simplex.vertices[1].index[AorB];
 			}
 		}
-		else if(shape.shape->type() == Shape::Type::Edge)
+		else
 		{
 			feature.vertex[0] = simplex.vertices[0].point[AorB];
 			feature.vertex[1] = simplex.vertices[1].point[AorB];
 		}
-		else
-		{
-			//circle or ellipse case
-			feature.vertex[0] = simplex.vertices[0].point[AorB];
-		}
 		return feature;
-	}
-	ContactPair Narrowphase::clipPolygonPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& normal)
-	{
-		return ContactPair();
-	}
-	ContactPair Narrowphase::clipPolygonEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& normal)
-	{
-		return ContactPair();
 	}
 	ContactPair Narrowphase::clipTwoEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap)
 	{
