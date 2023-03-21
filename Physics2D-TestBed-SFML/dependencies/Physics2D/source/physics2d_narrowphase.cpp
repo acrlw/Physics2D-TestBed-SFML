@@ -144,11 +144,7 @@ namespace Physics2D
 				targetIter = list.end();
 			--targetIter;
 		};
-
-		if(simplex.count == 2)
-		{
-			//add some perturbation to try to reconstruct simplex;
-		}
+		
 
 		//initiate polytope
 		std::list<SimplexVertexWithOriginDistance> &polytope = info.polytope;

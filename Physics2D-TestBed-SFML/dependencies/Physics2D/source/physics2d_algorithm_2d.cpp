@@ -5,56 +5,66 @@ namespace Physics2D
 	Container::Vector<Vector2> GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(const Container::Vector<Vector2>& polygon, const Container::Vector<Vector2>& clipRegion)
 	{
 		Container::Vector<Vector2> result = polygon;
-
-		for (size_t i = 0; i < clipRegion.size() - 1; i++)
+		for(auto iter = clipRegion.begin(); iter != clipRegion.end(); ++iter)
 		{
-			Vector2 clipPoint1 = clipRegion[i];
-			Vector2 clipPoint2 = clipRegion[i + 1];
-			Vector2 clipDirectionPoint = i + 2 == clipRegion.size() ? clipRegion[1] : clipRegion[i + 2];
-			Container::Vector<int8_t> testResults;
-			testResults.reserve(polygon.size());
+			auto next = iter + 1;
+			if (next == clipRegion.end())
+				next = clipRegion.begin();
 
-			for (size_t j = 0; j < result.size(); j++)
-			{
-				bool res = GeometryAlgorithm2D::isPointOnSameSide(clipPoint1, clipPoint2, clipDirectionPoint, result[j]);
-				testResults.emplace_back(res ? 1 : -1);
-			}
+			Vector2 clipPoint1 = *iter;
+			Vector2 clipPoint2 = *next;
+			
+			if (++next == clipRegion.end())
+				next = clipRegion.begin();
+
+			Vector2 clipDirectionPoint = *next;
+
+			Container::Vector<bool> testResult;
+			testResult.reserve(polygon.size());
+
+			for(auto it = result.begin(); it != result.end(); ++it)
+				testResult.emplace_back(isPointOnSameSide(clipPoint1, clipPoint2, clipDirectionPoint, *it));
+
 			Container::Vector<Vector2> newPolygon;
 			newPolygon.reserve(result.size());
 
-			for (size_t j = 1; j < testResults.size(); j++)
+			for(auto last = testResult.begin(); last != testResult.end(); ++last)
 			{
-				bool lastInside = testResults[j - 1] == 1 ? true : false;
-				bool currentInside = testResults[j] == 1 ? true : false;
+				auto curr = last + 1;
+				if(curr == testResult.end())
+					curr = testResult.begin();
+
+				auto idxLast = std::distance(testResult.begin(), last);
+				auto idxCurr = std::distance(testResult.begin(), curr);
+
 				//last inside and current outside
-				if (lastInside && !currentInside)
+				if(*last && !*curr)
 				{
 					//push last point
-					newPolygon.emplace_back(result[j - 1]);
+					newPolygon.emplace_back(result[idxLast]);
 					//push intersection point
-					Vector2 p = GeometryAlgorithm2D::lineIntersection(clipPoint1, clipPoint2, result[j - 1], result[j]);
+					Vector2 p = lineIntersection(clipPoint1, clipPoint2, result[idxLast], result[idxCurr]);
 					newPolygon.emplace_back(p);
 				}
 				//last outside and current inside
-				if (!lastInside && currentInside)
+				else if(!*last && *curr)
 				{
 					//push intersection point first
-					Vector2 p = GeometryAlgorithm2D::lineIntersection(clipPoint1, clipPoint2, result[j - 1], result[j]);
+					Vector2 p = lineIntersection(clipPoint1, clipPoint2, result[idxLast], result[idxCurr]);
 					newPolygon.emplace_back(p);
 				}
 				//last outside and current outside
-				if (!lastInside && !currentInside)
+				else if(!*last && !*curr)
 				{
 					//do nothing
 				}
-				if (lastInside && currentInside)
+				else if(*last && *curr)
 				{
-					//push last vertex
-					newPolygon.emplace_back(result[j - 1]);
+					newPolygon.emplace_back(result[idxLast]);
 				}
 			}
+
 			result = newPolygon;
-			result.emplace_back(result[0]);
 		}
 		return result;
 	}
@@ -250,9 +260,9 @@ namespace Physics2D
 			k++;
 		}
 		Container::Vector<Vector2> convex;
-		convex.reserve(stack.size());
-		for (const auto index : stack)
-			convex.emplace_back(points[index]);
+		convex.reserve(stack.size() - 1);
+		for(auto iter = stack.begin(); iter != stack.end() - 1; ++iter)
+			convex.emplace_back(points[*iter]);
 
 		return convex;
 	}

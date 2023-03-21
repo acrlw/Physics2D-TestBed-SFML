@@ -28,20 +28,36 @@ namespace Physics2D
 				points2.emplace_back(Vector2(dist2(gen), dist2(gen)));
 
 			convex2 = GeometryAlgorithm2D::grahamScan(points2);
+			//convex1.emplace_back(*convex1.begin());
+			//convex2.emplace_back(*convex2.begin());
 			intersectionConvex = GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(convex1, convex2);
 
 		}
 		void render(sf::RenderWindow& window) override
 		{
-			for (int i = 0; i < convex1.size() - 1; i++)
-				RenderSFMLImpl::renderLine(window, *m_camera, convex1[i], convex1[i + 1], sf::Color::Green);
+			for (auto iter = convex1.begin(); iter != convex1.end(); ++iter)
+			{
+				auto next = iter + 1;
+				if (next == convex1.end())
+					next = convex1.begin();
+				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, sf::Color::Green);
+			}
 
-			for (int i = 0; i < convex2.size() - 1; i++)
-				RenderSFMLImpl::renderLine(window, *m_camera, convex2[i], convex2[i + 1], RenderConstant::MaterialBlue);
+			for (auto iter = convex2.begin(); iter != convex2.end(); ++iter)
+			{
+				auto next = iter + 1;
+				if (next == convex2.end())
+					next = convex2.begin();
+				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, RenderConstant::MaterialBlue);
+			}
 
-			for (int i = 0; i < intersectionConvex.size() - 1; i++)
-				RenderSFMLImpl::renderLine(window, *m_camera, intersectionConvex[i], intersectionConvex[i + 1], sf::Color::Yellow);
-
+			for (auto iter = intersectionConvex.begin(); iter != intersectionConvex.end(); ++iter)
+			{
+				auto next = iter + 1;
+				if (next == intersectionConvex.end())
+					next = intersectionConvex.begin();
+				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, sf::Color::Yellow);
+			}
 
 			RenderSFMLImpl::renderPoints(window, *m_camera, points1, sf::Color::Cyan);
 			RenderSFMLImpl::renderPoints(window, *m_camera, points2, sf::Color::Magenta);
