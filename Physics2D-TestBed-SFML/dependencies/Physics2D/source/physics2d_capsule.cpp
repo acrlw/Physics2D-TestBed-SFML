@@ -121,12 +121,11 @@ namespace Physics2D
 	Container::Vector<Vector2> Capsule::boxVertices() const
 	{
 		Container::Vector<Vector2> vertices;
-		vertices.reserve(5);
+		vertices.reserve(4);
 		vertices.emplace_back(this->topLeft());
 		vertices.emplace_back(this->bottomLeft());
 		vertices.emplace_back(this->bottomRight());
 		vertices.emplace_back(this->topRight());
-		vertices.emplace_back(this->topLeft());
 		return vertices;
 	}
 }

@@ -126,7 +126,7 @@ namespace Physics2D
 		{
 			return radian * (180.0f /Constant::Pi);
 		}
-		template <typename T, size_t iterations = 4> PHYSICS2D_API static T fastInverseSqrt(T x) {
+		template <typename T, size_t iterations = 3> PHYSICS2D_API static T fastInverseSqrt(T x) {
 			typedef typename std::conditional<sizeof(T) == 8, std::int64_t, std::int32_t>::type Tint;
 			T y = x;
 			T x2 = y * 0.5f;

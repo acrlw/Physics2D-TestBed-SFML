@@ -82,6 +82,7 @@ namespace Physics2D
 		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
 
 		static ContactPair clipTwoEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap);
+
 		
 	};
 	

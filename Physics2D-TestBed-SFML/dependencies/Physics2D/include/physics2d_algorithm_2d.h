@@ -200,7 +200,7 @@ namespace Physics2D
 		 */
 		static Vector2 pointToLineSegment(const Vector2& a, const Vector2& b, const Vector2& p);
 		/**
-		 * \brief ray-ray intersection with no exception check
+		 * \brief ray-ray intersection with no exception check, be sure two rays must can intersect.
 		 * \param p1 
 		 * \param dir1 
 		 * \param p2 

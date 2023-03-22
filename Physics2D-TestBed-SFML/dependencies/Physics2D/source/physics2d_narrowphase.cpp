@@ -203,7 +203,7 @@ namespace Physics2D
 			//	std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << std::endl;
 			//}
 			//std::cout << "-----" << std::endl;
-			std::vector<Vector2> convex;
+			//std::vector<Vector2> convex;
 			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
 			//	convex.emplace_back(it->vertex.result);
 			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
@@ -292,9 +292,9 @@ namespace Physics2D
 			info.simplex.vertices[0] = iterStart->vertex;
 			info.simplex.vertices[1] = iterTemp->vertex;
 
-			convex.clear();
-			for (auto it = polytope.begin(); it != polytope.end(); ++it)
-				convex.emplace_back(it->vertex.result);
+			//convex.clear();
+			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
+			//	convex.emplace_back(it->vertex.result);
 
 			//[DEBUG]
 			//bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
@@ -539,46 +539,6 @@ namespace Physics2D
 				refNormal.negate();
 			}
 
-			//[DEBUG]
-			const Vector2 refEdgeDir = (refEdge[1] - refEdge[0]).normal();
-			const Vector2 refEdgeNormal = GeometryAlgorithm2D::lineSegmentNormal(refEdge[0], refEdge[1], refNormal);
-
-			//check ref1
-			const bool isRef1Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[0]) >= 0;
-			const bool isRef1Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[0]) >= 0;
-
-			if (!isRef1Inc1Valid && !isRef1Inc2Valid)
-			{
-				const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
-				const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
-				std::array<Vector2, 4> verticesA;
-				std::array<Vector2, 4> verticesB;
-				std::cout << "(" << shapeA.transform.position.x << ", " << shapeA.transform.position.y << ")" << std::endl;
-				std::cout << "(" << shapeB.transform.position.x << ", " << shapeB.transform.position.y << ")" << std::endl;
-				std::cout << shapeA.transform.rotation << std::endl;
-				std::cout << shapeB.transform.rotation << std::endl;
-				for (auto iter = polygonA->vertices().begin(); iter != polygonA->vertices().end(); ++iter)
-				{
-					auto idx = iter - polygonA->vertices().begin();
-					verticesA[idx] = shapeA.transform.translatePoint(*iter);
-					std::cout << "A_" << idx << "=(" << verticesA[idx].x << ", " << verticesA[idx].y << ")" << std::endl;
-				}
-				for (auto iter = polygonB->vertices().begin(); iter != polygonB->vertices().end(); ++iter)
-				{
-					auto idx = iter - polygonB->vertices().begin();
-					verticesB[idx] = shapeB.transform.translatePoint(*iter);
-					std::cout << "B_" << idx << "=(" << verticesB[idx].x << ", " << verticesB[idx].y << ")" << std::endl;
-				}
-				for(auto iter = info.polytope.begin(); iter != info.polytope.end(); ++iter)
-				{
-					auto idx = std::distance(info.polytope.begin(), iter);
-					std::cout << "P_" << idx << "=(" << iter->vertex.result.x << ", " << iter->vertex.result.y << ")" << std::endl;
-				}
-				std::cout << "CLOSE_0=(" << info.simplex.vertices[0].result.x << ", " << info.simplex.vertices[0].result.y << ")" << std::endl;
-				std::cout << "CLOSE_1=(" << info.simplex.vertices[1].result.x << ", " << info.simplex.vertices[1].result.y << ")" << std::endl;
-				int test = 0;
-			}
-
 			pair = clipTwoEdge(incEdge, refEdge, refNormal, swap);
 
 		}
@@ -649,6 +609,32 @@ namespace Physics2D
 			const Vector2 newNormal = pair.points[1] - pair.points[0];
 			info.penetration = newNormal.length();
 			info.normal = newNormal.normal();
+		}
+		else if (typeA == Shape::Type::Capsule)
+		{
+			const Capsule* capsuleA = static_cast<const Capsule*>(shapeA.shape);
+			Vector2 va1, va2, vb1, vb2;
+
+			//switch (typeB)
+			//{
+			//case Shape::Type::Polygon:
+			//	const Polygon* polygonB = static_cast<Polygon*>(shapeB.shape);
+			//	break;
+			//case Shape::Type::Edge:
+			//	const Edge* edgeB = static_cast<Edge*>(shapeB.shape);
+			//	break;
+			//case Shape::Type::Ellipse:
+			//	break;
+			//case Shape::Type::Circle:
+			//	break;
+			//default:
+			//	assert(false && "Not support this type");
+			//	break;
+			//}
+		}
+		else if (typeB == Shape::Type::Capsule)
+		{
+			const Capsule* capsuleB = static_cast<const Capsule*>(shapeB.shape);
 		}
 		else
 		{
@@ -741,8 +727,8 @@ namespace Physics2D
 		const bool isRef1Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[0]) >= 0;
 		const bool isRef1Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[0]) >= 0;
 
-		if (!isRef1Inc1Valid && !isRef1Inc2Valid)
-			return pair;
+		//if (!isRef1Inc1Valid && !isRef1Inc2Valid)
+		//	return pair;
 
 		assert(isRef1Inc1Valid || isRef1Inc2Valid && "Invalid features.");
 

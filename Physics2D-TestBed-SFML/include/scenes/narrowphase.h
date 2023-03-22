@@ -41,13 +41,13 @@ namespace Physics2D
 			//shape2.transform.position.set(0.500000477f, 0.499320120f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
-			shape1.shape = &circle;
+			shape1.shape = &ellipse;
 			shape1.transform.position.set(-0.500000477f, 0.499320120f);
-			shape1.transform.rotation = 9.10090932e-07f;
+			//shape1.transform.rotation = 9.10090932e-07f;
 
 			shape2.shape = &capsule;
 			shape2.transform.position.set(0.500000477f, 0.499320120f);
-			shape2.transform.rotation = -9.10090932e-07f;
+			//shape2.transform.rotation = -9.10090932e-07f;
 
 			//result = Detector::detect(shape1, shape2);
 
@@ -135,15 +135,15 @@ namespace Physics2D
 
 				//draw feature simplex
 
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
-				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
-				//	info.simplex.vertices[1].point[0], color1);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
+				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
+					info.simplex.vertices[1].point[0], color1);
 
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
-				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
-				//	info.simplex.vertices[1].point[1], color2);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
+				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
+					info.simplex.vertices[1].point[1], color2);
 				
 
 				
