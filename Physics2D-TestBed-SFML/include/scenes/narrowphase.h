@@ -14,6 +14,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			capsule.set(1.0f, 0.5f);
 			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
 			smallBrick.set(1.0f, 1.0f);
 
@@ -40,11 +41,11 @@ namespace Physics2D
 			//shape2.transform.position.set(0.500000477f, 0.499320120f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
-			shape1.shape = &smallBrick;
+			shape1.shape = &circle;
 			shape1.transform.position.set(-0.500000477f, 0.499320120f);
 			shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &smallBrick;
+			shape2.shape = &capsule;
 			shape2.transform.position.set(0.500000477f, 0.499320120f);
 			shape2.transform.rotation = -9.10090932e-07f;
 
@@ -184,6 +185,7 @@ namespace Physics2D
 		}
 	private:
 
+		Capsule capsule;
 		Edge edge;
 		Rectangle block;
 

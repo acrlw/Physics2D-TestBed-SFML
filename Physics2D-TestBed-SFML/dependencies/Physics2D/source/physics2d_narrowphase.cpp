@@ -191,10 +191,28 @@ namespace Physics2D
 		auto iterStart = polytope.begin();
 		auto iterEnd = polytope.end();
 		auto iterTemp = polytope.begin();
-
+		ptrdiff_t insertAt = 0;
 
 		while(++iter < iteration)
 		{
+			//[DEBUG]
+			//std::cout << "-----iter:" << iter << "-----" << std::endl;
+			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
+			//{
+			//	auto idx = std::distance(polytope.begin(), it);
+			//	std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << std::endl;
+			//}
+			//std::cout << "-----" << std::endl;
+			std::vector<Vector2> convex;
+			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
+			//	convex.emplace_back(it->vertex.result);
+			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
+			//{
+			//	auto idx = std::distance(polytope.begin(), it);
+			//	std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << "\t" << it->distance << std::endl;
+			//}
+
+
 			//closest edge index is set to index 0 and index 1
 			direction = findDirectionByEdge(info.simplex.vertices[0], info.simplex.vertices[1], false);
 
@@ -204,46 +222,50 @@ namespace Physics2D
 			if (info.simplex.contains(vertex))
 				break;
 
+			
+
+			//convex test
+			
+			auto itA = iterStart;
+
+			auto itB = itA;
+			iterNext(itB, polytope);
+
+			auto itC = itB;
+			iterNext(itC, polytope);
+
+			Vector2 ab = itB->vertex.result - itA->vertex.result;
+			Vector2 bc = itC->vertex.result - itB->vertex.result;
+			const real res1 = Vector2::crossProduct(ab, bc);
+
+			Vector2 an = vertex.result - itA->vertex.result;
+			Vector2 nb = itB->vertex.result - vertex.result;
+			const real res2 = Vector2::crossProduct(an, nb);
+			
+			const real res3 = Vector2::crossProduct(nb, bc);
+
+			bool validConvexity = Math::sameSign(res1, res2, res3);
+			
+			if (!validConvexity) //invalid vertex, just break
+				break;
+
+			//then insert new vertex
+
+			SimplexVertexWithOriginDistance pair;
+			pair.vertex = vertex;
+			Vector2 t1 = GeometryAlgorithm2D::pointToLineSegment(itA->vertex.result, vertex.result, { 0,  0 });
+			real dist1 = t1.length();
+			Vector2 t2 = GeometryAlgorithm2D::pointToLineSegment(vertex.result, itB->vertex.result, { 0, 0 });
+			real dist2 = t2.length();
+
+			itA->distance = dist1;
+			pair.distance = dist2;
+			polytope.insert(itB, pair);
+
+
 			//set to begin
 			iterTemp = iterStart;
 
-			//calculate distance
-			//iterTemp->vertex = result.vertices[0];
-			bool useVertex = false;
-			Vector2 t1 = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, vertex.result, { 0,  0 });
-			real dist1 = t1.length();
-			if(realEqual(dist1, 0))
-			{
-				//almost same vertex, just replace old
-				iterStart->vertex = vertex;
-				useVertex = true;
-			}
-			else
-				iterStart->distance = dist1;
-
-			
-			iterStart->distance = dist1;
-
-			iterNext(iterTemp, polytope);
-			//insert
-			SimplexVertexWithOriginDistance pair;
-			pair.vertex = vertex;
-
-			real dist2 = GeometryAlgorithm2D::pointToLineSegment(vertex.result, iterTemp->vertex.result, { 0, 0 })
-				.length();
-
-			pair.distance = dist2;
-
-			if(realEqual(dist2, 0) && !useVertex)
-			{
-				//almost same vertex, check if used, then just replace old
-				iterTemp->vertex = vertex;
-			}
-			else if(!useVertex)
-				polytope.insert(iterTemp, pair);
-
-			//reset iterTemp for next loop
-			iterTemp = iterStart;
 			//find shortest distance and set iterStart
 			real minDistance = Constant::Max;
 			auto iterTarget = iterStart;
@@ -270,21 +292,56 @@ namespace Physics2D
 			info.simplex.vertices[0] = iterStart->vertex;
 			info.simplex.vertices[1] = iterTemp->vertex;
 
+			convex.clear();
+			for (auto it = polytope.begin(); it != polytope.end(); ++it)
+				convex.emplace_back(it->vertex.result);
+
+			//[DEBUG]
+			//bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
+
+			//if (!isConvex)
+			//{
+			//	std::cout << "-----[Debug]iter:" << iter << "-----" << std::endl;
+			//	auto idxStart = std::distance(polytope.begin(), iterStart);
+			//	std::cout << "start at:" << idxStart << std::endl;
+			//	auto idxEnd = std::distance(polytope.begin(), iterEnd);
+			//	std::cout << "end at:" << idxStart << std::endl;
+
+			//	std::cout << "insert before:" << insertAt << std::endl;
+			//	std::cout << "new vertex:(" << vertex.result.x << "," << vertex.result.y << ")\t" << dist1 << ", " << dist2 << std::endl;
+
+			//	for (auto it = polytope.begin(); it != polytope.end(); ++it)
+			//	{
+			//		auto idx = std::distance(polytope.begin(), it);
+			//		std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << "\t" << it->distance << std::endl;
+			//	}
+			//	int a = 0;
+			//}
 		}
 		//[DEBUG]
-		{
-			std::vector<Vector2> convex;
-			for(auto it = polytope.begin(); it != polytope.end(); ++it)
-			{
-				convex.emplace_back(it->vertex.result);
-			}
-			bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
+		//{
+		//	std::vector<Vector2> convex;
+		//	for(auto it = polytope.begin(); it != polytope.end(); ++it)
+		//	{
+		//		convex.emplace_back(it->vertex.result);
+		//	}
+		//	bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
 
-			if (!isConvex)
-			{
-				int a = 0;
-			}
-		}
+		//	if (!isConvex)
+		//	{
+		//		std::cout << "S_{0}=" << simplex.vertices[0].result.x << "," << simplex.vertices[0].result.y << std::endl;
+		//		std::cout << "S_{1}=" << simplex.vertices[1].result.x << "," << simplex.vertices[1].result.y << std::endl;
+		//		std::cout << "S_{2}=" << simplex.vertices[2].result.x << "," << simplex.vertices[2].result.y << std::endl;
+
+
+		//		for(auto it = polytope.begin(); it != polytope.end(); ++it)
+		//		{
+		//			auto idx = std::distance(polytope.begin(), it);
+		//			std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << std::endl;
+		//		}
+		//		int a = 0;
+		//	}
+		//}
 
 		Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
 			, { 0, 0 });
@@ -292,7 +349,8 @@ namespace Physics2D
 		info.penetration = temp.length();
 		info.normal = temp.normal();
 
-		bool isOrigin = info.normal.isOrigin();
+		//[DEBUG]
+		//bool isOrigin = info.normal.isOrigin();
 		//if(isOrigin)
 		//{
 		//	//const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);

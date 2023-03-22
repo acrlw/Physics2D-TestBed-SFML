@@ -201,7 +201,9 @@ namespace Physics2D
 		if (vertices.size() == 3)
 			return true;
 
-		int result = 0;
+		int positive = 0;
+		int zero = 0;
+		int negative = 0;
 		for(auto itLast = vertices.begin(); itLast != vertices.end(); itLast++)
 		{
 			auto itCurr = itLast + 1;
@@ -216,14 +218,16 @@ namespace Physics2D
 
 			Vector2 ab = *itCurr - *itLast;
 			Vector2 bc = *itNext - *itCurr;
-
-			if (Vector2::crossProduct(ab, bc) < 0)
-				result -= 1;
+			const real res = Vector2::crossProduct(ab, bc);
+			if (realEqual(res, 0))
+				zero++;
+			else if (res < 0)
+				negative++;
 			else
-				result += 1;
+				positive++;
 
 		}
-		return std::fabs(result) == vertices.size();
+		return !(positive != 0 && negative != 0);
 	}
 
 	Container::Vector<Vector2> GeometryAlgorithm2D::grahamScan(const Container::Vector<Vector2>& vertices)
