@@ -236,8 +236,7 @@ namespace Physics2D
 		for (real radian = 0; radian <= Constant::DoublePi; radian += step)
 		{
 			Vector2 point(outerRadius * Math::cosx(radian), innerRadius * Math::sinx(radian));
-
-			const Vector2 worldPos = Matrix2x2(shape.transform.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform.position;
+			const Vector2 worldPos = shape.transform.translatePoint(point * RenderConstant::ScaleFactor);
 			const Vector2 screenPos = camera.worldToScreen(worldPos);
 			sf::Vertex vertex;
 			vertex.position = toVector2f(screenPos);
@@ -264,11 +263,10 @@ namespace Physics2D
 		colorY.a = 204;
 		Vector2 xP(0.1f, 0);
 		Vector2 yP(0, 0.1f);
-		Vector2 mc = Matrix2x2(shape.transform.rotation).multiply(shape.shape->center());
-		xP = Matrix2x2(shape.transform.rotation).multiply(xP) + shape.transform.position + mc;
-		yP = Matrix2x2(shape.transform.rotation).multiply(yP) + shape.transform.position + mc;
-		renderLine(window, camera, shape.transform.position + mc, xP, colorX);
-		renderLine(window, camera, shape.transform.position + mc, yP, colorY);
+		xP = shape.transform.translatePoint(xP);
+		yP = shape.transform.translatePoint(yP);
+		renderLine(window, camera, shape.transform.position, xP, colorX);
+		renderLine(window, camera, shape.transform.position, yP, colorY);
 	}
 	void RenderSFMLImpl::renderBody(sf::RenderWindow& window, Camera& camera, Body* body, const sf::Color& color)
 	{

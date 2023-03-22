@@ -1,6 +1,8 @@
 #include "physics2d_narrowphase.h"
 #include "physics2d_narrowphase.h"
 
+#include <iostream>
+
 namespace Physics2D
 {
 	Simplex Narrowphase::gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
@@ -22,14 +24,32 @@ namespace Physics2D
 		//check 1d simplex(line segment) contains origin
 		//WARN: this can be used to check collision but not friendly with EPA, here adding perturbation to avoid 1d simplex
 
+		//retry to reconfigure simplex to avoid 1d simplex cross origin
 		if (simplex.containsOrigin())
 		{
-			//return simplex;
+			int i = 1;
+			//default is 4
+			for (; i <= Constant::GJKRetryTimes; ++i)
+			{
+				//return simplex;
+				direction.set(-direction.y + real(i), -direction.x - real(i));
+				SimplexVertex v = support(shapeA, shapeB, direction);
+				simplex.vertices[0] = v;
+				direction.set(-direction.y - real(i) - 0.5f, -direction.x + real(i) + 0.5f);
+				v = support(shapeA, shapeB, direction);
+				simplex.vertices[1] = v;
 
-			direction.set(-direction.y + 1.0f, -direction.x - 1.5f);
-			SimplexVertex v2 = support(shapeA, shapeB, direction);
-			simplex.vertices[2] = v2;
+				if (!simplex.containsOrigin())
+					break;
+			}
+			//can't reconfigure, just not process
+			if (i == Constant::GJKRetryTimes)
+			{
+				assert(false && "Cannot reconfigure simplex.");
+				return simplex;
+			}
 		}
+
 		//third
 		size_t iter = 0;
 		while (iter <= iteration)
@@ -45,6 +65,7 @@ namespace Physics2D
 			//vertex does not pass origin
 			if (vertex.result.dot(direction) <= 0)
 				break;
+			
 
 			simplex.addSimplexVertex(vertex);
 
@@ -181,13 +202,7 @@ namespace Physics2D
 
 			//cannot find any new vertex
 			if (info.simplex.contains(vertex))
-			{
-				Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
-					, { 0, 0 });
-				info.penetration = temp.length();
-				info.normal = temp.normal();
-				return info;
-			}
+				break;
 
 			//set to begin
 			iterTemp = iterStart;
@@ -195,8 +210,8 @@ namespace Physics2D
 			//calculate distance
 			//iterTemp->vertex = result.vertices[0];
 			bool useVertex = false;
-			real dist1 = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, vertex.result, { 0,  0 })
-				.length();
+			Vector2 t1 = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, vertex.result, { 0,  0 });
+			real dist1 = t1.length();
 			if(realEqual(dist1, 0))
 			{
 				//almost same vertex, just replace old
@@ -256,8 +271,50 @@ namespace Physics2D
 			info.simplex.vertices[1] = iterTemp->vertex;
 
 		}
-		info.normal = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
-			, { 0, 0 }).normal();
+		//[DEBUG]
+		{
+			std::vector<Vector2> convex;
+			for(auto it = polytope.begin(); it != polytope.end(); ++it)
+			{
+				convex.emplace_back(it->vertex.result);
+			}
+			bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
+
+			if (!isConvex)
+			{
+				int a = 0;
+			}
+		}
+
+		Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
+			, { 0, 0 });
+
+		info.penetration = temp.length();
+		info.normal = temp.normal();
+
+		bool isOrigin = info.normal.isOrigin();
+		//if(isOrigin)
+		//{
+		//	//const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
+		//	//const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
+		//	//std::array<Vector2, 4> verticesA;
+		//	//std::array<Vector2, 4> verticesB;
+		//	//for(auto iter = polygonA->vertices().begin(); iter != polygonA->vertices().end(); ++iter)
+		//	//{
+		//	//	auto idx = iter - polygonA->vertices().begin();
+		//	//	verticesA[idx] = shapeA.transform.translatePoint(*iter);
+		//	//	std::cout << "A_" << idx << "=(" << verticesA[idx].x << ", " << verticesA[idx].y << ")" << std::endl;
+		//	//}
+		//	//for (auto iter = polygonB->vertices().begin(); iter != polygonB->vertices().end(); ++iter)
+		//	//{
+		//	//	auto idx = iter - polygonB->vertices().begin();
+		//	//	verticesB[idx] = shapeB.transform.translatePoint(*iter);
+		//	//	std::cout << "B_" << idx << "=(" << verticesB[idx].x << ", " << verticesB[idx].y << ")" << std::endl;
+		//	//}
+		//	//int test = 0;
+		//}
+
+
 		return info;
 	}
 
@@ -370,6 +427,7 @@ namespace Physics2D
 		Shape::Type typeA = shapeA.shape->type();
 		Shape::Type typeB = shapeB.shape->type();
 
+
 		assert(!(typeA == Shape::Type::Edge && typeB == Shape::Type::Edge) && "Not support two edge");
 		
 		if((typeA == Shape::Type::Polygon || typeA == Shape::Type::Edge) && 
@@ -422,6 +480,47 @@ namespace Physics2D
 				//notice, default normal is changed.
 				refNormal.negate();
 			}
+
+			//[DEBUG]
+			const Vector2 refEdgeDir = (refEdge[1] - refEdge[0]).normal();
+			const Vector2 refEdgeNormal = GeometryAlgorithm2D::lineSegmentNormal(refEdge[0], refEdge[1], refNormal);
+
+			//check ref1
+			const bool isRef1Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[0]) >= 0;
+			const bool isRef1Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[0]) >= 0;
+
+			if (!isRef1Inc1Valid && !isRef1Inc2Valid)
+			{
+				const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
+				const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
+				std::array<Vector2, 4> verticesA;
+				std::array<Vector2, 4> verticesB;
+				std::cout << "(" << shapeA.transform.position.x << ", " << shapeA.transform.position.y << ")" << std::endl;
+				std::cout << "(" << shapeB.transform.position.x << ", " << shapeB.transform.position.y << ")" << std::endl;
+				std::cout << shapeA.transform.rotation << std::endl;
+				std::cout << shapeB.transform.rotation << std::endl;
+				for (auto iter = polygonA->vertices().begin(); iter != polygonA->vertices().end(); ++iter)
+				{
+					auto idx = iter - polygonA->vertices().begin();
+					verticesA[idx] = shapeA.transform.translatePoint(*iter);
+					std::cout << "A_" << idx << "=(" << verticesA[idx].x << ", " << verticesA[idx].y << ")" << std::endl;
+				}
+				for (auto iter = polygonB->vertices().begin(); iter != polygonB->vertices().end(); ++iter)
+				{
+					auto idx = iter - polygonB->vertices().begin();
+					verticesB[idx] = shapeB.transform.translatePoint(*iter);
+					std::cout << "B_" << idx << "=(" << verticesB[idx].x << ", " << verticesB[idx].y << ")" << std::endl;
+				}
+				for(auto iter = info.polytope.begin(); iter != info.polytope.end(); ++iter)
+				{
+					auto idx = std::distance(info.polytope.begin(), iter);
+					std::cout << "P_" << idx << "=(" << iter->vertex.result.x << ", " << iter->vertex.result.y << ")" << std::endl;
+				}
+				std::cout << "CLOSE_0=(" << info.simplex.vertices[0].result.x << ", " << info.simplex.vertices[0].result.y << ")" << std::endl;
+				std::cout << "CLOSE_1=(" << info.simplex.vertices[1].result.x << ", " << info.simplex.vertices[1].result.y << ")" << std::endl;
+				int test = 0;
+			}
+
 			pair = clipTwoEdge(incEdge, refEdge, refNormal, swap);
 
 		}
@@ -535,32 +634,29 @@ namespace Physics2D
 				//find neighbor index
 
 				const Polygon* polygon = static_cast<const Polygon*>(shape.shape);
-
-				const Index tempIndex = simplex.vertices[0].index[AorB];
-				const size_t realSize = polygon->vertices().size();
-				//TODO: change vertex convention of polygon 
-				const Index tempIndexNext = (tempIndex + 1) % realSize;
-				const Index tempIndexPrev = (tempIndex - 1 + realSize) % realSize;
-
-				//check most perpendicular
-				const Vector2 ab = polygon->vertices()[tempIndexNext] - polygon->vertices()[tempIndex];
-				const Vector2 ac = polygon->vertices()[tempIndex] - polygon->vertices()[tempIndexPrev];
-
 				const Vector2 n = shape.transform.inverseRotatePoint(normal);
 
-				const real dot1 = Math::abs(Vector2::dotProduct(ab, n));
-				const real dot2 = Math::abs(Vector2::dotProduct(ac, n));
+				const Index idxCurr = simplex.vertices[0].index[AorB];
+				const size_t realSize = polygon->vertices().size();
+				//TODO: change vertex convention of polygon 
+				const Index idxNext = (idxCurr + 1) % realSize;
+				//if idx = 0 then unsigned number overflow, so minus operation is needed to be set aside.
+				const Index idxPrev = (idxCurr + realSize - 1) % realSize;
+
+
+				//check most perpendicular
+				const Vector2 ab = (polygon->vertices()[idxNext] - polygon->vertices()[idxCurr]).normal();
+				const Vector2 ac = (polygon->vertices()[idxCurr] - polygon->vertices()[idxPrev]).normal();
+
+
+				const real dot1 = Math::abs(ab.dot(n));
+				const real dot2 = Math::abs(ac.dot(n));
+
+				feature.index[0] = idxCurr;
+				feature.index[1] = idxNext;
 
 				if (dot1 > dot2)
-				{
-					feature.index[0] = tempIndexPrev;
-					feature.index[1] = tempIndex;
-				}
-				else
-				{
-					feature.index[0] = tempIndex;
-					feature.index[1] = tempIndexNext;
-				}
+					feature.index[1] = idxPrev;
 				
 			}
 			else
@@ -586,6 +682,9 @@ namespace Physics2D
 		//check ref1
 		const bool isRef1Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[0]) >= 0;
 		const bool isRef1Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[0]) >= 0;
+
+		if (!isRef1Inc1Valid && !isRef1Inc2Valid)
+			return pair;
 
 		assert(isRef1Inc1Valid || isRef1Inc2Valid && "Invalid features.");
 

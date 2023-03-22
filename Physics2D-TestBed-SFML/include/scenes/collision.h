@@ -13,13 +13,13 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			smallBrick.set(1.0f, 1.0f);
+			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
 			edge.set({ -10, 0 }, { 10, 0 });
 			capsule.set(2.0f, 1.0f);
 			sector.set(0.0f, 2.0f * Constant::Pi / 3.0f, 2.0f);
 			rectangle.set(1.0f, 1.0f);
 
-			Body* ground;
-			Body* rect;
 
 			ground = m_world->createBody();
 			ground->setShape(&edge);
@@ -31,9 +31,29 @@ namespace Physics2D
 			m_tree->insert(ground);
 
 			rect = m_world->createBody();
-			rect->setShape(&rectangle);
-			rect->position().set({ 0, 6 });
-			rect->rotation() = Math::degreeToRadian(60);
+			rect->setShape(&smallBrick);
+			rect->position().set({ 0, 2 });
+			rect->rotation() = Math::degreeToRadian(0);
+			rect->setMass(1);
+			rect->setType(Body::BodyType::Dynamic);
+			rect->setFriction(0.4f);
+			rect->setRestitution(0.0f);
+			m_tree->insert(rect);
+
+			rect = m_world->createBody();
+			rect->setShape(&smallBrick);
+			rect->position().set({ -0.5f, 0.5f });
+			rect->rotation() = Math::degreeToRadian(0);
+			rect->setMass(1);
+			rect->setType(Body::BodyType::Dynamic);
+			rect->setFriction(0.4f);
+			rect->setRestitution(0.0f);
+			m_tree->insert(rect);
+
+			rect = m_world->createBody();
+			rect->setShape(&smallBrick);
+			rect->position().set({ 0.5f, 0.5f });
+			rect->rotation() = Math::degreeToRadian(0);
 			rect->setMass(1);
 			rect->setType(Body::BodyType::Dynamic);
 			rect->setFriction(0.4f);
@@ -42,14 +62,17 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-
+			int a = 0;
 		}
 	private:
+		Rectangle smallBrick;
+		Body* ground;
+		Body* rect;
 		Capsule capsule;
 		Edge edge;
 		Sector sector;
 		Rectangle rectangle;
-
+		Polygon triangle;
 	};
 }
 #endif

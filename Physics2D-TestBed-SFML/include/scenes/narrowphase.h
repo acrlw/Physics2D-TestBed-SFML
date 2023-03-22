@@ -14,12 +14,15 @@ namespace Physics2D
 		}
 		void load() override
 		{
+			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
+			smallBrick.set(1.0f, 1.0f);
+
 			brick.set(1.5f, 0.5f);
 
 			block.set(10, 0.1f);
-			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
+			edge.set(Vector2{ -100.0f, 0.0f }, Vector2{ 100.0f, 0.0f });
 
-			rectangle.set(2, 3);
+			rectangle.set(0.3, 3.0);
 			polygon1.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
 			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f } });
 
@@ -29,13 +32,22 @@ namespace Physics2D
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
 
-			shape1.shape = &polygon1;
-			shape1.transform.position.set(0.0f, 2.0f);
-			//shape1.transform.rotation = Math::degreeToRadian(50);
+			//shape1.shape = &smallBrick;
+			//shape1.transform.position.set(-0.500000477f, 0.499320120f);
+			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &edge;
-			shape2.transform.position.set(0.0f, -5.0f);
-			//shape2.transform.rotation = Math::degreeToRadian(30);
+			//shape2.shape = &smallBrick;
+			//shape2.transform.position.set(0.500000477f, 0.499320120f);
+			//shape2.transform.rotation = -9.10090932e-07f;
+
+			shape1.shape = &circle;
+			shape1.transform.position.set(0.0f, 0.0f);
+			shape1.transform.rotation = 9.10090932e-07f;
+
+			shape2.shape = &circle;
+			shape2.transform.position.set(4.0f, 0.0f);
+			shape2.transform.rotation = -9.10090932e-07f;
+
 			//result = Detector::detect(shape1, shape2);
 
 		}
@@ -80,18 +92,19 @@ namespace Physics2D
 		{
 			if(event.key.code == sf::Keyboard::R)
 			{
-				shape1.transform.rotation += Math::degreeToRadian(1);
+				shape1.transform.rotation += Math::degreeToRadian(0.1);
 			}
 		}
 		void render(sf::RenderWindow& window) override
 		{
+
 			RenderSFMLImpl::renderShape(window, *m_camera, shape1, sf::Color::Green);
 			RenderSFMLImpl::renderShape(window, *m_camera, shape2, sf::Color::Cyan);
 
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform.position, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform.position, sf::Color::Cyan);
 			Simplex simplex = Narrowphase::gjk(shape1, shape2);
-			sf::Color color = simplex.isContainOrigin ? sf::Color::Magenta : sf::Color::Blue;
+			sf::Color color = simplex.isContainOrigin ? RenderConstant::MaterialTeal : RenderConstant::MaterialOrange;
 			//RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
 			if(simplex.isContainOrigin)
 			{
@@ -105,20 +118,22 @@ namespace Physics2D
 					if(next == info.polytope.end())
 						next = info.polytope.begin();
 
-					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, sf::Color::Red);
-					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, sf::Color::Red);
-					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, sf::Color::Red);
+					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::MaterialPink);
+					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::MaterialPink);
+					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::MaterialPink);
 				}
 				
-				//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, sf::Color::Green);
+				//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, RenderConstant::MaterialTeal);
 				//Vector2 p = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result,
 				//	info.simplex.vertices[1].result, { 0, 0 });
-				//RenderSFMLImpl::renderPoint(window, *m_camera, p, sf::Color::Green);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, p, RenderConstant::MaterialOrange);
+				//RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, RenderConstant::MaterialOrange);
 
 				sf::Color color1 = sf::Color(239, 103, 50);
 				sf::Color color2 = sf::Color(252, 236, 86);
 
 				//draw feature simplex
+
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
 				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
@@ -130,8 +145,7 @@ namespace Physics2D
 				//	info.simplex.vertices[1].point[1], color2);
 				
 
-				//RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, sf::Color::Green);
-
+				
 				
 				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], info.simplex.vertices[1].point[0], sf::Color::Yellow);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], sf::Color::Yellow, 4);
@@ -140,25 +154,26 @@ namespace Physics2D
 				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1], info.simplex.vertices[1].point[1], sf::Color::Magenta);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
 				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
-				auto pairs = Narrowphase::generateContacts(shape1, shape2, info);
-				if(pairs.count == 2)
-				{
-					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
-				}
-				else if(pairs.count == 4)
-				{
-					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
-					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[2], pairs.points[3], sf::Color::Magenta);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[2], color1);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[3], color2);
-				}
+				//auto pairs = Narrowphase::generateContacts(shape1, shape2, info);
+				//if(pairs.count == 2)
+				//{
+				//	RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
+				//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
+				//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
+				//}
+				//else if(pairs.count == 4)
+				//{
+				//	RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
+				//	RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[2], pairs.points[3], sf::Color::Magenta);
+				//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
+				//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
+				//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[2], color1);
+				//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[3], color2);
+				//}
 				//draw final normal
 
 				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
+				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal, sf::Color::Cyan);
 
 			}
 			if(isPicked)
@@ -174,6 +189,9 @@ namespace Physics2D
 
 		Rectangle brick;
 
+		Polygon triangle;
+
+		Rectangle smallBrick;
 		Rectangle rectangle;
 		Polygon polygon1;
 		Polygon polygon2;

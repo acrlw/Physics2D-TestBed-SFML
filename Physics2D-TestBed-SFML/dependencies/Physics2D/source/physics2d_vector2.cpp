@@ -125,9 +125,16 @@ namespace Physics2D
 
 	Vector2& Vector2::normalize()
 	{
-		const real length_inv = Math::fastInverseSqrt<real>(lengthSquare());
+		const real length_inv = 1.0f / std::sqrt(lengthSquare());
+		//
+		//__m128 _mm_rsqrt_ss(__m128 a)
+
+
+		//const real length_inv = Math::fastInverseSqrt<real>(lengthSquare());
 		x *= length_inv;
 		y *= length_inv;
+
+
 		return *this;
 	}
 

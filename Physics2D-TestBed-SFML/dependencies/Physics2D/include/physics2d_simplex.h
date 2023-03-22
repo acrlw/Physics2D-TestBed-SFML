@@ -28,7 +28,7 @@ namespace Physics2D
 		}
 		inline bool isEmpty()const
 		{
-			return point[0].isOrigin() && point[1].isOrigin() && result.isOrigin();
+			return point[0].isOrigin() && point[1].isOrigin() && result.isOrigin() && index[0] == INT_MAX && index[1] == INT_MAX;
 		}
 		inline bool isIndexAValid()const
 		{

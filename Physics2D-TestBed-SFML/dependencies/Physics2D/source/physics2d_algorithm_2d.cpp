@@ -195,17 +195,32 @@ namespace Physics2D
 
 	bool GeometryAlgorithm2D::isConvexPolygon(const Container::Vector<Vector2>& vertices)
 	{
-		if (vertices.size() == 4)
+		if (vertices.size() == 3)
 			return true;
 
-		for (size_t i = 0; i < vertices.size() - 1; i++)
+		int result = 0;
+		for(auto itLast = vertices.begin(); itLast != vertices.end(); itLast++)
 		{
-			Vector2 ab = vertices[i + 1] - vertices[i];
-			Vector2 ac = i + 2 != vertices.size() ? vertices[i + 2] - vertices[i] : vertices[1] - vertices[i];
-			if (Vector2::crossProduct(ab, ac) < 0)
-				return false;
+			auto itCurr = itLast + 1;
+
+			if (itCurr == vertices.end())
+				itCurr = vertices.begin();
+
+			auto itNext = itCurr + 1;
+
+			if(itNext == vertices.end())
+				itNext = vertices.begin();
+
+			Vector2 ab = *itCurr - *itLast;
+			Vector2 bc = *itNext - *itCurr;
+
+			if (Vector2::crossProduct(ab, bc) < 0)
+				result -= 1;
+			else
+				result += 1;
+
 		}
-		return true;
+		return std::fabs(result) == vertices.size();
 	}
 
 	Container::Vector<Vector2> GeometryAlgorithm2D::grahamScan(const Container::Vector<Vector2>& vertices)
@@ -337,27 +352,27 @@ namespace Physics2D
 
 	Vector2 GeometryAlgorithm2D::calculateCenter(const Container::Vector<Vector2>& vertices)
 	{
-		if (vertices.size() >= 4)
+		if(vertices.size() >= 3)
 		{
 			Vector2 pos;
 			real area = 0;
-			size_t p_a, p_b, p_c;
-			p_a = 0, p_b = 0, p_c = 0;
-			for (size_t i = 0; i < vertices.size() - 1; i++)
+			for(auto itLast = vertices.begin(); itLast != vertices.end() - 1; ++itLast)
 			{
-				p_b = i + 1;
-				p_c = i + 2;
-				if (p_b == vertices.size() - 2)
-					break;
-				real a = triangleArea(vertices[p_a], vertices[p_b], vertices[p_c]);
-				Vector2 p = triangleCentroid(vertices[p_a], vertices[p_b], vertices[p_c]);
+				auto itCurr = itLast + 1;
+				auto itNext = itCurr + 1;
+				if (itNext == vertices.end())
+					itNext = vertices.begin();
+
+				real a = triangleArea(*itLast, *itCurr, *itNext);
+				Vector2 p = triangleCentroid(*itLast, *itCurr, *itNext);
 				pos += p * a;
 				area += a;
+
 			}
 			pos /= area;
 			return pos;
 		}
-			return Vector2();
+		return Vector2();
 	}
 
 	std::tuple<Vector2, Vector2> GeometryAlgorithm2D::shortestLengthLineSegmentEllipse(
@@ -658,10 +673,7 @@ namespace Physics2D
 	Vector2 GeometryAlgorithm2D::pointToLineSegment(const Vector2& a, const Vector2& b, const Vector2& p)
 	{
 		if (a == b)
-			return {};
-
-		if (isCollinear(a, b, p))
-			return p;
+			return a;
 
 		const Vector2 ab = b - a;
 		const Vector2 ap = p - a;
@@ -674,8 +686,9 @@ namespace Physics2D
 			return b;
 		
 		const Vector2 ab_normal = ab.normal();
-		const Vector2 ap_proj = ab_normal.dot(ap) * ab_normal;
-		Vector2 op_proj = a + ap_proj;
+		const real proj = ap.dot(ab_normal);
+		const Vector2 ap_proj = proj * ab_normal;
+		const Vector2 op_proj = a + ap_proj;
 		//return point p_proj
 		return op_proj;
 	}
@@ -684,7 +697,7 @@ namespace Physics2D
 		//https://stackoverflow.com/a/2932601
 
 		const real det = dir1.y * dir2.x - dir1.x * dir2.y;
-		assert(!realEqual(det, 0));
+		//assert(!realEqual(det, 0));
 		const real u = (dir2.x * (p2.y - p1.y) - dir2.y * (p2.x - p1.x)) / det;
 		return p1 + dir1 * u;
 	}

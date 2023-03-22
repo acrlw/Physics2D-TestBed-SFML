@@ -49,7 +49,7 @@ namespace Physics2D
 		constexpr real HalfPi = Constant::Pi / 2.0f;
 		constexpr real DoublePi = Constant::Pi * 2.0f;
 		constexpr real ReciprocalOfPi = 0.3183098861f;
-		constexpr real GeometryEpsilon = 1e-5;
+		constexpr real GeometryEpsilon = 1e-6f;
 		constexpr real CCDMinVelocity = 100.0f;
 		constexpr real MaxVelocity = 1000.0f;
 		constexpr real MaxAngularVelocity = 1000.0f;
@@ -57,6 +57,7 @@ namespace Physics2D
 		constexpr real MinLinearVelocity = 1e-4f;
 		constexpr real MinAngularVelocity = 1e-4f;
 		constexpr size_t SleepCountdown = 32;
+		constexpr int GJKRetryTimes = 4;
 	}
 #else
 	using real = double;

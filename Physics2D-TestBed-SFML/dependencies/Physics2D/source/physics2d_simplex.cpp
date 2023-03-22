@@ -80,7 +80,7 @@ namespace Physics2D
 	bool Simplex::contains(const SimplexVertex& vertex, const real& epsilon)
 	{
 		for (SimplexVertex& element : vertices)
-			if (element == vertex || element.result.fuzzyEqual(vertex.result, epsilon))
+			if (!element.isEmpty() && (element == vertex || element.result.fuzzyEqual(vertex.result, epsilon)))
 				return true;
 		return false;
 	}

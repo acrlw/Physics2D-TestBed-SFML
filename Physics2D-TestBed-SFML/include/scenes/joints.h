@@ -18,7 +18,7 @@ namespace Physics2D
 			triangle.scale(0.5f);
 			edge.set({ -100, 0 }, { 100, 0 });
 			edge2.set({ 0, 0 }, { 100, 40 });
-			rectangle.set(4.0f, 2.0f);
+			rectangle.set(2.0f, 1.0f);
 			path.set(Vector2{ -6.0f, 6.0f }, Vector2{ -3.0f, 3.0f }, Vector2{ 3.0f, 9.0f }, Vector2{ 6.0f, 6.0f });
 			wheel.setRadius(1.0f);
 
