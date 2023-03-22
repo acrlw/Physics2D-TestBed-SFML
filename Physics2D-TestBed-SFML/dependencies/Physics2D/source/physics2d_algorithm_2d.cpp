@@ -76,7 +76,10 @@ namespace Physics2D
 
 	bool GeometryAlgorithm2D::isPointOnSegment(const Vector2& a, const Vector2& b, const Vector2& c)
 	{
-		return !isCollinear(a, b, c) ? false : fuzzyIsCollinear(a, b, c);
+		const Vector2 ab = b - a;
+		const Vector2 ac = c - a;
+		const Vector2 bc = c - b;
+		return !Math::sameSign(ac.dot(ab), bc.dot(ab)) && isCollinear(a, b, c);
 	}
 
 	bool GeometryAlgorithm2D::fuzzyIsPointOnSegment(const Vector2& a, const Vector2& b, const Vector2& c,

@@ -40,12 +40,12 @@ namespace Physics2D
 			//shape2.transform.position.set(0.500000477f, 0.499320120f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
-			shape1.shape = &circle;
-			shape1.transform.position.set(0.0f, 0.0f);
+			shape1.shape = &smallBrick;
+			shape1.transform.position.set(-0.500000477f, 0.499320120f);
 			shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &circle;
-			shape2.transform.position.set(4.0f, 0.0f);
+			shape2.shape = &smallBrick;
+			shape2.transform.position.set(0.500000477f, 0.499320120f);
 			shape2.transform.rotation = -9.10090932e-07f;
 
 			//result = Detector::detect(shape1, shape2);
