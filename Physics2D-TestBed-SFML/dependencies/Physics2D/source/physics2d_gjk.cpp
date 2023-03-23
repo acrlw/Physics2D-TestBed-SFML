@@ -187,12 +187,6 @@ namespace Physics2D
 			target = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), rot_dir);
 			break;
 		}
-		case Shape::Type::Sector:
-		{
-			const Sector* sector = static_cast<const Sector*>(shape.shape);
-			target = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), rot_dir);
-			break;
-		}
 		default:
 			break;
 		}

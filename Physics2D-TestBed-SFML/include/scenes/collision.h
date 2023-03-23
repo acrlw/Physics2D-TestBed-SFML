@@ -17,7 +17,7 @@ namespace Physics2D
 			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
 			edge.set({ -10, 0 }, { 10, 0 });
 			capsule.set(2.0f, 1.0f);
-			sector.set(0.0f, 2.0f * Constant::Pi / 3.0f, 2.0f);
+
 			rectangle.set(1.0f, 1.0f);
 
 
@@ -70,7 +70,7 @@ namespace Physics2D
 		Body* rect;
 		Capsule capsule;
 		Edge edge;
-		Sector sector;
+
 		Rectangle rectangle;
 		Polygon triangle;
 	};

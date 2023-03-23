@@ -6,12 +6,12 @@
 
 #include "physics2d_capsule.h"
 #include "physics2d_circle.h"
-#include "physics2d_curve.h"
+
 #include "physics2d_edge.h"
 #include "physics2d_ellipse.h"
 #include "physics2d_polygon.h"
 #include "physics2d_rectangle.h"
-#include "physics2d_sector.h"
+
 
 namespace Physics2D
 {
@@ -43,7 +43,7 @@ namespace Physics2D
 		//if there is second contact pair:
 		//	points[2]: pointA
 		//	points[3]: pointB
-		Vector2 points[4];
+		std::array<Vector2, 4> points;
 		uint32_t count = 0;
 		void addContact(const Vector2& pointA, const Vector2& pointB)
 		{
@@ -81,10 +81,32 @@ namespace Physics2D
 	private:
 		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
 
-		static ContactPair clipTwoEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap);
+		static ContactPair clipIncidentEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap);
 
+		static ContactPair clipPolygonPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static ContactPair clipPolygonEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static ContactPair clipPolygonCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static ContactPair clipPolygonRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+
+		static ContactPair clipEdgeCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static ContactPair clipEdgeRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+
+		static ContactPair clipCapsuleCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static ContactPair clipCapsuleRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+
+		static ContactPair clipRoundRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
 		
 	};
+
 	
 }
 #endif

@@ -194,11 +194,6 @@ namespace Physics2D
 			aabb.expand(0.5f);
 			break;
 		}
-		case Shape::Type::Curve:
-		{
-
-			break;
-		}
 		case Shape::Type::Capsule:
 		{
 			Vector2 p1 = GJKHelper::findFurthestPoint(shape, { 1, 0 });
@@ -207,21 +202,6 @@ namespace Physics2D
 			p2 -= shape.transform.position;
 			aabb.width = p1.x * 2.0f;
 			aabb.height = p2.y * 2.0f;
-			break;
-		}
-		case Shape::Type::Sector:
-		{
-			Vector2 p1 = GJKHelper::findFurthestPoint(shape, { 1, 0 });
-			Vector2 p2 = GJKHelper::findFurthestPoint(shape, { 0, 1 });
-			Vector2 p3 = GJKHelper::findFurthestPoint(shape, { -1, 0 });
-			Vector2 p4 = GJKHelper::findFurthestPoint(shape, { 0, -1 });
-			p1 -= shape.transform.position;
-			p2 -= shape.transform.position;
-			p3 -= shape.transform.position;
-			p4 -= shape.transform.position;
-			aabb.width = p1.x - p3.x;
-			aabb.height = p2.y - p4.y;
-			aabb.position.set({ (p1.x + p3.x) * 0.5f, (p2.y + p4.y) * 0.5f });
 			break;
 		}
 		}

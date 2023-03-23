@@ -80,11 +80,6 @@ namespace Physics2D
 			renderCircle(window, camera, shape, color);
 			break;
 		}
-		case Shape::Type::Curve:
-		{
-			renderCurve(window, camera, shape, color);
-			break;
-		}
 		case Shape::Type::Edge:
 		{
 			renderEdge(window, camera, shape, color);
@@ -93,11 +88,6 @@ namespace Physics2D
 		case Shape::Type::Capsule:
 		{
 			renderCapsule(window, camera, shape, color);
-			break;
-		}
-		case Shape::Type::Sector:
-		{
-			renderSector(window, camera, shape, color);
 			break;
 		}
 		default:
@@ -203,12 +193,6 @@ namespace Physics2D
 			elem.color = color;
 		window.draw(&vertices[1], vertices.size() - 1, sf::LinesStrip);
 	}
-	void RenderSFMLImpl::renderSector(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
-	{
-		assert(shape.shape->type() == Shape::Type::Sector);
-		Container::Vector<sf::Vertex> vertices;
-
-	}
 	void RenderSFMLImpl::renderEllipse(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
 		assert(shape.shape->type() == Shape::Type::Ellipse);
@@ -248,12 +232,6 @@ namespace Physics2D
 		for (auto& elem : vertices)
 			elem.color = color;
 		window.draw(&vertices[1], vertices.size() - 1, sf::LinesStrip);
-	}
-	void RenderSFMLImpl::renderCurve(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
-	{
-		assert(shape.shape->type() == Shape::Type::Curve);
-		Container::Vector<sf::Vertex> vertices;
-		
 	}
 	void RenderSFMLImpl::renderAngleLine(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{

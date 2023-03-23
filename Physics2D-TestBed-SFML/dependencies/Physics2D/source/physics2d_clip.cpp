@@ -25,12 +25,6 @@ namespace Physics2D
 			vertices.emplace_back(edge->endPoint());
 			break;
 		}
-		case Shape::Type::Sector:
-		{
-			const Sector* sector = static_cast<Sector*>(primitive.shape);
-			vertices = sector->vertices();
-			break;
-		}
 		default:
 			break;
 		}

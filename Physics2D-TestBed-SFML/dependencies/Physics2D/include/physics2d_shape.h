@@ -11,12 +11,10 @@ namespace Physics2D
             enum class Type
                 {
                 Polygon,
-                Circle,
-                Ellipse,
-            	Capsule,
                 Edge,
-                Curve,
-                Sector
+                Capsule,
+                Circle,
+                Ellipse
                 };
             Type type()const
             {
@@ -54,9 +52,10 @@ namespace Physics2D
     /// </summary>
     struct PHYSICS2D_API ShapePrimitive
     {
-		Shape* shape;
+        ShapePrimitive() = default;
+		Shape* shape = nullptr;
         Transform transform;
-        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon)
+        bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon)const
         {
             return shape->contains(transform.inverseTranslatePoint(point), epsilon);
         }

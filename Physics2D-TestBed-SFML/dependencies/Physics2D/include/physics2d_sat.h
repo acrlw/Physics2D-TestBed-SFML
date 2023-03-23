@@ -41,7 +41,7 @@ namespace Physics2D
     {
     public:
         static SATResult circleVsCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult circleVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+
         static SATResult circleVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
         static SATResult circleVsCircle(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
         static SATResult circleVsPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
@@ -49,19 +49,17 @@ namespace Physics2D
         static SATResult polygonVsPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 		static SATResult polygonVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
         static SATResult polygonVsCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-        static SATResult polygonVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+
         
         static SATResult capsuleVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
         static SATResult capsuleVsCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-		static SATResult capsuleVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 
-        static SATResult sectorVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 
         static ProjectedSegment axisProjection(const ShapePrimitive& shape, Polygon* polygon, const Vector2& normal);
         static ProjectedSegment axisProjection(const ShapePrimitive& shape, Circle* circle, const Vector2& normal);
         static ProjectedSegment axisProjection(const ShapePrimitive& shape, Ellipse* ellipse, const Vector2& normal);
         static ProjectedSegment axisProjection(const ShapePrimitive& shape, Capsule* capsule, const Vector2& normal);
-        static ProjectedSegment axisProjection(const ShapePrimitive& shape, Sector* sector, const Vector2& normal);
+
 
     };
     

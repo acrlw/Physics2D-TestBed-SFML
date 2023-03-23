@@ -11,13 +11,7 @@ namespace Physics2D
 		return result;
 	}
 
-	SATResult SAT::circleVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
-	{
-		assert(shapeA.shape->type() == Shape::Type::Circle);
-		assert(shapeB.shape->type() == Shape::Type::Sector);
-		SATResult result;
-		return result;
-	}
+
 
 	SATResult SAT::circleVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
@@ -255,12 +249,7 @@ namespace Physics2D
 		return SATResult();
 	}
 
-	SATResult SAT::polygonVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
-	{
-		assert(shapeA.shape->type() == Shape::Type::Polygon);
-		assert(shapeB.shape->type() == Shape::Type::Sector);
-		return SATResult();
-	}
+
 	SATResult SAT::capsuleVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
 		assert(shapeA.shape->type() == Shape::Type::Capsule);
@@ -273,18 +262,8 @@ namespace Physics2D
 		assert(shapeB.shape->type() == Shape::Type::Capsule);
 		return SATResult();
 	}
-	SATResult SAT::capsuleVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
-	{
-		assert(shapeA.shape->type() == Shape::Type::Capsule);
-		assert(shapeB.shape->type() == Shape::Type::Sector);
-		return SATResult();
-	}
-	SATResult SAT::sectorVsSector(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
-	{
-		assert(shapeA.shape->type() == Shape::Type::Sector);
-		assert(shapeB.shape->type() == Shape::Type::Sector);
-		return SATResult();
-	}
+
+
 	SATResult SAT::polygonVsEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
 		assert(shapeA.shape->type() == Shape::Type::Polygon);
@@ -387,27 +366,6 @@ namespace Physics2D
 		return segment;
 	}
 
-	ProjectedSegment SAT::axisProjection(const ShapePrimitive& shape, Sector* sector, const Vector2& normal)
-	{
-		ProjectedPoint min, max;
-		Vector2 direction = Matrix2x2(-shape.transform.rotation).multiply(normal);
-		Vector2 p1 = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), direction);
-		Vector2 p2 = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), -direction);
-		p1 = shape.transform.translatePoint(p1);
-		p2 = shape.transform.translatePoint(p2);
-
-		max.vertex = p1;
-		max.value = max.vertex.dot(normal);
-		min.vertex = p2;
-		min.value = min.vertex.dot(normal);
-
-		ProjectedSegment segment;
-
-		segment.min = min;
-		segment.max = max;
-
-		return segment;
-	}
 	
 	std::tuple<ProjectedSegment, real> ProjectedSegment::intersect(const ProjectedSegment& s1, const ProjectedSegment& s2)
 	{

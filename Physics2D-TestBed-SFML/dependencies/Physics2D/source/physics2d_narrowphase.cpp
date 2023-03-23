@@ -21,14 +21,13 @@ namespace Physics2D
 		vertex = support(shapeA, shapeB, direction);
 		simplex.addSimplexVertex(vertex);
 
-		//check 1d simplex(line segment) contains origin
+		//check 1d simplex(line segment) across origin
 		//WARN: this can be used to check collision but not friendly with EPA, here adding perturbation to avoid 1d simplex
 
 		//retry to reconfigure simplex to avoid 1d simplex cross origin
 		if (simplex.containsOrigin())
 		{
 			int i = 1;
-			//default is 4
 			for (; i <= Constant::GJKRetryTimes; ++i)
 			{
 				//return simplex;
@@ -149,7 +148,6 @@ namespace Physics2D
 		CollisionInfo info;
 		info.simplex = simplex;
 		info.simplex.removeEnd();
-		
 
 		auto iterNext = [](std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
 			std::list<SimplexVertexWithOriginDistance>& list)
@@ -168,6 +166,7 @@ namespace Physics2D
 		
 
 		//initiate polytope
+		//use lengthSquare() for less computation
 		std::list<SimplexVertexWithOriginDistance> &polytope = info.polytope;
 		for(auto iter = simplex.vertices.begin(); iter != simplex.vertices.end(); ++iter)
 		{
@@ -177,54 +176,28 @@ namespace Physics2D
 			SimplexVertexWithOriginDistance pair;
 			pair.vertex = *iter;
 			pair.distance = GeometryAlgorithm2D::pointToLineSegment(iter->result, next->result, { 0, 0 })
-				.length();
+				.lengthSquare();
 			polytope.emplace_back(pair);
 		}
-
-		//TODO: process simplex with 1d case(circle vs circle, circle vs ellipse)
-
-
-		size_t iter = 0;
-		Vector2 direction;
-		SimplexVertex vertex;
 
 		auto iterStart = polytope.begin();
 		auto iterEnd = polytope.end();
 		auto iterTemp = polytope.begin();
-		ptrdiff_t insertAt = 0;
 
-		while(++iter < iteration)
+		for(Index iter = 0; iter < iteration; ++iter)
 		{
-			//[DEBUG]
-			//std::cout << "-----iter:" << iter << "-----" << std::endl;
-			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//{
-			//	auto idx = std::distance(polytope.begin(), it);
-			//	std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << std::endl;
-			//}
-			//std::cout << "-----" << std::endl;
-			//std::vector<Vector2> convex;
-			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//	convex.emplace_back(it->vertex.result);
-			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//{
-			//	auto idx = std::distance(polytope.begin(), it);
-			//	std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << "\t" << it->distance << std::endl;
-			//}
-
 
 			//closest edge index is set to index 0 and index 1
-			direction = findDirectionByEdge(info.simplex.vertices[0], info.simplex.vertices[1], false);
+			const Vector2 direction = findDirectionByEdge(info.simplex.vertices[0], info.simplex.vertices[1], false);
 
-			vertex = support(shapeA, shapeB, direction);
+			const SimplexVertex vertex = support(shapeA, shapeB, direction);
 
 			//cannot find any new vertex
 			if (info.simplex.contains(vertex))
 				break;
 
-			
 
-			//convex test
+			//convex test, make sure polytope is convex
 			
 			auto itA = iterStart;
 
@@ -234,17 +207,17 @@ namespace Physics2D
 			auto itC = itB;
 			iterNext(itC, polytope);
 
-			Vector2 ab = itB->vertex.result - itA->vertex.result;
-			Vector2 bc = itC->vertex.result - itB->vertex.result;
+			const Vector2 ab = itB->vertex.result - itA->vertex.result;
+			const Vector2 bc = itC->vertex.result - itB->vertex.result;
 			const real res1 = Vector2::crossProduct(ab, bc);
 
-			Vector2 an = vertex.result - itA->vertex.result;
-			Vector2 nb = itB->vertex.result - vertex.result;
+			const Vector2 an = vertex.result - itA->vertex.result;
+			const Vector2 nb = itB->vertex.result - vertex.result;
 			const real res2 = Vector2::crossProduct(an, nb);
 			
 			const real res3 = Vector2::crossProduct(nb, bc);
 
-			bool validConvexity = Math::sameSign(res1, res2, res3);
+			const bool validConvexity = Math::sameSign(res1, res2, res3);
 			
 			if (!validConvexity) //invalid vertex, just break
 				break;
@@ -253,15 +226,14 @@ namespace Physics2D
 
 			SimplexVertexWithOriginDistance pair;
 			pair.vertex = vertex;
-			Vector2 t1 = GeometryAlgorithm2D::pointToLineSegment(itA->vertex.result, vertex.result, { 0,  0 });
-			real dist1 = t1.length();
-			Vector2 t2 = GeometryAlgorithm2D::pointToLineSegment(vertex.result, itB->vertex.result, { 0, 0 });
-			real dist2 = t2.length();
+			const Vector2 t1 = GeometryAlgorithm2D::pointToLineSegment(itA->vertex.result, vertex.result, { 0,  0 });
+			const real dist1 = t1.lengthSquare();
+			const Vector2 t2 = GeometryAlgorithm2D::pointToLineSegment(vertex.result, itB->vertex.result, { 0, 0 });
+			const real dist2 = t2.lengthSquare();
 
 			itA->distance = dist1;
 			pair.distance = dist2;
 			polytope.insert(itB, pair);
-
 
 			//set to begin
 			iterTemp = iterStart;
@@ -288,90 +260,16 @@ namespace Physics2D
 			iterTemp = iterStart;
 			iterNext(iterTemp, polytope);
 			//reset simplex
-			info.penetration = minDistance;
 			info.simplex.vertices[0] = iterStart->vertex;
 			info.simplex.vertices[1] = iterTemp->vertex;
 
-			//convex.clear();
-			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//	convex.emplace_back(it->vertex.result);
-
-			//[DEBUG]
-			//bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
-
-			//if (!isConvex)
-			//{
-			//	std::cout << "-----[Debug]iter:" << iter << "-----" << std::endl;
-			//	auto idxStart = std::distance(polytope.begin(), iterStart);
-			//	std::cout << "start at:" << idxStart << std::endl;
-			//	auto idxEnd = std::distance(polytope.begin(), iterEnd);
-			//	std::cout << "end at:" << idxStart << std::endl;
-
-			//	std::cout << "insert before:" << insertAt << std::endl;
-			//	std::cout << "new vertex:(" << vertex.result.x << "," << vertex.result.y << ")\t" << dist1 << ", " << dist2 << std::endl;
-
-			//	for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//	{
-			//		auto idx = std::distance(polytope.begin(), it);
-			//		std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << "\t" << it->distance << std::endl;
-			//	}
-			//	int a = 0;
-			//}
 		}
-		//[DEBUG]
-		//{
-		//	std::vector<Vector2> convex;
-		//	for(auto it = polytope.begin(); it != polytope.end(); ++it)
-		//	{
-		//		convex.emplace_back(it->vertex.result);
-		//	}
-		//	bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
 
-		//	if (!isConvex)
-		//	{
-		//		std::cout << "S_{0}=" << simplex.vertices[0].result.x << "," << simplex.vertices[0].result.y << std::endl;
-		//		std::cout << "S_{1}=" << simplex.vertices[1].result.x << "," << simplex.vertices[1].result.y << std::endl;
-		//		std::cout << "S_{2}=" << simplex.vertices[2].result.x << "," << simplex.vertices[2].result.y << std::endl;
-
-
-		//		for(auto it = polytope.begin(); it != polytope.end(); ++it)
-		//		{
-		//			auto idx = std::distance(polytope.begin(), it);
-		//			std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << std::endl;
-		//		}
-		//		int a = 0;
-		//	}
-		//}
-
-		Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
+		const Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
 			, { 0, 0 });
 
 		info.penetration = temp.length();
 		info.normal = temp.normal();
-
-		//[DEBUG]
-		//bool isOrigin = info.normal.isOrigin();
-		//if(isOrigin)
-		//{
-		//	//const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
-		//	//const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
-		//	//std::array<Vector2, 4> verticesA;
-		//	//std::array<Vector2, 4> verticesB;
-		//	//for(auto iter = polygonA->vertices().begin(); iter != polygonA->vertices().end(); ++iter)
-		//	//{
-		//	//	auto idx = iter - polygonA->vertices().begin();
-		//	//	verticesA[idx] = shapeA.transform.translatePoint(*iter);
-		//	//	std::cout << "A_" << idx << "=(" << verticesA[idx].x << ", " << verticesA[idx].y << ")" << std::endl;
-		//	//}
-		//	//for (auto iter = polygonB->vertices().begin(); iter != polygonB->vertices().end(); ++iter)
-		//	//{
-		//	//	auto idx = iter - polygonB->vertices().begin();
-		//	//	verticesB[idx] = shapeB.transform.translatePoint(*iter);
-		//	//	std::cout << "B_" << idx << "=(" << verticesB[idx].x << ", " << verticesB[idx].y << ")" << std::endl;
-		//	//}
-		//	//int test = 0;
-		//}
-
 
 		return info;
 	}
@@ -424,15 +322,6 @@ namespace Physics2D
 			target = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), rot_dir);
 			break;
 		}
-		case Shape::Type::Sector:
-		{
-			const Sector* sector = static_cast<const Sector*>(shape.shape);
-			target = GeometryAlgorithm2D::calculateSectorProjectionPoint(sector->startRadian(), sector->spanRadian(), sector->radius(), rot_dir);
-			break;
-		}
-		case Shape::Type::Curve:
-			assert(false && "Mapping for curve is not supported.");
-			break;
 		}
 		rot.set(shape.transform.rotation);
 		target = rot.multiply(target);
@@ -476,169 +365,90 @@ namespace Physics2D
 	{
 		ContactPair pair;
 		//find feature
-
-		//features[0] is for shapeA, features[1] is for shapeB
-		std::array<Feature, 2> features;
-		features[0] = findFeatures(info.simplex, info.normal, shapeA, 0);
-		features[1] = findFeatures(info.simplex, info.normal, shapeB, 1);
-
 		Shape::Type typeA = shapeA.shape->type();
 		Shape::Type typeB = shapeB.shape->type();
 
+		ShapePrimitive realShapeA = shapeA;
+		ShapePrimitive realShapeB = shapeB;
+		Index idxA = 0;
+		Index idxB = 1;
 
-		assert(!(typeA == Shape::Type::Edge && typeB == Shape::Type::Edge) && "Not support two edge");
-		
-		if((typeA == Shape::Type::Polygon || typeA == Shape::Type::Edge) && 
-			(typeB == Shape::Type::Polygon || typeB == Shape::Type::Edge))
+		const bool isSwap = typeA > typeB;
+
+		if (isSwap)
 		{
-			Vector2 va1, va2, vb1, vb2;
-			if(typeA == Shape::Type::Polygon)
-			{
-				const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
-				va1 = shapeA.transform.translatePoint(polygonA->vertices()[features[0].index[0]]);
-				va2 = shapeA.transform.translatePoint(polygonA->vertices()[features[0].index[1]]);
-			}
-			else
-			{
-				const Edge* edgeA = static_cast<const Edge*>(shapeA.shape);
-				va1 = shapeA.transform.translatePoint(edgeA->startPoint());
-				va2 = shapeA.transform.translatePoint(edgeA->endPoint());
-			}
-			if (typeB == Shape::Type::Polygon)
-			{
-				const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
-				vb1 = shapeB.transform.translatePoint(polygonB->vertices()[features[1].index[0]]);
-				vb2 = shapeB.transform.translatePoint(polygonB->vertices()[features[1].index[1]]);
-			}
-			else
-			{
-				const Edge* edgeB = static_cast<const Edge*>(shapeB.shape);
-				vb1 = shapeB.transform.translatePoint(edgeB->startPoint());
-				vb2 = shapeB.transform.translatePoint(edgeB->endPoint());
-			}
-
-			std::array<ClipVertex, 2> incEdge;
-			std::array<Vector2, 2> refEdge = { va1, va2 };
-
-			Vector2 refNormal = info.normal;
-
-			incEdge[0].vertex = vb1;
-			incEdge[1].vertex = vb2;
-
-			const bool swap = Math::abs((va2 - va1).dot(refNormal))
-			> Math::abs((vb2 - vb1).dot(refNormal));
-
-			if (swap)
-			{
-				//swap
-				refEdge[0] = vb1;
-				refEdge[1] = vb2;
-				incEdge[0].vertex = va1;
-				incEdge[1].vertex = va2;
-				//notice, default normal is changed.
-				refNormal.negate();
-			}
-
-			pair = clipTwoEdge(incEdge, refEdge, refNormal, swap);
-
+			std::swap(realShapeA, realShapeB);
+			std::swap(typeA, typeB);
+			std::swap(idxA, idxB);
+			//temporarily negate
+			info.normal.negate();
 		}
-		else if((typeA == Shape::Type::Polygon || typeA == Shape::Type::Edge) && (typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse))
+
+		const Feature featureA = findFeatures(info.simplex, info.normal, realShapeA, idxA);
+		const Feature featureB = findFeatures(info.simplex, info.normal, realShapeB, idxB);
+
+
+
+		if(typeA == Shape::Type::Polygon)
 		{
-			Vector2 va1, va2;
-			if (typeA == Shape::Type::Polygon)
+			switch (typeB)
 			{
-				const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
-				va1 = shapeA.transform.translatePoint(polygonA->vertices()[features[0].index[0]]);
-				va2 = shapeA.transform.translatePoint(polygonA->vertices()[features[0].index[1]]);
-			}
-			else
-			{
-				const Edge* edgeA = static_cast<const Edge*>(shapeA.shape);
-				va1 = shapeA.transform.translatePoint(edgeA->startPoint());
-				va2 = shapeA.transform.translatePoint(edgeA->endPoint());
-			}
-			Vector2 pA = features[1].vertex[0] - info.normal * info.penetration;
-			Vector2 edge = va2 - va1;
-			edge.normalize();
-			real checkZero = edge.dot(info.normal);
-			if(Math::abs(checkZero) < 1e-3f)
-				pair.addContact(pA, features[1].vertex[0]);
-			else
-			{
-				Vector2 realPa = (pA - va1).lengthSquare() > (pA - va2).lengthSquare() ? va2 : va1;
-				pair.addContact(realPa, realPa + info.normal * info.penetration);
+			case Shape::Type::Polygon:
+				pair = clipPolygonPolygon(realShapeA, realShapeB, featureA, featureB, info);
+				break;
+			case  Shape::Type::Edge:
+				pair = clipPolygonEdge(realShapeA, realShapeB, featureA, featureB, info);
+				break;
+			case Shape::Type::Capsule:
+				pair = clipPolygonCapsule(realShapeA, realShapeB, featureA, featureB, info);
+				break;
+			case Shape::Type::Circle:
+			case Shape::Type::Ellipse:
+				pair = clipPolygonRound(realShapeA, realShapeB, featureA, featureB, info);
+				break;
 			}
 		}
-		else if ((typeB == Shape::Type::Polygon || typeB == Shape::Type::Edge) && (typeA == Shape::Type::Circle || typeA == Shape::Type::Ellipse))
+		else if(typeA == Shape::Type::Edge)
 		{
-			Vector2 vb1, vb2;
-			if (typeB == Shape::Type::Polygon)
+			switch (typeB)
 			{
-				const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
-				vb1 = shapeB.transform.translatePoint(polygonB->vertices()[features[1].index[0]]);
-				vb2 = shapeB.transform.translatePoint(polygonB->vertices()[features[1].index[1]]);
+			case  Shape::Type::Edge:
+				assert(false && "Not support edge and edge.");
+				break;
+			case Shape::Type::Capsule:
+				pair = clipEdgeCapsule(realShapeA, realShapeB, featureA, featureB, info);
+				break;
+			case Shape::Type::Circle:
+			case Shape::Type::Ellipse:
+				pair = clipEdgeRound(realShapeA, realShapeB, featureA, featureB, info);
+				break;
 			}
-			else
-			{
-				const Edge* edgeB = static_cast<const Edge*>(shapeB.shape);
-				vb1 = shapeB.transform.translatePoint(edgeB->startPoint());
-				vb2 = shapeB.transform.translatePoint(edgeB->endPoint());
-			}
-			Vector2 pB = features[0].vertex[0] + info.normal * info.penetration;
-			Vector2 edge = vb2 - vb1;
-			edge.normalize();
-			real checkZero = edge.dot(info.normal);
-			if(Math::abs(checkZero) < 1e-3f)
-				pair.addContact( features[0].vertex[0], pB);
-			else
-			{
-				Vector2 realPb = (pB - vb1).lengthSquare() > (pB - vb2).lengthSquare() ? vb2 : vb1;
-				pair.addContact(realPb - info.normal * info.penetration, realPb);
-			}
-		}
-		else if ((typeA == Shape::Type::Circle || typeA == Shape::Type::Ellipse) && (typeB == Shape::Type::Circle || typeB == Shape::Type::Ellipse))
-		{
-			const Vector2 v1 = (info.simplex.vertices[0].point[1] - info.simplex.vertices[0].point[0]).normal();
-			const Vector2 v2 = (info.simplex.vertices[1].point[1] - info.simplex.vertices[1].point[0]).normal();
-
-			if(v1.dot(info.normal) > v2.dot(info.normal))
-				pair.addContact(info.simplex.vertices[0].point[0], info.simplex.vertices[0].point[1]);
-			else
-				pair.addContact(info.simplex.vertices[1].point[0], info.simplex.vertices[1].point[1]);
-
-			const Vector2 newNormal = pair.points[1] - pair.points[0];
-			info.penetration = newNormal.length();
-			info.normal = newNormal.normal();
 		}
 		else if (typeA == Shape::Type::Capsule)
 		{
-			const Capsule* capsuleA = static_cast<const Capsule*>(shapeA.shape);
-			Vector2 va1, va2, vb1, vb2;
+			switch (typeB)
+			{
+			case Shape::Type::Capsule:
+				pair = clipCapsuleCapsule(realShapeA, realShapeB, featureA, featureB, info);
+				break;
+			case Shape::Type::Circle:
+			case Shape::Type::Ellipse:
+				pair = clipCapsuleRound(realShapeA, realShapeB, featureA, featureB, info);
+				break;
+			}
+		}
+		else //round round case
+		{
+			pair = clipRoundRound(realShapeA, realShapeB, featureA, featureB, info);
+			return pair;
+		}
 
-			//switch (typeB)
-			//{
-			//case Shape::Type::Polygon:
-			//	const Polygon* polygonB = static_cast<Polygon*>(shapeB.shape);
-			//	break;
-			//case Shape::Type::Edge:
-			//	const Edge* edgeB = static_cast<Edge*>(shapeB.shape);
-			//	break;
-			//case Shape::Type::Ellipse:
-			//	break;
-			//case Shape::Type::Circle:
-			//	break;
-			//default:
-			//	assert(false && "Not support this type");
-			//	break;
-			//}
-		}
-		else if (typeB == Shape::Type::Capsule)
+		if(isSwap)
 		{
-			const Capsule* capsuleB = static_cast<const Capsule*>(shapeB.shape);
-		}
-		else
-		{
-			assert(false && "Not support this type");
+			std::swap(pair.points[0], pair.points[1]);
+			std::swap(pair.points[2], pair.points[3]);
+			//restore normal
+			info.normal.negate();
 		}
 		
 		return pair;
@@ -717,7 +527,7 @@ namespace Physics2D
 		}
 		return feature;
 	}
-	ContactPair Narrowphase::clipTwoEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap)
+	ContactPair Narrowphase::clipIncidentEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap)
 	{
 		ContactPair pair;
 		const Vector2 refEdgeDir = (refEdge[1] - refEdge[0]).normal();
@@ -841,4 +651,177 @@ namespace Physics2D
 		return pair;
 	}
 
+	ContactPair Narrowphase::clipPolygonPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
+		const Polygon* polygonB = static_cast<const Polygon*>(shapeB.shape);
+
+		const Vector2 va1 = shapeA.transform.translatePoint(polygonA->vertices()[featureA.index[0]]);
+		const Vector2 va2 = shapeA.transform.translatePoint(polygonA->vertices()[featureA.index[1]]);
+
+		const Vector2 vb1 = shapeB.transform.translatePoint(polygonB->vertices()[featureB.index[0]]);
+		const Vector2 vb2 = shapeB.transform.translatePoint(polygonB->vertices()[featureB.index[1]]);
+
+		std::array<ClipVertex, 2> incEdge;
+		std::array<Vector2, 2> refEdge = { va1, va2 };
+
+		Vector2 refNormal = info.normal;
+
+		incEdge[0].vertex = vb1;
+		incEdge[1].vertex = vb2;
+
+		const bool swap = Math::abs((va2 - va1).dot(refNormal))
+			> Math::abs((vb2 - vb1).dot(refNormal));
+
+		if (swap)
+		{
+			//swap
+			refEdge[0] = vb1;
+			refEdge[1] = vb2;
+			incEdge[0].vertex = va1;
+			incEdge[1].vertex = va2;
+			//notice, default normal is changed.
+			refNormal.negate();
+		}
+
+		ContactPair pair = clipIncidentEdge(incEdge, refEdge, refNormal, swap);
+
+		return pair;
+	}
+
+	ContactPair Narrowphase::clipPolygonEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
+		const Edge* edgeB = static_cast<const Edge*>(shapeB.shape);
+
+		const Vector2 va1 = shapeA.transform.translatePoint(polygonA->vertices()[featureA.index[0]]);
+		const Vector2 va2 = shapeA.transform.translatePoint(polygonA->vertices()[featureA.index[1]]);
+		const Vector2 vb1 = shapeB.transform.translatePoint(edgeB->startPoint());
+		const Vector2 vb2 = shapeB.transform.translatePoint(edgeB->endPoint());
+
+		std::array<ClipVertex, 2> incEdge;
+		std::array<Vector2, 2> refEdge = { va1, va2 };
+
+		Vector2 refNormal = info.normal;
+
+		incEdge[0].vertex = vb1;
+		incEdge[1].vertex = vb2;
+
+		const bool swap = Math::abs((va2 - va1).dot(refNormal))
+			> Math::abs((vb2 - vb1).dot(refNormal));
+
+		if (swap)
+		{
+			//swap
+			refEdge[0] = vb1;
+			refEdge[1] = vb2;
+			incEdge[0].vertex = va1;
+			incEdge[1].vertex = va2;
+			//notice, default normal is changed.
+			refNormal.negate();
+		}
+
+		ContactPair pair = clipIncidentEdge(incEdge, refEdge, refNormal, swap);
+
+		return pair;
+	}
+
+	ContactPair Narrowphase::clipPolygonCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		ContactPair pair;
+
+		return pair;
+	}
+
+	ContactPair Narrowphase::clipPolygonRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		ContactPair pair;
+		
+		const Polygon* polygonA = static_cast<const Polygon*>(shapeA.shape);
+		const Vector2 va1 = shapeA.transform.translatePoint(polygonA->vertices()[featureA.index[0]]);
+		const Vector2 va2 = shapeA.transform.translatePoint(polygonA->vertices()[featureA.index[1]]);
+		
+		Vector2 pA = featureB.vertex[0] - info.normal * info.penetration;
+		const Vector2 edge = (va2 - va1).normal();
+		
+		const real checkZero = edge.dot(info.normal);
+		if (Math::abs(checkZero) < 1e-3f)
+			pair.addContact(pA, featureB.vertex[0]);
+		else
+		{
+			Vector2 realPa = (pA - va1).lengthSquare() > (pA - va2).lengthSquare() ? va2 : va1;
+			pair.addContact(realPa, realPa + info.normal * info.penetration);
+		}
+
+		return pair;
+	}
+
+	ContactPair Narrowphase::clipEdgeCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		ContactPair pair;
+
+		return pair;
+	}
+	ContactPair Narrowphase::clipEdgeRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		ContactPair pair;
+
+		const Edge* edgeA = static_cast<const Edge*>(shapeA.shape);
+		const Vector2 va1 = shapeA.transform.translatePoint(edgeA->startPoint());
+		const Vector2 va2 = shapeA.transform.translatePoint(edgeA->endPoint());
+		
+		Vector2 pA = featureB.vertex[0] - info.normal * info.penetration;
+		const Vector2 edge = (va2 - va1).normal();
+
+		const real checkZero = edge.dot(info.normal);
+		if (Math::abs(checkZero) < 1e-3f)
+			pair.addContact(pA, featureB.vertex[0]);
+		else
+		{
+			Vector2 realPa = (pA - va1).lengthSquare() > (pA - va2).lengthSquare() ? va2 : va1;
+			pair.addContact(realPa, realPa + info.normal * info.penetration);
+		}
+
+		return pair;
+	}
+	ContactPair Narrowphase::clipCapsuleCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		ContactPair pair;
+
+		return pair;
+	}
+	ContactPair Narrowphase::clipCapsuleRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		ContactPair pair;
+
+		return pair;
+	}
+	ContactPair Narrowphase::clipRoundRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
+		const Feature& featureA, const Feature& featureB, CollisionInfo& info)
+	{
+		//need to fix old info
+		ContactPair pair;
+
+		const Vector2 v1 = (info.simplex.vertices[0].point[1] - info.simplex.vertices[0].point[0]).normal();
+		const Vector2 v2 = (info.simplex.vertices[1].point[1] - info.simplex.vertices[1].point[0]).normal();
+
+		if (v1.dot(info.normal) > v2.dot(info.normal))
+			pair.addContact(info.simplex.vertices[0].point[0], info.simplex.vertices[0].point[1]);
+		else
+			pair.addContact(info.simplex.vertices[1].point[0], info.simplex.vertices[1].point[1]);
+
+		const Vector2 newNormal = pair.points[1] - pair.points[0];
+		info.penetration = newNormal.length();
+		info.normal = newNormal.normal();
+
+		return pair;
+	}
 }

@@ -7,12 +7,12 @@
 
 #include "physics2d_capsule.h"
 #include "physics2d_circle.h"
-#include "physics2d_curve.h"
+
 #include "physics2d_edge.h"
 #include "physics2d_ellipse.h"
 #include "physics2d_polygon.h"
 #include "physics2d_rectangle.h"
-#include "physics2d_sector.h"
+
 
 namespace Physics2D
 {

@@ -19,7 +19,7 @@ namespace Physics2D
 			edge.set({ -100, 0 }, { 100, 0 });
 			edge2.set({ 0, 0 }, { 100, 40 });
 			rectangle.set(2.0f, 1.0f);
-			path.set(Vector2{ -6.0f, 6.0f }, Vector2{ -3.0f, 3.0f }, Vector2{ 3.0f, 9.0f }, Vector2{ 6.0f, 6.0f });
+
 			wheel.setRadius(1.0f);
 
 			uint32_t bitmask = 0x01;
@@ -156,7 +156,7 @@ namespace Physics2D
 		Polygon triangle;
 		Rectangle rectangle;
 		Circle wheel;
-		Curve path;
+
 		Edge edge;
 		Edge edge2;
 		real distance = 2.0f;
