@@ -471,9 +471,11 @@ namespace Physics2D
 		return pair;
 	}
 
-	real Narrowphase::gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
+	VertexPair Narrowphase::gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
 	{
-		return real();
+		VertexPair result;
+
+		return result;
 	}
 
 	void Narrowphase::sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)

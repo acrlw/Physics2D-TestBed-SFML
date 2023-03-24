@@ -1,7 +1,7 @@
 #ifndef PHYSICS2D_COLLISION_CCD_H
 #define PHYSICS2D_COLLISION_CCD_H
 #include "physics2d_detector.h"
-#include "physics2d_dbvh.h"
+
 #include "physics2d_body.h"
 #include "physics2d_tree.h"
 namespace Physics2D
@@ -37,7 +37,7 @@ namespace Physics2D
 		static std::tuple<Container::Vector<AABBShot>, AABB> buildTrajectoryAABB(Body* body, const Vector2& target, const real& dt);
 		static std::optional<IndexSection> findBroadphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const real& dt);
 		static std::optional<real> findNarrowphaseRoot(Body* staticBody, const BroadphaseTrajectory& staticTrajectory, Body* dynamicBody, const BroadphaseTrajectory& dynamicTrajectory, const IndexSection& index, const real& dt);
-		static std::optional<Container::Vector<CCDPair>> query(DBVH::Node* root, Body* body, const real& dt);
+
         static std::optional<Container::Vector<CCDPair>> query(Tree& tree, Body* body, const real& dt);
         static std::optional<real> earliestTOI(const Container::Vector<CCDPair>& pairs, const real& epsilon = Constant::GeometryEpsilon);
 	};

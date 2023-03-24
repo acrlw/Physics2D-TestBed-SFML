@@ -1,7 +1,7 @@
 #include "physics2d_sap.h"
 
 #include "physics2d_body.h"
-#include "physics2d_sat.h"
+
 namespace Physics2D
 {
 	Container::Vector<std::pair<Body*, Body*>> SweepAndPrune::generate(const Container::Vector<Body*>& bodyList)
@@ -105,73 +105,6 @@ namespace Physics2D
 		for (auto&& elem : bodyBoxPairList)
 			if (region.collide(elem.second))
 				result.emplace_back(elem.first);
-
-		//Container::Vector<std::pair<Body*, AABB>> sortXAxis = bodyBoxPairList;
-		//Container::Vector<std::pair<Body*, AABB>> sortYAxis = bodyBoxPairList;
-		//std::sort(sortXAxis.begin(), sortXAxis.end(), [](const std::pair<Body*, AABB>& left, const std::pair<Body*, AABB>& right)
-		//	{
-		//		return left.second.bottomLeft().x < right.second.bottomLeft().x;
-		//	});
-		//std::sort(sortYAxis.begin(), sortYAxis.end(), [](const std::pair<Body*, AABB>& left, const std::pair<Body*, AABB>& right)
-		//	{
-		//		return left.second.bottomLeft().y < right.second.bottomLeft().y;
-		//	});
-		////query x axis
-		//size_t beginIndex = 0;
-		//size_t endIndex = sortXAxis.size() - 1;
-		//size_t indexLower = endIndex;
-		//real regionXMin = region.bottomLeft().x;
-		//real regionXMax = region.bottomRight().x;
-		//while(beginIndex < indexLower)
-		//{
-		//	auto iter = sortXAxis.begin();
-		//	indexLower = (beginIndex + endIndex) / 2;
-		//	std::advance(iter, indexLower);
-		//	real xMin = iter->second.bottomLeft().x;
-		//	if(xMin > regionXMin)
-		//	{
-		//		//narrow right side
-		//		endIndex = indexLower;
-		//	}
-		//	else if (xMin < regionXMin)
-		//	{
-		//		//narrow left side
-		//		beginIndex = indexLower;
-		//	}
-
-		//}
-		//beginIndex = 0;
-		//endIndex = sortXAxis.size() - 1;
-		//size_t indexUpper = beginIndex;
-		//while (endIndex > indexUpper)
-		//{
-		//	auto iter = sortXAxis.begin();
-		//	indexUpper = (beginIndex + endIndex) / 2;
-		//	std::advance(iter, indexUpper);
-		//	real xMax = iter->second.bottomRight().x;
-		//	if (xMax > regionXMax)
-		//	{
-		//		//narrow right side
-		//		endIndex = indexUpper;
-		//	}
-		//	else if (xMax < regionXMax)
-		//	{
-		//		beginIndex = indexUpper;
-		//	}
-
-		//}
-		//for(size_t i = indexLower; i <= indexUpper; ++i)
-		//	result.emplace_back(sortXAxis[i].first);
-		////sort by body id
-		//auto yAxisBegin = sortYAxis.begin();
-		//real regionYMin = region.bottomLeft().y;
-		//real regionYMax = region.topLeft().y;
-
-		////query y axis
-
-		////sort by body id
-
-		////compare two result, using double pointer
 
 
 

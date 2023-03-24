@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		FrictionFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Friction", world, maintainer, tree, dbvh, camera)
+			Tree* tree, Camera* camera) : Frame("Friction", world, maintainer, tree, camera)
 		{
 
 		}

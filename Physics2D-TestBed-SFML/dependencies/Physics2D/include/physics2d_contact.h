@@ -45,7 +45,7 @@ namespace Physics2D
 		void solveVelocity(real dt);
 		void solvePosition(real dt);
 		void add(const Collision& collision);
-		void prepare(ContactConstraintPoint& ccp, const PointPair& pair, const Collision& collision);
+		void prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision);
 		void clearInactivePoints();
 		void deactivateAllPoints();
 		real m_maxPenetration = 0.005f;

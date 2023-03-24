@@ -8,7 +8,7 @@ namespace Physics2D
     {
     public:
         ContinuousFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-                      Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Geometry", world, maintainer, tree, dbvh, camera)
+                      Tree* tree, Camera* camera) : Frame("Geometry", world, maintainer, tree, camera)
         {
 
         }

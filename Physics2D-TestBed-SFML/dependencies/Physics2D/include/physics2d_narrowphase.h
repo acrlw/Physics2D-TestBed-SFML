@@ -60,6 +60,21 @@ namespace Physics2D
 		//[Debug]
 		std::list<SimplexVertexWithOriginDistance> polytope;
 	};
+	struct PHYSICS2D_API VertexPair
+	{
+		VertexPair() = default;
+		Vector2 pointA;
+		Vector2 pointB;
+		bool isEmpty()const
+		{
+			return pointA.fuzzyEqual({ 0, 0 }) && pointB.fuzzyEqual({ 0, 0 });
+		}
+		bool operator==(const VertexPair& other)const
+		{
+			return (other.pointA.fuzzyEqual(this->pointA) && other.pointB.fuzzyEqual(this->pointB))
+				|| (other.pointB.fuzzyEqual(this->pointA) && other.pointA.fuzzyEqual(this->pointB));
+		}
+	};
 	class PHYSICS2D_API Narrowphase
 	{
 	public:
@@ -72,13 +87,14 @@ namespace Physics2D
 		static std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
 		static ContactPair generateContacts(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, CollisionInfo& info);
 
-		static real gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 10);
+		static VertexPair gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 10);
 
 		static void sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 		static void satPolygonVsPolygon(const Polygon& polygonA, const Transform& transformA, const Polygon& polygonB, const Transform& transformB);
 		static void satPolygonVsCircle(const Polygon& polygonA, const Transform& transformA, const Circle& circleB, const Transform& transformB);
 		static void satPolygonVsEllipse(const Polygon& polygonA, const Transform& transformA, const Ellipse& ellipseB, const Transform& transformB);
 		static void satPolygonVsEdge(const Polygon& polygonA, const Transform& transformA, const Edge& edgeB, const Transform& transformB);
+
 	private:
 		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
 

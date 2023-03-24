@@ -104,7 +104,7 @@ namespace Physics2D
 
 		for(uint8_t i = 0; i < collision.contactList.count; i += 2)
 		{
-			PointPair elem;
+			VertexPair elem;
 			elem.pointA = collision.contactList.points[i];
 			elem.pointB = collision.contactList.points[i + 1];
 
@@ -178,7 +178,7 @@ namespace Physics2D
 		}
 	}
 
-	void ContactMaintainer::prepare(ContactConstraintPoint& ccp, const PointPair& pair, const Collision& collision)
+	void ContactMaintainer::prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision)
 	{
 		ccp.bodyA = collision.bodyA;
 		ccp.bodyB = collision.bodyB;

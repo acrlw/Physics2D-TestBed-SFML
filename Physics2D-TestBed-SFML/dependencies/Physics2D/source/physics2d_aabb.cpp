@@ -1,9 +1,8 @@
 #include "physics2d_aabb.h"
 
-
-#include "physics2d_gjk.h"
 #include "physics2d_body.h"
 #include "physics2d_algorithm_2d.h"
+#include "physics2d_narrowphase.h"
 
 namespace Physics2D
 {
@@ -196,8 +195,8 @@ namespace Physics2D
 		}
 		case Shape::Type::Capsule:
 		{
-			Vector2 p1 = GJKHelper::findFurthestPoint(shape, { 1, 0 });
-			Vector2 p2 = GJKHelper::findFurthestPoint(shape, { 0, 1 });
+			auto [p1, idx1] = Narrowphase::findFurthestPoint(shape, {1, 0});
+			auto [p2, idx2] = Narrowphase::findFurthestPoint(shape, { 0, 1 });
 			p1 -= shape.transform.position;
 			p2 -= shape.transform.position;
 			aabb.width = p1.x * 2.0f;

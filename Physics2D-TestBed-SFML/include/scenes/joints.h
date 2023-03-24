@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		JointsFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Joints", world, maintainer, tree, dbvh, camera)
+			Tree* tree, Camera* camera) : Frame("Joints", world, maintainer, tree, camera)
 		{
 
 		}
@@ -18,17 +18,17 @@ namespace Physics2D
 			triangle.scale(0.5f);
 			edge.set({ -100, 0 }, { 100, 0 });
 			edge2.set({ 0, 0 }, { 100, 40 });
-			rectangle.set(2.0f, 1.0f);
+			rectangle.set(1.0f, 1.0f);
 
 			wheel.setRadius(1.0f);
 
 			uint32_t bitmask = 0x01;
 
 			bodyA = m_world->createBody();
-			bodyA->setShape(&triangle);
+			bodyA->setShape(&rectangle);
 			bodyA->setMass(1.0f);
 			bodyA->setType(Body::BodyType::Dynamic);
-			bodyA->position().set(0, 2.0f);
+			bodyA->position().set(2.00, 0.0f);
 			bodyA->setBitmask(0x01);
 			m_tree->insert(bodyA);
 
@@ -46,6 +46,8 @@ namespace Physics2D
 			rjp.dampingRatio = 0.8f;
 			rjp.frequency = 10;
 			rjp.maxForce = 10000;
+			rjp.localPointA.set(-0.5, 0.5);
+			rjp.localPointB.set(0.5, 0.5);
 			
 			joint = m_world->createJoint(rjp);
 
@@ -144,12 +146,12 @@ namespace Physics2D
 	private:
 		void updateJoint()
 		{
-			auto pair = Detector::distance(bodyA, bodyB);
-			normal = (pair.pointA - pair.pointB).normalize();
-			Vector2 pb = pair.pointB + 0.5f * distance * normal;
-			Vector2 pa = pair.pointA - 0.5f * distance * normal;
-			joint->primitive().localPointA = bodyA->toLocalPoint(pa);
-			joint->primitive().localPointB = bodyB->toLocalPoint(pb);
+			//auto pair = Detector::distance(bodyA, bodyB);
+			//normal = (pair.pointA - pair.pointB).normalize();
+			//Vector2 pb = pair.pointB + 0.5f * distance * normal;
+			//Vector2 pa = pair.pointA - 0.5f * distance * normal;
+			//joint->primitive().localPointA = bodyA->toLocalPoint(pa);
+			//joint->primitive().localPointB = bodyB->toLocalPoint(pb);
 
 		}
 		Capsule capsule;

@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		XPBDFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Extended Position-Based Dynamics", world, maintainer, tree, dbvh, camera)
+			Tree* tree, Camera* camera) : Frame("Extended Position-Based Dynamics", world, maintainer, tree, camera)
 		{
 
 		}

@@ -184,28 +184,6 @@ namespace Physics2D
 
 		return std::nullopt;
 	}
-	std::optional<Container::Vector<CCD::CCDPair>> CCD::query(DBVH::Node* root, Body* body, const real& dt)
-	{
-		Container::Vector<CCDPair> queryList;
-		assert(root->isRoot() && body != nullptr);
-		auto [trajectoryCCD, aabbCCD] = buildTrajectoryAABB(body, dt);
-		Container::Vector<DBVH::Node*> potential;
-		DBVH::queryNodes(root, aabbCCD, potential, body);
-		for(DBVH::Node * element: potential)
-		{
-			auto [trajectoryElement, aabbElement] = buildTrajectoryAABB(element->body, dt);
-			auto [newCCDTrajectory, newAABB] = buildTrajectoryAABB(body, element->body->position(), dt);
-			auto result = findBroadphaseRoot(body, newCCDTrajectory, element->body, trajectoryElement, dt);
-			if(result.has_value())
-			{
-				auto toi = findNarrowphaseRoot(body, newCCDTrajectory, element->body, trajectoryElement, result.value(), dt);
-				if (toi.has_value())
-					queryList.emplace_back(CCDPair(toi.value(), element->body));
-			}
-		}
-		return !queryList.empty() ? std::optional(queryList)
-			: std::nullopt;
-	}
 
     std::optional<Container::Vector<CCD::CCDPair>> CCD::query(Tree& tree, Body* body, const real& dt)
     {

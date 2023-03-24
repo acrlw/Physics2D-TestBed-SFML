@@ -96,18 +96,11 @@ namespace Physics2D
 
 			if (m_aabbVisible)
 			{
-				for (auto [body, node] : m_dbvh->leaves())
-					RenderSFMLImpl::renderAABB(window, *this, node->aabb, sf::Color::Cyan);
-
 				for(auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
 				{
 					if ((*iter).get() != nullptr)
 						RenderSFMLImpl::renderAABB(window, *this, (*iter)->aabb(), sf::Color::Cyan);
 				}
-			}
-			if (m_dbvhVisible)
-			{
-				drawDbvh(m_dbvh->root(), window);
 			}
 			if (m_treeVisible)
 			{
@@ -230,11 +223,6 @@ namespace Physics2D
 		m_zoomFactor = zoomFactor;
 	}
 
-	bool& Camera::dbvhVisible()
-	{
-		return m_dbvhVisible;
-	}
-
 
 	Camera::Viewport Camera::viewport() const
 	{
@@ -258,15 +246,6 @@ namespace Physics2D
 		result.y = -result.y;
 		result *= m_pixelToMeter;
 		return result;
-	}
-	DBVH* Camera::dbvh() const
-	{
-		return m_dbvh;
-	}
-
-	void Camera::setDbvh(DBVH* dbvh)
-	{
-		m_dbvh = dbvh;
 	}
 
 	Tree* Camera::tree() const
@@ -428,19 +407,7 @@ namespace Physics2D
 			RenderSFMLImpl::renderLines(window, *this, lines, darkGreen);
 		}
 	}
-	void Camera::drawDbvh(DBVH::Node* node, sf::RenderWindow& window)
-	{
-		if (node == nullptr)
-			return;
 
-		drawDbvh(node->left, window);
-		drawDbvh(node->right, window);
-
-		AABB aabb = node->aabb;
-		if (!node->isLeaf())
-			RenderSFMLImpl::renderAABB(window, *this, aabb, sf::Color::Cyan);
-
-	}
 	real Camera::Viewport::width()
 	{
 		return bottomRight.x - topLeft.x;

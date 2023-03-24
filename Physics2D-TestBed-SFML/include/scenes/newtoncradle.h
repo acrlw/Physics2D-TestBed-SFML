@@ -8,7 +8,7 @@ namespace Physics2D
 	{
 	public:
 		NewtonCradleFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Newton's Cradle", world, maintainer, tree, dbvh, camera)
+			Tree* tree, Camera* camera) : Frame("Newton's Cradle", world, maintainer, tree, camera)
 		{
 
 		}

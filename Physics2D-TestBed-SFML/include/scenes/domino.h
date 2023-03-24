@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		DominoFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, DBVH* dbvh, Camera* camera) : Frame("Domino", world, maintainer, tree, dbvh, camera)
+			Tree* tree, Camera* camera) : Frame("Domino", world, maintainer, tree, camera)
 		{
 
 		}

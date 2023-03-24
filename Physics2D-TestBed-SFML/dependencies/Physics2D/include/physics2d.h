@@ -1,11 +1,10 @@
 #ifndef PHYSICS2D_H
 #define PHYSICS2D_H
-#include "physics2d_sat.h"
-#include "physics2d_gjk.h"
+
 #include "physics2d_detector.h"
 #include "physics2d_collider.h"
 #include "physics2d_tree.h"
-#include "physics2d_dbvh.h"
+
 #include "physics2d_ccd.h"
 #include "physics2d_common.h"
 #include "physics2d_shape.h"

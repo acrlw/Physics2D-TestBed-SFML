@@ -70,9 +70,6 @@ namespace Physics2D
         Vector2 worldToScreen(const Vector2& pos)const;
         Vector2 screenToWorld(const Vector2& pos)const;
 
-        DBVH* dbvh()const;
-        void setDbvh(DBVH* dbvh);
-
         Tree* tree()const;
         void setTree(Tree* tree);
 
@@ -89,7 +86,7 @@ namespace Physics2D
 
     private:
         void drawGridScaleLine(sf::RenderWindow& window);
-        void drawDbvh(DBVH::Node* node, sf::RenderWindow& window);
+
         void drawTree(int nodeIndex, sf::RenderWindow& window);
         void drawContacts(sf::RenderWindow& window);
 
@@ -97,7 +94,7 @@ namespace Physics2D
         bool m_aabbVisible = false;
         bool m_jointVisible = true;
         bool m_bodyVisible = true;
-        bool m_dbvhVisible = false;
+
         bool m_treeVisible = false;
         bool m_gridScaleLineVisible = true;
         bool m_rotationLineVisible = false;
@@ -116,7 +113,7 @@ namespace Physics2D
         Viewport m_viewport;
         PhysicsWorld* m_world = nullptr;
         Body* m_targetBody = nullptr;
-        DBVH* m_dbvh = nullptr;
+
         Tree* m_tree = nullptr;
         ContactMaintainer* m_maintainer = nullptr;
 

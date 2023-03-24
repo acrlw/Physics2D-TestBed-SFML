@@ -18,7 +18,7 @@ namespace Physics2D
 
         m_camera.setViewport(Camera::Viewport(Vector2(0, 0), Vector2(1920, 1080)));
         m_camera.setWorld(&m_system.world());
-        m_camera.setDbvh(&m_dbvh);
+
         m_camera.setTree(&m_system.tree());
         m_camera.setContactMaintainer(&m_system.maintainer());
 
@@ -325,64 +325,64 @@ namespace Physics2D
         clearAll();
         switch (m_currentItem) {
             case 0:
-                m_currentFrame = new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 1:
-                m_currentFrame = new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 2:
-                m_currentFrame = new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 3:
-                m_currentFrame = new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 4:
-                m_currentFrame = new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 5:
-                m_currentFrame = new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 6:
-                m_currentFrame = new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 7:
-                m_currentFrame = new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 8:
-                m_currentFrame = new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 9:
-                m_currentFrame = new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 10:
-                m_currentFrame = new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 11:
-                m_currentFrame = new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 12:
-                m_currentFrame = new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 13:
-                m_currentFrame = new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 14:
-                m_currentFrame = new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 15:
-                m_currentFrame = new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 16:
-                m_currentFrame = new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 17:
-                m_currentFrame = new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 18:
-                m_currentFrame = new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             case 19:
-                m_currentFrame = new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+                m_currentFrame = new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
                 break;
             default:
                 break;
@@ -397,7 +397,6 @@ namespace Physics2D
 	    m_system.world().clearAllJoints();
         m_system.maintainer().clearAll();
         m_system.tree().clearAll();
-        m_dbvh.cleanUp(m_dbvh.root());
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
         m_mouseJoint->setActive(false);

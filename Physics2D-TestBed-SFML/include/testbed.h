@@ -73,8 +73,7 @@ namespace Physics2D
 		Frame* m_currentFrame = nullptr;
 
 		PhysicsSystem m_system;
-
-		DBVH m_dbvh;
+		
 		Body* m_selectedBody = nullptr;
 		PointJoint* m_mouseJoint = nullptr;
 		PointJointPrimitive m_pointJointPrimitive;
