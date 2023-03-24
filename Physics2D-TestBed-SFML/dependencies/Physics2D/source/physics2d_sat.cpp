@@ -348,8 +348,8 @@ namespace Physics2D
 	{
 		ProjectedPoint min, max;
 		Vector2 direction = Matrix2x2(-shape.transform.rotation).multiply(normal);
-		Vector2 p1 = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), direction);
-		Vector2 p2 = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), -direction);
+		Vector2 p1 = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->halfWidth(), capsule->halfHeight(), direction);
+		Vector2 p2 = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->halfWidth(), capsule->halfHeight(), -direction);
 		p1 = shape.transform.translatePoint(p1);
 		p2 = shape.transform.translatePoint(p2);
 

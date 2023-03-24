@@ -94,6 +94,14 @@ namespace Physics2D
 		{
 			return a >= 0 && b >= 0 && c >= 0 || a <= 0 && b <= 0 && c <= 0;
 		}
+		PHYSICS2D_API static inline bool sameSignStrict(const real& a, const real& b)
+		{
+			return a > 0 && b > 0 || a < 0 && b < 0;
+		}
+		PHYSICS2D_API static inline bool sameSignStrict(const real& a, const real& b, const real& c)
+		{
+			return a > 0 && b > 0 && c > 0 || a < 0 && b < 0 && c < 0;
+		}
 		PHYSICS2D_API static inline int8_t sign(const real& num)
 		{
 			return num > 0 ? 1 : -1;

@@ -179,7 +179,7 @@ namespace Physics2D
 		 * \return the maximum point in ellipse
 		 */
 		static Vector2 calculateEllipseProjectionPoint(const real& a, const real& b, const Vector2& direction);
-		static Vector2 calculateCapsuleProjectionPoint(const real& width, const real& height, const Vector2& direction);
+		static Vector2 calculateCapsuleProjectionPoint(const real& halfWidth, const real& halfHeight, const Vector2& direction);
 		static Vector2 calculateSectorProjectionPoint(const real& startRadian, const real& spanRadian, const real& radius, const Vector2& direction);
 		static bool triangleContainsOrigin(const Vector2& a, const Vector2& b, const Vector2& c);
 		static bool isPointOnSameSide(const Vector2& edgePoint1, const Vector2& edgePoint2, const Vector2& refPoint, const Vector2 targetPoint);

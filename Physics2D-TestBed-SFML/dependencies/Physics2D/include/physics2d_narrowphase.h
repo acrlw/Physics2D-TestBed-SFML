@@ -57,6 +57,7 @@ namespace Physics2D
 		Vector2 normal;
 		real penetration = 0;
 		Simplex simplex;
+		//[Debug]
 		std::list<SimplexVertexWithOriginDistance> polytope;
 	};
 	class PHYSICS2D_API Narrowphase
@@ -81,6 +82,8 @@ namespace Physics2D
 	private:
 		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
 
+		static ContactPair clipTwoEdge(const Vector2& va1, const Vector2& va2, const Vector2& vb1, const Vector2& vb2, CollisionInfo& info);
+
 		static ContactPair clipIncidentEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap);
 
 		static ContactPair clipPolygonPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
@@ -104,6 +107,8 @@ namespace Physics2D
 
 		static ContactPair clipRoundRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
 			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+
+		static ContactPair clipEdgeVertex(const Vector2& va1, const Vector2& va2, const Vector2& vb, CollisionInfo& info);
 		
 	};
 

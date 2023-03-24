@@ -30,6 +30,7 @@ namespace Physics2D
         bool equal(const Vector2& rhs)const;
         bool fuzzyEqual(const Vector2& rhs, const real& epsilon = Constant::GeometryEpsilon)const;
         bool isOrigin(const real& epsilon = Constant::GeometryEpsilon)const;
+        bool isSameQuadrant(const Vector2& rhs)const;
 		
         real lengthSquare()const;
         real length()const;

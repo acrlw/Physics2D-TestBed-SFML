@@ -2,7 +2,7 @@
 namespace Physics2D
 {
 
-	Capsule::Capsule(real width, real height) : m_width(width), m_height(height)
+	Capsule::Capsule(real width, real height) : m_halfWidth(width / 2.0f), m_halfHeight(height / 2.0f)
 	{
 		m_type = Type::Capsule;
 	}
@@ -10,22 +10,23 @@ namespace Physics2D
 	{
 		real r = 0, h = 0;
 		Vector2 anchorPoint1, anchorPoint2;
-		if (m_width >= m_height)//Horizontal
+		if (m_halfWidth >= m_halfHeight)//Horizontal
 		{
-			r = m_height / 2;
-			h = m_width - m_height;
-			anchorPoint1.set(h / 2, 0);
-			anchorPoint2.set(-h / 2, 0);
+			r = m_halfHeight;
+			h = m_halfWidth - m_halfHeight;
+			
+			anchorPoint1.set(h, 0);
+			anchorPoint2.set(-h, 0);
 			if (point.x - anchorPoint1.x <= epsilon && point.x - anchorPoint2.x >= epsilon
 				&& point.y - r <= epsilon && point.y + r >= epsilon)
 				return true;
 		}
 		else//Vertical
 		{
-			r = m_width / 2;
-			h = m_height - m_width;
-			anchorPoint1.set(0, h / 2);
-			anchorPoint2.set(0, -h / 2);
+			r = m_halfWidth / 2;
+			h = m_halfHeight - m_halfWidth;
+			anchorPoint1.set(0, h);
+			anchorPoint2.set(0, -h);
 
 			if (point.y - anchorPoint1.y <= epsilon && point.y - anchorPoint2.y >= epsilon
 				&& point.x - r <= epsilon && point.x + r >= epsilon)
@@ -40,8 +41,8 @@ namespace Physics2D
 
 	void Capsule::scale(const real& factor)
 	{
-		m_width *= factor;
-		m_height *= factor;
+		m_halfWidth *= factor;
+		m_halfHeight *= factor;
 	}
 
 	Vector2 Capsule::center() const
@@ -51,66 +52,76 @@ namespace Physics2D
 
 	void Capsule::set(real width, real height)
 	{
-		m_width = width;
-		m_height = height;
+		m_halfWidth = width / 2.0f;
+		m_halfHeight = height / 2.0f;
 	}
 
 	void Capsule::setWidth(real width)
 	{
-		m_width = width;
+		m_halfWidth = width * 2.0f;
 	}
 
 	void Capsule::setHeight(real height)
 	{
-		m_height = height;
+		m_halfHeight = height * 2.0f;
 	}
 
 	real Capsule::width()const
 	{
-		return m_width;
+		return 2.0f * m_halfWidth;
 	}
 
 	real Capsule::height()const
 	{
-		return m_height;
+		return 2.0f * m_halfHeight;
+	}
+
+	real Capsule::halfWidth() const
+	{
+		return m_halfWidth;
+	}
+
+	real Capsule::halfHeight() const
+	{
+		return m_halfHeight;
 	}
 
 	Vector2 Capsule::topLeft() const
 	{
 		Vector2 result;
 		real r;
-		if (m_width >= m_height)//Horizontal
+		if (m_halfWidth >= m_halfHeight)//Horizontal
 		{
-			r = m_height / 2.0f;
-			result.set(-m_width / 2.0f + r, r);
+			r = m_halfHeight;
+			result.set(-m_halfWidth + r, r);
 		}
 		else//Vertical
 		{
-			r = m_width / 2.0f;
-			result.set(-r, m_height / 2.0f - r);
+			r = m_halfWidth;
+			result.set(-r, m_halfHeight - r);
 		}
 		return result;
 	}
 	Vector2 Capsule::bottomLeft() const
 	{
-		Vector2 result;
-		real r;
-		if (m_width >= m_height)//Horizontal
-		{
-			r = m_height / 2.0f;
-			result.set(-m_width / 2.0f + r, -r);
-		}
-		else//Vertical
-		{
-			r = m_width / 2.0f;
-			result.set(-r, -m_height / 2.0f + r);
-		}
-		return result;
+		return -topRight();
 	}
 
 	Vector2 Capsule::topRight() const
 	{
-		return -bottomLeft();
+		Vector2 result;
+		real r;
+		if (m_halfWidth >= m_halfHeight)//Horizontal
+		{
+			r = m_halfHeight;
+			result.set(m_halfWidth - r, r);
+		}
+		else//Vertical
+		{
+			r = m_halfWidth;
+			result.set(r, m_halfHeight - r);
+		}
+		return result;
 	}
 
 	Vector2 Capsule::bottomRight() const

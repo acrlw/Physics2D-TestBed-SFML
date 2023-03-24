@@ -14,7 +14,8 @@ namespace Physics2D
 		}
 		void load() override
 		{
-			capsule.set(1.0f, 0.5f);
+			capsule.set(4.0f, 2.0f);
+			capsule2.set(2.0f, 0.5f);
 			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
 			smallBrick.set(1.0f, 1.0f);
 
@@ -42,11 +43,11 @@ namespace Physics2D
 			//shape2.transform.rotation = -9.10090932e-07f;
 
 			shape1.shape = &capsule;
-			shape1.transform.position.set(-0.500000477f, 0.499320120f);
+			shape1.transform.position.set(0.0, 4.0f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &capsule;
-			shape2.transform.position.set(0.500000477f, 0.499320120f);
+			shape2.shape = &capsule2;
+			shape2.transform.position.set(0.0f, 0.0f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
 			//result = Detector::detect(shape1, shape2);
@@ -93,7 +94,7 @@ namespace Physics2D
 		{
 			if(event.key.code == sf::Keyboard::R)
 			{
-				shape1.transform.rotation += Math::degreeToRadian(0.1);
+				shape1.transform.rotation += Math::degreeToRadian(1.0f);
 			}
 		}
 		void render(sf::RenderWindow& window) override
@@ -135,15 +136,15 @@ namespace Physics2D
 
 				//draw feature simplex
 
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
-				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
-					info.simplex.vertices[1].point[0], color1);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
+				//	info.simplex.vertices[1].point[0], color1);
 
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
-				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
-					info.simplex.vertices[1].point[1], color2);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
+				//	info.simplex.vertices[1].point[1], color2);
 				
 
 				
@@ -186,6 +187,7 @@ namespace Physics2D
 	private:
 
 		Capsule capsule;
+		Capsule capsule2;
 		Edge edge;
 		Rectangle block;
 

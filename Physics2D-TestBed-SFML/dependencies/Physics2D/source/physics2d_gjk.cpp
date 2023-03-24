@@ -184,7 +184,7 @@ namespace Physics2D
 		case Shape::Type::Capsule:
 		{
 			const Capsule* capsule = static_cast<const Capsule*>(shape.shape);
-			target = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->width(), capsule->height(), rot_dir);
+			target = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(capsule->halfWidth(), capsule->halfHeight(), rot_dir);
 			break;
 		}
 		default:

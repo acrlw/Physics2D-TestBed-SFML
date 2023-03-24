@@ -162,6 +162,11 @@ namespace Physics2D
 		return fuzzyEqual({ 0, 0 }, epsilon);
 	}
 
+	bool Vector2::isSameQuadrant(const Vector2& rhs) const
+	{
+		return Math::sameSign(x, rhs.x) && Math::sameSign(y, rhs.y);
+	}
+
 	real Vector2::dot(const Vector2& rhs) const
 	{
 		return x * rhs.x + y * rhs.y;

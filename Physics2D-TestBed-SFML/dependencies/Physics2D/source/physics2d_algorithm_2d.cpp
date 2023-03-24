@@ -576,21 +576,20 @@ namespace Physics2D
 		}
 		return target;
 	}
-	Vector2 GeometryAlgorithm2D::calculateCapsuleProjectionPoint(const real& width, const real& height,
-	                                                             const Vector2& direction)
+	Vector2 GeometryAlgorithm2D::calculateCapsuleProjectionPoint(const real& halfWidth, const real& halfHeight, const Vector2& direction)
 	{
 		Vector2 target;
-		if (width >= height) // Horizontal
+		if (halfWidth >= halfHeight) // Horizontal
 		{
-			real radius = height / 2.0f;
-			real offset = direction.x >= 0 ? width / 2 - radius : radius - width / 2;
+			const real radius = halfHeight;
+			const real offset = direction.x >= 0 ? halfWidth - radius : radius - halfWidth;
 			target = direction.normal() * radius;
 			target.x += offset;
 		}
 		else // Vertical
 		{
-			real radius = width / 2.0f;
-			real offset = direction.y >= 0 ? height / 2 - radius : radius - height / 2;
+			const real radius = halfWidth;
+			const real offset = direction.y >= 0 ? halfHeight - radius : radius - halfHeight;
 			target = direction.normal() * radius;
 			target.y += offset;
 		}

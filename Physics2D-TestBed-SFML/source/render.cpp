@@ -168,22 +168,22 @@ namespace Physics2D
 				Vector2 point(radius * Math::cosx(radian), radius * Math::sinx(radian));
 				point += center;
 				const Vector2 worldPos = Matrix2x2(shape.transform.rotation).multiply(point * RenderConstant::ScaleFactor) + shape.transform.position;
-				const Vector2 screenPos = camera.worldToScreen(worldPos);
+				const Vector2 screenP = camera.worldToScreen(worldPos);
 				sf::Vertex vertex;
-				vertex.position = toVector2f(screenPos);
+				vertex.position = toVector2f(screenP);
 				vertex.color = fillColor;
 				vertices.emplace_back(vertex);
 			}
 		};
-		if (capsule->width() > capsule->height())
+		if (capsule->halfWidth() > capsule->halfHeight())
 		{
-			real radius = capsule->height() / 2.0f;
+			real radius = capsule->halfHeight();
 			sampling((capsule->bottomLeft() + capsule->topLeft()) / 2.0f, radius, Math::degreeToRadian(90), Math::degreeToRadian(270));
 			sampling((capsule->topRight() + capsule->bottomRight()) / 2.0f, radius, Math::degreeToRadian(270), Math::degreeToRadian(450));
 		}
 		else
 		{
-			real radius = capsule->width() / 2.0f;
+			real radius = capsule->halfWidth();
 			sampling((capsule->topLeft() + capsule->topRight()) / 2.0f, radius, Math::degreeToRadian(0), Math::degreeToRadian(180));
 			sampling((capsule->bottomLeft() + capsule->bottomRight()) / 2.0f, radius, Math::degreeToRadian(180), Math::degreeToRadian(360));
 		}
