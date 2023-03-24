@@ -70,8 +70,10 @@ namespace Physics2D
 			result.normal = info.normal;
 			result.isColliding = isColliding;
 			result.penetration = info.penetration;
-
-			result.contactList = Narrowphase::generateContacts(shapeA, shapeB, info);
+			if (!realEqual(result.penetration, 0))
+				result.contactList = Narrowphase::generateContacts(shapeA, shapeB, info);
+			else
+				result.isColliding = false;
 		}
 
 		return result;

@@ -46,7 +46,7 @@ namespace Physics2D
 			shape1.transform.position.set(0.0, 4.0f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &capsule2;
+			shape2.shape = &ellipse;
 			shape2.transform.position.set(0.0f, 0.0f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 

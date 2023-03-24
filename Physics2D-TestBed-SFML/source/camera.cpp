@@ -1,4 +1,7 @@
 #include "camera.h"
+
+#include <iostream>
+
 #include "render.h"
 namespace Physics2D
 {
@@ -60,6 +63,7 @@ namespace Physics2D
 			if (m_bodyVisible)
 			{
 				sf::Color color = sf::Color::Green;
+
 				for (auto& body : m_world->bodyList())
 				{
 					ShapePrimitive primitive;
@@ -337,7 +341,7 @@ namespace Physics2D
 	{
 		if (nodeIndex == -1)
 			return;
-
+		//std::cout << "tree size:" << m_tree->tree().size() << std::endl;
 		drawTree(m_tree->tree()[nodeIndex].leftIndex, window);
 		drawTree(m_tree->tree()[nodeIndex].rightIndex, window);
 

@@ -94,11 +94,12 @@ namespace Physics2D
 			ojp.referenceRotation = 0;
 			m_world->createJoint(ojp);
 
-
+			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
 
 		}
 		void render(sf::RenderWindow& window) override
 		{
+			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
 
 		}
 	private:

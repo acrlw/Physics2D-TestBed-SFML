@@ -188,30 +188,6 @@ namespace Physics2D
 
 		for (Index iter = 0; iter < iteration; ++iter)
 		{
-			//[DEBUG]
-			//std::vector<Vector2> convex;
-			//convex.clear();
-			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//	convex.emplace_back(it->vertex.result);
-			//bool isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
-
-			//if (!isConvex)
-			//{
-			//	for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//	{
-			//		auto idx = std::distance(polytope.begin(), it);
-			//		std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << "\t" << it->distance << std::endl;
-			//	}
-			//	int a = 0;
-			//}
-			//std::cout << "----------" << std::endl;
-			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//{
-			//	auto idx = std::distance(polytope.begin(), it);
-			//	std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << "\t" << it->distance << std::endl;
-			//}
-			//std::cout << "-----" << std::endl;
-
 
 			//closest edge index is set to index 0 and index 1
 			const Vector2 direction = findDirectionByEdge(info.simplex.vertices[0], info.simplex.vertices[1], false);
@@ -221,7 +197,6 @@ namespace Physics2D
 			//cannot find any new vertex
 			if (info.simplex.contains(vertex))
 				break;
-
 
 			//convex test, make sure polytope is convex
 
@@ -289,34 +264,18 @@ namespace Physics2D
 			info.simplex.vertices[0] = iterStart->vertex;
 			info.simplex.vertices[1] = iterTemp->vertex;
 
-			//[DEBUG]
-			//convex.clear();
-			//for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//	convex.emplace_back(it->vertex.result);
-			//isConvex = GeometryAlgorithm2D::isConvexPolygon(convex);
-
-			//if (!isConvex)
-			//{
-
-
-			//	for (auto it = polytope.begin(); it != polytope.end(); ++it)
-			//	{
-			//		auto idx = std::distance(polytope.begin(), it);
-			//		std::cout << "P_{" << idx << "}=(" << it->vertex.result.x << "," << it->vertex.result.y << ")" << "\t" << it->distance << std::endl;
-			//	}
-			//	int a = 0;
-			//}
-
 		}
-
-
-
 
 		const Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
 			, { 0, 0 });
 
+		
 		info.penetration = temp.length();
-		info.normal = temp.normal();
+		//assert(!realEqual(info.penetration, 0));
+		info.normal.clear();
+		//penetration is close to zero, just return
+		if(!realEqual(info.penetration, 0))
+			info.normal = temp / info.penetration;
 
 		return info;
 	}
@@ -500,7 +459,15 @@ namespace Physics2D
 			//restore normal
 			info.normal.negate();
 		}
-		
+
+		assert(!std::isnan(pair.points[0].x));
+		assert(!std::isnan(pair.points[0].y));
+		assert(!std::isnan(pair.points[1].x));
+		assert(!std::isnan(pair.points[1].y));
+		assert(!std::isnan(pair.points[2].x));
+		assert(!std::isnan(pair.points[2].y));
+		assert(!std::isnan(pair.points[3].x));
+		assert(!std::isnan(pair.points[3].y));
 		return pair;
 	}
 
@@ -568,6 +535,7 @@ namespace Physics2D
 		else
 		{
 			//copy index for all
+
 			feature.vertex[0] = simplex.vertices[0].point[AorB];
 			feature.vertex[1] = simplex.vertices[1].point[AorB];
 		}
@@ -610,10 +578,11 @@ namespace Physics2D
 		const bool isRef1Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[0]) >= 0;
 		const bool isRef1Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[0]) >= 0;
 
-		//if (!isRef1Inc1Valid && !isRef1Inc2Valid)
-		//	return pair;
 
-		assert(isRef1Inc1Valid || isRef1Inc2Valid && "Invalid features.");
+
+		//assert(isRef1Inc1Valid || isRef1Inc2Valid && "Invalid features.");
+		if (!isRef1Inc1Valid && !isRef1Inc2Valid)
+			return pair;
 
 		if (!isRef1Inc1Valid && isRef1Inc2Valid)
 		{
