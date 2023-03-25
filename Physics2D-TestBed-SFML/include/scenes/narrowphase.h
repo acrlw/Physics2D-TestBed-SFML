@@ -28,8 +28,7 @@ namespace Physics2D
 			polygon1.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
 			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f } });
 
-			polygon2.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
-			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f }});
+			polygon2.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
 
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
@@ -42,11 +41,11 @@ namespace Physics2D
 			//shape2.transform.position.set(0.500000477f, 0.499320120f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
-			shape1.shape = &capsule;
-			shape1.transform.position.set(0.0, 4.0f);
+			shape1.shape = &polygon1;
+			shape1.transform.position.set(3.0, 0.0f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &ellipse;
+			shape2.shape = &polygon2;
 			shape2.transform.position.set(0.0f, 0.0f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
@@ -105,79 +104,93 @@ namespace Physics2D
 
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform.position, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform.position, sf::Color::Cyan);
-			Simplex simplex = Narrowphase::gjk(shape1, shape2);
-			sf::Color color = simplex.isContainOrigin ? RenderConstant::MaterialTeal : RenderConstant::MaterialOrange;
-			//RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
-			if(simplex.isContainOrigin)
+			auto info = Narrowphase::gjkDistance(shape1, shape2);
+			for (auto iter = info.polytope.begin(); iter != info.polytope.end(); ++iter)
 			{
-				//draw polytope
-				auto info = Narrowphase::epa(simplex, shape1, shape2);
+				auto next = iter;
+				++next;
+				if (next == info.polytope.end())
+					next = info.polytope.begin();
 
-				for(auto iter = info.polytope.begin(); iter != info.polytope.end(); ++iter)
-				{
-					auto next = iter;
-					++next;
-					if(next == info.polytope.end())
-						next = info.polytope.begin();
+				RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::MaterialPink);
+				RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::MaterialPink);
+				RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::MaterialPink);
+			}
+			//Simplex simplex = Narrowphase::gjk(shape1, shape2);
+			//sf::Color color = simplex.isContainOrigin ? RenderConstant::MaterialTeal : RenderConstant::MaterialOrange;
 
-					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::MaterialPink);
-					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::MaterialPink);
-					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::MaterialPink);
-				}
-				
-				//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, RenderConstant::MaterialTeal);
-				//Vector2 p = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result,
-				//	info.simplex.vertices[1].result, { 0, 0 });
-				//RenderSFMLImpl::renderPoint(window, *m_camera, p, RenderConstant::MaterialOrange);
-				//RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, RenderConstant::MaterialOrange);
+
+			//RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
+			//if(simplex.isContainOrigin)
+			//{
+			//	//draw polytope
+			//	auto info = Narrowphase::epa(simplex, shape1, shape2);
+
+			//	for(auto iter = info.polytope.begin(); iter != info.polytope.end(); ++iter)
+			//	{
+			//		auto next = iter;
+			//		++next;
+			//		if(next == info.polytope.end())
+			//			next = info.polytope.begin();
+
+			//		RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::MaterialPink);
+			//		RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::MaterialPink);
+			//		RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::MaterialPink);
+			//	}
+			//	
+			//	//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, RenderConstant::MaterialTeal);
+			//	//Vector2 p = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result,
+			//	//	info.simplex.vertices[1].result, { 0, 0 });
+			//	//RenderSFMLImpl::renderPoint(window, *m_camera, p, RenderConstant::MaterialOrange);
+			//	//RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, RenderConstant::MaterialOrange);
 
 				sf::Color color1 = sf::Color(239, 103, 50);
 				sf::Color color2 = sf::Color(252, 236, 86);
 
-				//draw feature simplex
+			//	//draw feature simplex
 
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
-				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
-				//	info.simplex.vertices[1].point[0], color1);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
+				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
+					info.simplex.vertices[1].point[0], color1);
 
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
-				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
-				//	info.simplex.vertices[1].point[1], color2);
-				
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
+				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
+					info.simplex.vertices[1].point[1], color2);
+			//	
 
-				
-				
-				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], info.simplex.vertices[1].point[0], sf::Color::Yellow);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], sf::Color::Yellow, 4);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], sf::Color::Yellow);
+			//	
+			//	
+			//	//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], info.simplex.vertices[1].point[0], sf::Color::Yellow);
+			//	//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], sf::Color::Yellow, 4);
+			//	//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], sf::Color::Yellow);
 
-				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1], info.simplex.vertices[1].point[1], sf::Color::Magenta);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
-				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
-				auto pairs = Narrowphase::generateContacts(shape1, shape2, info);
-				if(pairs.count == 2)
-				{
-					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
-				}
-				else if(pairs.count == 4)
-				{
-					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
-					RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[2], pairs.points[3], sf::Color::Magenta);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[2], color1);
-					RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[3], color2);
-				}
-				//draw final normal
+			//	//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1], info.simplex.vertices[1].point[1], sf::Color::Magenta);
+			//	//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], sf::Color::Magenta, 4);
+			//	//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], sf::Color::Magenta);
+			//	//auto pairs = Narrowphase::generateContacts(shape1, shape2, info);
+			//	//if(pairs.count == 2)
+			//	//{
+			//	//	RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
+			//	//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
+			//	//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
+			//	//}
+			//	//else if(pairs.count == 4)
+			//	//{
+			//	//	RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[0], pairs.points[1], sf::Color::Magenta);
+			//	//	RenderSFMLImpl::renderLine(window, *m_camera, pairs.points[2], pairs.points[3], sf::Color::Magenta);
+			//	//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[0], color1);
+			//	//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[1], color2);
+			//	//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[2], color1);
+			//	//	RenderSFMLImpl::renderPoint(window, *m_camera, pairs.points[3], color2);
+			//	//}
+			//	////draw final normal
 
-				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
-				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal, sf::Color::Cyan);
+			//	//RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
+			//	//RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal, sf::Color::Cyan);
 
-			}
+			//}
 			if(isPicked)
 			{
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);

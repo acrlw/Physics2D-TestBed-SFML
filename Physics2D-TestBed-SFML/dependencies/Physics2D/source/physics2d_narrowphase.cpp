@@ -27,31 +27,13 @@ namespace Physics2D
 		//retry to reconfigure simplex to avoid 1d simplex cross origin
 		if (simplex.containsOrigin())
 		{
-			int i = 1;
-			for (; i <= Constant::GJKRetryTimes; ++i)
-			{
-				//return simplex;
-				direction.set(-direction.y + real(i), -direction.x - real(i));
-				SimplexVertex v = support(shapeA, shapeB, direction);
-				simplex.vertices[0] = v;
-				direction.set(-direction.y - real(i) - 0.5f, -direction.x + real(i) + 0.5f);
-				v = support(shapeA, shapeB, direction);
-				simplex.vertices[1] = v;
-
-				if (!simplex.containsOrigin())
-					break;
-			}
-			//can't reconfigure, just not process
-			if (i == Constant::GJKRetryTimes)
-			{
-				assert(false && "Cannot reconfigure simplex.");
-				return simplex;
-			}
+			const bool result = perturbSimplex(simplex, shapeA, shapeB, direction);
+			if(!result)
+				assert(false && "Cannot reconstruct simplex.");
 		}
 
 		//third
-		size_t iter = 0;
-		while (iter <= iteration)
+		for(Index iter = 0; iter <= iteration; ++iter)
 		{
 			//default closest edge is index 0 and index 1
 			direction = findDirectionByEdge(simplex.vertices[0], simplex.vertices[1], true);
@@ -64,109 +46,30 @@ namespace Physics2D
 			//vertex does not pass origin
 			if (vertex.result.dot(direction) <= 0)
 				break;
-			
 
 			simplex.addSimplexVertex(vertex);
 
-			//use barycentric coordinates to check contains origin and find closest edge
-			const SimplexVertex va = simplex.vertices[0];
-			const SimplexVertex vb = simplex.vertices[1];
-			const SimplexVertex vc = simplex.vertices[2];
-			const Vector2 a = va.result;
-			const Vector2 b = vb.result;
-			const Vector2 c = vc.result;
-			const Vector2 ab = b - a;
-			const Vector2 ac = c - a;
-			const Vector2 bc = c - b;
-			const real ab_length = ab.length();
-			const real ac_length = ac.length();
-			const real bc_length = bc.length();
-
-			const real u_ac = -a.dot(ac.normal()) / ac_length;
-			const real u_bc = -b.dot(bc.normal()) / bc_length;
-
-			const real v_ac = 1 - u_ac;
-			const real v_bc = 1 - u_bc;
-			/*
-			 * [Ax Bx Cx][u] = [0]
-			 * [Ay By Cy][v] = [0]
-			 * [ 1  1  1][w] = [1]
-			 * solve for u,v,w
-			 */
-			const real det = a.y * b.x - a.x * b.y + a.x * c.y - a.y * c.x + b.y * c.x - c.y * b.x;
-			assert(det != 0.0f);
-			const real u = (b.y * c.x - c.y * b.x) / det;
-			const real v = (c.y * a.x - a.y * c.x) / det;
-			const real w = 1 - u - v;
-
-			
-			if (u_ac > 0 && v_ac > 0 && v <= 0)
-			{
-				simplex.vertices[1] = vc;
-			}
-			else if (u_bc > 0 && v_bc > 0 && u <= 0)
-			{
-				simplex.vertices[0] = vc;
-			}
-			else if (u > 0 && v > 0 && w > 0)
-			{
-				//in region ABC, origin is inside simplex
-				simplex.isContainOrigin = true;
-
-				//reorder simplex index, so that the closest edge is index 0 and index 1
-				//h means height
-				const real h_u = u / bc_length;
-				const real h_v = v / ac_length;
-				const real h_w = w / ab_length;
-				const real min = Math::tripleMin(h_u, h_v, h_w);
-				if (min == h_u)
-				{
-					//c b a
-					simplex.vertices[0] = vc;
-					simplex.vertices[2] = va;
-				}
-				else if (min == h_v)
-				{
-					//a c b
-					simplex.vertices[1] = vc;
-					simplex.vertices[2] = vb;
-				}
-
+			reconstructSimplex(simplex);
+			if (simplex.isContainOrigin)
 				return simplex;
-			}
 
 			simplex.removeEnd();
-
-			iter++;
+			
 		}
 		return simplex;
 	}
 
-	CollisionInfo Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration, const real& epsilon)
+	CollisionInfo Narrowphase::epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
+		const size_t& iteration, const real& epsilon)
 	{
 		//return 1d simplex with edge closest to origin
 		CollisionInfo info;
 		info.simplex = simplex;
 		info.simplex.removeEnd();
 
-		auto iterNext = [](std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
-			std::list<SimplexVertexWithOriginDistance>& list)
-		{
-			++targetIter;
-			if (targetIter == list.end())
-				targetIter = list.begin();
-		};
-		auto iterPrev = [](std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
-			std::list<SimplexVertexWithOriginDistance>& list)
-		{
-			if (targetIter == list.begin())
-				targetIter = list.end();
-			--targetIter;
-		};
-
-
 		//initiate polytope
 		//use lengthSquare() for less computation
+
 		//[Debug]
 		std::list<SimplexVertexWithOriginDistance>& polytope = info.polytope;
 		//std::list<SimplexVertexWithOriginDistance> polytope;
@@ -188,8 +91,7 @@ namespace Physics2D
 
 		for (Index iter = 0; iter < iteration; ++iter)
 		{
-
-			//closest edge index is set to index 0 and index 1
+			//indices of closest edge are set to 0 and 1
 			const Vector2 direction = findDirectionByEdge(info.simplex.vertices[0], info.simplex.vertices[1], false);
 
 			const SimplexVertex vertex = support(shapeA, shapeB, direction);
@@ -198,15 +100,15 @@ namespace Physics2D
 			if (info.simplex.contains(vertex))
 				break;
 
-			//convex test, make sure polytope is convex
+			//convex test, make sure polytope is always convex
 
 			auto itA = iterStart;
 
 			auto itB = itA;
-			iterNext(itB, polytope);
+			polytopeIterNext(itB, polytope);
 
 			auto itC = itB;
-			iterNext(itC, polytope);
+			polytopeIterNext(itC, polytope);
 
 			const Vector2 ab = itB->vertex.result - itA->vertex.result;
 			const Vector2 bc = itC->vertex.result - itB->vertex.result;
@@ -249,17 +151,17 @@ namespace Physics2D
 					minDistance = iterTemp->distance;
 					iterTarget = iterTemp;
 				}
-				iterNext(iterTemp, polytope);
+				polytopeIterNext(iterTemp, polytope);
 				if (iterTemp == iterStart)
 					break;
 			}
 			iterStart = iterTarget;
 			iterEnd = iterTarget;
-			iterPrev(iterEnd, polytope);
+			polytopeIterPrev(iterEnd, polytope);
 
 			//set to begin
 			iterTemp = iterStart;
-			iterNext(iterTemp, polytope);
+			polytopeIterNext(iterTemp, polytope);
 			//reset simplex
 			info.simplex.vertices[0] = iterStart->vertex;
 			info.simplex.vertices[1] = iterTemp->vertex;
@@ -268,7 +170,6 @@ namespace Physics2D
 
 		const Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
 			, { 0, 0 });
-
 		
 		info.penetration = temp.length();
 		//assert(!realEqual(info.penetration, 0));
@@ -459,23 +360,129 @@ namespace Physics2D
 			//restore normal
 			info.normal.negate();
 		}
-
-		assert(!std::isnan(pair.points[0].x));
-		assert(!std::isnan(pair.points[0].y));
-		assert(!std::isnan(pair.points[1].x));
-		assert(!std::isnan(pair.points[1].y));
-		assert(!std::isnan(pair.points[2].x));
-		assert(!std::isnan(pair.points[2].y));
-		assert(!std::isnan(pair.points[3].x));
-		assert(!std::isnan(pair.points[3].y));
 		return pair;
 	}
 
-	VertexPair Narrowphase::gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
+	CollisionInfo Narrowphase::gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration)
 	{
 		VertexPair result;
 
-		return result;
+		Simplex simplex;
+		Vector2 direction = shapeB.transform.position - shapeA.transform.position;
+
+		if (direction.fuzzyEqual({ 0, 0 }))
+			direction.set(1, 1);
+		//first
+		SimplexVertex vertex = support(shapeA, shapeB, direction);
+		simplex.addSimplexVertex(vertex);
+		//second
+		direction.negate();
+		vertex = support(shapeA, shapeB, direction);
+		simplex.addSimplexVertex(vertex);
+		direction = direction.perpendicular();
+		vertex = support(shapeA, shapeB, direction);
+		simplex.addSimplexVertex(vertex);
+		reconstructSimplex(simplex);
+		CollisionInfo info;
+
+		std::list<SimplexVertexWithOriginDistance> polytope;
+
+		for (auto iter = simplex.vertices.begin(); iter != simplex.vertices.end(); ++iter)
+		{
+			auto next = iter + 1;
+			if (next == simplex.vertices.end())
+				next = simplex.vertices.begin();
+			SimplexVertexWithOriginDistance pair;
+			pair.vertex = *iter;
+			pair.distance = GeometryAlgorithm2D::pointToLineSegment(iter->result, next->result, { 0, 0 })
+				.lengthSquare();
+			polytope.emplace_back(pair);
+		}
+
+		auto iterStart = polytope.begin();
+		auto iterEnd = polytope.end();
+		auto iterTemp = polytope.begin();
+
+		for (Index iter = 0; iter < iteration; ++iter)
+		{
+			//indices of closest edge are set to 0 and 1
+			const Vector2 direction = findDirectionByEdge(info.simplex.vertices[0], info.simplex.vertices[1], true);
+
+			const SimplexVertex vertex = support(shapeA, shapeB, direction);
+
+			//cannot find any new vertex
+			if (info.simplex.contains(vertex))
+				break;
+
+			//convex test, make sure polytope is always convex
+
+			auto itA = iterStart;
+
+			auto itB = itA;
+			polytopeIterNext(itB, polytope);
+
+			auto itC = itB;
+			polytopeIterNext(itC, polytope);
+
+			const Vector2 ab = itB->vertex.result - itA->vertex.result;
+			const Vector2 bc = itC->vertex.result - itB->vertex.result;
+			const real res1 = Vector2::crossProduct(ab, bc);
+
+			const Vector2 an = vertex.result - itA->vertex.result;
+			const Vector2 nb = itB->vertex.result - vertex.result;
+			const real res2 = Vector2::crossProduct(an, nb);
+
+			const real res3 = Vector2::crossProduct(nb, bc);
+
+			const bool validConvexity = Math::sameSignStrict(res1, res2, res3);
+
+			if (!validConvexity) //invalid vertex, just break
+				break;
+
+			//then insert new vertex
+
+			SimplexVertexWithOriginDistance pair;
+			pair.vertex = vertex;
+			const Vector2 t1 = GeometryAlgorithm2D::pointToLineSegment(itA->vertex.result, vertex.result, { 0,  0 });
+			const real dist1 = t1.lengthSquare();
+			const Vector2 t2 = GeometryAlgorithm2D::pointToLineSegment(vertex.result, itB->vertex.result, { 0, 0 });
+			const real dist2 = t2.lengthSquare();
+
+			itA->distance = dist1;
+			pair.distance = dist2;
+			polytope.insert(itB, pair);
+
+			//set to begin
+			iterTemp = iterStart;
+
+			//find shortest distance and set iterStart
+			real minDistance = Constant::Max;
+			auto iterTarget = iterStart;
+			while (true)
+			{
+				if (iterTemp->distance < minDistance)
+				{
+					minDistance = iterTemp->distance;
+					iterTarget = iterTemp;
+				}
+				polytopeIterNext(iterTemp, polytope);
+				if (iterTemp == iterStart)
+					break;
+			}
+			iterStart = iterTarget;
+			iterEnd = iterTarget;
+			polytopeIterPrev(iterEnd, polytope);
+
+			//set to begin
+			iterTemp = iterStart;
+			polytopeIterNext(iterTemp, polytope);
+			//reset simplex
+			info.simplex.vertices[0] = iterStart->vertex;
+			info.simplex.vertices[1] = iterTemp->vertex;
+
+		}
+
+		return info;
 	}
 
 	void Narrowphase::sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
@@ -484,15 +491,108 @@ namespace Physics2D
 	}
 	void Narrowphase::satPolygonVsPolygon(const Polygon& polygonA, const Transform& transformA, const Polygon& polygonB, const Transform& transformB)
 	{
+
 	}
 	void Narrowphase::satPolygonVsCircle(const Polygon& polygonA, const Transform& transformA, const Circle& circleB, const Transform& transformB)
 	{
+
 	}
 	void Narrowphase::satPolygonVsEllipse(const Polygon& polygonA, const Transform& transformA, const Ellipse& ellipseB, const Transform& transformB)
 	{
+
 	}
 	void Narrowphase::satPolygonVsEdge(const Polygon& polygonA, const Transform& transformA, const Edge& edgeB, const Transform& transformB)
 	{
+
+	}
+
+	void Narrowphase::reconstructSimplex(Simplex& simplex)
+	{
+		//use barycentric coordinates to check contains origin and find closest edge
+		const SimplexVertex va = simplex.vertices[0];
+		const SimplexVertex vb = simplex.vertices[1];
+		const SimplexVertex vc = simplex.vertices[2];
+		const Vector2 a = va.result;
+		const Vector2 b = vb.result;
+		const Vector2 c = vc.result;
+		const Vector2 ab = b - a;
+		const Vector2 ac = c - a;
+		const Vector2 bc = c - b;
+		const real ab_length = ab.length();
+		const real ac_length = ac.length();
+		const real bc_length = bc.length();
+
+		const real u_ac = -a.dot(ac.normal()) / ac_length;
+		const real u_bc = -b.dot(bc.normal()) / bc_length;
+
+		const real v_ac = 1 - u_ac;
+		const real v_bc = 1 - u_bc;
+		/*
+		 * [Ax Bx Cx][u] = [0]
+		 * [Ay By Cy][v] = [0]
+		 * [ 1  1  1][w] = [1]
+		 * solve for u,v,w
+		 */
+		const real det = a.y * b.x - a.x * b.y + a.x * c.y - a.y * c.x + b.y * c.x - c.y * b.x;
+		assert(det != 0.0f);
+		const real u = (b.y * c.x - c.y * b.x) / det;
+		const real v = (c.y * a.x - a.y * c.x) / det;
+		const real w = 1 - u - v;
+
+
+		if (u_ac > 0 && v_ac > 0 && v <= 0)
+		{
+			simplex.vertices[1] = vc;
+		}
+		else if (u_bc > 0 && v_bc > 0 && u <= 0)
+		{
+			simplex.vertices[0] = vc;
+		}
+		else if (u > 0 && v > 0 && w > 0)
+		{
+			//in region ABC, origin is inside simplex
+			simplex.isContainOrigin = true;
+
+			//reorder simplex index, so that the closest edge is index 0 and index 1
+			//h means height
+			const real h_u = u / bc_length;
+			const real h_v = v / ac_length;
+			const real h_w = w / ab_length;
+			const real min = Math::tripleMin(h_u, h_v, h_w);
+			if (min == h_u)
+			{
+				//c b a
+				simplex.vertices[0] = vc;
+				simplex.vertices[2] = va;
+			}
+			else if (min == h_v)
+			{
+				//a c b
+				simplex.vertices[1] = vc;
+				simplex.vertices[2] = vb;
+			}
+		}
+	}
+
+	bool Narrowphase::perturbSimplex(Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& dir)
+	{
+		Vector2 direction = dir;
+		for (int i = 0; i <= Constant::GJKRetryTimes; ++i)
+		{
+			//return simplex;
+			direction.set(-direction.y + real(i), -direction.x - real(i));
+			SimplexVertex v = support(shapeA, shapeB, direction);
+			simplex.vertices[0] = v;
+			direction.set(-direction.y - real(i) - 0.5f, -direction.x + real(i) + 0.5f);
+			v = support(shapeA, shapeB, direction);
+			simplex.vertices[1] = v;
+
+			if (!simplex.containsOrigin())
+				return true;
+		}
+		//can't reconfigure, just not process
+		return false;
+		
 	}
 
 	Feature Narrowphase::findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB)
@@ -802,6 +902,11 @@ namespace Physics2D
 		const Vector2 localB1 = shapeB.transform.inverseTranslatePoint(featureB.vertex[0]);
 
 		const Capsule* capsule = static_cast<const Capsule*>(shapeB.shape);
+
+		const Edge* edgeA = static_cast<const Edge*>(shapeA.shape);
+		const Vector2 va1 = shapeA.transform.translatePoint(edgeA->startPoint());
+		const Vector2 va2 = shapeA.transform.translatePoint(edgeA->endPoint());
+
 		const real halfWidth = capsule->halfWidth();
 		const real halfHeight = capsule->halfHeight();
 		real lhs = 0;
@@ -833,12 +938,13 @@ namespace Physics2D
 			
 			Vector2 vb2 = shapeB.transform.translatePoint(localB);
 
-			pair = clipTwoEdge(featureA.vertex[0], featureA.vertex[1], featureB.vertex[0], vb2, info);
+
+			pair = clipTwoEdge(va1, va2, featureB.vertex[0], vb2, info);
 			
 		}
 		else
 		{
-			pair = clipEdgeVertex(featureA.vertex[0], featureA.vertex[1], featureB.vertex[0], info);
+			pair = clipEdgeVertex(va1, va2, featureB.vertex[0], info);
 		}
 
 		return pair;
@@ -1049,11 +1155,27 @@ namespace Physics2D
 			pair.addContact(pA, vb);
 		else
 		{
-			Vector2 realPa = (pA - va1).lengthSquare() > (pA - va2).lengthSquare() ? va2 : va1;
+			const Vector2 realPa = (pA - va1).lengthSquare() > (pA - va2).lengthSquare() ? va2 : va1;
 			pair.addContact(realPa, realPa + info.normal * info.penetration);
 		}
 
 		return pair;
+	}
+
+	void Narrowphase::polytopeIterNext(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
+		std::list<SimplexVertexWithOriginDistance>& list)
+	{
+		++targetIter;
+		if (targetIter == list.end())
+			targetIter = list.begin();
+	}
+
+	void Narrowphase::polytopeIterPrev(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
+		std::list<SimplexVertexWithOriginDistance>& list)
+	{
+		if (targetIter == list.begin())
+			targetIter = list.end();
+		--targetIter;
 	}
 	
 }

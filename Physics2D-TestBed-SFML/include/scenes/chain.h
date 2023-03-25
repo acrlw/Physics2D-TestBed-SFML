@@ -20,11 +20,11 @@ namespace Physics2D
 			Body* rect;
 			Body* rect2;
 			Body* ground;
-
+			const real offset = 0.75f;
 			real half = brick.width() / 2.0f;
 			rect = m_world->createBody();
 			rect->setShape(&brick);
-			rect->position().set({ -5.0f, 0.0f });
+			rect->position().set({ offset, 0.0f });
 			rect->rotation() = 0;
 			rect->setMass(1.0f);
 			rect->setRestitution(0.2f);
@@ -43,7 +43,7 @@ namespace Physics2D
 
 			ppm.bodyA = rect;
 			ppm.localPointA.set(-half, 0);
-			ppm.targetPoint.set(-5.0f - half, 0.0f);
+			ppm.targetPoint.set(offset - half, 0.0f);
 			ppm.dampingRatio = 0.8f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;
@@ -54,7 +54,7 @@ namespace Physics2D
 			{
 				rect2 = m_world->createBody();
 				rect2->setShape(&brick);
-				rect2->position().set({ -5.0f + i * brick.width() * 1.4f, 0.0f });
+				rect2->position().set({ offset + i * brick.width() * 1.4f, 0.0f });
 				rect2->rotation() = 0;
 				rect2->setMass(1.0f);
 				rect2->setFriction(0.01f);

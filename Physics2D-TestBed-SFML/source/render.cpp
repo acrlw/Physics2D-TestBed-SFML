@@ -436,7 +436,9 @@ namespace Physics2D
 		real scale = size;
 		if (length < 1.0f)
 			scale = length * size;
-		Vector2 normal = tf.normal() * scale;
+		if (realEqual(length, 0))
+			return;
+		Vector2 normal = tf / length * scale;
 		Matrix2x2 mat(Math::degreeToRadian(degree));
 		Vector2 p1 = mat.multiply(normal) + end;
 		mat.set(Math::degreeToRadian(-degree));

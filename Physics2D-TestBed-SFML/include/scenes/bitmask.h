@@ -14,7 +14,7 @@ namespace Physics2D
 		void load() override
 		{
 			block.set(20, 1.0f);
-			rectangle.set(0.5f, 0.5f);
+			rectangle.set(1.0f, 1.0f);
 			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
 			
 			uint32_t mask = 0x01;

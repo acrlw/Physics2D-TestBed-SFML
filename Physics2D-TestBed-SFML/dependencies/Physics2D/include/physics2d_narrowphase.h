@@ -87,7 +87,7 @@ namespace Physics2D
 		static std::pair<Vector2, Index> findFurthestPoint(const Container::Vector<Vector2>& vertices, const Vector2& direction);
 		static ContactPair generateContacts(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, CollisionInfo& info);
 
-		static VertexPair gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 10);
+		static CollisionInfo gjkDistance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 10);
 
 		static void sat(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 		static void satPolygonVsPolygon(const Polygon& polygonA, const Transform& transformA, const Polygon& polygonB, const Transform& transformB);
@@ -96,6 +96,10 @@ namespace Physics2D
 		static void satPolygonVsEdge(const Polygon& polygonA, const Transform& transformA, const Edge& edgeB, const Transform& transformB);
 
 	private:
+		static void reconstructSimplex(Simplex& simplex);
+
+		static bool perturbSimplex(Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Vector2& dir);
+
 		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
 
 		static ContactPair clipTwoEdge(const Vector2& va1, const Vector2& va2, const Vector2& vb1, const Vector2& vb2, CollisionInfo& info);
@@ -125,6 +129,11 @@ namespace Physics2D
 			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
 
 		static ContactPair clipEdgeVertex(const Vector2& va1, const Vector2& va2, const Vector2& vb, CollisionInfo& info);
+
+		static void polytopeIterNext(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
+			std::list<SimplexVertexWithOriginDistance>& list);
+		static void polytopeIterPrev(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
+			std::list<SimplexVertexWithOriginDistance>& list);
 		
 	};
 

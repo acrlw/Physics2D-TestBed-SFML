@@ -11,6 +11,7 @@
 #include "scenes/chain.h"
 #include "scenes/collision.h"
 #include "scenes/continuous.h"
+#include "scenes/custom.h"
 #include "scenes/domino.h"
 #include "scenes/friction.h"
 #include "scenes/geometry.h"
@@ -68,7 +69,7 @@ namespace Physics2D
 		bool m_cameraViewportMovement = false;
 
 		
-		int m_currentItem = 10;
+		int m_currentItem = 11;
 
 		Frame* m_currentFrame = nullptr;
 
@@ -86,7 +87,7 @@ namespace Physics2D
 		bool m_simulateWorkingState = true;
         std::unique_ptr<sf::RenderWindow> m_window;
 
-
+		std::array<std::function<Frame* ()>, 21> m_frameList;
     };
 }
 #endif

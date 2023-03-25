@@ -31,10 +31,10 @@ namespace Physics2D
 		static Collision detect(Body* bodyA, const ShapePrimitive& shapeB);
 		static Collision detect(const ShapePrimitive& shapeA, Body* bodyB);
 
-		static VertexPair distance(Body* bodyA, Body* bodyB);
-		static VertexPair distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
-		static VertexPair distance(Body* bodyA, const ShapePrimitive& shapeB);
-		static VertexPair distance(const ShapePrimitive& shapeA, Body* bodyB);
+		static CollisionInfo distance(Body* bodyA, Body* bodyB);
+		static CollisionInfo distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
+		static CollisionInfo distance(Body* bodyA, const ShapePrimitive& shapeB);
+		static CollisionInfo distance(const ShapePrimitive& shapeA, Body* bodyB);
 		
 	private:
 	};

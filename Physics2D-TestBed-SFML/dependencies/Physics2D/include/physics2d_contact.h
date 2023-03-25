@@ -48,8 +48,8 @@ namespace Physics2D
 		void prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision);
 		void clearInactivePoints();
 		void deactivateAllPoints();
-		real m_maxPenetration = 0.005f;
-		real m_biasFactor = 0.02f;
+		real m_maxPenetration = 0.001f;
+		real m_biasFactor = 0.030f;
 		bool m_blockSolver = true;
 		Container::Map<Body::Relation::RelationID, Container::Vector<ContactConstraintPoint>> m_contactTable;
 	private:

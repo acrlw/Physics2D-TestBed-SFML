@@ -19,8 +19,8 @@ namespace Physics2D
             edge.set({ -200, 0 }, { 200, 0 });
             rect.set(1.0f, 1.0f);
             circle.setRadius(0.1f);
-            stick.set(5.0f, 0.5f);
-            wall.set(25.0, 200.0f);
+            stick.set(2.0f, 0.5f);
+            wall.set(60.0, 200.0f);
 
             Body* ground = m_world->createBody();
             ground->setShape(&edge);
@@ -39,7 +39,7 @@ namespace Physics2D
                     body->rotation() = 0.0f;
                     body->setMass(0.5f);
                     body->setType(Body::BodyType::Dynamic);
-                    body->setFriction(0.8f);
+                    body->setFriction(0.1f);
                     body->setRestitution(0.0f);
                     m_tree->insert(body);
                 }
@@ -56,14 +56,15 @@ namespace Physics2D
 
             Body* wallBody = m_world->createBody();
             wallBody->setShape(&wall);
-            wallBody->position().set(150.0f, 100.5f);
+            wallBody->position().set(180.0f, 100.0f);
             wallBody->setMass(100000);
+            wallBody->setFriction(0.1f);
             wallBody->setType(Body::BodyType::Static);
 
             m_tree->insert(wallBody);
 
-            m_camera->setTargetBody(bullet);
-            m_camera->setMeterToPixel(10);
+            //m_camera->setTargetBody(bullet);
+            //m_camera->setMeterToPixel(5);
 
         }
         void render(sf::RenderWindow& window) override

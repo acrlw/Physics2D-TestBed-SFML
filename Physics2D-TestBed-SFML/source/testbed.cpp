@@ -3,14 +3,37 @@ namespace Physics2D
 {
     TestBed::TestBed()
     {
+        m_frameList = { {
+    [&]() { return new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new CustomFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); },
+    [&]() { return new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera); }
+        } };
 
         m_system.world().setEnableGravity(true);
-	    m_system.world().setLinearVelocityDamping(0.1f);
-	    m_system.world().setAirFrictionCoefficient(0.8f);
-	    m_system.world().setAngularVelocityDamping(0.1f);
-	    m_system.world().setEnableDamping(true);
-		m_system.positionIteration() = 6;
-		m_system.velocityIteration() = 8;
+        m_system.world().setLinearVelocityDamping(0.1f);
+        m_system.world().setAirFrictionCoefficient(0.8f);
+        m_system.world().setAngularVelocityDamping(0.1f);
+        m_system.world().setEnableDamping(true);
+        m_system.positionIteration() = 6;
+        m_system.velocityIteration() = 8;
 
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
@@ -225,7 +248,7 @@ namespace Physics2D
 	}
     void TestBed::renderGUI(sf::RenderWindow& window, sf::Clock& clock)
     {
-        const char* items[] = { "Bitmask" , "Bridge" , "Broadphase" , "Chain" , "Collision" , "Continuous", "Domino" , "Friction" ,
+        const char* items[] = { "Bitmask" , "Bridge" , "Broadphase" , "Chain" , "Collision" , "Continuous", "Custom", "Domino" , "Friction" ,
             "Geometry" , "Joints" , "Narrowphase" , "Newton's Cradle", "Position-Based Dynamics" , "Pendulum" , "AABB Raycast" , "Restitution" , "Sensor" , "Stacking" ,
             "Wrecking Ball", "Extended Position-Based Dynamics" };
 
@@ -323,70 +346,8 @@ namespace Physics2D
     void TestBed::changeFrame()
     {
         clearAll();
-        switch (m_currentItem) {
-            case 0:
-                m_currentFrame = new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 1:
-                m_currentFrame = new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 2:
-                m_currentFrame = new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 3:
-                m_currentFrame = new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 4:
-                m_currentFrame = new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 5:
-                m_currentFrame = new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 6:
-                m_currentFrame = new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 7:
-                m_currentFrame = new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 8:
-                m_currentFrame = new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 9:
-                m_currentFrame = new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 10:
-                m_currentFrame = new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 11:
-                m_currentFrame = new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 12:
-                m_currentFrame = new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 13:
-                m_currentFrame = new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 14:
-                m_currentFrame = new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 15:
-                m_currentFrame = new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 16:
-                m_currentFrame = new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 17:
-                m_currentFrame = new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 18:
-                m_currentFrame = new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            case 19:
-                m_currentFrame = new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_camera);
-                break;
-            default:
-                break;
-        }
+        //optimize this code
+        m_currentFrame = m_frameList[m_currentItem]();
         if (m_currentFrame != nullptr)
             m_currentFrame->load();
 

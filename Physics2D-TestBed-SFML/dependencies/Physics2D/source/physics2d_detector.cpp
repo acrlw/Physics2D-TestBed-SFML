@@ -146,12 +146,12 @@ namespace Physics2D
 
 		return result;
 	}
-	VertexPair Detector::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
+	CollisionInfo Detector::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)
 	{
 		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
 		return Narrowphase::gjkDistance(shapeA, shapeB);
 	}
-	VertexPair Detector::distance(Body* bodyA, const ShapePrimitive& shapeB)
+	CollisionInfo Detector::distance(Body* bodyA, const ShapePrimitive& shapeB)
 	{
 		assert(bodyA != nullptr && shapeB.shape != nullptr);
 
@@ -162,7 +162,7 @@ namespace Physics2D
 
 		return Narrowphase::gjkDistance(shapeA, shapeB);
 	}
-	VertexPair Detector::distance(const ShapePrimitive& shapeA, Body* bodyB)
+	CollisionInfo Detector::distance(const ShapePrimitive& shapeA, Body* bodyB)
 	{
 		assert(bodyB != nullptr && shapeA.shape != nullptr);
 
@@ -173,13 +173,14 @@ namespace Physics2D
 
 		return Narrowphase::gjkDistance(shapeA, shapeB);
 	}
-	VertexPair Detector::distance(Body* bodyA, Body* bodyB)
+	CollisionInfo Detector::distance(Body* bodyA, Body* bodyB)
 	{
+		CollisionInfo info;
 		VertexPair result;
 		assert(bodyA != nullptr && bodyB != nullptr);
 
 		if (bodyA == bodyB)
-			return result;
+			return info;
 
 		ShapePrimitive shapeA, shapeB;
 		shapeA.shape = bodyA->shape();
