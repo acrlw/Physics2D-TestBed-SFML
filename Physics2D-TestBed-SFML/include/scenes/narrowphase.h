@@ -8,7 +8,7 @@ namespace Physics2D
 	{
 	public:
 		NarrowphaseFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Narrow Phase", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Narrowphase", world, maintainer, tree, grid, camera)
 		{
 
 		}

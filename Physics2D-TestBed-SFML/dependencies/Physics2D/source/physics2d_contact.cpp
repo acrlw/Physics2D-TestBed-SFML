@@ -100,7 +100,6 @@ namespace Physics2D
 		const Body* bodyB = collision.bodyB;
 		const auto relation = Body::Relation::generateRelationID(collision.bodyA, collision.bodyB);
 		auto& contactList = m_contactTable[relation];
-		//assert(contactList.size() <= 2);
 
 		for(uint8_t i = 0; i < collision.contactList.count; i += 2)
 		{
@@ -115,16 +114,7 @@ namespace Physics2D
 			{
 				const bool isPointA = localA.fuzzyEqual(contact.localA, 1e-3f);
 				const bool isPointB = localB.fuzzyEqual(contact.localB, 1e-3f);
-				if(isPointA && !isPointB)
-				{
-					//valid a and invalid b
-					int a = 1;
-				}
-				if (!isPointA && isPointB)
-				{
-					//valid b and invalid a
-					int a = 1;
-				}
+
 				if (isPointA && isPointB)
 				{
 					//satisfy the condition, transmit the old accumulated value to new value

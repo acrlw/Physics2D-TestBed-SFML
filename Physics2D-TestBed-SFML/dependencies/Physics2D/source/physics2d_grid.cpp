@@ -69,6 +69,27 @@ namespace Physics2D
             return;
     }
 
+    void UniformGrid::clearAll()
+    {
+		m_bodiesToCells.clear();
+		m_cellsToBodies.clear();
+    }
+
+    Container::Vector<Body*> UniformGrid::query(const AABB& aabb)
+    {
+        Container::Vector<Body*> result;
+        auto potentialList = queryCells(aabb);
+        for(auto& elem: potentialList)
+        {
+            auto iter = m_cellsToBodies.find(elem);
+			if (iter != m_cellsToBodies.end())
+				for (auto&& body : iter->second)
+					result.emplace_back(body);
+        }
+        
+        return result;
+    }
+
     int UniformGrid::rows() const
     {
         return m_rows;
@@ -243,22 +264,22 @@ namespace Physics2D
     {
         Container::Vector<UniformGrid::Position> cells;
         //locate x axis
-        real halfWidth = m_width * 0.5f;
-        real halfHeight = m_height * 0.5f;
-        real xRealMin = aabb.minimumX();
-        real xRealMax = aabb.maximumX();
-        real xMin = Math::clamp(xRealMin, -halfWidth, halfWidth - m_cellWidth);
-        real xMax = Math::clamp(xRealMax, -halfWidth, halfWidth - m_cellWidth);
-        real lowerXIndex = std::floor((xMin + halfWidth) / m_cellWidth);
-        real upperXIndex = std::floor((xMax + halfWidth) / m_cellWidth);
+        const real halfWidth = m_width * 0.5f;
+        const real halfHeight = m_height * 0.5f;
+        const real xRealMin = aabb.minimumX();
+        const real xRealMax = aabb.maximumX();
+        const real xMin = Math::clamp(xRealMin, -halfWidth, halfWidth - m_cellWidth);
+        const real xMax = Math::clamp(xRealMax, -halfWidth, halfWidth - m_cellWidth);
+        const real lowerXIndex = std::floor((xMin + halfWidth) / m_cellWidth);
+        const real upperXIndex = std::floor((xMax + halfWidth) / m_cellWidth);
         //locate y axis
 
-        real yRealMin = aabb.minimumY();
-        real yRealMax = aabb.maximumY();
-        real yMin = Math::clamp(yRealMin, -halfHeight + m_cellHeight, halfHeight);
-        real yMax = Math::clamp(yRealMax, -halfHeight + m_cellHeight, halfHeight);
-        real lowerYIndex = std::ceil((yMin + halfHeight) / m_cellHeight);
-        real upperYIndex = std::ceil((yMax + halfHeight) / m_cellHeight);
+        const real yRealMin = aabb.minimumY();
+        const real yRealMax = aabb.maximumY();
+        const real yMin = Math::clamp(yRealMin, -halfHeight + m_cellHeight, halfHeight);
+        const real yMax = Math::clamp(yRealMax, -halfHeight + m_cellHeight, halfHeight);
+        const real lowerYIndex = std::ceil((yMin + halfHeight) / m_cellHeight);
+        const real upperYIndex = std::ceil((yMax + halfHeight) / m_cellHeight);
         if (lowerXIndex == upperXIndex && xRealMax < -halfWidth || xRealMin > halfWidth)
             return cells;
         if (lowerYIndex == upperYIndex && yRealMax < -halfHeight || yRealMin > halfHeight)

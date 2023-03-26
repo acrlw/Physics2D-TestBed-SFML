@@ -10,7 +10,7 @@ namespace Physics2D
 	{
 	public:
 		BroadPhaseFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Broad Phase", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Broadphase", world, maintainer, tree, grid, camera)
 		{
 
 		}

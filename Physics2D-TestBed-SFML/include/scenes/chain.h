@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		ChainFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Chain", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Chain", world, maintainer, tree, grid, camera)
 		{
 
 		}

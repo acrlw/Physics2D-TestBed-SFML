@@ -9,9 +9,6 @@ namespace Physics2D
 		Body* bodyB = nullptr;
 		Vector2 localPointA;
 		Vector2 localPointB;
-		real rotation;		//a.rotation() - b.rotation()
-
-		//soft constraint
 
 		real damping = 0.0f;
 		real stiffness = 0.0f;
@@ -20,7 +17,7 @@ namespace Physics2D
 		real dampingRatio = 0.2f;
 		real gamma = 0.0f;
 		Vector2 bias;
-		Matrix3x3 effectiveMass;
+		Matrix2x2 effectiveMass;
 		Vector2 accumulatedImpulse;
 	};
 	//weld joint comes from revolute and rotation joint
@@ -77,8 +74,14 @@ namespace Physics2D
 			Vector2 rb = pb - bodyB->position();
 
 			m_primitive.bias = (pa - pb) * erp;
-			Matrix3x3 k;
+			Matrix2x2 k;
+			k.e11() = im_a + ra.y * ra.y * ii_a + im_b + rb.y * rb.y * ii_b;
+			k.e12() = -ra.x * ra.y * ii_a - rb.x * rb.y * ii_b;
+			k.e21() = k.e12();
+			k.e22() = im_a + ra.x * ra.x * ii_a + im_b + rb.x * rb.x * ii_b;
 
+			k.e11() += m_primitive.gamma;
+			k.e22() += m_primitive.gamma;
 
 			m_primitive.effectiveMass = k.invert();
 			m_primitive.bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);
@@ -86,11 +89,35 @@ namespace Physics2D
 		}
 		void solveVelocity(const real& dt) override
 		{
+			if (m_primitive.bodyA == nullptr || m_primitive.bodyB == nullptr)
+				return;
 
+			Vector2 ra = m_primitive.bodyA->toWorldPoint(m_primitive.localPointA) - m_primitive.bodyA->position();
+			Vector2 va = m_primitive.bodyA->velocity() + Vector2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
+			Vector2 rb = m_primitive.bodyB->toWorldPoint(m_primitive.localPointB) - m_primitive.bodyB->position();
+			Vector2 vb = m_primitive.bodyB->velocity() + Vector2::crossProduct(m_primitive.bodyB->angularVelocity(), rb);
+
+			Vector2 jvb = va - vb;
+			jvb += m_primitive.bias;
+			jvb += m_primitive.accumulatedImpulse * m_primitive.gamma;
+			jvb.negate();
+			Vector2 J = m_primitive.effectiveMass.multiply(jvb);
+			Vector2 oldImpulse = m_primitive.accumulatedImpulse;
+			m_primitive.accumulatedImpulse += J;
+			real maxImpulse = dt * m_primitive.maxForce;
+			if (m_primitive.accumulatedImpulse.lengthSquare() > maxImpulse * maxImpulse)
+			{
+				m_primitive.accumulatedImpulse.normalize();
+				m_primitive.accumulatedImpulse *= maxImpulse;
+			}
+			J = m_primitive.accumulatedImpulse - oldImpulse;
+			m_primitive.bodyA->applyImpulse(J, ra);
+			m_primitive.bodyB->applyImpulse(-J, rb);
 		}
 		void solvePosition(const real& dt) override
 		{
-
+			if (m_primitive.bodyA == nullptr || m_primitive.bodyB == nullptr)
+				return;
 		}
 		WeldJointPrimitive primitive()const
 		{

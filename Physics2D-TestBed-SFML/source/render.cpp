@@ -309,6 +309,11 @@ namespace Physics2D
 			renderWheelJoint(window, camera, joint, color);
 			break;
 		}
+		case JointType::Weld:
+		{
+			renderWeldJoint(window, camera, joint, color);
+			break;
+		}
 		default:
 			break;
 		}
@@ -396,8 +401,23 @@ namespace Physics2D
 	{
 	}
 
+	void RenderSFMLImpl::renderWeldJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
+	{
+		assert(joint != nullptr);
+		WeldJoint* weldJoint = static_cast<WeldJoint*>(joint);
+		Vector2 pa = weldJoint->primitive().bodyA->toWorldPoint(weldJoint->primitive().localPointA);
+		Vector2 pb = weldJoint->primitive().bodyB->toWorldPoint(weldJoint->primitive().localPointB);
+		sf::Color point = RenderConstant::MaterialOrange;
+		sf::Color green = sf::Color::Green;
+		point.a = 204;
+		green.a = 78;
+		renderPoint(window, camera, pa, point, 2);
+		renderPoint(window, camera, pb, point, 2);
+		renderLine(window, camera, pa, pb, green);
+	}
+
 	void RenderSFMLImpl::renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
-		const sf::Color& color)
+	                                   const sf::Color& color)
 	{
 		sf::Color lineColor = color;
 		lineColor.a = 150;

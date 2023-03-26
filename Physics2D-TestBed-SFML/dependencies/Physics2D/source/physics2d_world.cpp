@@ -1,5 +1,7 @@
 #include "physics2d_world.h"
 
+#include "physics2d_weld_joint.h"
+
 namespace Physics2D
 {
 	PhysicsWorld::~PhysicsWorld()
@@ -355,7 +357,14 @@ namespace Physics2D
 		m_jointList.emplace_back(std::move(joint));
 		return temp;
 	}
-
+	WeldJoint* PhysicsWorld::createJoint(const WeldJointPrimitive& primitive)
+	{
+		auto joint = std::make_unique<WeldJoint>(primitive);
+		WeldJoint* temp = joint.get();
+		temp->setId(RandomGenerator::unique());
+		m_jointList.emplace_back(std::move(joint));
+		return temp;
+	}
 	OrientationJoint* PhysicsWorld::createJoint(const OrientationJointPrimitive& primitive)
 	{
 		auto joint = std::make_unique<OrientationJoint>(primitive);

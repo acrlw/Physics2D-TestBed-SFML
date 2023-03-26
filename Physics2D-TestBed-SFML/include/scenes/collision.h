@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		CollisionFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Collision", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Collision", world, maintainer, tree, grid, camera)
 		{
 
 		}

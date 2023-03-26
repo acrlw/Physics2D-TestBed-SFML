@@ -7,14 +7,14 @@ namespace Physics2D
 	{
 	public:
 		StackingFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Stacking", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Stacking", world, maintainer, tree, grid, camera)
 		{
 
 		}
 		void load() override
 		{
 			block.set(200, 1.0f);
-			edge.set({ -100, 0 }, { 100, 0 });
+			edge.set({ -50, 0 }, { 50, 0 });
 			rectangle.set(1.0f, 1.0f);
 
 			Body* ground;
@@ -26,6 +26,8 @@ namespace Physics2D
 			ground->setType(Body::BodyType::Static);
 			m_tree->insert(ground);
 
+			//m_grid->insert(ground);
+
 			real offset = 0.0f;
 			real max = 20.0;
 			for (real j = 0; j < max; j += 1.0f)
@@ -33,7 +35,7 @@ namespace Physics2D
 				for (real i = 0.0; i < max - j; i += 1.0f)
 				{
 					Body* body = m_world->createBody();
-					body->position().set({ -10.0f + i * 1.1f + offset, j * 1.8f + 2.0f });
+					body->position().set({ -10.0f + i * 1.0f + offset, j * 1.05f + 1.5f });
 					body->setShape(&rectangle);
 					body->rotation() = 0;
 					body->setMass(0.2f);
@@ -41,6 +43,7 @@ namespace Physics2D
 					body->setFriction(0.8f);
 					body->setRestitution(0.0f);
 					m_tree->insert(body);
+					//m_grid->insert(body);
 				}
 				offset += 0.5f;
 			}

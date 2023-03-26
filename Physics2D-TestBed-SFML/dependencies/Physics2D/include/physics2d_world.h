@@ -7,6 +7,8 @@
 #include "physics2d_joints.h"
 #include "physics2d_random.h"
 #include "physics2d_contact.h"
+#include "physics2d_weld_joint.h"
+
 namespace Physics2D
 {
     class PHYSICS2D_API PhysicsWorld
@@ -64,6 +66,7 @@ namespace Physics2D
             DistanceJoint* createJoint(const DistanceJointPrimitive& primitive);
             PulleyJoint* createJoint(const PulleyJointPrimitive& primitive);
             RevoluteJoint* createJoint(const RevoluteJointPrimitive& primitive);
+            WeldJoint* createJoint(const WeldJointPrimitive& primitive);
             OrientationJoint* createJoint(const OrientationJointPrimitive& primitive);
             
             real bias() const;

@@ -21,6 +21,9 @@ namespace Physics2D
 		void update(Body* body);
 		void insert(Body* body);
 		void remove(Body* body);
+		void clearAll();
+		Container::Vector<Body*> query(const AABB& aabb);
+
 
 		int rows()const;
 		void setRows(const int& size);
@@ -83,10 +86,10 @@ namespace Physics2D
 		void changeGridSize();
 		void updateBodies();
 		Container::Vector<std::pair<UniformGrid::Operation, UniformGrid::Position>> compareCellList(const Container::Vector<Position>& oldCellList, const Container::Vector<Position>& newCellList);
-		real m_width;
-		real m_height;
-		uint32_t m_rows;
-		uint32_t m_columns;
+		real m_width = 100.0f;
+		real m_height = 100.0f;
+		uint32_t m_rows = 200;
+		uint32_t m_columns = 200;
 
 
 		real m_cellWidth = 0.0f;

@@ -9,7 +9,7 @@ namespace Physics2D
 	{
 	public:
 		PendulumFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Pendulum", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Pendulum", world, maintainer, tree, grid, camera)
 		{
 
 		}

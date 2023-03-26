@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		RestitutionFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Restitution", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Restitution", world, maintainer, tree, grid, camera)
 		{
 
 		}

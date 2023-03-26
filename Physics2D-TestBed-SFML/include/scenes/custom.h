@@ -7,12 +7,14 @@ namespace Physics2D
 	{
 	public:
 		CustomFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Custom", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Custom", world, maintainer, tree, grid, camera)
 		{
 
 		}
 		void load() override
 		{
+
+			rectangle.set(0.5f, 0.5f);
 
 		}
 		void render(sf::RenderWindow& window) override
@@ -25,6 +27,7 @@ namespace Physics2D
 		}
 	private:
 
+		Rectangle rectangle;
 	};
 }
 #endif

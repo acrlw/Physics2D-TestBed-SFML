@@ -43,7 +43,7 @@ namespace Physics2D
         bool& rotationLineVisible();
         bool& centerVisible();
         bool& contactVisible();
-        bool& dbvhVisible();
+        bool& uniformGridVisible();
 
         real axisPointCount()const;
         void setAxisPointCount(real count);
@@ -84,6 +84,9 @@ namespace Physics2D
         EasingType easingType()const;
         void setEasingType(EasingType type);
 
+
+        UniformGrid* uniformGrid()const;
+        void setUniformGrid(UniformGrid* grid);
     private:
         void drawGridScaleLine(sf::RenderWindow& window);
 
@@ -96,6 +99,7 @@ namespace Physics2D
         bool m_bodyVisible = true;
 
         bool m_treeVisible = false;
+        bool m_uniformGridVisible = false;
         bool m_gridScaleLineVisible = true;
         bool m_rotationLineVisible = false;
         bool m_centerVisible = false;
@@ -115,6 +119,7 @@ namespace Physics2D
         Body* m_targetBody = nullptr;
 
         Tree* m_tree = nullptr;
+        UniformGrid* m_grid = nullptr;
         ContactMaintainer* m_maintainer = nullptr;
 
         real m_zoomFactor = 1.0f;

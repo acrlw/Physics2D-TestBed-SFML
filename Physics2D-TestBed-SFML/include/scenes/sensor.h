@@ -7,7 +7,7 @@ namespace Physics2D
 	{
 	public:
 		SensorFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Sensor", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Sensor", world, maintainer, tree, grid, camera)
 		{
 
 		}

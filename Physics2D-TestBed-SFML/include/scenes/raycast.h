@@ -8,7 +8,7 @@ namespace Physics2D
 	{
 	public:
 		RaycastFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Raycast", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Raycast", world, maintainer, tree, grid, camera)
 		{
 
 		}

@@ -25,9 +25,17 @@ namespace Physics2D
         return m_tree;
     }
 
+    UniformGrid& PhysicsSystem::grid()
+    {
+        return m_grid;
+    }
+
     void PhysicsSystem::step(const real &dt)
     {
         updateTree();
+        //updateGrid();
+        
+
         //solve ccd first, then solve normal case.
         if(!solveCCD(dt))
             solve(dt);
@@ -38,6 +46,12 @@ namespace Physics2D
         for (const auto& elem : m_world.bodyList())
             m_tree.update(elem.get());
     }
+
+    void PhysicsSystem::updateGrid()
+    {
+        m_grid.updateAll();
+    }
+
     bool PhysicsSystem::solveCCD(const real& dt)
     {
         Container::Vector<Body*> bullets;
@@ -87,6 +101,7 @@ namespace Physics2D
 
         //BVH
         m_world.stepVelocity(dt);
+        //auto potentialList = m_grid.generate();
 
         auto potentialList = m_tree.generate();
         for (auto pair : potentialList)

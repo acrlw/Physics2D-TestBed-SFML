@@ -93,7 +93,7 @@ namespace Physics2D
 						RenderSFMLImpl::renderJoint(window, *this, (*iter).get(), sf::Color::Green);
 				}
 			}
-
+			
 			if (m_aabbVisible)
 			{
 				for(auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
@@ -105,6 +105,17 @@ namespace Physics2D
 			if (m_treeVisible)
 			{
 				drawTree(m_tree->rootIndex(), window);
+			}
+			if(m_uniformGridVisible)
+			{
+				for (auto&& elem : m_grid->m_cellsToBodies)
+				{
+					Vector2 topLeft(real(elem.first.x) * m_grid->cellWidth() - m_grid->width() * 0.5f, real(elem.first.y) * m_grid->cellHeight() - m_grid->height() * 0.5f);
+					AABB cell(topLeft, m_grid->cellWidth(), m_grid->cellHeight());
+					//cell.expand(-0.05f);
+
+					RenderSFMLImpl::renderAABB(window, *this, cell, sf::Color::Cyan);
+				}
 			}
 			if (m_gridScaleLineVisible)
 			{
@@ -295,6 +306,11 @@ namespace Physics2D
 		return m_contactVisible;
 	}
 
+	bool& Camera::uniformGridVisible()
+	{
+		return m_uniformGridVisible;
+	}
+
 
 	ContactMaintainer* Camera::maintainer() const
 	{
@@ -314,6 +330,16 @@ namespace Physics2D
 	void Camera::setEasingType(EasingType type)
 	{
 		m_easingType = type;
+	}
+
+	UniformGrid* Camera::uniformGrid() const
+	{
+		return m_grid;
+	}
+
+	void Camera::setUniformGrid(UniformGrid* grid)
+	{
+		m_grid = grid;
 	}
 
 	void Camera::drawTree(int nodeIndex, sf::RenderWindow& window)

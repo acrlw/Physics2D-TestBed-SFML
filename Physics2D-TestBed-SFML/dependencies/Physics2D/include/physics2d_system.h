@@ -16,12 +16,14 @@ namespace Physics2D
         PhysicsWorld& world();
         ContactMaintainer& maintainer();
         Tree& tree();
+        UniformGrid& grid();
         int& positionIteration();
         int& velocityIteration();
 
 
     private:
         void updateTree();
+        void updateGrid();
         void solve(const real& dt);
         bool solveCCD(const real& dt);
         int m_positionIteration = 6;

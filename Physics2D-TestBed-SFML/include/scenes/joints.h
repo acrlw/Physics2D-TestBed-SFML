@@ -1,13 +1,14 @@
 #ifndef PHYSICS2D_SCENES_JOINTS_H
 #define PHYSICS2D_SCENES_JOINTS_H
 #include "frame.h"
+
 namespace Physics2D
 {
 	class JointsFrame : public Frame
 	{
 	public:
 		JointsFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, Camera* camera) : Frame("Joints", world, maintainer, tree, camera)
+			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Joints", world, maintainer, tree, grid, camera)
 		{
 
 		}
@@ -40,7 +41,7 @@ namespace Physics2D
 			bodyB->setBitmask(0x01);
 			m_tree->insert(bodyB);
 
-			RevoluteJointPrimitive rjp;
+			WeldJointPrimitive rjp;
 			rjp.bodyA = bodyA;
 			rjp.bodyB = bodyB;
 			rjp.dampingRatio = 0.8f;
@@ -82,7 +83,7 @@ namespace Physics2D
 			m_tree->insert(wheel1);
 			m_tree->insert(wheel2);
 
-			RevoluteJointPrimitive rjp1, rjp2;
+			WeldJointPrimitive rjp1, rjp2;
 			rjp1.bodyA = wheel1;
 			rjp2.bodyA = wheel2;
 			rjp1.bodyB = block;
@@ -164,7 +165,7 @@ namespace Physics2D
 		real distance = 2.0f;
 		Vector2 normal;
 
-		RevoluteJoint* joint;
+		WeldJoint* joint;
 		Body* bodyA;
 		Body* bodyB;
 		Body* block; 
