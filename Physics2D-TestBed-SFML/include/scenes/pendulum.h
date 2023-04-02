@@ -82,8 +82,19 @@ namespace Physics2D
 				points.pop_front();
 			points.emplace_back(stick3->toWorldPoint(Vector2{ 2.0f, 0.0f }));
 
-			for(auto& elem: points)
-				RenderSFMLImpl::renderPoint(window, *m_camera, elem, sf::Color::Cyan);
+			Container::Vector<sf::Vertex> vertices;
+			vertices.reserve(points.size());
+			for (auto& elem : points)
+			{
+				Vector2 screenPos = m_camera->worldToScreen(elem);
+				sf::Vertex vertex;
+				vertex.position = RenderSFMLImpl::toVector2f(screenPos);
+				vertex.color = sf::Color::Cyan;
+				vertices.emplace_back(vertex);
+			}
+			window.draw(&vertices[0], vertices.size(), sf::Points);
+
+
 		}
 		void release() override
 		{

@@ -5,11 +5,11 @@ namespace Physics2D
 	{
 		return sf::Vector2f(vector.x, vector.y);
 	}
-	void RenderSFMLImpl::renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const int pointSize)
+	void RenderSFMLImpl::renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const real pointSize)
 	{
 		sf::CircleShape shape(pointSize);
 		shape.setFillColor(color);
-		shape.move(toVector2f(camera.worldToScreen(point)) - sf::Vector2f(RenderConstant::PointSize, RenderConstant::PointSize));
+		shape.move(toVector2f(camera.worldToScreen(point)) - sf::Vector2f(pointSize, pointSize));
 		window.draw(shape);
 	}
 	void RenderSFMLImpl::renderLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, const sf::Color& color)

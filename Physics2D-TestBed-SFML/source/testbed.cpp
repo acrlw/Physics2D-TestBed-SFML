@@ -286,6 +286,7 @@ namespace Physics2D
         ImGui::Separator();
         ImGui::Text("Switches");
         ImGui::Checkbox("Body Visible", &m_camera.bodyVisible());
+        ImGui::Checkbox("Sleep", &m_system.world().enableSleep());
         ImGui::Checkbox("AABB Visible", &m_camera.aabbVisible());
         ImGui::Checkbox("Joint Visible", &m_camera.jointVisible());
         ImGui::Checkbox("Grid Scale Line Visible", &m_camera.gridScaleLineVisible());

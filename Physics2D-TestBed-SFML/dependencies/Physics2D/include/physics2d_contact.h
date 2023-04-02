@@ -9,6 +9,8 @@ namespace Physics2D
 {
 	struct PHYSICS2D_API VelocityConstraintPoint
 	{
+		Vector2 localA;
+		Vector2 localB;
 		Vector2 ra;
 		Vector2 rb;
 		Vector2 va;

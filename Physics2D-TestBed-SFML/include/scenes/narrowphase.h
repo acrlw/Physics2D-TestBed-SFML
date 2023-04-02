@@ -151,15 +151,15 @@ namespace Physics2D
 
 			//	//draw feature simplex
 
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
-				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
-					info.simplex.vertices[1].point[0], color1);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0], 
+				//	info.simplex.vertices[1].point[0], color1);
 
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
-				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
-				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
-					info.simplex.vertices[1].point[1], color2);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
+				//RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
+				//RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
+				//	info.simplex.vertices[1].point[1], color2);
 			//	
 
 			//	

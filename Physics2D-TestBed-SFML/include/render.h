@@ -15,7 +15,7 @@ namespace Physics2D
 {
     namespace RenderConstant
     {
-        const int PointSize = 2;
+        const real PointSize = 2.0f;
         const int BorderSize = 1;
         const int FillAlpha = 38;
         const int BasicCirclePointCount = 60;
@@ -34,7 +34,7 @@ namespace Physics2D
     {
     public:
         static sf::Vector2f toVector2f(const Vector2& vector);
-        static void renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const int pointSize = RenderConstant::PointSize);
+        static void renderPoint(sf::RenderWindow& window, Camera& camera, const Vector2& point, const sf::Color& color, const real pointSize = RenderConstant::PointSize);
         static void renderLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, const sf::Color& color);
 
     	static void renderPoints(sf::RenderWindow& window, Camera& camera, const Container::Vector<Vector2>& points, const sf::Color& color);

@@ -49,7 +49,7 @@ namespace Physics2D
             bullet->setShape(&stick);
             bullet->position().set({ -100.0f, 6.5f });
             bullet->setType(Body::BodyType::Bullet);
-            bullet->setMass(4.0f);
+            bullet->setMass(5.0f);
             bullet->velocity().set({ 800.0f, 0.0f });
             bullet->angularVelocity() = -100.0f;
             m_tree->insert(bullet);

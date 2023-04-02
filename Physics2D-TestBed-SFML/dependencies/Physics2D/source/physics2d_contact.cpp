@@ -71,8 +71,8 @@ namespace Physics2D
 				auto&& vcp = ccp.vcp;
 				Body* bodyA = ccp.bodyA;
 				Body* bodyB = ccp.bodyB;
-				Vector2 pa = vcp.ra + bodyA->position();
-				Vector2 pb = vcp.rb + bodyB->position();
+				Vector2 pa = bodyA->toWorldPoint(vcp.localA);
+				Vector2 pb = bodyB->toWorldPoint(vcp.localB);
 				Vector2 c = pb - pa;
 
 				real bias =  Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
@@ -82,20 +82,19 @@ namespace Physics2D
 
 				vcp.positionCorrectionImpulse = impulse;
 
-				if (vcp.accumulatedNormalImpulse > 20)
-				{
-					int a = 0;
-				}
-
 				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
 				{
-					bodyA->position() += bodyA->inverseMass() * impulse;
-					bodyA->rotation() += bodyA->inverseInertia() * vcp.ra.cross(impulse);
+					Vector2 dp = bodyA->inverseMass() * impulse;
+					real dr = bodyA->inverseInertia() * vcp.ra.cross(impulse);
+					bodyA->position() += dp;
+					bodyA->rotation() += dr;
 				}
 				if (bodyB->type() != Body::BodyType::Static && !bodyB->sleep())
 				{
-					bodyB->position() -= bodyB->inverseMass() * impulse;
-					bodyB->rotation() -= bodyB->inverseInertia() * vcp.rb.cross(impulse);
+					Vector2 dp = bodyB->inverseMass() * impulse;
+					real dr = bodyB->inverseInertia() * vcp.rb.cross(impulse);
+					bodyB->position() -= dp;
+					bodyB->rotation() -= dr;
 				}
 			}
 		}
@@ -184,6 +183,9 @@ namespace Physics2D
 		ccp.friction = Math::sqrt(ccp.bodyA->friction() * ccp.bodyB->friction());
 
 		VelocityConstraintPoint& vcp = ccp.vcp;
+		vcp.localA = collision.bodyA->toLocalPoint(pair.pointA);
+		vcp.localB = collision.bodyB->toLocalPoint(pair.pointB);
+
 		vcp.ra = pair.pointA - collision.bodyA->position();
 		vcp.rb = pair.pointB - collision.bodyB->position();
 

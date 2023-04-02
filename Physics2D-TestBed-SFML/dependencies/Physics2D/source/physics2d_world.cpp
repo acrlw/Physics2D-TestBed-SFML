@@ -117,17 +117,20 @@ namespace Physics2D
 				if (body->sleep())
 					break;
 
-				if (body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
-					&& fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
-					body->sleepCountdown()++;
-				else 
-					body->sleepCountdown() = 0;
-				
-				if (body->sleepCountdown() >= Constant::SleepCountdown) {
-					body->sleepCountdown() = 0;
-					body->setSleep(true);
-					body->velocity().clear();
-					body->angularVelocity() = 0.0f;
+				if (m_enableSleep)
+				{
+					if (body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
+						&& fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
+						body->sleepCountdown()++;
+					else
+						body->sleepCountdown() = 0;
+
+					if (body->sleepCountdown() >= Constant::SleepCountdown) {
+						body->sleepCountdown() = 0;
+						body->setSleep(true);
+						body->velocity().clear();
+						body->angularVelocity() = 0.0f;
+					}
 				}
 
 				break;
@@ -179,6 +182,11 @@ namespace Physics2D
 	Container::Vector<std::unique_ptr<Joint>>& PhysicsWorld::jointList()
 	{
 		return m_jointList;
+	}
+
+	bool& PhysicsWorld::enableSleep()
+	{
+		return m_enableSleep;
 	}
 
 	Vector2 PhysicsWorld::gravity() const

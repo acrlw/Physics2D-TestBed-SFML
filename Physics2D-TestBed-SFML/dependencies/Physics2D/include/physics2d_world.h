@@ -74,6 +74,8 @@ namespace Physics2D
             Container::Vector<std::unique_ptr<Body>>& bodyList();
     	
             Container::Vector<std::unique_ptr<Joint>>& jointList();
+
+			bool& enableSleep();
         private:
 
             Vector2 m_gravity;
@@ -87,6 +89,7 @@ namespace Physics2D
     		
     		bool m_enableGravity = true;
     		bool m_enableDamping = true;
+            bool m_enableSleep = true;
             Container::Vector<std::unique_ptr<Body>> m_bodyList;
             Container::Vector<std::unique_ptr<Joint>> m_jointList;
 
