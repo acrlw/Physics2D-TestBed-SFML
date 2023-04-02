@@ -38,9 +38,9 @@ namespace Physics2D
 					body->position().set({ -10.0f + i * 1.0f + offset, j * 1.05f + 1.5f });
 					body->setShape(&rectangle);
 					body->rotation() = 0;
-					body->setMass(0.2f);
+					body->setMass(0.5f);
 					body->setType(Body::BodyType::Dynamic);
-					body->setFriction(0.8f);
+					body->setFriction(0.1f);
 					body->setRestitution(0.0f);
 					m_tree->insert(body);
 					//m_grid->insert(body);

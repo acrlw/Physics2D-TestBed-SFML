@@ -51,7 +51,7 @@ namespace Physics2D
 		void clearInactivePoints();
 		void deactivateAllPoints();
 		real m_maxPenetration = 0.001f;
-		real m_biasFactor = 0.2f;
+		real m_biasFactor = 0.30f;
 		bool m_velocityBlockSolver = true;
 		bool m_positionBlockSolver = false;
 		Container::Map<Body::BodyPair::BodyPairID, Container::Vector<ContactConstraintPoint>> m_contactTable;
