@@ -13,7 +13,7 @@ namespace Physics2D
 	class PHYSICS2D_API UniformGrid
 	{
 	public:
-		UniformGrid(const real& width = 100.0f, const real& height = 100.0f, const uint32_t rows = 200, const uint32_t columns = 200);
+		UniformGrid(const real& width = 400.0f, const real& height = 400.0f, const uint32_t rows = 400, const uint32_t columns = 400);
 		Container::Vector<std::pair<Body*, Body*>> generate();
 		Container::Vector<Body*> raycast(const Vector2& p, const Vector2& d);
 

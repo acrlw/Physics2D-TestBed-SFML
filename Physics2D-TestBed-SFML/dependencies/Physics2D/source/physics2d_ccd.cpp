@@ -212,6 +212,33 @@ namespace Physics2D
                                   : std::nullopt;
     }
 
+    std::optional<Container::Vector<CCD::CCDPair>> CCD::query(UniformGrid& grid, Body* body, const real& dt)
+    {
+		Container::Vector<CCDPair> queryList;
+		assert(body != nullptr);
+		auto [trajectoryCCD, aabbCCD] = buildTrajectoryAABB(body, dt);
+		auto potentials = grid.query(aabbCCD);
+
+		for (auto& elem : potentials)
+		{
+			//skip detecting itself
+			if (elem == body)
+				continue;
+
+			auto [trajectoryElement, aabbElement] = buildTrajectoryAABB(elem, dt);
+			auto [newCCDTrajectory, newAABB] = buildTrajectoryAABB(body, elem->position(), dt);
+			auto result = findBroadphaseRoot(elem, trajectoryElement, body, newCCDTrajectory, dt);
+			if (result.has_value())
+			{
+				auto toi = findNarrowphaseRoot(elem, trajectoryElement, body, newCCDTrajectory, result.value(), dt);
+				if (toi.has_value())
+					queryList.emplace_back(CCDPair(toi.value(), elem));
+			}
+		}
+		return !queryList.empty() ? std::optional(queryList)
+			: std::nullopt;
+    }
+
     std::optional<real> CCD::earliestTOI(const Container::Vector<CCDPair> &pairs, const real &epsilon) {
         if(pairs.empty())
             return std::nullopt;

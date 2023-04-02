@@ -75,10 +75,17 @@ namespace Physics2D
 				Vector2 pb = vcp.rb + bodyB->position();
 				Vector2 c = pb - pa;
 
-				real bias = m_biasFactor * Math::max(c.length() - m_maxPenetration, 0.0f);
+				real bias =  Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
 				real lambda = vcp.effectiveMassNormal * bias;
 
 				Vector2 impulse = lambda * vcp.normal;
+
+				vcp.positionCorrectionImpulse = impulse;
+
+				if (vcp.accumulatedNormalImpulse > 20)
+				{
+					int a = 0;
+				}
 
 				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
 				{
@@ -98,7 +105,7 @@ namespace Physics2D
 	{
 		const Body* bodyA = collision.bodyA;
 		const Body* bodyB = collision.bodyB;
-		const auto relation = Body::Relation::generateRelationID(collision.bodyA, collision.bodyB);
+		const auto relation = Body::BodyPair::generateBodyPairID(collision.bodyA, collision.bodyB);
 		auto& contactList = m_contactTable[relation];
 
 		for(uint8_t i = 0; i < collision.contactList.count; i += 2)
@@ -112,10 +119,10 @@ namespace Physics2D
 			Vector2 localB = bodyB->toLocalPoint(elem.pointB);
 			for (auto& contact : contactList)
 			{
-				const bool isPointA = localA.fuzzyEqual(contact.localA, 1e-3f);
-				const bool isPointB = localB.fuzzyEqual(contact.localB, 1e-3f);
+				const bool isPointA = localA.fuzzyEqual(contact.localA);
+				const bool isPointB = localB.fuzzyEqual(contact.localB);
 
-				if (isPointA && isPointB)
+				if (isPointA || isPointB)
 				{
 					//satisfy the condition, transmit the old accumulated value to new value
 					contact.localA = localA;

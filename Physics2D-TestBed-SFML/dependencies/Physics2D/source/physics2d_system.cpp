@@ -32,13 +32,15 @@ namespace Physics2D
 
     void PhysicsSystem::step(const real &dt)
     {
-        updateTree();
+        //updateTree();
         //updateGrid();
         
 
         //solve ccd first, then solve normal case.
         if(!solveCCD(dt))
             solve(dt);
+
+        updateTree();
     }
     void PhysicsSystem::updateTree()
     {
@@ -72,6 +74,7 @@ namespace Physics2D
                 {
                     //if toi still exist, just keep solving them until the sum of toi is greater than dt
                     real toi = finals.value();
+                    updateTree();
                     solve(toi);
                     real ddt = (dt - toi) / real(Constant::CCDMaxIterations);
                     for (int i = 0; i < Constant::CCDMaxIterations; ++i) {
@@ -119,6 +122,7 @@ namespace Physics2D
             m_world.solveVelocityConstraint(dt);
             m_maintainer.solveVelocity(dt);
         }
+        m_world.stepPosition(dt);
         //solve penetration use contact pairs from previous velocity solver settings
         //TODO: Can generate another contact table just for position solving
         for (int i = 0; i < m_positionIteration; ++i)
@@ -126,7 +130,6 @@ namespace Physics2D
             m_maintainer.solvePosition(dt);
             m_world.solvePositionConstraint(dt);
         }
-        m_world.stepPosition(dt);
 
         m_maintainer.deactivateAllPoints();
     }

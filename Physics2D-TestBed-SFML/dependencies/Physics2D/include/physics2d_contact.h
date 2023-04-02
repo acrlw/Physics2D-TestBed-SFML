@@ -23,13 +23,13 @@ namespace Physics2D
 		real effectiveMassTangent = 0;
 		real accumulatedNormalImpulse = 0;
 		real accumulatedTangentImpulse = 0;
-
+		Vector2 positionCorrectionImpulse;
 	};
 	
 	struct PHYSICS2D_API ContactConstraintPoint
 	{
 		ContactConstraintPoint() = default;
-		Body::Relation::RelationID relation = 0;
+		Body::BodyPair::BodyPairID relation = 0;
 		real friction = 0.2f;
 		bool active = true;
 		Vector2 localA;
@@ -49,10 +49,10 @@ namespace Physics2D
 		void clearInactivePoints();
 		void deactivateAllPoints();
 		real m_maxPenetration = 0.001f;
-		real m_biasFactor = 0.030f;
+		real m_biasFactor = 0.2f;
 		bool m_velocityBlockSolver = true;
 		bool m_positionBlockSolver = false;
-		Container::Map<Body::Relation::RelationID, Container::Vector<ContactConstraintPoint>> m_contactTable;
+		Container::Map<Body::BodyPair::BodyPairID, Container::Vector<ContactConstraintPoint>> m_contactTable;
 	private:
 	};
 

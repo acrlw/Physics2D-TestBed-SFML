@@ -28,7 +28,8 @@ namespace Physics2D
 		virtual void onMouseDoubleClick(sf::Event& event) {}
 		virtual void onKeyRelease(sf::Event& event) {}
 		virtual void onKeyPressed(sf::Event& event) {}
-
+		void setCurrentBody(Body* body) { m_currentBody = body; }
+		Body* currentBody()const { return m_currentBody; }
 		std::string name()const
 		{
 			return m_name;
@@ -44,6 +45,7 @@ namespace Physics2D
 		Tree* m_tree = nullptr;
 		UniformGrid* m_grid = nullptr;
 		Camera* m_camera = nullptr;
+		Body* m_currentBody = nullptr;
 	};
 }
 #endif

@@ -11,7 +11,7 @@ namespace Physics2D
     Container::Vector<std::pair<Body*, Body*>> UniformGrid::generate()
     {
         Container::Vector<std::pair<Body*, Body*>> result;
-        Container::Map<Body::Relation::RelationID, std::pair<Body*, Body*>> map;
+        Container::Map<Body::BodyPair::BodyPairID, std::pair<Body*, Body*>> map;
         for (auto&& cell : m_cellsToBodies)
         {
             if (cell.second.size() > 1)
@@ -20,7 +20,7 @@ namespace Physics2D
                 {
                     for (auto iterInner = iterOuter + 1; iterInner != cell.second.end(); ++iterInner)
                     {
-                        map[Body::Relation::generateRelationID(*iterInner, *iterOuter)] = std::make_pair(*iterInner, *iterOuter);
+                        map[Body::BodyPair::generateBodyPairID(*iterInner, *iterOuter)] = std::make_pair(*iterInner, *iterOuter);
                     }
                 }
             }

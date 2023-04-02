@@ -32,7 +32,7 @@ namespace Physics2D
         m_system.world().setAirFrictionCoefficient(0.8f);
         m_system.world().setAngularVelocityDamping(0.1f);
         m_system.world().setEnableDamping(true);
-        m_system.positionIteration() = 6;
+        m_system.positionIteration() = 3;
         m_system.velocityIteration() = 8;
 
         m_pointJointPrimitive.bodyA = nullptr;
@@ -45,8 +45,7 @@ namespace Physics2D
         m_camera.setTree(&m_system.tree());
         m_camera.setContactMaintainer(&m_system.maintainer());
         m_camera.setUniformGrid(&m_system.grid());
-
-        m_physicsThread = std::make_unique<sf::Thread>(&TestBed::simulate, this);
+        
         changeFrame();
 
 
@@ -65,7 +64,7 @@ namespace Physics2D
     void TestBed::onClosed(sf::Event& event)
     {
         m_simulateWorkingState = false;
-        m_physicsThread->wait();
+        //m_physicsThread->wait();
         m_window->close();
     }
     void TestBed::onKeyReleased(sf::Event& event)
@@ -102,6 +101,7 @@ namespace Physics2D
 
         m_cameraViewportMovement = false;
         m_selectedBody = nullptr;
+        m_currentFrame->setCurrentBody(nullptr);
     }
     void TestBed::onMouseMoved(sf::Event& event)
     {
@@ -161,6 +161,7 @@ namespace Physics2D
                     m_mouseJoint->setActive(true);
                     m_mouseJoint->set(prim);
                     m_selectedBody->setSleep(false);
+                    m_currentFrame->setCurrentBody(m_selectedBody);
                     break;
                 }
             }
@@ -182,7 +183,6 @@ namespace Physics2D
         ImGui::SFML::Init(*m_window);
         m_window->setActive(false);
         m_window->setFramerateLimit(120);
-        m_physicsThread->launch();
 
         sf::Clock deltaClock;
         while (m_window->isOpen())
@@ -237,13 +237,14 @@ namespace Physics2D
                     break;
                 }
             }
+            simulate();
 
             m_camera.render(*m_window);
             if (m_currentFrame != nullptr && m_userDrawVisible)
                 m_currentFrame->render(*m_window);
 
             renderGUI(*m_window, deltaClock);
-
+            m_window->display();
         }
         ImGui::SFML::Shutdown();
 
@@ -275,11 +276,11 @@ namespace Physics2D
 
         ImGui::Separator();
         ImGui::Text("Sliders");
-        ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 20);
-        ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 20);
+        ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 0, 20);
+        ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 0, 20);
 
         ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
-        ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.1f);
+        ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.5f);
         ImGui::SliderFloat("Contact Max Penetration", &m_system.maintainer().m_maxPenetration, 0.001f, 0.1f);
 
         ImGui::Separator();
@@ -330,21 +331,17 @@ namespace Physics2D
     }
     void TestBed::simulate()
     {
-        while (m_simulateWorkingState)
-        {
-            if (m_running)
-                step();
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
-        }
+        if (m_running)
+            step();
     }
     void TestBed::change()
     {
         m_simulateWorkingState = false;
         //stop thread
-        m_physicsThread->wait();
+        //m_physicsThread->wait();
         changeFrame();
         m_simulateWorkingState = true;
-        m_physicsThread->launch();
+        //m_physicsThread->launch();
     }
     void TestBed::changeFrame()
     {

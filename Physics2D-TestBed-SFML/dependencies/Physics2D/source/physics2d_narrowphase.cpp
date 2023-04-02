@@ -653,8 +653,8 @@ namespace Physics2D
 		incEdge[0].vertex = vb1;
 		incEdge[1].vertex = vb2;
 
-		const real dot1 = (va2 - va1).dot(refNormal);
-		const real dot2 = (vb2 - vb1).dot(refNormal);
+		const real dot1 = Math::abs((va2 - va1).dot(refNormal));
+		const real dot2 = Math::abs((vb2 - vb1).dot(refNormal));
 		const bool swap = dot1 > dot2;
 
 		if (swap)

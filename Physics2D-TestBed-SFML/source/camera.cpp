@@ -368,6 +368,8 @@ namespace Physics2D
 			{
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyA->toWorldPoint(elem.localA), pink);
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyB->toWorldPoint(elem.localB), yellow);
+				RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.normal * elem.vcp.accumulatedNormalImpulse), RenderConstant::MaterialBlue);
+
 			}
 		}
 	}

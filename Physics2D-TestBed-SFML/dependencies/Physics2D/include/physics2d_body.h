@@ -21,12 +21,12 @@ namespace Physics2D
 	{
 	public:
 
-		struct PHYSICS2D_API Relation
+		struct PHYSICS2D_API BodyPair
 		{
-			using RelationID = uint64_t;
-			static RelationID generateRelationID(Body* bodyA, Body* bodyB);
-			static Relation generateRelation(Body* bodyA, Body* bodyB);
-			RelationID relationID;
+			using BodyPairID = uint64_t;
+			static BodyPairID generateBodyPairID(Body* bodyA, Body* bodyB);
+			static BodyPair generateBodyPair(Body* bodyA, Body* bodyB);
+			BodyPairID pairID;
 			Body* bodyA;
 			Body* bodyB;
 		};

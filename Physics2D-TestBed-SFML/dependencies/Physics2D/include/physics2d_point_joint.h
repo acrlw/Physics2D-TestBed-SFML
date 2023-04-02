@@ -106,7 +106,7 @@ namespace Physics2D
 			
 			
 		}
-		PointJointPrimitive primitive()const
+		PointJointPrimitive& primitive()
 		{
 			return m_primitive;
 		}

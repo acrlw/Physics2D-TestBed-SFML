@@ -26,8 +26,8 @@ namespace Physics2D
 			});
 
 		
-		Container::Vector<Body::Relation> xPairs;
-		Container::Vector<Body::Relation> yPairs;
+		Container::Vector<Body::BodyPair> xPairs;
+		Container::Vector<Body::BodyPair> yPairs;
 
 		for (auto before = sortXAxis.begin(); before != sortXAxis.end(); ++before)
 		{
@@ -39,7 +39,7 @@ namespace Physics2D
 				const real maxNext = next->second.maximumX();
 
 				if (!(maxBefore < minNext || maxNext < minBefore))
-					xPairs.emplace_back(Body::Relation::generateRelation(before->first, next->first));
+					xPairs.emplace_back(Body::BodyPair::generateBodyPair(before->first, next->first));
 				else
 					break;
 			}
@@ -55,19 +55,19 @@ namespace Physics2D
 				const real maxNext = next->second.maximumY();
 
 				if (!(maxBefore < minNext || maxNext < minBefore))
-					yPairs.emplace_back(Body::Relation::generateRelation(before->first, next->first));
+					yPairs.emplace_back(Body::BodyPair::generateBodyPair(before->first, next->first));
 				else
 					break;
 			}
 		}
 
-		std::sort(xPairs.begin(), xPairs.end(), [](const Body::Relation& left, const Body::Relation& right)
+		std::sort(xPairs.begin(), xPairs.end(), [](const Body::BodyPair& left, const Body::BodyPair& right)
 			{
-				return left.relationID < right.relationID;
+				return left.pairID < right.pairID;
 			});
-		std::sort(yPairs.begin(), yPairs.end(), [](const Body::Relation& left, const Body::Relation& right)
+		std::sort(yPairs.begin(), yPairs.end(), [](const Body::BodyPair& left, const Body::BodyPair& right)
 			{
-				return left.relationID < right.relationID;
+				return left.pairID < right.pairID;
 			});
 
 		//double pointer check
@@ -75,13 +75,13 @@ namespace Physics2D
 		auto yPair = yPairs.begin();
 		while (xPair != xPairs.end() && yPair != yPairs.end())
 		{
-			if (xPair->relationID == yPair->relationID && (xPair->bodyA->bitmask() & xPair->bodyB->bitmask()))
+			if (xPair->pairID == yPair->pairID && (xPair->bodyA->bitmask() & xPair->bodyB->bitmask()))
 			{
 				result.emplace_back(std::make_pair(xPair->bodyA, xPair->bodyB));
 				xPair = std::next(xPair);
 				yPair = std::next(yPair);
 			}
-			else if(xPair->relationID > yPair->relationID)
+			else if(xPair->pairID > yPair->pairID)
 				yPair = std::next(yPair);
 			else
 				xPair = std::next(xPair);

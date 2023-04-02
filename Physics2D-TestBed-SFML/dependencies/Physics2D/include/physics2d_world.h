@@ -15,8 +15,7 @@ namespace Physics2D
     {
 		public:
         
-            PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f), m_bias(0.8f),
-    			m_enableGravity(true), m_linearVelocityThreshold(0.02f), m_angularVelocityThreshold(0.02f), m_airFrictionCoefficient(0.7f)
+            PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f), m_bias(0.8f), m_linearVelocityThreshold(0.02f), m_angularVelocityThreshold(0.02f), m_airFrictionCoefficient(0.7f)
             {}
             ~PhysicsWorld();
 			//disable copy
@@ -92,6 +91,36 @@ namespace Physics2D
             Container::Vector<std::unique_ptr<Joint>> m_jointList;
 
     };
-    
+    class PHYSICS2D_API DiscreteWorld
+    {
+    public:
+
+        
+        using ObjectID = uint32_t;
+        ObjectID createBody(const ShapePrimitive& primitive);
+        ObjectID createJoint();
+
+        void step(real dt);
+        void stepPosition(real dt);
+        void stepVelocity(real dt);
+
+        void removeBody(const ObjectID& id);
+        void removeJoint(const ObjectID& id);
+
+        void solveVelocity(real dt);
+        void solvePosition(real dt);
+
+    private:
+        Container::Vector<ObjectID> m_bodyList;
+        Container::Vector<ObjectID> m_jointList;
+        Container::Vector<bool> m_sleepList;
+
+        Vector2 m_gravity;
+        real m_linearVelocityDamping = 0.9f;
+        real m_angularVelocityDamping = 0.9f;
+        real m_linearVelocityThreshold = 0.02f;
+        real m_angularVelocityThreshold = 0.02f;
+        real m_airFrictionCoefficient = 0.7f;
+    };
 }
 #endif

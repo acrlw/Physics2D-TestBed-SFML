@@ -62,7 +62,7 @@ namespace Physics2D
 		void changeFrame();
 		void clearAll();
 
-		int m_frequency = 120;
+		int m_frequency = 60;
 
 		bool m_userDrawVisible = true;
 		bool m_running = true;
@@ -81,8 +81,7 @@ namespace Physics2D
 		Camera m_camera;
 
 		Vector2 m_mousePos;
-
-		std::unique_ptr<sf::Thread> m_physicsThread;
+		
 
 		bool m_simulateWorkingState = true;
         std::unique_ptr<sf::RenderWindow> m_window;

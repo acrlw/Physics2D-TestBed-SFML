@@ -16,11 +16,11 @@ namespace Physics2D
         {
 
             block.set(200, 1.0f);
-            edge.set({ -200, 0 }, { 200, 0 });
+            edge.set({ -200, 0 }, { 149.9f, 0 });
             rect.set(1.0f, 1.0f);
             circle.setRadius(0.1f);
             stick.set(2.0f, 0.5f);
-            wall.set(60.0, 200.0f);
+            wall.set(60.0, 400.0f);
 
             Body* ground = m_world->createBody();
             ground->setShape(&edge);
@@ -56,7 +56,7 @@ namespace Physics2D
 
             Body* wallBody = m_world->createBody();
             wallBody->setShape(&wall);
-            wallBody->position().set(180.0f, 100.0f);
+            wallBody->position().set(180.0f, 0.0f);
             wallBody->setMass(100000);
             wallBody->setFriction(0.1f);
             wallBody->setType(Body::BodyType::Static);
