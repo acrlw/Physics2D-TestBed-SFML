@@ -14,7 +14,7 @@ namespace Physics2D
 		void load() override
 		{
 			block.set(200, 1.0f);
-			edge.set({ -50, 0 }, { 50, 0 });
+			edge.set({ -100, 0 }, { 100, 0 });
 			rectangle.set(1.0f, 1.0f);
 
 			Body* ground;

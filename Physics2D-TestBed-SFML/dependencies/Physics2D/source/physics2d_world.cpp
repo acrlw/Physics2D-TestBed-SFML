@@ -44,8 +44,7 @@ namespace Physics2D
 			{
 				body->forces() += body->mass() * g;
 
-				if (body->sleep() && !body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
-					|| !fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
+				if (body->sleep() && body->kineticEnergy() > Constant::MinEnergy)
 					body->setSleep(false);
 				
 				body->velocity() += body->inverseMass() * body->forces() * dt;
@@ -118,8 +117,7 @@ namespace Physics2D
 
 				if (m_enableSleep)
 				{
-					if (body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
-						&& fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
+					if (body->kineticEnergy() < Constant::MinEnergy)
 						body->sleepCountdown()++;
 					else
 						body->sleepCountdown() = 0;

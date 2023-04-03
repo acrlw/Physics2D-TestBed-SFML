@@ -18,12 +18,11 @@ namespace Physics2D
 			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
 			
 			uint32_t mask = 0x01;
-			real max = 1.0f;
-			for(real i = 0;i < max;i += 1.0f)
+			for(real i = 0;i < 3.0;i += 1.0f)
 			{
 				Body* ground = m_world->createBody();
 				ground->setShape(&edge);
-				ground->position().set({ 0, 0 + i * 3.0f });
+				ground->position().set({ 0, -6 + i * 3.0f });
 				ground->setFriction(0.4f);
 				ground->setBitmask(mask);
 				ground->setRestitution(0);
@@ -33,11 +32,11 @@ namespace Physics2D
 				m_tree->insert(ground);
 			}
 			mask = 0x01;
-			for (real i = 0; i < max; i += 1.0f)
+			for (real i = 0; i < 3.0; i += 1.0f)
 			{
 				Body* body = m_world->createBody();
 				body->setShape(&rectangle);
-				body->position().set({ i * 3.0f + 0.5f, 0.5f });
+				body->position().set({ i * 3.0f, 6.0f });
 				body->setFriction(0.9f);
 				body->setBitmask(mask);
 				body->setRestitution(0);

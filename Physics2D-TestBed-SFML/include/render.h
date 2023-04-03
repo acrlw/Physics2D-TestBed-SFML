@@ -22,7 +22,9 @@ namespace Physics2D
         const real BasicDashLength = 2;
         const sf::Color MaterialYellow = sf::Color(255, 235, 59);
         const sf::Color MaterialRed = sf::Color(244, 67, 54);
-        const sf::Color MaterialBlue = sf::Color(68, 138, 255);
+        const sf::Color MaterialBlue = sf::Color(55, 133, 205);
+        const sf::Color MaterialCyan = sf::Color(78, 184, 210);
+        const sf::Color MaterialGreen = sf::Color(0, 255, 0);
         const sf::Color MaterialPink = sf::Color(233, 30, 99);
         const sf::Color MaterialDarkGreen = sf::Color(44, 113, 48);
         const sf::Color MaterialGray = sf::Color(158, 158, 158);

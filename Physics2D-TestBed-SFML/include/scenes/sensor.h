@@ -31,10 +31,10 @@ namespace Physics2D
 			for (real j = 0; j < max; j += 1.0f)
 			{
 				Body* body = m_world->createBody();
-				body->position().set({ 0.0f, 30.0f + j * 4.0f});
+				body->position().set({ -5.0f, 30.0f + j * 4.0f});
 				body->setShape(&rectangle);
 				body->rotation() = 0;
-				body->setMass(0.2f);
+				body->setMass(1.0f);
 				body->setType(Body::BodyType::Dynamic);
 				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
@@ -44,10 +44,10 @@ namespace Physics2D
 			for (real j = 0; j < max; j += 1.0f)
 			{
 				Body* body = m_world->createBody();
-				body->position().set({ 10.0f, 32.5f + j * 4.0f });
+				body->position().set({ 5.0f, 32.5f + j * 4.0f });
 				body->setShape(&rectangle);
 				body->rotation() = 0;
-				body->setMass(0.2f);
+				body->setMass(1.0f);
 				body->setType(Body::BodyType::Dynamic);
 				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
@@ -56,7 +56,7 @@ namespace Physics2D
 
 			sensorRegion.transform.rotation = Math::degreeToRadian(-45);
 			sensorRegion.shape = &circle;
-			sensorRegion.transform.position.set(5.0f, 15.0f);
+			sensorRegion.transform.position.set(0.0f, 15.0f);
 		}
 		void render(sf::RenderWindow& window) override
 		{
@@ -72,7 +72,7 @@ namespace Physics2D
 				primitive.shape = body->shape();
 				primitive.transform.position = body->position();
 				if (Detector::collide(primitive, sensorRegion))
-					body->forces() += (sensorRegion.transform.position - body->position()).normal() * 30.0f;
+					body->forces() += (sensorRegion.transform.position - body->position()).normal() * force;
 			}
 		}
 	private:
@@ -81,6 +81,7 @@ namespace Physics2D
 		Circle circle;
 		ShapePrimitive sensorRegion;
 
+		real force = 250.0f;
 	};
 }
 #endif

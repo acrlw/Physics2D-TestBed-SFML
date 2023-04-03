@@ -38,7 +38,7 @@ namespace Physics2D
                     body->position().set({ i * 1.05f - 2.0f, j * 1.05f - ground->position().y + 0.55f });
                     body->setShape(&rect);
                     body->rotation() = 0.0f;
-                    body->setMass(0.5f);
+                    body->setMass(1.0f);
                     body->setType(Body::BodyType::Dynamic);
                     body->setFriction(0.1f);
                     body->setRestitution(0.0f);
@@ -48,11 +48,11 @@ namespace Physics2D
 
             Body* bullet = m_world->createBody();
             bullet->setShape(&stick);
-            bullet->position().set({ -100.0f, 6.0f });
+            bullet->position().set({ -100.0f, 6.5f });
             bullet->setType(Body::BodyType::Bullet);
             bullet->setMass(5.0f);
-            bullet->velocity().set({ 800.0f, 0.0f });
-            bullet->angularVelocity() = -100.0f;
+            bullet->velocity().set({ 1000.0f, 0.0f });
+            bullet->angularVelocity() = -200.0f;
             m_tree->insert(bullet);
 
             Body* wallBody = m_world->createBody();

@@ -73,7 +73,7 @@ namespace Physics2D
 					if (body->sleep())
 						color = sf::Color(100, 100, 100);
 					else
-						color = sf::Color::Green;
+						color = RenderConstant::MaterialGreen;
 					if (body->type() == Body::BodyType::Static)
 						color = RenderConstant::MaterialTeal;
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
@@ -368,7 +368,7 @@ namespace Physics2D
 			{
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyA->toWorldPoint(elem.localA), pink);
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyB->toWorldPoint(elem.localB), yellow);
-				RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.normal * elem.vcp.accumulatedNormalImpulse), RenderConstant::MaterialBlue);
+				RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.normal * elem.vcp.accumulatedNormalImpulse), RenderConstant::MaterialCyan);
 
 			}
 		}

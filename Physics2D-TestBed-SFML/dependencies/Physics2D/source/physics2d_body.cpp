@@ -200,6 +200,14 @@ namespace Physics2D {
         m_restitution = restitution;
     }
 
+    real Body::kineticEnergy() const
+    {
+        const real energyByPos = 0.5f * m_mass * (m_position - m_lastPosition).lengthSquare() + 0.5f * m_inertia * std::pow(m_rotation - m_lastRotation, 2);
+        const real energyByVel = 0.5f * m_mass * m_velocity.lengthSquare() + 0.5f * m_inertia * m_angularVelocity * m_angularVelocity;
+        const real mixEnergy = 0.5f * (energyByPos + energyByVel);
+        return mixEnergy;
+    }
+
     void Body::calcInertia()
     {
         switch (m_shape->type()) {

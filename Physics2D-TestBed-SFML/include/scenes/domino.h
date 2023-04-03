@@ -15,9 +15,9 @@ namespace Physics2D
 		{
 
 			block.set(200, 1.0f);
-			floor.set(15.0f, 0.5f);
+			floor.set(15.0f, 0.8f);
 			rectangle.set(0.5f, 0.5f);
-			brick.set(0.3f, 3.0f);
+			brick.set(0.5f, 3.0f);
 			edge.set(Vector2{ -100.0f, 0 }, Vector2{ 100.0f, 0 });
 
 			Body* ground = m_world->createBody();
@@ -33,19 +33,19 @@ namespace Physics2D
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
-			tile->setFriction(0.1f);
+			tile->setFriction(0.15f);
 			tile->setRestitution(0.0f);
-			tile->rotation() = Math::degreeToRadian(15);
-			tile->position().set({ 4, 8 });
+			tile->rotation() = Math::degreeToRadian(20);
+			tile->position().set({ 4, 10 });
 			m_tree->insert(tile);
 
 			tile = m_world->createBody();
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
-			tile->setFriction(0.1f);
+			tile->setFriction(0.15f);
 			tile->setRestitution(0.0f);
-			tile->rotation() = Math::degreeToRadian(-15);
+			tile->rotation() = Math::degreeToRadian(-20);
 			tile->position().set({ -4, 4 });
 			m_tree->insert(tile);
 
@@ -54,30 +54,30 @@ namespace Physics2D
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
-			tile->setFriction(0.1f);
+			tile->setFriction(0.15f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = 0;
-			tile->position().set({ -5, 10 });
+			tile->position().set({ -5, 13 });
 			m_tree->insert(tile);
 
 			for(real i = 0;i < 9.0; i += 1.0f)
 			{
 				Body* card = m_world->createBody();
 				card->setShape(&brick);
-				card->setMass(5.0f);
+				card->setMass(1.5f);
 				card->setFriction(0.1f);
 				card->setRestitution(0);
 				card->setType(Body::BodyType::Dynamic);
-				card->position().set({ -10.0f + i * 1.2f, 12.0f });
+				card->position().set({ -10.0f + i * 1.2f, 15.0f });
 				m_tree->insert(card);
 			}
 
 			Body* stammer = m_world->createBody();
 			stammer->setShape(&rectangle);
-			stammer->setMass(2.0f);
+			stammer->setMass(10.0f);
 			stammer->setFriction(0.1f);
 			stammer->setType(Body::BodyType::Dynamic);
-			stammer->position().set(-16.0f, 16.0f);
+			stammer->position().set(-16.0f, 19.5f);
 			m_tree->insert(stammer);
 
 			DistanceJointPrimitive djp;
@@ -85,11 +85,11 @@ namespace Physics2D
 			djp.localPointA.set(0, 0);
 			djp.minDistance = 1.0f;
 			djp.maxDistance = 4.0f;
-			djp.targetPoint.set(-12.0f, 16.0f);
+			djp.targetPoint.set(-12.0f, 19.5f);
 			m_world->createJoint(djp);
 
 			OrientationJointPrimitive ojp;
-			ojp.targetPoint.set(-12.0f, 16.0f);
+			ojp.targetPoint.set(-12.0f, 19.5f);
 			ojp.bodyA = stammer;
 			ojp.referenceRotation = 0;
 			m_world->createJoint(ojp);

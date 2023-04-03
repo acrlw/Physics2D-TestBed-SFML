@@ -42,7 +42,7 @@ namespace Physics2D
 					body->position().set({ i * 1.05f - 32.0f, j * 1.05f - ground->position().y + 0.55f });
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
-					body->setMass(0.1f);
+					body->setMass(1.0f);
 					body->setType(Body::BodyType::Dynamic);
 					body->setFriction(0.8f);
 					body->setRestitution(0.0f);
@@ -57,7 +57,7 @@ namespace Physics2D
 					body->position().set({ i * 1.05f - 0.0f, j * 1.05f - ground->position().y + 0.55f });
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
-					body->setMass(0.1f);
+					body->setMass(1.0f);
 					body->setType(Body::BodyType::Dynamic);
 					body->setFriction(0.8f);
 					body->setRestitution(0.0f);
@@ -112,7 +112,7 @@ namespace Physics2D
 			rect2->setShape(&circle);
 			rect2->position().set({ -20.0f + max * brick.width() + half, 20.0f });
 			rect2->rotation() = 0;
-			rect2->setMass(25.0f);
+			rect2->setMass(50.0f);
 			rect2->setFriction(0.1f);
 			rect2->setType(Body::BodyType::Dynamic);
 
@@ -132,7 +132,7 @@ namespace Physics2D
 			rect2->setShape(&circle);
 			rect2->position().set({ 21.5f + half, 20.0f });
 			rect2->rotation() = 0;
-			rect2->setMass(25.0f);
+			rect2->setMass(50.0f);
 			rect2->setFriction(0.1f);
 			rect2->setType(Body::BodyType::Dynamic);
 			m_tree->insert(rect2);

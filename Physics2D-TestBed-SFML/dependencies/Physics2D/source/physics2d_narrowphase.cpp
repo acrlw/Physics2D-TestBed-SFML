@@ -681,7 +681,6 @@ namespace Physics2D
 		const bool isRef1Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[0]) >= 0;
 
 
-
 		//assert(isRef1Inc1Valid || isRef1Inc2Valid && "Invalid features.");
 		if (!isRef1Inc1Valid && !isRef1Inc2Valid)
 			return pair;
@@ -846,18 +845,13 @@ namespace Physics2D
 		const real halfWidth = capsule->halfWidth();
 		const real halfHeight = capsule->halfHeight();
 
-		real lhs = 0;
-		real rhs = 0;
+		real lhs = Math::abs(localB1.y);
+		real rhs = halfHeight - halfWidth;
 
 		if (halfWidth > halfHeight)
 		{
 			lhs = Math::abs(localB1.x);
 			rhs = halfWidth - halfHeight;
-		}
-		else
-		{
-			lhs = Math::abs(localB1.y);
-			rhs = halfHeight - halfWidth;
 		}
 
 		const bool isVertexB = fuzzyRealEqual(lhs, rhs, Constant::TrignometryEpsilon);

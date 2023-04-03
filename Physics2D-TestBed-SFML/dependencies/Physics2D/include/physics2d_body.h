@@ -106,7 +106,8 @@ namespace Physics2D
 
 		real restitution()const;
 		void setRestitution(const real& restitution);
-
+		
+		real kineticEnergy()const;
 
 	private:
 		void calcInertia();

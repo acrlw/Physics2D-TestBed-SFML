@@ -19,7 +19,7 @@ namespace Physics2D
         UniformGrid& grid();
         int& positionIteration();
         int& velocityIteration();
-
+        bool& sliceDeltaTime();
 
     private:
         void updateTree();
@@ -28,7 +28,7 @@ namespace Physics2D
         bool solveCCD(const real& dt);
         int m_positionIteration = 3;
         int m_velocityIteration = 8;
-
+        bool m_sliceDeltaTime = false;
         PhysicsWorld m_world;
         ContactMaintainer m_maintainer;
         Tree m_tree;

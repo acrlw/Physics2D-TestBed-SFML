@@ -10,6 +10,10 @@ namespace Physics2D
     {
         return m_velocityIteration;
     }
+    bool& PhysicsSystem::sliceDeltaTime()
+    {
+        return m_sliceDeltaTime;
+    }
     PhysicsWorld &PhysicsSystem::world()
     {
         return m_world;
@@ -103,6 +107,13 @@ namespace Physics2D
 
 
         //BVH
+        real vdt = dt;
+        real pdt = dt;
+        if(m_sliceDeltaTime)
+        {
+        	vdt = dt / real(m_velocityIteration);
+        	pdt = dt / real(m_positionIteration);
+        }
 
         m_world.stepVelocity(dt);
         //auto potentialList = m_grid.generate();
@@ -118,14 +129,10 @@ namespace Physics2D
         m_maintainer.clearInactivePoints();
         m_world.prepareVelocityConstraint(dt);
 
-        for(int i = 0;i < m_velocityIteration; ++i)
-        {
-            m_world.solveVelocityConstraint(dt);
-        }
-
         for (int i = 0; i < m_velocityIteration; ++i)
         {
-            m_maintainer.solveVelocity(dt);
+            m_world.solveVelocityConstraint(vdt);
+            m_maintainer.solveVelocity(vdt);
         }
         m_world.stepPosition(dt);
 
@@ -133,8 +140,8 @@ namespace Physics2D
         //TODO: Can generate another contact table just for position solving
         for (int i = 0; i < m_positionIteration; ++i)
         {
-            m_maintainer.solvePosition(dt);
-            m_world.solvePositionConstraint(dt);
+            m_maintainer.solvePosition(pdt);
+            m_world.solvePositionConstraint(pdt);
         }
 
         m_maintainer.deactivateAllPoints();

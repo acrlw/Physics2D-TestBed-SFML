@@ -4,27 +4,27 @@ namespace Physics2D
     TestBed::TestBed()
     {
         m_frameList = { {
-    [&]() { return new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new CustomFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
-    [&]() { return new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); }
+    [&] { return new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new CustomFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); },
+    [&] { return new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(), &m_camera); }
         } };
 
         m_system.world().setEnableGravity(true);
@@ -32,8 +32,8 @@ namespace Physics2D
         m_system.world().setAirFrictionCoefficient(0.8f);
         m_system.world().setAngularVelocityDamping(0.1f);
         m_system.world().setEnableDamping(true);
-        m_system.positionIteration() = 1;
-        m_system.velocityIteration() = 3;
+        m_system.positionIteration() = 3;
+        m_system.velocityIteration() = 8;
 
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
@@ -177,7 +177,7 @@ namespace Physics2D
                     prim.localPointA = body->toLocalPoint(m_mousePos);
                     prim.bodyA = body;
                     prim.targetPoint = m_mousePos;
-                    prim.maxForce = 80 * body->mass();
+                    prim.maxForce = 160 * body->mass();
                     m_mouseJoint->setActive(true);
                     m_mouseJoint->set(prim);
                     m_selectedBody->setSleep(false);
@@ -295,18 +295,28 @@ namespace Physics2D
         
 
         ImGui::Separator();
-        ImGui::Text("Sliders");
+        ImGui::Text("Iteration");
         ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 0, 20);
         ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 0, 20);
 
+        ImGui::Separator();
+        ImGui::Text("Delta Time");
+
         ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
+        ImGui::Checkbox("Slice Delta Time", &m_system.sliceDeltaTime());
+
+        ImGui::Separator();
+        ImGui::Text("Contact");
         ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.5f);
         ImGui::SliderFloat("Max Penetration", &m_system.maintainer().m_maxPenetration, 0.0001f, 0.1f, "%.4f");
 
         ImGui::Separator();
         ImGui::Text("Switches");
-        ImGui::Checkbox("Body Visible", &m_camera.bodyVisible());
         ImGui::Checkbox("Sleep", &m_system.world().enableSleep());
+
+        ImGui::Separator();
+        ImGui::Text("Render");
+        ImGui::Checkbox("Body Visible", &m_camera.bodyVisible());
         ImGui::Checkbox("AABB Visible", &m_camera.aabbVisible());
         ImGui::Checkbox("Joint Visible", &m_camera.jointVisible());
         ImGui::Checkbox("Grid Scale Line Visible", &m_camera.gridScaleLineVisible());
@@ -319,8 +329,9 @@ namespace Physics2D
         
         ImGui::Separator();
         ImGui::Text("Running: %s", m_running ? "True" : "False");
+
         ImGui::Separator();
-        ImGui::Text("Timestep");
+        ImGui::Text("Button");
         if (ImGui::Button("Pause", ImVec2(-FLT_MIN, 0.0f)))
             pause();
         if (ImGui::Button("Step", ImVec2(-FLT_MIN, 0.0f)))

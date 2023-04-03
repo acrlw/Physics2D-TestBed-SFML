@@ -58,6 +58,7 @@ namespace Physics2D
 		constexpr real AABBExpansionFactor = 0.0f;
 		constexpr real MinLinearVelocity = 1e-4f;
 		constexpr real MinAngularVelocity = 1e-4f;
+		constexpr real MinEnergy = 9e-10f;
 		constexpr size_t SleepCountdown = 64;
 		constexpr int GJKRetryTimes = 4;
 	}
