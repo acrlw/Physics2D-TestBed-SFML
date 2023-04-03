@@ -15,7 +15,7 @@ namespace Physics2D
         void load() override
         {
 
-            block.set(200, 1.0f);
+            block.set(300, 3.0f);
             edge.set({ -200, 0 }, { 149.9f, 0 });
             rect.set(1.0f, 1.0f);
             circle.setRadius(0.1f);
@@ -23,10 +23,11 @@ namespace Physics2D
             wall.set(60.0, 400.0f);
 
             Body* ground = m_world->createBody();
-            ground->setShape(&edge);
-            ground->position().set({ 0, 0});
-            ground->setMass(Constant::Max);
+            ground->setShape(&block);
+            ground->position().set({ 0, -1.5});
+            ground->setMass(100000);
             ground->setType(Body::BodyType::Static);
+            ground->setFriction(0.1f);
             m_tree->insert(ground);
 
             for (real j = 0; j < 20.0f; j += 1.0f)
@@ -47,7 +48,7 @@ namespace Physics2D
 
             Body* bullet = m_world->createBody();
             bullet->setShape(&stick);
-            bullet->position().set({ -100.0f, 6.5f });
+            bullet->position().set({ -100.0f, 6.0f });
             bullet->setType(Body::BodyType::Bullet);
             bullet->setMass(5.0f);
             bullet->velocity().set({ 800.0f, 0.0f });

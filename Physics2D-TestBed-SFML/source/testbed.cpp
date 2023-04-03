@@ -32,8 +32,8 @@ namespace Physics2D
         m_system.world().setAirFrictionCoefficient(0.8f);
         m_system.world().setAngularVelocityDamping(0.1f);
         m_system.world().setEnableDamping(true);
-        m_system.positionIteration() = 3;
-        m_system.velocityIteration() = 8;
+        m_system.positionIteration() = 1;
+        m_system.velocityIteration() = 3;
 
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
@@ -71,13 +71,31 @@ namespace Physics2D
     {
         switch (event.key.code)
         {
-            case sf::Keyboard::Space:
-            {
-                m_running = !m_running;
-                break;
-            }
-            default:
-                break;
+        case sf::Keyboard::Space:
+        {
+            m_running = !m_running;
+            break;
+        }
+        case sf::Keyboard::N:
+        {
+            //N means next
+            step();
+            break;
+        }
+        case sf::Keyboard::T:
+        {
+            //T means twice
+            step();
+            step();
+            break;
+        }
+        case sf::Keyboard::R:
+        {
+            restart();
+            break;
+        }
+        default:
+            break;
         }
         if (m_currentFrame != nullptr)
             m_currentFrame->onKeyRelease(event);
@@ -97,6 +115,7 @@ namespace Physics2D
 
         if (m_mouseJoint == nullptr)
             return;
+        m_mouseJoint->primitive().clear();
         m_mouseJoint->setActive(false);
 
         m_cameraViewportMovement = false;
@@ -158,6 +177,7 @@ namespace Physics2D
                     prim.localPointA = body->toLocalPoint(m_mousePos);
                     prim.bodyA = body;
                     prim.targetPoint = m_mousePos;
+                    prim.maxForce = 80 * body->mass();
                     m_mouseJoint->setActive(true);
                     m_mouseJoint->set(prim);
                     m_selectedBody->setSleep(false);
@@ -178,7 +198,7 @@ namespace Physics2D
 	{
         // create the window
         sf::ContextSettings settings;
-        settings.antialiasingLevel = 16;
+        settings.antialiasingLevel = 8;
         m_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Testbed", sf::Style::Default, settings);
         ImGui::SFML::Init(*m_window);
         m_window->setActive(false);
@@ -265,7 +285,7 @@ namespace Physics2D
 
         ImGui::PushItemWidth(150);
         ImGui::SetWindowPos("Panel", ImVec2(0, 0));
-        ImGui::SetWindowSize("Panel", ImVec2(480, 800));
+        ImGui::SetWindowSize("Panel", ImVec2(500, 800));
         ImGui::Text("Scenes");
 
         int oldItem = m_currentItem;
@@ -281,7 +301,7 @@ namespace Physics2D
 
         ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
         ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.5f);
-        ImGui::SliderFloat("Contact Max Penetration", &m_system.maintainer().m_maxPenetration, 0.001f, 0.1f);
+        ImGui::SliderFloat("Max Penetration", &m_system.maintainer().m_maxPenetration, 0.0001f, 0.1f, "%.4f");
 
         ImGui::Separator();
         ImGui::Text("Switches");
@@ -296,7 +316,9 @@ namespace Physics2D
         ImGui::Checkbox("User Draw Visible", &m_userDrawVisible);
         ImGui::Checkbox("Angle Visible", &m_camera.rotationLineVisible());
         ImGui::Checkbox("Center Visible", &m_camera.centerVisible());
-
+        
+        ImGui::Separator();
+        ImGui::Text("Running: %s", m_running ? "True" : "False");
         ImGui::Separator();
         ImGui::Text("Timestep");
         if (ImGui::Button("Pause", ImVec2(-FLT_MIN, 0.0f)))

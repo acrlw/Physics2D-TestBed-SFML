@@ -1,5 +1,6 @@
 #include "physics2d_contact.h"
 
+
 namespace Physics2D
 {
 
@@ -18,6 +19,7 @@ namespace Physics2D
 				continue;
 			for (auto&& ccp : elem.second)
 			{
+
 				auto& vcp = ccp.vcp;
 
 				Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
@@ -51,7 +53,7 @@ namespace Physics2D
 				lambda_t = vcp.accumulatedTangentImpulse - oldImpulse;
 
 				Vector2 impulse_t = lambda_t * vcp.tangent;
-
+				
 
 				ccp.bodyA->applyImpulse(impulse_t, vcp.ra);
 				ccp.bodyB->applyImpulse(-impulse_t, vcp.rb);
@@ -73,6 +75,8 @@ namespace Physics2D
 				Body* bodyB = ccp.bodyB;
 				Vector2 pa = bodyA->toWorldPoint(vcp.localA);
 				Vector2 pb = bodyB->toWorldPoint(vcp.localB);
+				Vector2 ra = pa - bodyA->position();
+				Vector2 rb = pb - bodyB->position();
 				Vector2 c = pb - pa;
 
 				real bias =  Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
@@ -85,14 +89,15 @@ namespace Physics2D
 				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
 				{
 					Vector2 dp = bodyA->inverseMass() * impulse;
-					real dr = bodyA->inverseInertia() * vcp.ra.cross(impulse);
+					real dr = bodyA->inverseInertia() * ra.cross(impulse);
 					bodyA->position() += dp;
 					bodyA->rotation() += dr;
 				}
+
 				if (bodyB->type() != Body::BodyType::Static && !bodyB->sleep())
 				{
 					Vector2 dp = bodyB->inverseMass() * impulse;
-					real dr = bodyB->inverseInertia() * vcp.rb.cross(impulse);
+					real dr = bodyB->inverseInertia() * rb.cross(impulse);
 					bodyB->position() -= dp;
 					bodyB->rotation() -= dr;
 				}
@@ -118,8 +123,8 @@ namespace Physics2D
 			Vector2 localB = bodyB->toLocalPoint(elem.pointB);
 			for (auto& contact : contactList)
 			{
-				const bool isPointA = localA.fuzzyEqual(contact.localA);
-				const bool isPointB = localB.fuzzyEqual(contact.localB);
+				const bool isPointA = localA.fuzzyEqual(contact.localA, Constant::TrignometryEpsilon);
+				const bool isPointB = localB.fuzzyEqual(contact.localB, Constant::TrignometryEpsilon);
 
 				if (isPointA || isPointB)
 				{

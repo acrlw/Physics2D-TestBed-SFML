@@ -47,13 +47,12 @@ namespace Physics2D
 				if (body->sleep() && !body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
 					|| !fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
 					body->setSleep(false);
-
+				
 				body->velocity() += body->inverseMass() * body->forces() * dt;
 				body->angularVelocity() += body->inverseInertia() * body->torques() * dt;
 
 				body->velocity() *= lvd;
 				body->angularVelocity() *= avd;
-
 
 				break;
 			}

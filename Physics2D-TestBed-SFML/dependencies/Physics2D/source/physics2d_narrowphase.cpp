@@ -708,7 +708,9 @@ namespace Physics2D
 		const bool isRef2Inc1Valid = refEdgeDir.dot(incEdge[0].vertex - refEdge[1]) <= 0;
 		const bool isRef2Inc2Valid = refEdgeDir.dot(incEdge[1].vertex - refEdge[1]) <= 0;
 
-		assert(isRef2Inc1Valid || isRef2Inc2Valid && "Invalid features.");
+		//assert(isRef2Inc1Valid || isRef2Inc2Valid && "Invalid features.");
+		if (!isRef2Inc1Valid && !isRef2Inc2Valid)
+			return pair;
 
 		if (!isRef2Inc1Valid && isRef2Inc2Valid)
 		{

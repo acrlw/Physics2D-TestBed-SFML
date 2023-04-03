@@ -13,13 +13,18 @@ namespace Physics2D
 		real damping = 0.0;
 		real stiffness = 0.0;
 		real frequency = 10;
-		real maxForce = 400;
-		real dampingRatio = 1;
+		real maxForce = 80;
+		real dampingRatio = 1.0f;
 		real gamma = 0.0;
 		Vector2 bias;
 		Matrix2x2 effectiveMass;
 		Vector2 accumulatedImpulse;
-
+		void clear()
+		{
+			accumulatedImpulse.clear();
+			effectiveMass.clear();
+			bias.clear();
+		}
 	};
 	class PHYSICS2D_API PointJoint : public Joint
 	{
@@ -77,7 +82,22 @@ namespace Physics2D
 			m_primitive.effectiveMass = k.invert();
 			//warmstart
 			//m_primitive.impulse *= dt / dt;
+
+			//[DEBUG]
+
+			//std::cout << "------Before Preparing Point Joint" << "------" << std::endl;
+			//std::cout << "pos: (" << bodyA->position().x << "," << bodyA->position().y << ")" << std::endl;
+			//std::cout << "rot: " << bodyA->rotation() << std::endl;
+			//std::cout << "lin_vel: " << bodyA->velocity().length() << std::endl;
+			//std::cout << "rot_vel: " << bodyA->angularVelocity() << std::endl;
+
 			bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);
+
+			//std::cout << "------After Preparing Point Joint" << "------" << std::endl;
+			//std::cout << "pos: (" << bodyA->position().x << "," << bodyA->position().y << ")" << std::endl;
+			//std::cout << "rot: " << bodyA->rotation() << std::endl;
+			//std::cout << "lin_vel: " << bodyA->velocity().length() << std::endl;
+			//std::cout << "rot_vel: " << bodyA->angularVelocity() << std::endl;
 		}
 		void solveVelocity(const real& dt) override
 		{
@@ -99,6 +119,7 @@ namespace Physics2D
 				m_primitive.accumulatedImpulse *= maxImpulse;
 			}
 			J = m_primitive.accumulatedImpulse - oldImpulse;
+
 			m_primitive.bodyA->applyImpulse(J, ra);
 		}
 		void solvePosition(const real& dt) override

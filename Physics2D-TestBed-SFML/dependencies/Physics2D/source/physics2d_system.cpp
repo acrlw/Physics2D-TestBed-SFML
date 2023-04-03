@@ -103,6 +103,7 @@ namespace Physics2D
 
 
         //BVH
+
         m_world.stepVelocity(dt);
         //auto potentialList = m_grid.generate();
 
@@ -117,12 +118,17 @@ namespace Physics2D
         m_maintainer.clearInactivePoints();
         m_world.prepareVelocityConstraint(dt);
 
-        for (int i = 0; i < m_velocityIteration; ++i)
+        for(int i = 0;i < m_velocityIteration; ++i)
         {
             m_world.solveVelocityConstraint(dt);
+        }
+
+        for (int i = 0; i < m_velocityIteration; ++i)
+        {
             m_maintainer.solveVelocity(dt);
         }
         m_world.stepPosition(dt);
+
         //solve penetration use contact pairs from previous velocity solver settings
         //TODO: Can generate another contact table just for position solving
         for (int i = 0; i < m_positionIteration; ++i)
