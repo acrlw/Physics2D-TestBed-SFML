@@ -145,6 +145,7 @@ namespace Physics2D
 
         auto prim = m_mouseJoint->primitive();
         prim.targetPoint = m_mousePos;
+        //prim.clear();
         m_mouseJoint->set(prim);
     }
     void TestBed::onMousePressed(sf::Event& event)
@@ -173,13 +174,15 @@ namespace Physics2D
                 if (body->shape()->contains(point) && m_selectedBody == nullptr && body->type() != Body::BodyType::Static)
                 {
                     m_selectedBody = body;
-                    auto prim = m_mouseJoint->primitive();
+                    PointJointPrimitive prim;
                     prim.localPointA = body->toLocalPoint(m_mousePos);
                     prim.bodyA = body;
                     prim.targetPoint = m_mousePos;
-                    prim.maxForce = 160 * body->mass();
-                    m_mouseJoint->setActive(true);
+                    //prim.maxForce = 1000 * body->mass();
                     m_mouseJoint->set(prim);
+                    m_mouseJoint->prepare(real(1 / m_frequency));
+
+                    m_mouseJoint->setActive(true);
                     m_selectedBody->setSleep(false);
                     m_currentFrame->setCurrentBody(m_selectedBody);
                     break;
@@ -202,7 +205,7 @@ namespace Physics2D
         m_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Testbed", sf::Style::Default, settings);
         ImGui::SFML::Init(*m_window);
         m_window->setActive(false);
-        m_window->setFramerateLimit(120);
+        m_window->setFramerateLimit(60);
 
         sf::Clock deltaClock;
         while (m_window->isOpen())
@@ -264,7 +267,7 @@ namespace Physics2D
                 m_currentFrame->render(*m_window);
 
             renderGUI(*m_window, deltaClock);
-            m_window->display();
+
         }
         ImGui::SFML::Shutdown();
 
@@ -307,12 +310,20 @@ namespace Physics2D
 
         ImGui::Separator();
         ImGui::Text("Contact");
-        ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.5f);
-        ImGui::SliderFloat("Max Penetration", &m_system.maintainer().m_maxPenetration, 0.0001f, 0.1f, "%.4f");
+        ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.20f);
+        ImGui::SliderFloat("Max Penetration", &m_system.maintainer().m_maxPenetration, 0.001f, 0.1f);
 
         ImGui::Separator();
-        ImGui::Text("Switches");
+        ImGui::Text("Body");
         ImGui::Checkbox("Sleep", &m_system.world().enableSleep());
+
+        ImGui::Separator();
+        ImGui::Text("Solver");
+        ImGui::Checkbox("Prepare Joint", &m_system.prepareJoint());
+        ImGui::Checkbox("Solve Joint Vel", &m_system.solveJointVelocity());
+        ImGui::Checkbox("Solve Joint Pos", &m_system.solveJointPosition());
+        ImGui::Checkbox("Solve Contact Vel", &m_system.solveContactVelocity());
+        ImGui::Checkbox("Solve Contact Pos", &m_system.solveContactPosition());
 
         ImGui::Separator();
         ImGui::Text("Render");

@@ -89,7 +89,7 @@ namespace Physics2D
     		
     		bool m_enableGravity = true;
     		bool m_enableDamping = true;
-            bool m_enableSleep = true;
+            bool m_enableSleep = false;
             Container::Vector<std::unique_ptr<Body>> m_bodyList;
             Container::Vector<std::unique_ptr<Joint>> m_jointList;
 

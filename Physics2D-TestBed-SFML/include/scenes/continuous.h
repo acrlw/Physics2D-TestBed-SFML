@@ -27,7 +27,7 @@ namespace Physics2D
             ground->position().set({ 0, -1.5});
             ground->setMass(100000);
             ground->setType(Body::BodyType::Static);
-            ground->setFriction(0.1f);
+            ground->setFriction(0.3f);
             m_tree->insert(ground);
 
             for (real j = 0; j < 20.0f; j += 1.0f)
@@ -40,7 +40,7 @@ namespace Physics2D
                     body->rotation() = 0.0f;
                     body->setMass(1.0f);
                     body->setType(Body::BodyType::Dynamic);
-                    body->setFriction(0.1f);
+                    body->setFriction(0.5f);
                     body->setRestitution(0.0f);
                     m_tree->insert(body);
                 }
@@ -52,7 +52,7 @@ namespace Physics2D
             bullet->setType(Body::BodyType::Bullet);
             bullet->setMass(5.0f);
             bullet->velocity().set({ 1000.0f, 0.0f });
-            bullet->angularVelocity() = -200.0f;
+            bullet->angularVelocity() = -500.0f;
             m_tree->insert(bullet);
 
             Body* wallBody = m_world->createBody();

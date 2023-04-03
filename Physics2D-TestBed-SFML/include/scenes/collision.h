@@ -32,9 +32,9 @@ namespace Physics2D
 
 			rect = m_world->createBody();
 			rect->setShape(&capsule);
-			rect->position().set({ 0, 2 });
+			rect->position().set({ 0, 1 });
 			rect->rotation() = Math::degreeToRadian(0);
-			rect->setMass(1);
+			rect->setMass(2 + Constant::Pi);
 			rect->setType(Body::BodyType::Dynamic);
 			rect->setFriction(0.4f);
 			rect->setRestitution(0.0f);

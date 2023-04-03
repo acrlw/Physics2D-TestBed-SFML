@@ -59,7 +59,7 @@ namespace Physics2D
 		constexpr real MinLinearVelocity = 1e-4f;
 		constexpr real MinAngularVelocity = 1e-4f;
 		constexpr real MinEnergy = 9e-10f;
-		constexpr size_t SleepCountdown = 64;
+		constexpr size_t SleepCountdown = 32;
 		constexpr int GJKRetryTimes = 4;
 	}
 #else

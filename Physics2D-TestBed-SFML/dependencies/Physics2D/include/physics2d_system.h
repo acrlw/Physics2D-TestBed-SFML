@@ -20,7 +20,11 @@ namespace Physics2D
         int& positionIteration();
         int& velocityIteration();
         bool& sliceDeltaTime();
-
+        bool& solveJointVelocity();
+        bool& solveJointPosition();
+        bool& solveContactVelocity();
+        bool& solveContactPosition();
+        bool& prepareJoint();
     private:
         void updateTree();
         void updateGrid();
@@ -29,6 +33,11 @@ namespace Physics2D
         int m_positionIteration = 3;
         int m_velocityIteration = 8;
         bool m_sliceDeltaTime = false;
+        bool m_solveJointVelocity = true;
+        bool m_solveJointPosition = true;
+        bool m_solveContactVelocity = true;
+        bool m_solveContactPosition = true;
+        bool m_prepareJoint = true;
         PhysicsWorld m_world;
         ContactMaintainer m_maintainer;
         Tree m_tree;

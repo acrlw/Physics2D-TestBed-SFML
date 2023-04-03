@@ -79,7 +79,7 @@ namespace Physics2D
 				Vector2 rb = pb - bodyB->position();
 				Vector2 c = pb - pa;
 
-				real bias =  Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
+				const real bias =  Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
 				real lambda = vcp.effectiveMassNormal * bias;
 
 				Vector2 impulse = lambda * vcp.normal;

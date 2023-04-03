@@ -5,7 +5,7 @@ namespace Physics2D
 {
 	struct PHYSICS2D_API PointJointPrimitive
 	{
-		Body* bodyA;
+		Body* bodyA = nullptr;
 		Vector2 localPointA;
 		Vector2 targetPoint;
 		Vector2 normal;
@@ -82,22 +82,9 @@ namespace Physics2D
 			m_primitive.effectiveMass = k.invert();
 			//warmstart
 			//m_primitive.impulse *= dt / dt;
-
-			//[DEBUG]
-
-			//std::cout << "------Before Preparing Point Joint" << "------" << std::endl;
-			//std::cout << "pos: (" << bodyA->position().x << "," << bodyA->position().y << ")" << std::endl;
-			//std::cout << "rot: " << bodyA->rotation() << std::endl;
-			//std::cout << "lin_vel: " << bodyA->velocity().length() << std::endl;
-			//std::cout << "rot_vel: " << bodyA->angularVelocity() << std::endl;
-
+			
 			bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);
 
-			//std::cout << "------After Preparing Point Joint" << "------" << std::endl;
-			//std::cout << "pos: (" << bodyA->position().x << "," << bodyA->position().y << ")" << std::endl;
-			//std::cout << "rot: " << bodyA->rotation() << std::endl;
-			//std::cout << "lin_vel: " << bodyA->velocity().length() << std::endl;
-			//std::cout << "rot_vel: " << bodyA->angularVelocity() << std::endl;
 		}
 		void solveVelocity(const real& dt) override
 		{
@@ -109,6 +96,7 @@ namespace Physics2D
 			jvb += m_primitive.bias;
 			jvb += m_primitive.accumulatedImpulse * m_primitive.gamma;
 			jvb.negate();
+
 			Vector2 J = m_primitive.effectiveMass.multiply(jvb);
 			Vector2 oldImpulse = m_primitive.accumulatedImpulse;
 			m_primitive.accumulatedImpulse += J;

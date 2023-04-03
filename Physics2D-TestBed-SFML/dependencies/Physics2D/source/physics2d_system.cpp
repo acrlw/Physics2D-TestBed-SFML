@@ -14,6 +14,32 @@ namespace Physics2D
     {
         return m_sliceDeltaTime;
     }
+
+    bool& PhysicsSystem::solveJointVelocity()
+    {
+        return m_solveJointVelocity;
+    }
+
+    bool& PhysicsSystem::solveJointPosition()
+    {
+        return m_solveJointPosition;
+    }
+
+    bool& PhysicsSystem::solveContactVelocity()
+    {
+        return m_solveContactVelocity;
+    }
+
+    bool& PhysicsSystem::solveContactPosition()
+    {
+        return m_solveContactPosition;
+    }
+
+    bool& PhysicsSystem::prepareJoint()
+    {
+        return m_prepareJoint;
+    }
+
     PhysicsWorld &PhysicsSystem::world()
     {
         return m_world;
@@ -127,12 +153,17 @@ namespace Physics2D
             }
         }
         m_maintainer.clearInactivePoints();
-        m_world.prepareVelocityConstraint(dt);
+
+        if(m_prepareJoint)
+			m_world.prepareVelocityConstraint(dt);
 
         for (int i = 0; i < m_velocityIteration; ++i)
         {
-            m_world.solveVelocityConstraint(vdt);
-            m_maintainer.solveVelocity(vdt);
+            if(m_solveJointVelocity)
+				m_world.solveVelocityConstraint(vdt);
+
+            if (m_solveContactVelocity)
+				m_maintainer.solveVelocity(vdt);
         }
         m_world.stepPosition(dt);
 
@@ -140,8 +171,11 @@ namespace Physics2D
         //TODO: Can generate another contact table just for position solving
         for (int i = 0; i < m_positionIteration; ++i)
         {
-            m_maintainer.solvePosition(pdt);
-            m_world.solvePositionConstraint(pdt);
+            if(m_solveContactPosition)
+				m_maintainer.solvePosition(pdt);
+
+            if(m_solveJointPosition)
+				m_world.solvePositionConstraint(pdt);
         }
 
         m_maintainer.deactivateAllPoints();
