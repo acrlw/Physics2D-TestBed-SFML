@@ -44,6 +44,8 @@ namespace Physics2D
         bool& centerVisible();
         bool& contactVisible();
         bool& uniformGridVisible();
+        bool& contactImpulseVisible();
+        bool& contactFrictionVisible();
 
         real axisPointCount()const;
         void setAxisPointCount(real count);
@@ -104,6 +106,8 @@ namespace Physics2D
         bool m_rotationLineVisible = false;
         bool m_centerVisible = false;
         bool m_contactVisible = false;
+        bool m_contactImpulseVisible = false;
+        bool m_contactFrictionVisible = false;
 
 
         real m_meterToPixel = 50.0f;

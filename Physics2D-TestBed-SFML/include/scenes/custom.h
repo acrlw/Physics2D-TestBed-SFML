@@ -35,7 +35,7 @@ namespace Physics2D
 			mask = 0x01;
 			for (real i = 0; i < max; i += 1.0f)
 			{
-				Body* body = m_world->createBody();
+				body = m_world->createBody();
 				body->setShape(&rectangle);
 				body->position().set({ i * 3.0f + 0.5f, 0.5f });
 				body->setFriction(0.9f);
@@ -49,12 +49,17 @@ namespace Physics2D
 		}
 		void render(sf::RenderWindow& window) override
 		{
-
+			ShapePrimitive sp;
+			sp.transform.position = body->lastPosition();
+			sp.transform.rotation = body->lastRotation();
+			sp.shape = body->shape();
+			RenderSFMLImpl::renderShape(window, *m_camera, sp, RenderConstant::MaterialGray);
 		}
 	private:
 		Rectangle rectangle;
 		Rectangle block;
 		Edge edge;
+		Body* body;
 	};
 }
 #endif

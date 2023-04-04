@@ -2,7 +2,6 @@
 #define PHYSICS2D_COMMON_H
 
 
-
 #include "cassert"
 #include <cmath>
 #include <cfloat>
@@ -26,7 +25,7 @@
 #define SINGLE_PRECISION
 namespace Physics2D
 {
-	using Index = uint32_t;
+	using Index = uint8_t;
 	namespace Container
 	{
 		template<class T>

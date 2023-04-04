@@ -144,6 +144,26 @@ namespace Physics2D
 		result.bodyA = bodyA;
 		result.bodyB = bodyB;
 
+		//fix invalid index
+
+		//[DEBUG]
+		if(result.contactList.features[0] == UINT8_MAX)
+			result.contactList.features[0] = bodyA->id();
+		if (result.contactList.features[1] == UINT8_MAX)
+			result.contactList.features[1] = bodyA->id();
+		if (result.contactList.features[2] == UINT8_MAX)
+			result.contactList.features[2] = bodyB->id();
+		if (result.contactList.features[3] == UINT8_MAX)
+			result.contactList.features[3] = bodyB->id();
+
+		//reorder
+
+		if (result.contactList.features[0] > result.contactList.features[1])
+			std::swap(result.contactList.features[0], result.contactList.features[1]);
+		if (result.contactList.features[2] > result.contactList.features[3])
+			std::swap(result.contactList.features[2], result.contactList.features[3]);
+
+
 		return result;
 	}
 	CollisionInfo Detector::distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB)

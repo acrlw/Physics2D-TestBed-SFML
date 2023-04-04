@@ -24,6 +24,7 @@ namespace Physics2D
 			ground->position().set({ 0.0, 0.0 });
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
+			ground->setFriction(0.3f);
 			m_tree->insert(ground);
 
 			//m_grid->insert(ground);
@@ -40,7 +41,7 @@ namespace Physics2D
 					body->rotation() = 0;
 					body->setMass(1.0f);
 					body->setType(Body::BodyType::Dynamic);
-					body->setFriction(0.1f);
+					body->setFriction(0.2f);
 					body->setRestitution(0.0f);
 					m_tree->insert(body);
 					//m_grid->insert(body);

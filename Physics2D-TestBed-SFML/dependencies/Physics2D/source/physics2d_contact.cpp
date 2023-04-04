@@ -110,6 +110,7 @@ namespace Physics2D
 		const Body* bodyA = collision.bodyA;
 		const Body* bodyB = collision.bodyB;
 		const auto relation = Body::BodyPair::generateBodyPairID(collision.bodyA, collision.bodyB);
+
 		auto& contactList = m_contactTable[relation];
 
 		for(uint8_t i = 0; i < collision.contactList.count; i += 2)
@@ -123,8 +124,8 @@ namespace Physics2D
 			Vector2 localB = bodyB->toLocalPoint(elem.pointB);
 			for (auto& contact : contactList)
 			{
-				const bool isPointA = localA.fuzzyEqual(contact.localA, Constant::TrignometryEpsilon);
-				const bool isPointB = localB.fuzzyEqual(contact.localB, Constant::TrignometryEpsilon);
+				const bool isPointA = localA.fuzzyEqual(contact.localA, 1e-5f);
+				const bool isPointB = localB.fuzzyEqual(contact.localB, 1e-5f);
 
 				if (isPointA || isPointB)
 				{
@@ -135,7 +136,7 @@ namespace Physics2D
 					existed = true;
 					break;
 				}
-
+				
 			}
 			if (existed)
 				continue;

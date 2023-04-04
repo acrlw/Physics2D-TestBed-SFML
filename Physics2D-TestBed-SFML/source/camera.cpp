@@ -311,6 +311,15 @@ namespace Physics2D
 		return m_uniformGridVisible;
 	}
 
+	bool& Camera::contactImpulseVisible()
+	{
+		return m_contactImpulseVisible;
+	}
+
+	bool& Camera::contactFrictionVisible()
+	{
+		return m_contactFrictionVisible;
+	}
 
 	ContactMaintainer* Camera::maintainer() const
 	{
@@ -368,8 +377,11 @@ namespace Physics2D
 			{
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyA->toWorldPoint(elem.localA), pink);
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyB->toWorldPoint(elem.localB), yellow);
-				RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.normal * elem.vcp.accumulatedNormalImpulse), RenderConstant::MaterialCyan);
-
+				if(m_contactImpulseVisible)
+					RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.normal * elem.vcp.accumulatedNormalImpulse), RenderConstant::MaterialCyan);
+				if(m_contactFrictionVisible)
+					RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse), RenderConstant::MaterialYellow);
+				
 			}
 		}
 	}

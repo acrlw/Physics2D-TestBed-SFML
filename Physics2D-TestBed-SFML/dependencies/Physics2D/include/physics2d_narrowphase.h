@@ -25,7 +25,7 @@ namespace Physics2D
 		//circle and ellipse, use index 0
 		//edge use index 0 and 1
 		Vector2 vertex[2];
-		Index index[2] = { INT_MAX, INT_MAX };
+		Index index[2] = { UINT8_MAX, UINT8_MAX };
 	};
 	struct PHYSICS2D_API ClipVertex
 	{
@@ -44,6 +44,7 @@ namespace Physics2D
 		//	points[2]: pointA
 		//	points[3]: pointB
 		std::array<Vector2, 4> points;
+		std::array<Index, 4> features = { UINT8_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX };
 		uint32_t count = 0;
 		void addContact(const Vector2& pointA, const Vector2& pointB)
 		{
@@ -102,38 +103,27 @@ namespace Physics2D
 
 		static Feature findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape, const Index& AorB);
 
-		static ContactPair clipTwoEdge(const Vector2& va1, const Vector2& va2, const Vector2& vb1, const Vector2& vb2, CollisionInfo& info);
+		static void clipTwoEdge(const Vector2& va1, const Vector2& va2, const Vector2& vb1, const Vector2& vb2, CollisionInfo& info, ContactPair& outPair);
 
-		static ContactPair clipIncidentEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap);
+		static void clipIncidentEdge(std::array<ClipVertex, 2>& incEdge, std::array<Vector2, 2> refEdge, const Vector2& normal, bool swap, ContactPair& outPair);
 
-		static ContactPair clipPolygonPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
-		static ContactPair clipPolygonEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
-		static ContactPair clipPolygonCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
-		static ContactPair clipPolygonRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static void clipPolygonPolygon(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
+		static void clipPolygonEdge(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
+		static void clipPolygonCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
+		static void clipPolygonRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
 
-		static ContactPair clipEdgeCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
-		static ContactPair clipEdgeRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static void clipEdgeCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
+		static void clipEdgeRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
 
-		static ContactPair clipCapsuleCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
-		static ContactPair clipCapsuleRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static void clipCapsuleCapsule(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
+		static void clipCapsuleRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
 
-		static ContactPair clipRoundRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, 
-			const Feature& featureA, const Feature& featureB, CollisionInfo& info);
+		static void clipRoundRound(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const Feature& featureA, const Feature& featureB, CollisionInfo& info, ContactPair& outPair);
 
-		static ContactPair clipEdgeVertex(const Vector2& va1, const Vector2& va2, const Vector2& vb, CollisionInfo& info);
+		static void clipEdgeVertex(const Vector2& va1, const Vector2& va2, const Vector2& vb, CollisionInfo& info, ContactPair& outPair);
 
-		static void polytopeIterNext(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
-			std::list<SimplexVertexWithOriginDistance>& list);
-		static void polytopeIterPrev(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
-			std::list<SimplexVertexWithOriginDistance>& list);
+		static void polytopeIterNext(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter, std::list<SimplexVertexWithOriginDistance>& list);
+		static void polytopeIterPrev(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter, std::list<SimplexVertexWithOriginDistance>& list);
 		
 	};
 

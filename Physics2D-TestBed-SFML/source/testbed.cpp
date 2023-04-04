@@ -32,8 +32,8 @@ namespace Physics2D
         m_system.world().setAirFrictionCoefficient(0.8f);
         m_system.world().setAngularVelocityDamping(0.1f);
         m_system.world().setEnableDamping(true);
-        m_system.positionIteration() = 3;
-        m_system.velocityIteration() = 8;
+        m_system.positionIteration() = 0;
+        m_system.velocityIteration() = 1;
 
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
@@ -178,7 +178,7 @@ namespace Physics2D
                     prim.localPointA = body->toLocalPoint(m_mousePos);
                     prim.bodyA = body;
                     prim.targetPoint = m_mousePos;
-                    //prim.maxForce = 1000 * body->mass();
+                    prim.maxForce = 1000 * body->mass();
                     m_mouseJoint->set(prim);
                     m_mouseJoint->prepare(real(1 / m_frequency));
 
@@ -334,6 +334,8 @@ namespace Physics2D
         ImGui::Checkbox("Tree Visible", &m_camera.treeVisible());
         ImGui::Checkbox("Uniform Grid Visible", &m_camera.uniformGridVisible());
         ImGui::Checkbox("Contacts Visible", &m_camera.contactVisible());
+        ImGui::Checkbox("Contacts Impulse", &m_camera.contactImpulseVisible());
+        ImGui::Checkbox("Contacts Friction", &m_camera.contactFrictionVisible());
         ImGui::Checkbox("User Draw Visible", &m_userDrawVisible);
         ImGui::Checkbox("Angle Visible", &m_camera.rotationLineVisible());
         ImGui::Checkbox("Center Visible", &m_camera.centerVisible());
