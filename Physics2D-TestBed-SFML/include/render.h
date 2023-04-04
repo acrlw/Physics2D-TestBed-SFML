@@ -31,6 +31,7 @@ namespace Physics2D
         const sf::Color MaterialOrange = sf::Color(255, 138, 101);
         const sf::Color MaterialTeal = sf::Color(29, 233, 182);
         static real ScaleFactor = 1.0f;
+
     }
     class RenderSFMLImpl
     {
@@ -72,6 +73,9 @@ namespace Physics2D
         static void renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex, const sf::Color& color);
         static void renderArrow(sf::RenderWindow& window, Camera& camera, const Vector2& start, const Vector2& end, const sf::Color& color, 
             const real& size = 0.30f, const real& degree = 30);
+
+        static void renderText(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font, const std::string& text, const sf::Color& color, const unsigned int& size = 12);
+
     };
 }
 #endif

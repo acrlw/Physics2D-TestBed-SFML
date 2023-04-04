@@ -239,8 +239,8 @@ namespace Physics2D
 		sf::Color colorY(255, 235, 59);
 		colorX.a = 204;
 		colorY.a = 204;
-		Vector2 xP(0.1f, 0);
-		Vector2 yP(0, 0.1f);
+		Vector2 xP(0.15f, 0);
+		Vector2 yP(0, 0.15f);
 		xP = shape.transform.translatePoint(xP);
 		yP = shape.transform.translatePoint(yP);
 		renderLine(window, camera, shape.transform.position, xP, colorX);
@@ -478,5 +478,19 @@ namespace Physics2D
 		convex.setOutlineThickness(RenderConstant::BorderSize);
 		convex.setOutlineColor(color);
 		window.draw(convex);
+	}
+	void RenderSFMLImpl::renderText(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font, const std::string& txt, const sf::Color& color, const unsigned int& size)
+	{
+		sf::Text text;
+		text.setFont(font);
+		text.setString(txt);
+		text.setCharacterSize(size);
+		text.setFillColor(color);
+		sf::FloatRect text_rect = text.getLocalBounds();
+		text.setOrigin(text_rect.left + text_rect.width / 2.0f, text_rect.top + text_rect.height / 2.0f);
+		auto pos = toVector2f(camera.worldToScreen(position));
+		text.setPosition(pos);
+
+		window.draw(text);
 	}
 }

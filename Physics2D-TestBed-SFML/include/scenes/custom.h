@@ -13,7 +13,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
-			block.set(20, 1.0f);
+			block.set(50, 2.0f);
 			rectangle.set(1.0f, 1.0f);
 			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
 
@@ -22,9 +22,9 @@ namespace Physics2D
 			for (real i = 0; i < max; i += 1.0f)
 			{
 				Body* ground = m_world->createBody();
-				ground->setShape(&edge);
-				ground->position().set({ 0, 0 + i * 3.0f });
-				ground->setFriction(0.4f);
+				ground->setShape(&block);
+				ground->position().set({ 0, -1.0f + i * 3.0f });
+				ground->setFriction(0.6f);
 				ground->setBitmask(mask);
 				ground->setRestitution(0);
 				ground->setMass(Constant::Max);
@@ -38,7 +38,7 @@ namespace Physics2D
 				body = m_world->createBody();
 				body->setShape(&rectangle);
 				body->position().set({ i * 3.0f + 0.5f, 0.5f });
-				body->setFriction(0.9f);
+				body->setFriction(0.6f);
 				body->setBitmask(mask);
 				body->setRestitution(0);
 				body->setMass(1);
@@ -46,6 +46,7 @@ namespace Physics2D
 				mask = mask << 1;
 				m_tree->insert(body);
 			}
+
 		}
 		void render(sf::RenderWindow& window) override
 		{
@@ -54,12 +55,14 @@ namespace Physics2D
 			sp.transform.rotation = body->lastRotation();
 			sp.shape = body->shape();
 			RenderSFMLImpl::renderShape(window, *m_camera, sp, RenderConstant::MaterialGray);
+
 		}
 	private:
 		Rectangle rectangle;
 		Rectangle block;
 		Edge edge;
 		Body* body;
+
 	};
 }
 #endif

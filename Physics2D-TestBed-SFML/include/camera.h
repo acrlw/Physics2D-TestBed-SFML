@@ -7,6 +7,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <format>
 #include "physics2d.h"
 namespace Physics2D
 {
@@ -31,7 +32,7 @@ namespace Physics2D
             void setHeight(const real& height);
             void set(const real& width, const real& height);
         };
-        Camera() = default;
+        Camera();
         void render(sf::RenderWindow& window);
 
         bool& aabbVisible();
@@ -133,6 +134,7 @@ namespace Physics2D
 
         EasingType m_easingType = EasingType::Exponential;
 
+        sf::Font m_font;
     };
 
 

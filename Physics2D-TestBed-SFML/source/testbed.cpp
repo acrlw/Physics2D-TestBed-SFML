@@ -207,6 +207,11 @@ namespace Physics2D
         m_window->setActive(false);
         m_window->setFramerateLimit(60);
 
+        auto& io = ImGui::GetIO();
+        io.Fonts->AddFontFromFileTTF("font/MiSans-Medium.ttf",18.0f);
+        io.FontDefault = io.Fonts->Fonts[1];
+        ImGui::SFML::UpdateFontTexture();
+
         sf::Clock deltaClock;
         while (m_window->isOpen())
         {
@@ -269,6 +274,7 @@ namespace Physics2D
             renderGUI(*m_window, deltaClock);
 
         }
+
         ImGui::SFML::Shutdown();
 
 	}
@@ -286,9 +292,8 @@ namespace Physics2D
         style.WindowRounding = 5.0f;
         style.Colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 0.55f);
 
-        ImGui::PushItemWidth(150);
+        ImGui::PushItemWidth(200);
         ImGui::SetWindowPos("Panel", ImVec2(0, 0));
-        ImGui::SetWindowSize("Panel", ImVec2(500, 800));
         ImGui::Text("Scenes");
 
         int oldItem = m_currentItem;
@@ -303,7 +308,7 @@ namespace Physics2D
         ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 0, 20);
 
         ImGui::Separator();
-        ImGui::Text("Delta Time");
+        ImGui::Text("Time");
 
         ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
         ImGui::Checkbox("Slice Delta Time", &m_system.sliceDeltaTime());
@@ -326,20 +331,26 @@ namespace Physics2D
         ImGui::Checkbox("Solve Contact Pos", &m_system.solveContactPosition());
 
         ImGui::Separator();
-        ImGui::Text("Render");
-        ImGui::Checkbox("Body Visible", &m_camera.bodyVisible());
-        ImGui::Checkbox("AABB Visible", &m_camera.aabbVisible());
-        ImGui::Checkbox("Joint Visible", &m_camera.jointVisible());
-        ImGui::Checkbox("Grid Scale Line Visible", &m_camera.gridScaleLineVisible());
-        ImGui::Checkbox("Tree Visible", &m_camera.treeVisible());
-        ImGui::Checkbox("Uniform Grid Visible", &m_camera.uniformGridVisible());
-        ImGui::Checkbox("Contacts Visible", &m_camera.contactVisible());
+        ImGui::Text("Visible");
+        ImGui::Columns(2, NULL);
+        ImGui::Checkbox("Body", &m_camera.bodyVisible());
+        ImGui::Checkbox("AABB", &m_camera.aabbVisible());
+        ImGui::Checkbox("Joint", &m_camera.jointVisible());
+        ImGui::Checkbox("Grid Scale Line", &m_camera.gridScaleLineVisible());
+        ImGui::Checkbox("Tree", &m_camera.treeVisible());
+        ImGui::Checkbox("Uniform Grid", &m_camera.uniformGridVisible());
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("Contacts", &m_camera.contactVisible());
         ImGui::Checkbox("Contacts Impulse", &m_camera.contactImpulseVisible());
         ImGui::Checkbox("Contacts Friction", &m_camera.contactFrictionVisible());
-        ImGui::Checkbox("User Draw Visible", &m_userDrawVisible);
-        ImGui::Checkbox("Angle Visible", &m_camera.rotationLineVisible());
-        ImGui::Checkbox("Center Visible", &m_camera.centerVisible());
-        
+        ImGui::Checkbox("User Draw", &m_userDrawVisible);
+        ImGui::Checkbox("Angle", &m_camera.rotationLineVisible());
+        ImGui::Checkbox("Center", &m_camera.centerVisible());
+
+        ImGui::NextColumn();
+
+        ImGui::Columns(1, NULL);
         ImGui::Separator();
         ImGui::Text("Running: %s", m_running ? "True" : "False");
 

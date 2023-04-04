@@ -60,31 +60,7 @@ namespace Physics2D
 			window.clear(sf::Color(50, 50, 50));
 			
 
-			if (m_bodyVisible)
-			{
-				sf::Color color = sf::Color::Green;
-
-				for (auto& body : m_world->bodyList())
-				{
-					ShapePrimitive primitive;
-					primitive.shape = body->shape();
-					primitive.transform.rotation = body->rotation();
-					primitive.transform.position = body->position();
-					if (body->sleep())
-						color = sf::Color(100, 100, 100);
-					else
-						color = RenderConstant::MaterialGreen;
-					if (body->type() == Body::BodyType::Static)
-						color = RenderConstant::MaterialTeal;
-					RenderSFMLImpl::renderShape(window, *this, primitive, color);
-
-					if (m_centerVisible)
-						RenderSFMLImpl::renderPoint(window, *this, primitive.transform.position, RenderConstant::MaterialGray);
-
-					if (m_rotationLineVisible)
-						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
-				}
-			}
+			
 			if (m_jointVisible)
 			{
 				for(auto iter = m_world->jointList().begin(); iter != m_world->jointList().end(); ++iter)
@@ -140,6 +116,33 @@ namespace Physics2D
 				//draw grid
 				drawGridScaleLine(window);
 			}
+			if (m_bodyVisible)
+			{
+				sf::Color color = sf::Color::Green;
+
+				for (auto& body : m_world->bodyList())
+				{
+					ShapePrimitive primitive;
+					primitive.shape = body->shape();
+					primitive.transform.rotation = body->rotation();
+					primitive.transform.position = body->position();
+					if (body->sleep())
+						color = sf::Color(100, 100, 100);
+					else
+						color = RenderConstant::MaterialGreen;
+					if (body->type() == Body::BodyType::Static)
+						color = RenderConstant::MaterialTeal;
+					RenderSFMLImpl::renderShape(window, *this, primitive, color);
+
+					if (m_rotationLineVisible)
+						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
+
+					if (m_centerVisible)
+						RenderSFMLImpl::renderPoint(window, *this, primitive.transform.position, RenderConstant::MaterialGray);
+
+				}
+			}
+
 			if (m_contactVisible)
 			{
 				drawContacts(window);
@@ -375,13 +378,18 @@ namespace Physics2D
 		{
 			for (auto& elem : iter->second)
 			{
+				if (m_contactImpulseVisible)
+					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.localB), elem.bodyB->toWorldPoint(elem.localB) - elem.vcp.normal * elem.vcp.accumulatedNormalImpulse, RenderConstant::MaterialCyan);
+				if (m_contactFrictionVisible)
+					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.localB), elem.bodyB->toWorldPoint(elem.localB) - elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse, RenderConstant::MaterialYellow);
+
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyA->toWorldPoint(elem.localA), pink);
 				RenderSFMLImpl::renderPoint(window, *this, elem.bodyB->toWorldPoint(elem.localB), yellow);
-				if(m_contactImpulseVisible)
-					RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.normal * elem.vcp.accumulatedNormalImpulse), RenderConstant::MaterialCyan);
-				if(m_contactFrictionVisible)
-					RenderSFMLImpl::renderArrow(window, *this, elem.bodyA->toWorldPoint(elem.localA), elem.bodyA->toWorldPoint(elem.localA + elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse), RenderConstant::MaterialYellow);
-				
+
+				std::string str = std::format("{:.3f}", elem.vcp.accumulatedNormalImpulse);
+				const Vector2 offset(-0.05f, 0.05f);
+				RenderSFMLImpl::renderText(window, *this, elem.bodyA->toWorldPoint(elem.localA) + offset, m_font, str, yellow, 16);
+
 			}
 		}
 	}
@@ -468,5 +476,11 @@ namespace Physics2D
 	{
 		setWidth(width);
 		setHeight(height);
+	}
+
+	Camera::Camera()
+	{
+		if (!m_font.loadFromFile("font/MiSans-Medium.ttf"))
+			std::cout << "Cannot load font." << std::endl;
 	}
 }

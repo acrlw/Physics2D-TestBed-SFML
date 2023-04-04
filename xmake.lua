@@ -31,3 +31,20 @@ target("Physics2D-TestBed-SFML")
     add_files("Physics2D-TestBed-SFML/main.cpp")
     add_packages("sfml","imgui","imgui-sfml")
     add_deps("Physics2D")
+        after_build(function (target)
+        
+        local targetdir = target:targetdir()
+        local targetfile = path.join(targetdir, target:basename())
+
+        local font_src_dir = path.join(os.projectdir(), "Physics2D-TestBed-SFML/font")
+
+        local font_dst_dir = path.join(targetdir, "font")
+
+        if os.isdir(font_src_dir) then
+        
+            os.cp(font_src_dir, font_dst_dir)
+            print("font folder has been copied to: " .. font_dst_dir)
+        else
+            print("font folder not found in project directory.")
+        end
+    end)
