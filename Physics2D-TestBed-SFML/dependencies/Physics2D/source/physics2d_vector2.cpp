@@ -180,6 +180,17 @@ namespace Physics2D
 		return x * rhs.y - y * rhs.x;
 	}
 
+	Vector2& Vector2::matchSign(const Vector2& rhs)
+	{
+		x = std::abs(x);
+		y = std::abs(y);
+		if (rhs.x < 0)
+			x = -x;
+		if (rhs.y < 0)
+			y = -y;
+		return *this;
+	}
+
 	Vector2 Vector2::perpendicular() const
 	{
 		return Vector2(-y, x);
@@ -208,6 +219,11 @@ namespace Physics2D
 	Vector2 Vector2::crossProduct(const Vector2& lhs, const real& rhs)
 	{
 		return Vector2(lhs.y, -lhs.x) * rhs;
+	}
+
+	Vector2 Vector2::lerp(const Vector2& lhs, const Vector2& rhs, const real& t)
+	{
+		return lhs + (rhs - lhs) * t;
 	}
 
 	Vector2& Vector2::operator/=(const int& factor)

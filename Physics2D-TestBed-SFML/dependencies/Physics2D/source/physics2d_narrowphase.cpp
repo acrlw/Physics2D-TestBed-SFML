@@ -874,6 +874,27 @@ namespace Physics2D
 		else
 		{
 			pair = clipEdgeVertex(va1, va2, featureB.vertex[0], info);
+			//check if another vertex is valid.
+			Vector2 vb1 = shapeB.transform.inverseTranslatePoint(featureB.vertex[0]);
+			Vector2 vb2(halfWidth, halfHeight - halfWidth);
+			if (halfWidth > halfHeight)
+				vb2.set(halfWidth - halfHeight, halfHeight);
+
+			vb2.matchSign(vb1);
+
+			if (halfWidth > halfHeight)
+				vb2.x = -vb2.x;
+			else
+				vb2.y = -vb2.y;
+
+			vb2 = shapeB.transform.translatePoint(vb2);
+
+			Vector2 b = vb2 - va1;
+
+			if (!Math::sameSign(b.dot(va2 - va1), b.dot(vb2 - va2)) &&
+				GeometryAlgorithm2D::isPointOnSameSide(va1, va2, va1 + info.normal, vb2))
+				pair.addContact(GeometryAlgorithm2D::pointToLineSegment(va1, va2, vb2), vb2);
+			
 		}
 
 		return pair;
@@ -905,17 +926,12 @@ namespace Physics2D
 
 		const real halfWidth = capsule->halfWidth();
 		const real halfHeight = capsule->halfHeight();
-		real lhs = 0;
-		real rhs = 0;
+		real lhs = Math::abs(localB1.y);
+		real rhs = halfHeight - halfWidth;
 		if(halfWidth > halfHeight)
 		{
 			lhs = Math::abs(localB1.x);
 			rhs = halfWidth - halfHeight;
-		}
-		else
-		{
-			lhs = Math::abs(localB1.y);
-			rhs = halfHeight - halfWidth;
 		}
 
 		const bool isVertexB = fuzzyRealEqual(lhs, rhs, Constant::TrignometryEpsilon);
@@ -941,6 +957,27 @@ namespace Physics2D
 		else
 		{
 			pair = clipEdgeVertex(va1, va2, featureB.vertex[0], info);
+			//check if another vertex is valid.
+			Vector2 vb1 = shapeB.transform.inverseTranslatePoint(featureB.vertex[0]);
+			Vector2 vb2(halfWidth, halfHeight - halfWidth);
+			if (halfWidth > halfHeight)
+				vb2.set(halfWidth - halfHeight, halfHeight);
+
+			vb2.matchSign(vb1);
+
+			if(halfWidth > halfHeight)
+				vb2.x = -vb2.x;
+			else
+				vb2.y = -vb2.y;
+			
+			vb2 = shapeB.transform.translatePoint(vb2);
+			
+			Vector2 b = vb2 - va1;
+
+			if(!Math::sameSign(b.dot(va2 - va1), b.dot(vb2 - va2)) && 
+				GeometryAlgorithm2D::isPointOnSameSide(va1, va2, va1 + info.normal, vb2))
+				pair.addContact(GeometryAlgorithm2D::pointToLineSegment(va1, va2, vb2), vb2);
+			
 		}
 
 		return pair;

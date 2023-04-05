@@ -43,11 +43,11 @@ namespace Physics2D
 			//shape2.transform.position.set(0.500000477f, 0.499320120f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
-			shape1.shape = &polygon2;
-			shape1.transform.position.set(3.0, 0.0f);
+			shape1.shape = &capsule;
+			shape1.transform.position.set(0.0, 3.0f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &polygon1;
+			shape2.shape = &block;
 			shape2.transform.position.set(0.0f, 0.0f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
@@ -93,7 +93,7 @@ namespace Physics2D
 		}
 		void onKeyPressed(sf::Event& event) override
 		{
-			if(event.key.code == sf::Keyboard::R)
+			if(event.key.code == sf::Keyboard::E)
 			{
 				shape1.transform.rotation += Math::degreeToRadian(1.0f);
 			}
