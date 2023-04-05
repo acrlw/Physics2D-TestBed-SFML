@@ -47,7 +47,7 @@ namespace Physics2D
 			shape1.transform.position.set(0.0, 3.0f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &block;
+			shape2.shape = &edge;
 			shape2.transform.position.set(0.0f, 0.0f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
@@ -88,6 +88,8 @@ namespace Physics2D
 		void onMouseRelease(sf::Event& event) override
 		{
 			isPicked = false;
+			mousePos.clear();
+			currentPos.clear();
 			originTransform.clear();
 			clickObject = nullptr;
 		}
@@ -114,12 +116,12 @@ namespace Physics2D
 			//	if (next == info.polytope.end())
 			//		next = info.polytope.begin();
 
-			//	RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::MaterialPink);
-			//	RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::MaterialPink);
-			//	RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::MaterialPink);
+			//	RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::Pink);
+			//	RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::Pink);
+			//	RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::Pink);
 			//}
 			Simplex simplex = Narrowphase::gjk(shape1, shape2);
-			sf::Color color = simplex.isContainOrigin ? RenderConstant::MaterialTeal : RenderConstant::MaterialOrange;
+			sf::Color color = simplex.isContainOrigin ? RenderConstant::Teal : RenderConstant::Orange;
 
 
 			//RenderSFMLImpl::renderSimplex(window, *m_camera, simplex, color);
@@ -135,16 +137,16 @@ namespace Physics2D
 					if(next == info.polytope.end())
 						next = info.polytope.begin();
 
-					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::MaterialPink);
-					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::MaterialPink);
-					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::MaterialPink);
+					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::Pink);
+					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::Pink);
+					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::Pink);
 				}
 			//	
-			//	//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, RenderConstant::MaterialTeal);
+			//	//RenderSFMLImpl::renderSimplex(window, *m_camera, info.simplex, RenderConstant::Teal);
 			//	//Vector2 p = GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result,
 			//	//	info.simplex.vertices[1].result, { 0, 0 });
-			//	//RenderSFMLImpl::renderPoint(window, *m_camera, p, RenderConstant::MaterialOrange);
-			//	//RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, RenderConstant::MaterialOrange);
+			//	//RenderSFMLImpl::renderPoint(window, *m_camera, p, RenderConstant::Orange);
+			//	//RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, RenderConstant::Orange);
 
 				sf::Color color1 = sf::Color(239, 103, 50);
 				sf::Color color2 = sf::Color(252, 236, 86);
@@ -195,6 +197,8 @@ namespace Physics2D
 			}
 			if(isPicked)
 			{
+				if (mousePos.isOrigin() || currentPos.isOrigin())
+					return;
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);
 			}
 			// draw cull

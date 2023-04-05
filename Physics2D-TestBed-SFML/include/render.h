@@ -21,16 +21,16 @@ namespace Physics2D
         const int FillAlpha = 38;
         const int BasicCirclePointCount = 60;
         const real BasicDashLength = 2;
-        const sf::Color MaterialYellow = sf::Color(255, 235, 59);
-        const sf::Color MaterialRed = sf::Color(244, 67, 54);
-        const sf::Color MaterialBlue = sf::Color(55, 133, 205);
-        const sf::Color MaterialCyan = sf::Color(78, 184, 210);
-        const sf::Color MaterialGreen = sf::Color(0, 255, 0);
-        const sf::Color MaterialPink = sf::Color(233, 30, 99);
-        const sf::Color MaterialDarkGreen = sf::Color(44, 113, 48);
-        const sf::Color MaterialGray = sf::Color(158, 158, 158);
-        const sf::Color MaterialOrange = sf::Color(255, 138, 101);
-        const sf::Color MaterialTeal = sf::Color(29, 233, 182);
+        const sf::Color Yellow = sf::Color(255, 235, 59);
+        const sf::Color Red = sf::Color(244, 67, 54);
+        const sf::Color Blue = sf::Color(55, 133, 205);
+        const sf::Color Cyan = sf::Color(78, 184, 210);
+        const sf::Color Green = sf::Color(15, 250, 14);
+        const sf::Color Pink = sf::Color(233, 30, 99);
+        const sf::Color DarkGreen = sf::Color(44, 113, 48);
+        const sf::Color Gray = sf::Color(158, 158, 158);
+        const sf::Color Orange = sf::Color(255, 138, 101);
+        const sf::Color Teal = sf::Color(29, 233, 182);
         static real ScaleFactor = 1.0f;
     }
     class RenderSFMLImpl

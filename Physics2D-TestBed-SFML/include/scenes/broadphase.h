@@ -71,9 +71,9 @@ namespace Physics2D
 			//grid spatial hashing
 			grid.updateAll();
 			auto pairs = grid.generate();
-			sf::Color collisionColor = RenderConstant::MaterialPink;
-			sf::Color hitColor = RenderConstant::MaterialBlue;
-			sf::Color regionColor = RenderConstant::MaterialYellow;
+			sf::Color collisionColor = RenderConstant::Pink;
+			sf::Color hitColor = RenderConstant::Blue;
+			sf::Color regionColor = RenderConstant::Yellow;
 			sf::Color cellColor = sf::Color::Cyan;
 			cellColor.a = 155;
 			collisionColor.a = 50;
@@ -100,9 +100,9 @@ namespace Physics2D
 			//}
 			//sweep and prune
 			//auto pairs = SweepAndPrune::generate(bodyList);
-			//sf::Color collisionColor = RenderConstant::materialPink;
-			//sf::Color hitColor = RenderConstant::materialBlue;
-			//sf::Color regionColor = RenderConstant::materialYellow;
+			//sf::Color collisionColor = RenderConstant::Pink;
+			//sf::Color hitColor = RenderConstant::Blue;
+			//sf::Color regionColor = RenderConstant::Yellow;
 			//for(auto&& elem: pairs)
 			//{
 			//	RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);

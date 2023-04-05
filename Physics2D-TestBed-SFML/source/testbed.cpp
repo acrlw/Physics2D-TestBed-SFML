@@ -423,15 +423,15 @@ namespace Physics2D
             if (realEqual(length, 0))
                 return;
             Vector2 normal = v / length;
-            RenderSFMLImpl::renderPoint(window, m_camera, m_mouseArray[0], RenderConstant::MaterialGreen);
-            RenderSFMLImpl::renderPoint(window, m_camera, m_mouseArray[1], RenderConstant::MaterialGreen);
-            RenderSFMLImpl::renderLine(window, m_camera, m_mouseArray[0], m_mouseArray[1], RenderConstant::MaterialGreen);
+            RenderSFMLImpl::renderPoint(window, m_camera, m_mouseArray[0], RenderConstant::Green);
+            RenderSFMLImpl::renderPoint(window, m_camera, m_mouseArray[1], RenderConstant::Green);
+            RenderSFMLImpl::renderLine(window, m_camera, m_mouseArray[0], m_mouseArray[1], RenderConstant::Green);
             std::string str = std::format("{:.6f}", length);
             sf::Text text;
             text.setFont(m_camera.font());
             text.setString(str);
             text.setCharacterSize(16);
-            text.setFillColor(RenderConstant::MaterialGreen);
+            text.setFillColor(RenderConstant::Green);
             sf::FloatRect text_rect = text.getLocalBounds();
             text.setOrigin(text_rect.left + text_rect.width / 2.0f, text_rect.top + text_rect.height / 2.0f);
             const Vector2 t = normal.perpendicular();

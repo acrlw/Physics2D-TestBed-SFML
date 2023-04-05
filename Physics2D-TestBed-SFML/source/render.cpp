@@ -124,7 +124,7 @@ namespace Physics2D
 
 		Vector2 center = (edge->startPoint() + edge->endPoint()) / 2.0f;
 		center += shape.transform.position;
-		renderLine(window, camera, center, center + 0.1f * edge->normal(), RenderConstant::MaterialYellow);
+		renderLine(window, camera, center, center + 0.1f * edge->normal(), RenderConstant::Yellow);
 	}
 	void RenderSFMLImpl::renderRectangle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
@@ -330,15 +330,15 @@ namespace Physics2D
 		Vector2 n = (pa - pb).normal();
 		Vector2 minPoint = n * distanceJoint->primitive().minDistance + pb;
 		Vector2 maxPoint = n * distanceJoint->primitive().maxDistance + pb;
-		sf::Color minColor = RenderConstant::MaterialBlue;
-		sf::Color maxColor = RenderConstant::MaterialRed;
+		sf::Color minColor = RenderConstant::Blue;
+		sf::Color maxColor = RenderConstant::Red;
 		minColor.a = 204;
 		maxColor.a = 204;
-		renderPoint(window, camera, pa, RenderConstant::MaterialGray);
-		renderPoint(window, camera, pb, RenderConstant::MaterialGray);
+		renderPoint(window, camera, pa, RenderConstant::Gray);
+		renderPoint(window, camera, pb, RenderConstant::Gray);
 		renderPoint(window, camera, minPoint, minColor);
 		renderPoint(window, camera, maxPoint, maxColor);
-		sf::Color lineColor = RenderConstant::MaterialGray;
+		sf::Color lineColor = RenderConstant::Gray;
 		lineColor.a = 150;
 		renderLine(window, camera, pa, pb, lineColor);
 
@@ -350,7 +350,7 @@ namespace Physics2D
 		Vector2 pa = pointJoint->primitive().bodyA->toWorldPoint(pointJoint->primitive().localPointA);
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
-		sf::Color point = RenderConstant::MaterialOrange;
+		sf::Color point = RenderConstant::Orange;
 		sf::Color green = sf::Color::Green;
 		point.a = 204;
 		green.a = 78;
@@ -366,7 +366,7 @@ namespace Physics2D
 		Vector2 pa = pointJoint->primitive().bodyA->position();
 		Vector2 pb = pointJoint->primitive().targetPoint;
 
-		sf::Color point = RenderConstant::MaterialOrange;
+		sf::Color point = RenderConstant::Orange;
 		sf::Color green = sf::Color::Green;
 		point.a = 204;
 		green.a = 78;
@@ -388,7 +388,7 @@ namespace Physics2D
 		Vector2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
 		Vector2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
 
-		sf::Color point = RenderConstant::MaterialOrange;
+		sf::Color point = RenderConstant::Orange;
 		sf::Color green = sf::Color::Green;
 		point.a = 204;
 		green.a = 78;
@@ -407,7 +407,7 @@ namespace Physics2D
 		WeldJoint* weldJoint = static_cast<WeldJoint*>(joint);
 		Vector2 pa = weldJoint->primitive().bodyA->toWorldPoint(weldJoint->primitive().localPointA);
 		Vector2 pb = weldJoint->primitive().bodyB->toWorldPoint(weldJoint->primitive().localPointB);
-		sf::Color point = RenderConstant::MaterialOrange;
+		sf::Color point = RenderConstant::Orange;
 		sf::Color green = sf::Color::Green;
 		point.a = 204;
 		green.a = 78;

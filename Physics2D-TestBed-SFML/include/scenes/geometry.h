@@ -48,7 +48,7 @@ namespace Physics2D
 				auto next = iter + 1;
 				if (next == convex2.end())
 					next = convex2.begin();
-				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, RenderConstant::MaterialBlue);
+				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, RenderConstant::Blue);
 			}
 
 			for (auto iter = intersectionConvex.begin(); iter != intersectionConvex.end(); ++iter)

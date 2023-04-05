@@ -134,14 +134,14 @@ namespace Physics2D
 					if (body->sleep())
 						color = sf::Color(100, 100, 100);
 					else
-						color = RenderConstant::MaterialGreen;
+						color = RenderConstant::Green;
 					if (body->type() == Body::BodyType::Static)
-						color = RenderConstant::MaterialTeal;
+						color = RenderConstant::Teal;
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
 
 					if (m_centerVisible)
 					{
-						RenderSFMLImpl::renderPoint(window, *this, primitive.transform.position, RenderConstant::MaterialGray);
+						RenderSFMLImpl::renderPoint(window, *this, primitive.transform.position, RenderConstant::Gray);
 						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
 					}
 
@@ -149,14 +149,14 @@ namespace Physics2D
 					{
 						if (m_bodyVelocity)
 						{
-							RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + body->velocity(), RenderConstant::MaterialOrange, 0.2);
+							RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + body->velocity(), RenderConstant::Orange, 0.2);
 						}
 
 						if (m_bodyVelocityMagnitude)
 						{
 							std::string str = std::format("{:.3f}", body->velocity().length());
 							const Vector2 offset(-0.01f, 0.01f);
-							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font, str, RenderConstant::MaterialOrange, 16);
+							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font, str, RenderConstant::Orange, 16);
 
 						}
 
@@ -165,7 +165,7 @@ namespace Physics2D
 							Vector2 vel = body->velocity();
 							const real length = vel.length();
 							if (!realEqual(length, 0.0f))
-								RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + vel / length, RenderConstant::MaterialOrange, 0.2);
+								RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + vel / length, RenderConstant::Orange, 0.2);
 
 						}
 					}
@@ -429,7 +429,7 @@ namespace Physics2D
 	}
 	void Camera::drawContacts(sf::RenderWindow& window)
 	{
-		sf::Color pink = RenderConstant::MaterialPink;
+		sf::Color pink = RenderConstant::Pink;
 		sf::Color yellow = sf::Color::Yellow;
 		pink.a = 200;
 		yellow.a = 200;
@@ -441,13 +441,13 @@ namespace Physics2D
 				const Vector2 realA = elem.bodyA->toWorldPoint(elem.vcp.localA);
 				const Vector2 realB = elem.bodyB->toWorldPoint(elem.vcp.localB);
 				if (m_contactImpulseVisible)
-					RenderSFMLImpl::renderArrow(window, *this, realB, realB - elem.vcp.normal * elem.vcp.accumulatedNormalImpulse, RenderConstant::MaterialCyan, 0.2f);
+					RenderSFMLImpl::renderArrow(window, *this, realB, realB - elem.vcp.normal * elem.vcp.accumulatedNormalImpulse, RenderConstant::Cyan, 0.2f);
 
 				if (m_contactImpulseMagnitude)
-					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse, RenderConstant::MaterialCyan, 16);
+					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse, RenderConstant::Cyan, 16);
 
 				if (m_contactFrictionVisible)
-					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.vcp.localB), elem.bodyB->toWorldPoint(elem.vcp.localB) - elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse, RenderConstant::MaterialYellow, 0.2f);
+					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.vcp.localB), elem.bodyB->toWorldPoint(elem.vcp.localB) - elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse, RenderConstant::Yellow, 0.2f);
 
 				if (m_contactFrictionMagnitude)
 				{
@@ -463,7 +463,7 @@ namespace Physics2D
 	}
 	void Camera::drawGridScaleLine(sf::RenderWindow& window)
 	{
-		sf::Color darkGreen = RenderConstant::MaterialDarkGreen;
+		sf::Color darkGreen = RenderConstant::DarkGreen;
 		darkGreen.a = 210;
 		bool fineEnough = m_meterToPixel > 180;
 		real h;
