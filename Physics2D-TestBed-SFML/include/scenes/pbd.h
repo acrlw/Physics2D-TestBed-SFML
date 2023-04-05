@@ -20,7 +20,7 @@ namespace Physics2D
 				invMasses[i] = 0.5;
 			}
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 			sf::Color color = sf::Color::Yellow;
 			for (int i = 0; i < 10; ++i)
@@ -32,7 +32,7 @@ namespace Physics2D
 				RenderSFMLImpl::renderLine(window, *m_camera, positions[i], positions[i + 1], color);
 			}
 		}
-		void update(real dt) override
+		void postStep(real dt) override
 		{
 			for(size_t i = 0;i < 10;++i)
 			{

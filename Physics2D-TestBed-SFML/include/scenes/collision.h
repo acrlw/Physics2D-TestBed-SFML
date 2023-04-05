@@ -60,10 +60,7 @@ namespace Physics2D
 			//rect->setRestitution(0.0f);
 			//m_tree->insert(rect);
 		}
-		void render(sf::RenderWindow& window) override
-		{
-			int a = 0;
-		}
+
 	private:
 		Rectangle smallBrick;
 		Body* ground;

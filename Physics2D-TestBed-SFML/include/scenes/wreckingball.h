@@ -146,10 +146,7 @@ namespace Physics2D
 			m_world->createJoint(distancePrim);
 
 		}
-		void render(sf::RenderWindow& window) override
-		{
 
-		}
 	private:
 		Rectangle rectangle;
 		Rectangle brick;

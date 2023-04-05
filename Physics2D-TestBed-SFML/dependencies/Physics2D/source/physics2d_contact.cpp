@@ -15,10 +15,37 @@ namespace Physics2D
 	{
 		for (auto&& elem : m_contactTable)
 		{
-			if (elem.second.empty() || !elem.second[0].active)
+			if (elem.second.empty())
 				continue;
+
+			for(auto&& ccp: elem.second)
+			{
+				if (!ccp.active)
+					continue;
+
+				auto& vcp = ccp.vcp;
+				vcp.va = ccp.bodyA->velocity() + Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
+				vcp.vb = ccp.bodyB->velocity() + Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
+				Vector2 dv = vcp.va - vcp.vb;
+
+				real jvt = vcp.tangent.dot(dv);
+				real lambda_t = vcp.effectiveMassTangent * -jvt;
+
+				real maxFriction = ccp.friction * vcp.accumulatedNormalImpulse;
+				real newImpulse = Math::clamp(vcp.accumulatedTangentImpulse + lambda_t, -maxFriction, maxFriction);
+				lambda_t = newImpulse - vcp.accumulatedTangentImpulse;
+				vcp.accumulatedTangentImpulse = newImpulse;
+
+				Vector2 impulse_t = lambda_t * vcp.tangent;
+
+				ccp.bodyA->applyImpulse(impulse_t, vcp.ra);
+				ccp.bodyB->applyImpulse(-impulse_t, vcp.rb);
+			}
+
 			for (auto&& ccp : elem.second)
 			{
+				if(!ccp.active)
+					continue;
 
 				auto& vcp = ccp.vcp;
 
@@ -28,8 +55,8 @@ namespace Physics2D
 				vcp.vb = ccp.bodyB->velocity() + wb;
 
 				Vector2 dv = vcp.va - vcp.vb;
-				real jv = -1.0f * vcp.normal.dot(dv - vcp.velocityBias);
-				real lambda_n = vcp.effectiveMassNormal * jv;
+				real jv = vcp.normal.dot(dv - vcp.velocityBias);
+				real lambda_n = vcp.effectiveMassNormal * -jv;
 				real oldImpulse = vcp.accumulatedNormalImpulse;
 				vcp.accumulatedNormalImpulse = Math::max(oldImpulse + lambda_n, 0);
 				lambda_n = vcp.accumulatedNormalImpulse - oldImpulse;
@@ -39,81 +66,90 @@ namespace Physics2D
 				ccp.bodyA->applyImpulse(impulse_n, vcp.ra);
 				ccp.bodyB->applyImpulse(-impulse_n, vcp.rb);
 
-				vcp.va = ccp.bodyA->velocity() + Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
-				vcp.vb = ccp.bodyB->velocity() + Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
-				dv = vcp.va - vcp.vb;
-
-				real jvt = vcp.tangent.dot(dv);
-				real lambda_t = vcp.effectiveMassTangent * -jvt;
-
-				real maxT = ccp.friction * vcp.accumulatedNormalImpulse;
-				oldImpulse = vcp.accumulatedTangentImpulse;
-				vcp.accumulatedTangentImpulse = Math::clamp(oldImpulse + lambda_t, -maxT, maxT);
-
-				lambda_t = vcp.accumulatedTangentImpulse - oldImpulse;
-
-				Vector2 impulse_t = lambda_t * vcp.tangent;
-				
-
-				ccp.bodyA->applyImpulse(impulse_t, vcp.ra);
-				ccp.bodyB->applyImpulse(-impulse_t, vcp.rb);
-
 			}
 		}
 	}
 
-	void ContactMaintainer::solvePosition(real dt)
+	bool ContactMaintainer::solvePosition(real dt)
 	{
+
+		real maxPenetration = 0.0f;
 		for (auto&& elem : m_contactTable)
 		{
-			if (elem.second.empty() || !elem.second[0].active)
+			if (elem.second.empty())
 				continue;
+			Body* bodyA = elem.second[0].bodyA;
+			Body* bodyB = elem.second[0].bodyB;
+
+			const real im_a = bodyA->inverseMass();
+			const real im_b = bodyB->inverseMass();
+			const real ii_a = bodyA->inverseInertia();
+			const real ii_b = bodyB->inverseInertia();
+
+			Vector2 normal = elem.second[0].vcp.normal;
 			for (auto&& ccp : elem.second)
 			{
+				if (!ccp.active)
+					continue;
+
 				auto&& vcp = ccp.vcp;
-				Body* bodyA = ccp.bodyA;
-				Body* bodyB = ccp.bodyB;
-				Vector2 pa = bodyA->toWorldPoint(vcp.localA);
-				Vector2 pb = bodyB->toWorldPoint(vcp.localB);
+
+				Vector2 pa = bodyA->toWorldPoint(vcp.contactLocalA);
+				Vector2 pb = bodyB->toWorldPoint(vcp.contactLocalB);
+
 				Vector2 ra = pa - bodyA->position();
 				Vector2 rb = pb - bodyB->position();
 				Vector2 c = pb - pa;
 
-				const real bias =  Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
-				real lambda = vcp.effectiveMassNormal * bias;
+				real projected = c.dot(normal);
+				
 
-				Vector2 impulse = lambda * vcp.normal;
+				real penetration = vcp.penetration - projected;
 
-				vcp.positionCorrectionImpulse = impulse;
+				maxPenetration = Math::max(maxPenetration, penetration);
 
-				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
-				{
-					Vector2 dp = bodyA->inverseMass() * impulse;
-					real dr = bodyA->inverseInertia() * ra.cross(impulse);
-					bodyA->position() += dp;
-					bodyA->rotation() += dr;
-				}
+				const real bias =  Math::clamp(m_biasFactor * (penetration - m_maxPenetration), 0.0f, 0.2f);
 
-				if (bodyB->type() != Body::BodyType::Static && !bodyB->sleep())
-				{
-					Vector2 dp = bodyB->inverseMass() * impulse;
-					real dr = bodyB->inverseInertia() * rb.cross(impulse);
-					bodyB->position() -= dp;
-					bodyB->rotation() -= dr;
-				}
+				const real rn_a = ra.cross(normal);
+				const real rn_b = rb.cross(normal);
+
+				const real kNormal = im_a + ii_a * rn_a * rn_a +
+					im_b + ii_b * rn_b * rn_b;
+
+				const real effectiveMassNormal = realEqual(kNormal, 0.0f) ? 0 : 1.0f / kNormal;
+
+				real lambda = effectiveMassNormal * bias;
+
+				Vector2 impulse = lambda * normal;
+
+				//[DEBUG]
+				//vcp.positionCorrectionImpulse = impulse;
+
+				Vector2 dp = bodyA->inverseMass() * impulse;
+				real dr = bodyA->inverseInertia() * ra.cross(impulse);
+				bodyA->position() += dp;
+				bodyA->rotation() += dr;
+
+				dp = bodyB->inverseMass() * impulse;
+				dr = bodyB->inverseInertia() * rb.cross(impulse);
+				bodyB->position() -= dp;
+				bodyB->rotation() -= dr;
+
 			}
+
 		}
+		return maxPenetration < 3 * m_maxPenetration;
 	}
 
-	void ContactMaintainer::add(const Collision& collision)
+	void ContactMaintainer::updateContact(const Collision& collision)
 	{
 		const Body* bodyA = collision.bodyA;
 		const Body* bodyB = collision.bodyB;
 		const auto relation = Body::BodyPair::generateBodyPairID(collision.bodyA, collision.bodyB);
 
 		auto& contactList = m_contactTable[relation];
-
-		for(uint8_t i = 0; i < collision.contactList.count; i += 2)
+		
+		for(uint8_t i = 0, j = 0; i < collision.contactList.count; i += 2, ++j)
 		{
 			VertexPair elem;
 			elem.pointA = collision.contactList.points[i];
@@ -124,15 +160,15 @@ namespace Physics2D
 			Vector2 localB = bodyB->toLocalPoint(elem.pointB);
 			for (auto& contact : contactList)
 			{
-				const bool isPointA = localA.fuzzyEqual(contact.localA, 1e-5f);
-				const bool isPointB = localB.fuzzyEqual(contact.localB, 1e-5f);
-
+				const bool isPointA = localA.fuzzyEqual(contact.collisionLocalA, 1e-5f);
+				const bool isPointB = localB.fuzzyEqual(contact.collisionLocalB, 1e-5f);
+				
 				if (isPointA || isPointB)
 				{
 					//satisfy the condition, transmit the old accumulated value to new value
-					contact.localA = localA;
-					contact.localB = localB;
-					prepare(contact, elem, collision);
+					contact.collisionLocalA = localA;
+					contact.collisionLocalB = localB;
+					prepareContact(contact, elem, collision, collision.contactList.penetration[j]);
 					existed = true;
 					break;
 				}
@@ -142,13 +178,16 @@ namespace Physics2D
 				continue;
 			//no eligible contact, push new contact points
 			ContactConstraintPoint ccp;
-			ccp.localA = localA;
-			ccp.localB = localB;
+			ccp.collisionLocalA = localA;
+			ccp.collisionLocalB = localB;
 			ccp.relation = relation;
-			prepare(ccp, elem, collision);
+			prepareContact(ccp, elem, collision, collision.contactList.penetration[j]);
 			contactList.emplace_back(ccp);
 		}
 	}
+
+
+
 
 	void ContactMaintainer::clearInactivePoints()
 	{
@@ -178,9 +217,10 @@ namespace Physics2D
 			for (auto& ccp : iter->second)
 				ccp.active = false;
 		}
+
 	}
 
-	void ContactMaintainer::prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision)
+	void ContactMaintainer::prepareContact(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision, const real& penetration)
 	{
 		ccp.bodyA = collision.bodyA;
 		ccp.bodyB = collision.bodyB;
@@ -189,11 +229,16 @@ namespace Physics2D
 		ccp.friction = Math::sqrt(ccp.bodyA->friction() * ccp.bodyB->friction());
 
 		VelocityConstraintPoint& vcp = ccp.vcp;
-		vcp.localA = collision.bodyA->toLocalPoint(pair.pointA);
-		vcp.localB = collision.bodyB->toLocalPoint(pair.pointB);
 
-		vcp.ra = pair.pointA - collision.bodyA->position();
-		vcp.rb = pair.pointB - collision.bodyB->position();
+		//magic lerp
+		const Vector2 contact = Vector2::lerp(pair.pointA, pair.pointB, m_contactLerpFactor);
+		
+
+		vcp.contactLocalA = collision.bodyA->toLocalPoint(contact);
+		vcp.contactLocalB = collision.bodyB->toLocalPoint(contact);
+
+		vcp.ra = contact - collision.bodyA->position();
+		vcp.rb = contact - collision.bodyB->position();
 
 		vcp.normal = collision.normal;
 		vcp.tangent = vcp.normal.perpendicular();
@@ -220,7 +265,7 @@ namespace Physics2D
 
 		//vcp.bias = 0;
 		vcp.restitution = Math::min(ccp.bodyA->restitution(), ccp.bodyB->restitution());
-		vcp.penetration = collision.penetration;
+		vcp.penetration = penetration;
 
 		Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
 		Vector2 wb = Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
@@ -232,6 +277,8 @@ namespace Physics2D
 		//accumulate inherited impulse
 		Vector2 impulse = vcp.accumulatedNormalImpulse * vcp.normal + vcp.accumulatedTangentImpulse * vcp.tangent;
 		//Vector2 impulse;
+
+
 		ccp.bodyA->applyImpulse(impulse, vcp.ra);
 		ccp.bodyB->applyImpulse(-impulse, vcp.rb);
 		

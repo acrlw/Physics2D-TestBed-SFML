@@ -63,6 +63,8 @@ namespace Physics2D
 
 	void RenderSFMLImpl::renderShape(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape, const sf::Color& color)
 	{
+		if (shape.shape == nullptr)
+			return;
 		switch (shape.shape->type())
 		{
 		case Shape::Type::Polygon:
@@ -492,5 +494,11 @@ namespace Physics2D
 		text.setPosition(pos);
 
 		window.draw(text);
+	}
+	void RenderSFMLImpl::renderFloat(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font, 
+		const real& value, const sf::Color& color, const unsigned int& size, const Vector2& offset)
+	{
+		std::string str = std::format("{:.4f}", value);
+		renderText(window, camera, position + offset, font, str, RenderConstant::MaterialCyan, size);
 	}
 }

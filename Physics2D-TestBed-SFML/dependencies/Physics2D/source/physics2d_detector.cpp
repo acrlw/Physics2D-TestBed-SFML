@@ -69,8 +69,8 @@ namespace Physics2D
 			CollisionInfo info = Narrowphase::epa(simplex, shapeA, shapeB);
 			result.normal = info.normal;
 			result.isColliding = isColliding;
-			result.penetration = info.penetration;
-			if (!realEqual(result.penetration, 0))
+			result.maxPenetration = info.maxPenetration;
+			if (!realEqual(result.maxPenetration, 0))
 				result.contactList = Narrowphase::generateContacts(shapeA, shapeB, info);
 			else
 				result.isColliding = false;
@@ -163,6 +163,8 @@ namespace Physics2D
 		if (result.contactList.features[2] > result.contactList.features[3])
 			std::swap(result.contactList.features[2], result.contactList.features[3]);
 
+		result.contactList.penetration[0] = (result.contactList.points[0] - result.contactList.points[1]).length();
+		result.contactList.penetration[1] = (result.contactList.points[2] - result.contactList.points[3]).length();
 
 		return result;
 	}

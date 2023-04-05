@@ -81,10 +81,7 @@ namespace Physics2D
 			m_world->createJoint(ppm);
 
 		}
-		void render(sf::RenderWindow& window) override
-		{
 
-		}
 	private:
 		Rectangle brick;
 		Edge edge;

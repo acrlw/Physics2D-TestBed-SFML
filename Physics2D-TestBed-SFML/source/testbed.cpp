@@ -32,8 +32,8 @@ namespace Physics2D
         m_system.world().setAirFrictionCoefficient(0.8f);
         m_system.world().setAngularVelocityDamping(0.1f);
         m_system.world().setEnableDamping(true);
-        m_system.positionIteration() = 0;
-        m_system.velocityIteration() = 1;
+        m_system.positionIteration() = 1;
+        m_system.velocityIteration() = 5;
 
         m_pointJointPrimitive.bodyA = nullptr;
         m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
@@ -94,6 +94,13 @@ namespace Physics2D
             restart();
             break;
         }
+        case sf::Keyboard::LControl:
+        {
+            m_onDistanceCheck = false;
+            m_mouseArray[0].clear();
+            m_mouseArray[1].clear();
+            break;
+        }
         default:
             break;
         }
@@ -104,6 +111,10 @@ namespace Physics2D
     {
         if (m_currentFrame != nullptr)
             m_currentFrame->onKeyPressed(event);
+
+        if(event.key.code == sf::Keyboard::LControl)
+            m_onDistanceCheck = true;
+		
     }
     void TestBed::onMouseReleased(sf::Event& event)
     {
@@ -140,6 +151,9 @@ namespace Physics2D
         if (m_currentFrame != nullptr)
             m_currentFrame->onMouseMove(event);
 
+        if (m_onDistanceCheck)
+            m_mouseArray[1] = m_mousePos;
+
         if (m_mouseJoint == nullptr)
             return;
 
@@ -147,11 +161,16 @@ namespace Physics2D
         prim.targetPoint = m_mousePos;
         //prim.clear();
         m_mouseJoint->set(prim);
+
+        
     }
     void TestBed::onMousePressed(sf::Event& event)
     {
         Vector2 pos(real(event.mouseButton.x), real(event.mouseButton.y));
         m_mousePos = m_camera.screenToWorld(pos);
+
+        if (m_onDistanceCheck)
+            m_mouseArray[0] = m_mousePos;
 
         if (event.mouseButton.button == sf::Mouse::Right)
             m_cameraViewportMovement = true;
@@ -189,6 +208,7 @@ namespace Physics2D
                 }
             }
         }
+        
     }
 
     void TestBed::onWheelScrolled(sf::Event &event) {
@@ -265,14 +285,23 @@ namespace Physics2D
                     break;
                 }
             }
-            simulate();
 
+            const bool userDrawValid = m_currentFrame != nullptr && m_userDrawVisible;
+            if (userDrawValid)
+                m_currentFrame->preRender(*m_window);
+
+            simulate();
             m_camera.render(*m_window);
-            if (m_currentFrame != nullptr && m_userDrawVisible)
-                m_currentFrame->render(*m_window);
+
+
+            if (userDrawValid)
+                m_currentFrame->postRender(*m_window);
 
             renderGUI(*m_window, deltaClock);
 
+            render(*m_window);
+
+            m_window->display();
         }
 
         ImGui::SFML::Shutdown();
@@ -286,14 +315,14 @@ namespace Physics2D
 
 
         ImGui::SFML::Update(window, clock.restart());
-        ImGui::Begin("Panel", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
         ImGuiStyle& style = ImGui::GetStyle();
         style.WindowRounding = 5.0f;
         style.Colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 0.55f);
 
-        ImGui::PushItemWidth(200);
+        //ImGui::PushItemWidth(300);
         ImGui::SetWindowPos("Panel", ImVec2(0, 0));
+        ImGui::Begin("Panel", nullptr, ImGuiWindowFlags_NoResize);
         ImGui::Text("Scenes");
 
         int oldItem = m_currentItem;
@@ -304,8 +333,8 @@ namespace Physics2D
 
         ImGui::Separator();
         ImGui::Text("Iteration");
-        ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 0, 20);
-        ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 0, 20);
+        ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 1);
+        ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 20);
 
         ImGui::Separator();
         ImGui::Text("Time");
@@ -314,9 +343,10 @@ namespace Physics2D
         ImGui::Checkbox("Slice Delta Time", &m_system.sliceDeltaTime());
 
         ImGui::Separator();
-        ImGui::Text("Contact");
-        ImGui::SliderFloat("Contact Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.20f);
+        ImGui::Text("Penetration");
+        ImGui::SliderFloat("Bias Factor", &m_system.maintainer().m_biasFactor, 0.01f, 0.20f);
         ImGui::SliderFloat("Max Penetration", &m_system.maintainer().m_maxPenetration, 0.001f, 0.1f);
+        ImGui::SliderFloat("Contact Lerp Factor", &m_system.maintainer().m_contactLerpFactor, 0.5f, 1.0f, "%.2f");
 
         ImGui::Separator();
         ImGui::Text("Body");
@@ -324,33 +354,48 @@ namespace Physics2D
 
         ImGui::Separator();
         ImGui::Text("Solver");
-        ImGui::Checkbox("Prepare Joint", &m_system.prepareJoint());
+        ImGui::Columns(2, NULL);
         ImGui::Checkbox("Solve Joint Vel", &m_system.solveJointVelocity());
         ImGui::Checkbox("Solve Joint Pos", &m_system.solveJointPosition());
+        ImGui::NextColumn();
         ImGui::Checkbox("Solve Contact Vel", &m_system.solveContactVelocity());
         ImGui::Checkbox("Solve Contact Pos", &m_system.solveContactPosition());
+        ImGui::NextColumn();
+        ImGui::Columns(1, NULL);
 
         ImGui::Separator();
-        ImGui::Text("Visible");
+        ImGui::Text("Render");
         ImGui::Columns(2, NULL);
         ImGui::Checkbox("Body", &m_camera.bodyVisible());
-        ImGui::Checkbox("AABB", &m_camera.aabbVisible());
         ImGui::Checkbox("Joint", &m_camera.jointVisible());
+        ImGui::Checkbox("Center", &m_camera.centerVisible());
+        ImGui::Checkbox("User Draw", &m_userDrawVisible);
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("AABB", &m_camera.aabbVisible());
         ImGui::Checkbox("Grid Scale Line", &m_camera.gridScaleLineVisible());
         ImGui::Checkbox("Tree", &m_camera.treeVisible());
         ImGui::Checkbox("Uniform Grid", &m_camera.uniformGridVisible());
         ImGui::NextColumn();
+        ImGui::Columns(1, NULL);
 
+        ImGui::Separator();
+        ImGui::Text("Data");
+        ImGui::Columns(2, NULL);
         ImGui::Checkbox("Contacts", &m_camera.contactVisible());
         ImGui::Checkbox("Contacts Impulse", &m_camera.contactImpulseVisible());
+        ImGui::Checkbox("Contacts Impulse Mag", &m_camera.contactImpulseMagnitude());
         ImGui::Checkbox("Contacts Friction", &m_camera.contactFrictionVisible());
-        ImGui::Checkbox("User Draw", &m_userDrawVisible);
-        ImGui::Checkbox("Angle", &m_camera.rotationLineVisible());
-        ImGui::Checkbox("Center", &m_camera.centerVisible());
+        ImGui::NextColumn();
 
+        ImGui::Checkbox("Contacts Friction Mag", &m_camera.contactFrictionMagnitude());
+        ImGui::Checkbox("Linear Velocity", &m_camera.bodyVelocity());
+        ImGui::Checkbox("Linear Velocity Mag", &m_camera.bodyVelocityMagnitude());
+        ImGui::Checkbox("Linear Velocity Normal", &m_camera.bodyVelocityNormal());
         ImGui::NextColumn();
 
         ImGui::Columns(1, NULL);
+
         ImGui::Separator();
         ImGui::Text("Running: %s", m_running ? "True" : "False");
 
@@ -369,7 +414,24 @@ namespace Physics2D
             m_currentFrame->renderUI();
 
         ImGui::SFML::Render(window);
-        window.display();
+    }
+    void TestBed::render(sf::RenderWindow& window)
+    {
+        if(m_onDistanceCheck)
+        {
+            if (m_mouseArray[0].isOrigin() || m_mouseArray[1].isOrigin())
+                return;
+            Vector2 v = m_mouseArray[1] - m_mouseArray[0];
+            real length = v.length();
+            if (realEqual(length, 0))
+                return;
+            Vector2 offset = v / length * 0.001f;
+            RenderSFMLImpl::renderPoint(window, m_camera, m_mouseArray[0], RenderConstant::MaterialGreen);
+            RenderSFMLImpl::renderPoint(window, m_camera, m_mouseArray[1], RenderConstant::MaterialGreen);
+            RenderSFMLImpl::renderLine(window, m_camera, m_mouseArray[0], m_mouseArray[1], RenderConstant::MaterialGreen);
+            std::string str = std::format("{:.6f}", length);
+            RenderSFMLImpl::renderText(window, m_camera, m_mouseArray[1] + offset, m_camera.font(), str, RenderConstant::MaterialGreen);
+        }
     }
     void TestBed::pause()
     {
@@ -382,9 +444,14 @@ namespace Physics2D
     void TestBed::step()
     {
         real dt = 1.0f / real(m_frequency);
+        const bool valid = m_currentFrame != nullptr;
+        if (valid)
+            m_currentFrame->preStep(dt);
+
     	m_system.step(dt);
-	    if(m_currentFrame != nullptr)
-		    m_currentFrame->update(dt);
+
+        if (valid)
+            m_currentFrame->postStep(dt);
 
     }
     void TestBed::simulate()

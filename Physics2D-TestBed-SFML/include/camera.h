@@ -41,12 +41,18 @@ namespace Physics2D
         bool& gridScaleLineVisible();
         bool& visible();
         bool& treeVisible();
-        bool& rotationLineVisible();
         bool& centerVisible();
         bool& contactVisible();
         bool& uniformGridVisible();
         bool& contactImpulseVisible();
+        bool& contactImpulseMagnitude();
         bool& contactFrictionVisible();
+        bool& contactFrictionMagnitude();
+        sf::Font& font();
+
+        bool& bodyVelocity();
+        bool& bodyVelocityNormal();
+        bool& bodyVelocityMagnitude();
 
         real axisPointCount()const;
         void setAxisPointCount(real count);
@@ -104,11 +110,19 @@ namespace Physics2D
         bool m_treeVisible = false;
         bool m_uniformGridVisible = false;
         bool m_gridScaleLineVisible = true;
-        bool m_rotationLineVisible = false;
         bool m_centerVisible = false;
+
         bool m_contactVisible = false;
         bool m_contactImpulseVisible = false;
         bool m_contactFrictionVisible = false;
+
+        bool m_contactImpulseMagnitude = false;
+        bool m_contactFrictionMagnitude = false;
+
+        bool m_bodyVelocity = false;
+        bool m_bodyVelocityNormal = false;
+        bool m_bodyVelocityMagnitude = false;
+
 
 
         real m_meterToPixel = 50.0f;

@@ -133,12 +133,38 @@ namespace Physics2D
 					if (body->type() == Body::BodyType::Static)
 						color = RenderConstant::MaterialTeal;
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
-
-					if (m_rotationLineVisible)
-						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
+					
 
 					if (m_centerVisible)
+					{
+						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
 						RenderSFMLImpl::renderPoint(window, *this, primitive.transform.position, RenderConstant::MaterialGray);
+					}
+
+					if (body->type() != Body::BodyType::Static)
+					{
+						if (m_bodyVelocity)
+						{
+							RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + body->velocity(), RenderConstant::MaterialOrange, 0.2);
+						}
+
+						if (m_bodyVelocityMagnitude)
+						{
+							std::string str = std::format("{:.3f}", body->velocity().length());
+							const Vector2 offset(-0.01f, 0.01f);
+							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font, str, RenderConstant::MaterialOrange, 16);
+
+						}
+
+						if (m_bodyVelocityNormal)
+						{
+							Vector2 vel = body->velocity();
+							const real length = vel.length();
+							if (!realEqual(length, 0.0f))
+								RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + vel / length, RenderConstant::MaterialOrange, 0.2);
+
+						}
+					}
 
 				}
 			}
@@ -187,10 +213,10 @@ namespace Physics2D
 
 	void Camera::setMeterToPixel(const real& meterToPixel)
 	{
-		if (meterToPixel < 1.0)
+		if (meterToPixel < 1.0f)
 		{
-			m_targetMeterToPixel = 1.0;
-			m_targetPixelToMeter = 1.0;
+			m_targetMeterToPixel = 1.0f;
+			m_targetPixelToMeter = 1.0f;
 			return;
 		}
 		m_targetMeterToPixel = meterToPixel;
@@ -246,12 +272,12 @@ namespace Physics2D
 	void Camera::setViewport(const Viewport& viewport)
 	{
 		m_viewport = viewport;
-		m_origin.set((m_viewport.topLeft.x + m_viewport.bottomRight.x) * (0.5), (m_viewport.topLeft.y + m_viewport.bottomRight.y) * (0.5));
+		m_origin.set((m_viewport.topLeft.x + m_viewport.bottomRight.x) * 0.5f, (m_viewport.topLeft.y + m_viewport.bottomRight.y) * 0.5f);
 	}
 	Vector2 Camera::worldToScreen(const Vector2& pos)const
 	{
-		Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
-		return Vector2(real_origin.x + pos.x * m_meterToPixel, real_origin.y - pos.y * m_meterToPixel);
+		const Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
+		return { real_origin.x + pos.x * m_meterToPixel, real_origin.y - pos.y * m_meterToPixel };
 	}
 	Vector2 Camera::screenToWorld(const Vector2& pos)const
 	{
@@ -293,12 +319,6 @@ namespace Physics2D
 		m_deltaTime = deltaTime;
 	}
 
-	bool& Camera::rotationLineVisible()
-	{
-		return m_rotationLineVisible;
-	}
-
-
 	bool& Camera::centerVisible()
 	{
 		return m_centerVisible;
@@ -319,10 +339,41 @@ namespace Physics2D
 		return m_contactImpulseVisible;
 	}
 
+	bool& Camera::contactImpulseMagnitude()
+	{
+		return m_contactImpulseMagnitude;
+	}
+
 	bool& Camera::contactFrictionVisible()
 	{
 		return m_contactFrictionVisible;
 	}
+
+	bool& Camera::contactFrictionMagnitude()
+	{
+		return m_contactFrictionMagnitude;
+	}
+
+	sf::Font& Camera::font()
+	{
+		return m_font;
+	}
+
+	bool& Camera::bodyVelocity()
+	{
+		return m_bodyVelocity;
+	}
+
+	bool& Camera::bodyVelocityNormal()
+	{
+		return m_bodyVelocityNormal;
+	}
+
+	bool& Camera::bodyVelocityMagnitude()
+	{
+		return m_bodyVelocityMagnitude;
+	}
+
 
 	ContactMaintainer* Camera::maintainer() const
 	{
@@ -378,17 +429,27 @@ namespace Physics2D
 		{
 			for (auto& elem : iter->second)
 			{
+				const Vector2 realA = elem.bodyA->toWorldPoint(elem.vcp.contactLocalA);
+				const Vector2 realB = elem.bodyB->toWorldPoint(elem.vcp.contactLocalB);
 				if (m_contactImpulseVisible)
-					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.localB), elem.bodyB->toWorldPoint(elem.localB) - elem.vcp.normal * elem.vcp.accumulatedNormalImpulse, RenderConstant::MaterialCyan);
+					RenderSFMLImpl::renderArrow(window, *this, realB, realB - elem.vcp.normal * elem.vcp.accumulatedNormalImpulse, RenderConstant::MaterialCyan, 0.2f);
+
+				if(m_contactImpulseMagnitude)
+					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse, RenderConstant::MaterialCyan, 16);
+					
 				if (m_contactFrictionVisible)
-					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.localB), elem.bodyB->toWorldPoint(elem.localB) - elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse, RenderConstant::MaterialYellow);
+					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.vcp.contactLocalB), elem.bodyB->toWorldPoint(elem.vcp.contactLocalB) - elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse, RenderConstant::MaterialYellow, 0.2f);
 
-				RenderSFMLImpl::renderPoint(window, *this, elem.bodyA->toWorldPoint(elem.localA), pink);
-				RenderSFMLImpl::renderPoint(window, *this, elem.bodyB->toWorldPoint(elem.localB), yellow);
+				if (m_contactFrictionMagnitude)
+				{
+					const Vector2 offset(0.05f, -0.05f);
+					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedTangentImpulse, yellow, 16, offset);
 
-				std::string str = std::format("{:.3f}", elem.vcp.accumulatedNormalImpulse);
-				const Vector2 offset(-0.05f, 0.05f);
-				RenderSFMLImpl::renderText(window, *this, elem.bodyA->toWorldPoint(elem.localA) + offset, m_font, str, yellow, 16);
+				}
+
+				RenderSFMLImpl::renderPoint(window, *this, realA, pink);
+				RenderSFMLImpl::renderPoint(window, *this, realB, yellow);
+
 
 			}
 		}

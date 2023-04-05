@@ -97,11 +97,7 @@ namespace Physics2D
 			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
 
 		}
-		void render(sf::RenderWindow& window) override
-		{
-			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
 
-		}
 	private:
 		Rectangle block;
 		Rectangle brick;

@@ -51,6 +51,7 @@ namespace Physics2D
         void onWheelScrolled(sf::Event& event);
         //render
 		void renderGUI(sf::RenderWindow& window, sf::Clock& clock);
+		void render(sf::RenderWindow& window);
         //simulation
 		void pause();
 		void restart();
@@ -87,6 +88,9 @@ namespace Physics2D
         std::unique_ptr<sf::RenderWindow> m_window;
 
 		std::array<std::function<Frame* ()>, 21> m_frameList;
+
+		bool m_onDistanceCheck = false;
+		Vector2 m_mouseArray[2];
     };
 }
 #endif

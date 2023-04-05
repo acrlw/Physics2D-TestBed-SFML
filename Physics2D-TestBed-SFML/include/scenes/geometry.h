@@ -33,7 +33,7 @@ namespace Physics2D
 			intersectionConvex = GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(convex1, convex2);
 
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 			for (auto iter = convex1.begin(); iter != convex1.end(); ++iter)
 			{

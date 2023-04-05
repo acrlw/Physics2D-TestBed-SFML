@@ -38,10 +38,7 @@ namespace Physics2D
 				m_tree->insert(body);
 			}
 		}
-		void render(sf::RenderWindow& window) override
-		{
 
-		}
 	private:
 		Circle circle;
 		Edge edge;

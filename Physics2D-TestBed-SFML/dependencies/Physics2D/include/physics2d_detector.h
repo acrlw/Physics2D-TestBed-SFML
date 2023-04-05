@@ -14,7 +14,7 @@ namespace Physics2D
 		Body* bodyB = nullptr;
 		ContactPair contactList;
 		Vector2 normal;
-		real penetration = 0;
+		real maxPenetration = 0;
 	};
 
 	class PHYSICS2D_API Detector

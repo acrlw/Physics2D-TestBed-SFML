@@ -50,7 +50,7 @@ namespace Physics2D
 			}
 
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 			Vector2 p;
 			Vector2 d = m_mousePos.normal();

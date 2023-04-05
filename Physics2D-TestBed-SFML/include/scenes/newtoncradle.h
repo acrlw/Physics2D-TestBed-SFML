@@ -66,10 +66,7 @@ namespace Physics2D
 			m_tree->insert(ball);
 		}
 
-		void render(sf::RenderWindow& window) override
-		{
 
-		}
 	private:
 		Circle circle;
 

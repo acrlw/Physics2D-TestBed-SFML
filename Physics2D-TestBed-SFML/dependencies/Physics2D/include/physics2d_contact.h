@@ -9,8 +9,8 @@ namespace Physics2D
 {
 	struct PHYSICS2D_API VelocityConstraintPoint
 	{
-		Vector2 localA;
-		Vector2 localB;
+		Vector2 contactLocalA;
+		Vector2 contactLocalB;
 		Vector2 ra;
 		Vector2 rb;
 		Vector2 va;
@@ -34,8 +34,8 @@ namespace Physics2D
 		Body::BodyPair::BodyPairID relation = 0;
 		real friction = 0.2f;
 		bool active = true;
-		Vector2 localA;
-		Vector2 localB;
+		Vector2 collisionLocalA;
+		Vector2 collisionLocalB;
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
 		VelocityConstraintPoint vcp;
@@ -45,16 +45,20 @@ namespace Physics2D
 	public:
 		void clearAll();
 		void solveVelocity(real dt);
-		void solvePosition(real dt);
-		void add(const Collision& collision);
-		void prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision);
+		bool solvePosition(real dt);
+		void updateContact(const Collision& collision);
+
+		void prepareContact(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision, const real& penetration);
 		void clearInactivePoints();
 		void deactivateAllPoints();
-		real m_maxPenetration = 0.001f;
+		real m_maxPenetration = 0.005f;
 		real m_biasFactor = 0.2f;
+		real m_contactLerpFactor = 0.70f;
 		bool m_velocityBlockSolver = true;
 		bool m_positionBlockSolver = false;
 		Container::Map<Body::BodyPair::BodyPairID, Container::Vector<ContactConstraintPoint>> m_contactTable;
+
+
 	private:
 	};
 

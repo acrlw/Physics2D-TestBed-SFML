@@ -58,11 +58,11 @@ namespace Physics2D
 			sensorRegion.shape = &circle;
 			sensorRegion.transform.position.set(0.0f, 15.0f);
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 			RenderSFMLImpl::renderShape(window, *m_camera, sensorRegion, sf::Color::Cyan);
 		}
-		void update(real dt)override
+		void postStep(real dt)override
 		{
 			auto bodyList = m_tree->query(AABB::fromShape(sensorRegion));
 			for (auto& body : bodyList)

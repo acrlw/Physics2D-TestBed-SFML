@@ -17,10 +17,12 @@ namespace Physics2D
 		Frame(std::string name, PhysicsWorld* world, ContactMaintainer* maintainer,
 			Tree* tree, UniformGrid* grid, Camera* camera) : m_name(name), m_world(world), m_maintainer(maintainer),
 			m_tree(tree), m_grid(grid), m_camera(camera) {}
-		virtual void update(real dt) {}
+		virtual void postStep(real dt) {}
+		virtual void preStep(real dt) {}
 		virtual void load() {}
 		virtual void release() {}
-		virtual void render(sf::RenderWindow& window) {}
+		virtual void preRender(sf::RenderWindow& window) {}
+		virtual void postRender(sf::RenderWindow& window) {}
 		virtual void renderUI() {}
 		virtual void onMousePress(sf::Event& event) {}
 		virtual void onMouseRelease(sf::Event& event) {}
@@ -28,6 +30,7 @@ namespace Physics2D
 		virtual void onMouseDoubleClick(sf::Event& event) {}
 		virtual void onKeyRelease(sf::Event& event) {}
 		virtual void onKeyPressed(sf::Event& event) {}
+		virtual ~Frame() = default;
 		void setCurrentBody(Body* body) { m_currentBody = body; }
 		Body* currentBody()const { return m_currentBody; }
 		std::string name()const
@@ -39,6 +42,18 @@ namespace Physics2D
 			m_name = name;
 		}
 	protected:
+
+		ImVec2 toImVec2(const Vector2& vec)
+		{
+			return ImVec2{ vec.x, vec.y };
+		}
+
+		ImVec2 worldToImVec2(const Camera& cam, const Vector2& vec)
+		{
+			Vector2 v = cam.worldToScreen(vec);
+			return *reinterpret_cast<ImVec2*>(&v);
+		}
+
 		std::string m_name;
 		PhysicsWorld* m_world = nullptr;
 		ContactMaintainer* m_maintainer = nullptr;

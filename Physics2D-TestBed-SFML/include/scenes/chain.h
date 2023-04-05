@@ -74,10 +74,7 @@ namespace Physics2D
 			}
 
 		}
-		void render(sf::RenderWindow& window) override
-		{
 
-		}
 	private:
 		Rectangle brick;
 		Edge edge;

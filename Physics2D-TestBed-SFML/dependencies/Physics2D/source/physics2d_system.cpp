@@ -35,11 +35,6 @@ namespace Physics2D
         return m_solveContactPosition;
     }
 
-    bool& PhysicsSystem::prepareJoint()
-    {
-        return m_prepareJoint;
-    }
-
     PhysicsWorld &PhysicsSystem::world()
     {
         return m_world;
@@ -70,7 +65,6 @@ namespace Physics2D
         if(!solveCCD(dt))
             solve(dt);
 
-        updateTree();
     }
     void PhysicsSystem::updateTree()
     {
@@ -149,13 +143,12 @@ namespace Physics2D
         {
             auto result = Detector::detect(pair.first, pair.second);
             if (result.isColliding) {
-                m_maintainer.add(result);
+                m_maintainer.updateContact(result);
             }
         }
         m_maintainer.clearInactivePoints();
-
-        if(m_prepareJoint)
-			m_world.prepareVelocityConstraint(dt);
+        
+    	m_world.prepareVelocityConstraint(dt);
 
         for (int i = 0; i < m_velocityIteration; ++i)
         {
@@ -165,6 +158,7 @@ namespace Physics2D
             if (m_solveContactVelocity)
 				m_maintainer.solveVelocity(vdt);
         }
+
         m_world.stepPosition(dt);
 
         //solve penetration use contact pairs from previous velocity solver settings
@@ -172,12 +166,15 @@ namespace Physics2D
         for (int i = 0; i < m_positionIteration; ++i)
         {
             if(m_solveContactPosition)
-				m_maintainer.solvePosition(pdt);
+                if(m_maintainer.solvePosition(pdt))
+                    break;
 
-            if(m_solveJointPosition)
-				m_world.solvePositionConstraint(pdt);
+    //        if(m_solveJointPosition)
+				//m_world.solvePositionConstraint(pdt);
         }
 
         m_maintainer.deactivateAllPoints();
+
+        updateTree();
     }
 }

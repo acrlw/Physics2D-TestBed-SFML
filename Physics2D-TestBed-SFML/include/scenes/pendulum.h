@@ -76,7 +76,7 @@ namespace Physics2D
 
 			m_world->setEnableDamping(false);
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 			if (points.size() > 400)
 				points.pop_front();

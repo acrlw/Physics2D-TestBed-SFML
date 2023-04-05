@@ -167,7 +167,7 @@ namespace Physics2D
 			forwardSteps += step;
 			if (const auto result = Detector::detect(staticBody, dynamicBody); result.isColliding)
 			{
-				if (std::fabs(result.penetration) < epsilon || counter >= Constant::CCDMaxIterations)
+				if (std::fabs(result.maxPenetration) < epsilon || counter >= Constant::CCDMaxIterations)
 				{
 					staticBody->setPhysicsAttribute(staticOrigin);
 					dynamicBody->setPhysicsAttribute(dynamicOrigin);

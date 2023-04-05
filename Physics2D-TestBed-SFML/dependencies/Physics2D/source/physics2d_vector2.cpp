@@ -210,6 +210,11 @@ namespace Physics2D
 		return Vector2(lhs.y, -lhs.x) * rhs;
 	}
 
+	Vector2 Vector2::lerp(const Vector2& lhs, const Vector2& rhs, const real& t)
+	{
+		return lhs + (rhs - lhs) * t;
+	}
+
 	Vector2& Vector2::operator/=(const int& factor)
 	{
 		assert(!realEqual(factor, 0));

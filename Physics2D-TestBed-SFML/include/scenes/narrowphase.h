@@ -93,12 +93,12 @@ namespace Physics2D
 		}
 		void onKeyPressed(sf::Event& event) override
 		{
-			if(event.key.code == sf::Keyboard::R)
+			if(event.key.code == sf::Keyboard::E)
 			{
 				shape1.transform.rotation += Math::degreeToRadian(1.0f);
 			}
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 
 			RenderSFMLImpl::renderShape(window, *m_camera, shape1, sf::Color::Green);
@@ -189,7 +189,7 @@ namespace Physics2D
 				}
 			//	////draw final normal
 
-				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.penetration, sf::Color::Green);
+				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal * info.maxPenetration, sf::Color::Green);
 				RenderSFMLImpl::renderArrow(window, *m_camera, shape1.transform.position, shape1.transform.position + info.normal, sf::Color::Cyan);
 
 			}

@@ -114,7 +114,7 @@ namespace Physics2D
 			m_tree->insert(ground);
 
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 			sf::Color color = sf::Color::Cyan;
 			color.a = 155;
@@ -126,7 +126,7 @@ namespace Physics2D
 		{
 			m_camera->setTargetBody(nullptr);
 		}
-		void update(real dt) override
+		void postStep(real dt) override
 		{
 			updateJoint();
 		}

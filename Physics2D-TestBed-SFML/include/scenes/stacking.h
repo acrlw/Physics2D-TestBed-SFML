@@ -49,10 +49,7 @@ namespace Physics2D
 				offset += 0.5f;
 			}
 		}
-		void render(sf::RenderWindow& window) override
-		{
 
-		}
 	private:
 		Rectangle rectangle;
 		Edge edge;

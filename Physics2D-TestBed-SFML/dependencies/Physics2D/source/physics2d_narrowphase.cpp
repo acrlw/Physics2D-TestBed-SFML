@@ -171,12 +171,12 @@ namespace Physics2D
 		const Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result, info.simplex.vertices[1].result
 			, { 0, 0 });
 		
-		info.penetration = temp.length();
+		info.maxPenetration = temp.length();
 		//assert(!realEqual(info.penetration, 0));
 		info.normal.clear();
 		//penetration is close to zero, just return
-		if(!realEqual(info.penetration, 0))
-			info.normal = temp / info.penetration;
+		if(!realEqual(info.maxPenetration, 0))
+			info.normal = temp / info.maxPenetration;
 
 		return info;
 	}
@@ -1140,7 +1140,7 @@ namespace Physics2D
 			pair.addContact(info.simplex.vertices[1].point[0], info.simplex.vertices[1].point[1]);
 
 		const Vector2 newNormal = pair.points[1] - pair.points[0];
-		info.penetration = newNormal.length();
+		info.maxPenetration = newNormal.length();
 		const real res = newNormal.dot(info.normal);
 		info.normal = newNormal.normal();
 		if (res < 0)
@@ -1154,7 +1154,7 @@ namespace Physics2D
 	void Narrowphase::clipEdgeVertex(const Vector2& va1, const Vector2& va2, const Vector2& vb, CollisionInfo& info, ContactPair& pair)
 	{
 
-		Vector2 pA = vb - info.normal * info.penetration;
+		Vector2 pA = vb - info.normal * info.maxPenetration;
 		const Vector2 edge = (va2 - va1).normal();
 
 		const real checkZero = edge.dot(info.normal);
@@ -1163,7 +1163,7 @@ namespace Physics2D
 		else
 		{
 			const Vector2 realPa = (pA - va1).lengthSquare() > (pA - va2).lengthSquare() ? va2 : va1;
-			pair.addContact(realPa, realPa + info.normal * info.penetration);
+			pair.addContact(realPa, realPa + info.normal * info.maxPenetration);
 		}
 
 

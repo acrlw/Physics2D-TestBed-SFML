@@ -66,7 +66,7 @@ namespace Physics2D
 			//m_tree->insert(body);
 
 		}
-		void render(sf::RenderWindow& window) override
+		void postRender(sf::RenderWindow& window) override
 		{
 			//grid spatial hashing
 			grid.updateAll();

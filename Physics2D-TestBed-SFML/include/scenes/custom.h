@@ -13,7 +13,7 @@ namespace Physics2D
 		}
 		void load() override
 		{
-			block.set(50, 2.0f);
+			block.set(100, 2.0f);
 			rectangle.set(1.0f, 1.0f);
 			edge.set(Vector2{ -10.0f, 0.0f }, Vector2{ 10.0f, 0.0f });
 
@@ -38,7 +38,7 @@ namespace Physics2D
 				body = m_world->createBody();
 				body->setShape(&rectangle);
 				body->position().set({ i * 3.0f + 0.5f, 0.5f });
-				body->setFriction(0.6f);
+				body->setFriction(0.5f);
 				body->setBitmask(mask);
 				body->setRestitution(0);
 				body->setMass(1);
@@ -47,22 +47,50 @@ namespace Physics2D
 				m_tree->insert(body);
 			}
 
+			Vector2 v = m_camera->worldToScreen(Vector2(10, 5));
+			start.x = v.x;
+			start.y = v.y;
 		}
-		void render(sf::RenderWindow& window) override
+		void preStep(real dt) override
 		{
-			ShapePrimitive sp;
-			sp.transform.position = body->lastPosition();
-			sp.transform.rotation = body->lastRotation();
-			sp.shape = body->shape();
-			RenderSFMLImpl::renderShape(window, *m_camera, sp, RenderConstant::MaterialGray);
+			sp[0].transform.position = body->lastPosition();
+			sp[0].transform.rotation = body->lastRotation();
+			sp[0].shape = body->shape();
+		}
+		void postStep(real dt) override
+		{
+			sp[1].transform.position = body->lastPosition();
+			sp[1].transform.rotation = body->lastRotation();
+			sp[1].shape = body->shape();
+
+		}
+		void postRender(sf::RenderWindow& window) override
+		{
+			if (body == nullptr)
+				return;
+			RenderSFMLImpl::renderShape(window, *m_camera, sp[0], RenderConstant::MaterialRed);
+			RenderSFMLImpl::renderShape(window, *m_camera, sp[1], RenderConstant::MaterialBlue);
+
+			PointJoint* mouse = static_cast<PointJoint*>(m_world->jointList()[0].get());
+			if (!mouse->active())
+				return;
+			Vector2 pos = mouse->primitive().targetPoint;
+			real impulse = mouse->primitive().accumulatedImpulse.length();
+			RenderSFMLImpl::renderFloat(window, *m_camera, pos, m_camera->font(), impulse, RenderConstant::MaterialYellow, 12, {0.0f, 0.2f});
+		}
+		void renderUI() override
+		{
 
 		}
 	private:
+
+		ImVec2 start;
 		Rectangle rectangle;
 		Rectangle block;
 		Edge edge;
 		Body* body;
 
+		ShapePrimitive sp[2];
 	};
 }
 #endif

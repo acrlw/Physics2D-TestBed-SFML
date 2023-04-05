@@ -51,6 +51,7 @@ namespace Physics2D
 		constexpr real ReciprocalOfPi = 0.3183098861f;
 		constexpr real GeometryEpsilon = 1e-6f;
 		constexpr real TrignometryEpsilon = 1e-3f;
+		constexpr real LinearSlop = 5e-3f;
 		constexpr real CCDMinVelocity = 100.0f;
 		constexpr real MaxVelocity = 1000.0f;
 		constexpr real MaxAngularVelocity = 1000.0f;

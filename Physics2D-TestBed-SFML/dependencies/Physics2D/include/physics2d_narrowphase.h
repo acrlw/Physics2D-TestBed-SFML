@@ -45,6 +45,7 @@ namespace Physics2D
 		//	points[3]: pointB
 		std::array<Vector2, 4> points;
 		std::array<Index, 4> features = { UINT8_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX };
+		std::array<real, 2> penetration = {0.0f, 0.0f};
 		uint32_t count = 0;
 		void addContact(const Vector2& pointA, const Vector2& pointB)
 		{
@@ -56,7 +57,7 @@ namespace Physics2D
 	struct PHYSICS2D_API CollisionInfo
 	{
 		Vector2 normal;
-		real penetration = 0;
+		real maxPenetration = 0;
 		Simplex simplex;
 		//[Debug]
 		std::list<SimplexVertexWithOriginDistance> polytope;
