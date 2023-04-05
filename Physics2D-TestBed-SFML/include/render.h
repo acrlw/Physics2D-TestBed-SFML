@@ -6,6 +6,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics.hpp>
+#include <format>
 
 #include "physics2d.h"
 
@@ -72,6 +73,10 @@ namespace Physics2D
         static void renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex, const sf::Color& color);
         static void renderArrow(sf::RenderWindow& window, Camera& camera, const Vector2& start, const Vector2& end, const sf::Color& color, 
             const real& size = 0.30f, const real& degree = 30);
+        static void renderText(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font,
+            const std::string& text, const sf::Color& color, const unsigned int& size = 12);
+        static void renderFloat(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font,
+            const real& value, const sf::Color& color, const unsigned int& size = 12, const Vector2& offset = Vector2(-0.05f, -0.05f));
     };
 }
 #endif

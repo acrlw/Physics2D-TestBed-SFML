@@ -126,7 +126,7 @@ namespace Physics2D
 		{
 			m_camera->setTargetBody(nullptr);
 		}
-		void update(real dt) override
+		void postStep(real dt) override
 		{
 			updateJoint();
 		}

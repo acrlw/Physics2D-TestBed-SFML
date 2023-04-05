@@ -35,10 +35,6 @@ namespace Physics2D
         return m_solveContactPosition;
     }
 
-    bool& PhysicsSystem::prepareJoint()
-    {
-        return m_prepareJoint;
-    }
 
     PhysicsWorld &PhysicsSystem::world()
     {
@@ -154,8 +150,7 @@ namespace Physics2D
         }
         m_maintainer.clearInactivePoints();
 
-        if(m_prepareJoint)
-			m_world.prepareVelocityConstraint(dt);
+    	m_world.prepareVelocityConstraint(dt);
 
         for (int i = 0; i < m_velocityIteration; ++i)
         {

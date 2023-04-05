@@ -17,9 +17,13 @@ namespace Physics2D
 		Frame(std::string name, PhysicsWorld* world, ContactMaintainer* maintainer,
 			Tree* tree, UniformGrid* grid, Camera* camera) : m_name(name), m_world(world), m_maintainer(maintainer),
 			m_tree(tree), m_grid(grid), m_camera(camera) {}
-		virtual void update(real dt) {}
+		virtual ~Frame(){}
+		virtual void postStep(real dt) {}
+		virtual void preStep(real dt) {}
+
 		virtual void load() {}
 		virtual void release() {}
+		virtual void preRender(sf::RenderWindow& window) {}
 		virtual void render(sf::RenderWindow& window) {}
 		virtual void renderUI() {}
 		virtual void onMousePress(sf::Event& event) {}

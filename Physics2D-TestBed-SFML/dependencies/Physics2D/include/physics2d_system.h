@@ -24,7 +24,7 @@ namespace Physics2D
         bool& solveJointPosition();
         bool& solveContactVelocity();
         bool& solveContactPosition();
-        bool& prepareJoint();
+
     private:
         void updateTree();
         void updateGrid();
@@ -37,7 +37,6 @@ namespace Physics2D
         bool m_solveJointPosition = true;
         bool m_solveContactVelocity = true;
         bool m_solveContactPosition = true;
-        bool m_prepareJoint = true;
         PhysicsWorld m_world;
         ContactMaintainer m_maintainer;
         Tree m_tree;

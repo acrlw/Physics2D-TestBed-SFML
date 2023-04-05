@@ -62,7 +62,7 @@ namespace Physics2D
 		{
 			RenderSFMLImpl::renderShape(window, *m_camera, sensorRegion, sf::Color::Cyan);
 		}
-		void update(real dt)override
+		void postStep(real dt)override
 		{
 			auto bodyList = m_tree->query(AABB::fromShape(sensorRegion));
 			for (auto& body : bodyList)

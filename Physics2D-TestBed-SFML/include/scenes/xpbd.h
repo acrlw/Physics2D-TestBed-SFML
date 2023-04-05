@@ -19,10 +19,7 @@ namespace Physics2D
 		{
 
 		}
-		void update(real dt) override
-		{
 
-		}
 	private:
 		Vector2 positions[10];
 		Vector2 velocities[10];

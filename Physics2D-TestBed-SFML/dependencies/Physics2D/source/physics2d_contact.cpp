@@ -15,10 +15,37 @@ namespace Physics2D
 	{
 		for (auto&& elem : m_contactTable)
 		{
-			if (elem.second.empty() || !elem.second[0].active)
+			if (elem.second.empty())
 				continue;
+
 			for (auto&& ccp : elem.second)
 			{
+				if (!ccp.active)
+					continue;
+
+				auto& vcp = ccp.vcp;
+				vcp.va = ccp.bodyA->velocity() + Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
+				vcp.vb = ccp.bodyB->velocity() + Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
+				Vector2 dv = vcp.va - vcp.vb;
+
+				real jvt = vcp.tangent.dot(dv);
+				real lambda_t = vcp.effectiveMassTangent * -jvt;
+
+				real maxFriction = ccp.friction * vcp.accumulatedNormalImpulse;
+				real newImpulse = Math::clamp(vcp.accumulatedTangentImpulse + lambda_t, -maxFriction, maxFriction);
+				lambda_t = newImpulse - vcp.accumulatedTangentImpulse;
+				vcp.accumulatedTangentImpulse = newImpulse;
+
+				Vector2 impulse_t = lambda_t * vcp.tangent;
+
+				ccp.bodyA->applyImpulse(impulse_t, vcp.ra);
+				ccp.bodyB->applyImpulse(-impulse_t, vcp.rb);
+			}
+
+			for (auto&& ccp : elem.second)
+			{
+				if (!ccp.active)
+					continue;
 
 				auto& vcp = ccp.vcp;
 
@@ -28,8 +55,8 @@ namespace Physics2D
 				vcp.vb = ccp.bodyB->velocity() + wb;
 
 				Vector2 dv = vcp.va - vcp.vb;
-				real jv = -1.0f * vcp.normal.dot(dv - vcp.velocityBias);
-				real lambda_n = vcp.effectiveMassNormal * jv;
+				real jv = vcp.normal.dot(dv - vcp.velocityBias);
+				real lambda_n = vcp.effectiveMassNormal * -jv;
 				real oldImpulse = vcp.accumulatedNormalImpulse;
 				vcp.accumulatedNormalImpulse = Math::max(oldImpulse + lambda_n, 0);
 				lambda_n = vcp.accumulatedNormalImpulse - oldImpulse;
@@ -38,25 +65,6 @@ namespace Physics2D
 
 				ccp.bodyA->applyImpulse(impulse_n, vcp.ra);
 				ccp.bodyB->applyImpulse(-impulse_n, vcp.rb);
-
-				vcp.va = ccp.bodyA->velocity() + Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
-				vcp.vb = ccp.bodyB->velocity() + Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
-				dv = vcp.va - vcp.vb;
-
-				real jvt = vcp.tangent.dot(dv);
-				real lambda_t = vcp.effectiveMassTangent * -jvt;
-
-				real maxT = ccp.friction * vcp.accumulatedNormalImpulse;
-				oldImpulse = vcp.accumulatedTangentImpulse;
-				vcp.accumulatedTangentImpulse = Math::clamp(oldImpulse + lambda_t, -maxT, maxT);
-
-				lambda_t = vcp.accumulatedTangentImpulse - oldImpulse;
-
-				Vector2 impulse_t = lambda_t * vcp.tangent;
-				
-
-				ccp.bodyA->applyImpulse(impulse_t, vcp.ra);
-				ccp.bodyB->applyImpulse(-impulse_t, vcp.rb);
 
 			}
 		}
@@ -79,28 +87,24 @@ namespace Physics2D
 				Vector2 rb = pb - bodyB->position();
 				Vector2 c = pb - pa;
 
-				const real bias =  Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
+				const real bias = Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
 				real lambda = vcp.effectiveMassNormal * bias;
 
 				Vector2 impulse = lambda * vcp.normal;
 
 				vcp.positionCorrectionImpulse = impulse;
 
-				if (bodyA->type() != Body::BodyType::Static && !bodyA->sleep())
-				{
-					Vector2 dp = bodyA->inverseMass() * impulse;
-					real dr = bodyA->inverseInertia() * ra.cross(impulse);
-					bodyA->position() += dp;
-					bodyA->rotation() += dr;
-				}
+				Vector2 dp = bodyA->inverseMass() * impulse;
+				real dr = bodyA->inverseInertia() * ra.cross(impulse);
+				bodyA->position() += dp;
+				bodyA->rotation() += dr;
 
-				if (bodyB->type() != Body::BodyType::Static && !bodyB->sleep())
-				{
-					Vector2 dp = bodyB->inverseMass() * impulse;
-					real dr = bodyB->inverseInertia() * rb.cross(impulse);
-					bodyB->position() -= dp;
-					bodyB->rotation() -= dr;
-				}
+
+				dp = bodyB->inverseMass() * impulse;
+				dr = bodyB->inverseInertia() * rb.cross(impulse);
+				bodyB->position() -= dp;
+				bodyB->rotation() -= dr;
+
 			}
 		}
 	}
@@ -231,8 +235,11 @@ namespace Physics2D
 		//accumulate inherited impulse
 		Vector2 impulse = vcp.accumulatedNormalImpulse * vcp.normal + vcp.accumulatedTangentImpulse * vcp.tangent;
 		//Vector2 impulse;
-		ccp.bodyA->applyImpulse(impulse, vcp.ra);
-		ccp.bodyB->applyImpulse(-impulse, vcp.rb);
+		if(m_warmStart)
+		{
+			ccp.bodyA->applyImpulse(impulse, vcp.ra);
+			ccp.bodyB->applyImpulse(-impulse, vcp.rb);
+		}
 		
 
 

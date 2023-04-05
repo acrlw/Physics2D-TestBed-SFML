@@ -31,7 +31,7 @@ namespace Physics2D
             void setHeight(const real& height);
             void set(const real& width, const real& height);
         };
-        Camera() = default;
+        Camera();
         void render(sf::RenderWindow& window);
 
         bool& aabbVisible();
@@ -40,16 +40,24 @@ namespace Physics2D
         bool& gridScaleLineVisible();
         bool& visible();
         bool& treeVisible();
-        bool& rotationLineVisible();
         bool& centerVisible();
         bool& contactVisible();
         bool& uniformGridVisible();
+        bool& contactImpulseVisible();
+        bool& contactImpulseMagnitude();
+        bool& contactFrictionVisible();
+        bool& contactFrictionMagnitude();
+        bool& bodyVelocity();
+        bool& bodyVelocityNormal();
+        bool& bodyVelocityMagnitude();
+        sf::Font& font();
 
         real axisPointCount()const;
         void setAxisPointCount(real count);
 
         real meterToPixel() const;
         void setMeterToPixel(const real& meterToPixel);
+        real pixelToMeter() const;
 
         Vector2 transform() const;
         void setTransform(const Vector2& transform);
@@ -101,9 +109,18 @@ namespace Physics2D
         bool m_treeVisible = false;
         bool m_uniformGridVisible = false;
         bool m_gridScaleLineVisible = true;
-        bool m_rotationLineVisible = false;
         bool m_centerVisible = false;
+
         bool m_contactVisible = false;
+        bool m_contactImpulseVisible = false;
+        bool m_contactFrictionVisible = false;
+
+        bool m_contactImpulseMagnitude = false;
+        bool m_contactFrictionMagnitude = false;
+
+        bool m_bodyVelocity = false;
+        bool m_bodyVelocityNormal = false;
+        bool m_bodyVelocityMagnitude = false;
 
 
         real m_meterToPixel = 50.0f;
@@ -129,6 +146,7 @@ namespace Physics2D
 
         EasingType m_easingType = EasingType::Exponential;
 
+        sf::Font m_font;
     };
 
 
