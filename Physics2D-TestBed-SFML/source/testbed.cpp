@@ -146,7 +146,12 @@ namespace Physics2D
         m_mousePos = m_camera.screenToWorld(pos);
 
         if (m_onDistanceCheck)
-            m_mouseArray[1] = m_mousePos;
+        {
+            if(m_mouseArray[0].isOrigin())
+				m_mouseArray[0] = m_mousePos;
+			else
+				m_mouseArray[1] = m_mousePos;
+        }
 
         if (m_currentFrame != nullptr)
             m_currentFrame->onMouseMove(event);
@@ -156,16 +161,14 @@ namespace Physics2D
 
         auto prim = m_mouseJoint->primitive();
         prim.targetPoint = m_mousePos;
-        //prim.clear();
+
         m_mouseJoint->set(prim);
     }
     void TestBed::onMousePressed(sf::Event& event)
     {
         Vector2 pos(real(event.mouseButton.x), real(event.mouseButton.y));
         m_mousePos = m_camera.screenToWorld(pos);
-
-        if (m_onDistanceCheck)
-            m_mouseArray[0] = m_mousePos;
+        
 
         if (event.mouseButton.button == sf::Mouse::Right)
             m_cameraViewportMovement = true;

@@ -50,7 +50,7 @@ namespace Physics2D
 		void prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision);
 		void clearInactivePoints();
 		void deactivateAllPoints();
-		real m_maxPenetration = 0.001f;
+		real m_maxPenetration = 0.005f;
 		real m_biasFactor = 0.2f;
 		bool m_warmStart = true;
 		bool m_velocityBlockSolver = true;
