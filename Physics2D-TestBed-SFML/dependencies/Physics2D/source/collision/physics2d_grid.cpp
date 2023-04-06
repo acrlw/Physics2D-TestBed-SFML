@@ -27,7 +27,8 @@ namespace Physics2D
         }
         for (auto&& elem : map)
         {
-            result.emplace_back(elem.second);
+            if(elem.second.first->aabb().collide(elem.second.second->aabb()))
+				result.emplace_back(elem.second);
         }
         return result;
     }

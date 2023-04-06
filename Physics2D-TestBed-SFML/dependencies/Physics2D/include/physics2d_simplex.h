@@ -8,7 +8,7 @@ namespace Physics2D
 	struct PHYSICS2D_API SimplexVertex
 	{
 		SimplexVertex() = default;
-		SimplexVertex(const Vector2& point_a, const Vector2& point_b, const Index& index_a = INT_MAX, const Index& index_b = INT_MAX)
+		SimplexVertex(const Vector2& point_a, const Vector2& point_b, const Index& index_a = UINT32_MAX, const Index& index_b = UINT32_MAX)
 		{
 			point[0] = point_a;
 			point[1] = point_b;
@@ -28,23 +28,23 @@ namespace Physics2D
 		}
 		inline bool isEmpty()const
 		{
-			return point[0].isOrigin() && point[1].isOrigin() && result.isOrigin() && index[0] == INT_MAX && index[1] == INT_MAX;
+			return point[0].isOrigin() && point[1].isOrigin() && result.isOrigin() && index[0] == UINT32_MAX && index[1] == UINT32_MAX;
 		}
 		inline bool isIndexAValid()const
 		{
-			return index[0] != INT_MAX;
+			return index[0] != UINT32_MAX;
 		}
 		inline bool isIndexBValid()const
 		{
-			return index[1] != INT_MAX;
+			return index[1] != UINT32_MAX;
 		}
 		inline void clear()
 		{
 			point[0].clear();
 			point[1].clear();
 			result.clear();
-			index[0] = INT_MAX;
-			index[1] = INT_MAX;
+			index[0] = UINT32_MAX;
+			index[1] = UINT32_MAX;
 		}
 		//point[0] : pointA
 		//point[1] : pointB

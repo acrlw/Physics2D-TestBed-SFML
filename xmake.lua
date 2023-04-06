@@ -18,7 +18,10 @@ target("Physics2D")
 
     add_headerfiles("Physics2D-TestBed-SFML/dependencies/Physics2D/include/*.h")
     add_includedirs("Physics2D-TestBed-SFML/dependencies/Physics2D/include")
-    add_files("Physics2D-TestBed-SFML/dependencies/Physics2D/source/*.cpp")
+    add_files("Physics2D-TestBed-SFML/dependencies/Physics2D/source/collision/*.cpp")
+    add_files("Physics2D-TestBed-SFML/dependencies/Physics2D/source/dynamics/*.cpp")
+    add_files("Physics2D-TestBed-SFML/dependencies/Physics2D/source/math/*.cpp")
+    add_files("Physics2D-TestBed-SFML/dependencies/Physics2D/source/other/*.cpp")
 
 
 target("Physics2D-TestBed-SFML")

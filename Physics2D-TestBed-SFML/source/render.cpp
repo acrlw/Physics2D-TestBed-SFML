@@ -427,11 +427,14 @@ namespace Physics2D
 			break;
 		case 1:
 			renderPoint(window, camera, simplex.vertices[0].result, color);
+			renderFloat(window, camera, simplex.vertices[0].result, camera.font(), 0.0f, lineColor);
 			break;
 		case 2:
 			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
 			renderPoint(window, camera, simplex.vertices[0].result, color);
 			renderPoint(window, camera, simplex.vertices[1].result, color);
+			renderFloat(window, camera, simplex.vertices[0].result, camera.font(), 0.0f, lineColor);
+			renderFloat(window, camera, simplex.vertices[1].result, camera.font(), 1.0f, lineColor);
 			break;
 		case 3:
 			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
@@ -440,6 +443,9 @@ namespace Physics2D
 			renderPoint(window, camera, simplex.vertices[0].result, color);
 			renderPoint(window, camera, simplex.vertices[1].result, color);
 			renderPoint(window, camera, simplex.vertices[2].result, color);
+			renderFloat(window, camera, simplex.vertices[0].result, camera.font(), 0.0f, lineColor);
+			renderFloat(window, camera, simplex.vertices[1].result, camera.font(), 1.0f, lineColor);
+			renderFloat(window, camera, simplex.vertices[2].result, camera.font(), 2.0f, lineColor);
 			break;
 		default:
 			assert(false && "Simplex count is more than 3");

@@ -92,7 +92,7 @@ namespace Physics2D
             restart();
             break;
         }
-        case sf::Keyboard::LControl:
+        case sf::Keyboard::LAlt:
         {
             m_onDistanceCheck = false;
             m_mouseArray[0].clear();
@@ -110,7 +110,7 @@ namespace Physics2D
         if (m_currentFrame != nullptr)
             m_currentFrame->onKeyPressed(event);
 
-        if (event.key.code == sf::Keyboard::LControl)
+        if (event.key.code == sf::Keyboard::LAlt)
             m_onDistanceCheck = true;
     }
     void TestBed::onMouseReleased(sf::Event& event)

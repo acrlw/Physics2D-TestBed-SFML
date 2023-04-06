@@ -1,4 +1,5 @@
 #include "physics2d_ellipse.h"
+
 namespace Physics2D
 {
 	Ellipse::Ellipse(const real& width, const real& height) : m_width(width), m_height(height)
@@ -44,7 +45,7 @@ namespace Physics2D
 		return (x / a) * (x / a) + (y / b) * (y / b) <= 1.0f;
 	}
 
-	Vector2 Ellipse::center()const
+	Vector2 Ellipse::center() const
 	{
 		return Vector2();
 	}

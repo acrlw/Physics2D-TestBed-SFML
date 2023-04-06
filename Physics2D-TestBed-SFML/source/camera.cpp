@@ -16,14 +16,14 @@ namespace Physics2D
 		{
 			assert(m_world != nullptr);
 
-			real inv_dt = 1.0 / m_deltaTime;
+			real inv_dt = 1.0f / m_deltaTime;
 
 			real scale = m_targetMeterToPixel - m_meterToPixel;
-			if (std::fabs(scale) < 0.1 || m_meterToPixel < 1.0)
+			if (std::fabs(scale) < 0.1f || m_meterToPixel < 1.0f)
 				m_meterToPixel = m_targetMeterToPixel;
 			else
-				m_meterToPixel -= (1.0 - std::exp(m_restitution * inv_dt)) * scale;
-			m_pixelToMeter = 1.0 / m_meterToPixel;
+				m_meterToPixel -= (1.0f - std::exp(m_restitution * inv_dt)) * scale;
+			m_pixelToMeter = 1.0f / m_meterToPixel;
 
 			if (m_targetBody != nullptr)
 			{
@@ -37,18 +37,18 @@ namespace Physics2D
 				{
 				case EasingType::Exponential:
 				{
-					if (c.lengthSquare() < 0.1)
+					if (c.lengthSquare() < 0.1f)
 						m_transform = target;
 					else
-						m_transform -= (1.0 - std::exp(m_restitution * inv_dt)) * c;
+						m_transform -= (1.0f - std::exp(m_restitution * inv_dt)) * c;
 					break;
 				}
 				case EasingType::Lerp:
 				{
-					if (c.lengthSquare() < 0.1)
+					if (c.lengthSquare() < 0.1f)
 						m_transform = target;
 					else
-						m_transform += 0.02 * c;
+						m_transform += 0.02f * c;
 					break;
 				}
 				case EasingType::Uniform:
@@ -106,20 +106,21 @@ namespace Physics2D
 				color.a = 250;
 
 				Container::Vector<Vector2> axisPoints;
-				axisPoints.reserve(static_cast<size_t>(m_axisPointCount * 2 + 1));
+				axisPoints.reserve(m_axisPointCount * 2 + 1);
 
-				for (real i = -m_axisPointCount; i <= m_axisPointCount; i += 1.0)
+				for (int i = -m_axisPointCount; i <= m_axisPointCount; ++i)
 				{
-					axisPoints.emplace_back(Vector2(0, i));
-					axisPoints.emplace_back(Vector2(i, 0));
+					axisPoints.emplace_back(Vector2(0, real(i)));
+					axisPoints.emplace_back(Vector2(real(i), 0));
 				}
-				RenderSFMLImpl::renderPoints(window, *this, axisPoints, color);
-				color.a = 140;
-				RenderSFMLImpl::renderLine(window, *this, Vector2(0, -m_axisPointCount), Vector2(0, m_axisPointCount), color);
-				RenderSFMLImpl::renderLine(window, *this, Vector2(-m_axisPointCount, 0), Vector2(m_axisPointCount, 0), color);
 
 				//draw grid
 				drawGridScaleLine(window);
+				RenderSFMLImpl::renderPoints(window, *this, axisPoints, color);
+				color.a = 140;
+				RenderSFMLImpl::renderLine(window, *this, Vector2(0.0f, real(-m_axisPointCount)), Vector2(0.0f, real(m_axisPointCount)), color);
+				RenderSFMLImpl::renderLine(window, *this, Vector2(real(-m_axisPointCount), 0.0f), Vector2(real(m_axisPointCount), 0.0f), color);
+
 			}
 			if (m_bodyVisible)
 			{
@@ -463,64 +464,69 @@ namespace Physics2D
 	}
 	void Camera::drawGridScaleLine(sf::RenderWindow& window)
 	{
-		sf::Color darkGreen = RenderConstant::DarkGreen;
-		darkGreen.a = 210;
-		bool fineEnough = m_meterToPixel > 180;
-		real h;
+		sf::Color thick = RenderConstant::DarkGreen;
+		thick.a = 210;
+		sf::Color thin = RenderConstant::DarkGreen;
+		thin.a = 75;
 
-		if (m_meterToPixel < 30)
-			h = 10.0;
-		else if (m_meterToPixel < 60)
-			h = 5.0;
-		else if (m_meterToPixel < 120)
-			h = 2.0;
-		else
-			h = 1.0;
+		const bool fineEnough = m_meterToPixel > 125;
 
 		Container::Vector<std::pair<Vector2, Vector2>> lines;
-		lines.reserve(static_cast<size_t>(m_axisPointCount * 2));
-		for (real i = -m_axisPointCount; i <= m_axisPointCount; i += h)
+		lines.reserve(m_axisPointCount * 2);
+
+		int h = 1;
+
+		if (m_meterToPixel < 30)
+			h = 10;
+		else if (m_meterToPixel < 60)
+			h = 5;
+		else if (m_meterToPixel < 120)
+			h = 2;
+
+		for (int i = -m_axisPointCount; i <= m_axisPointCount; i += h)
 		{
-			if (realEqual(i, 0.0))
+			if (i == 0)
 				continue;
-			Vector2 p1 = { i, m_axisPointCount };
-			Vector2 p2 = { i, -m_axisPointCount };
+			Vector2 p1 = { real(i), real(m_axisPointCount) };
+			Vector2 p2 = { real(i), real(-m_axisPointCount) };
 			lines.emplace_back(std::make_pair(p1, p2));
 
-			p1.set(-m_axisPointCount, i);
-			p2.set(m_axisPointCount, i);
+			p1.set(real(-m_axisPointCount), real(i));
+			p2.set(real(m_axisPointCount), real(i));
 			lines.emplace_back(std::make_pair(p1, p2));
 		}
-		RenderSFMLImpl::renderLines(window, *this, lines, darkGreen);
+		RenderSFMLImpl::renderLines(window, *this, lines, thick);
+
 		if (fineEnough)
 		{
-			if (m_meterToPixel < 400)
-				h = 0.5f;
-			else if (m_meterToPixel < 800)
-				h = 0.1f;
-			else if (m_meterToPixel < 1600)
-				h = 0.05f;
-			else
-				h = 0.05f;
-
 			lines.clear();
-			lines.reserve(static_cast<size_t>(m_axisPointCount * 2.0f / 0.2f));
-			darkGreen.a = 75;
-			for (real i = -m_axisPointCount; i <= m_axisPointCount; i += h)
-			{
-				if (realEqual(i, 0.0f))
-					continue;
-				if (realEqual(i - std::floor(i), 0.0f))
-					continue;
-				Vector2 p1 = { i, m_axisPointCount };
-				Vector2 p2 = { i, -m_axisPointCount };
-				lines.emplace_back(std::make_pair(p1, p2));
+			lines.reserve(m_axisPointCount);
 
-				p1.set(-m_axisPointCount, i);
-				p2.set(m_axisPointCount, i);
-				lines.emplace_back(std::make_pair(p1, p2));
+			int slice = 50;
+			if (m_meterToPixel < 250)
+				slice = 2;
+			else if (m_meterToPixel < 800)
+				slice = 10;
+			else if (m_meterToPixel < 2000)
+				slice = 20;
+
+			const real inv = 1.0f / real(slice);
+			for (int i = -m_axisPointCount, j = -m_axisPointCount + h; i < m_axisPointCount; i += h, j += h)
+			{
+				for (int k = 1; k < slice; ++k)
+				{
+					real index = real(k) * inv;
+
+					Vector2 p1 = { real(i) + index, real(m_axisPointCount)};
+					Vector2 p2 = { real(i) + index, real(-m_axisPointCount) };
+					lines.emplace_back(std::make_pair(p1, p2));
+
+					p1.set(real(-m_axisPointCount), real(i) + index);
+					p2.set(real(m_axisPointCount), real(i) + index);
+					lines.emplace_back(std::make_pair(p1, p2));
+				}
 			}
-			RenderSFMLImpl::renderLines(window, *this, lines, darkGreen);
+			RenderSFMLImpl::renderLines(window, *this, lines, thin);
 		}
 	}
 

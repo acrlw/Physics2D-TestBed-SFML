@@ -142,7 +142,7 @@ namespace Physics2D
         real m_zoomFactor = 1.0f;
         real m_restitution = 2.0f;
         real m_deltaTime = 15.0f;
-        real m_axisPointCount = 50.0f;
+        int m_axisPointCount = 50;
 
         EasingType m_easingType = EasingType::Exponential;
 
