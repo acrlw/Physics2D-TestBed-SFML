@@ -8,10 +8,11 @@ namespace Physics2D
 	{
 	public:
 		GeometryFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Geometry", world, maintainer, tree, grid, camera)
+		              Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Geometry", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			std::random_device rd;
@@ -31,8 +32,8 @@ namespace Physics2D
 			//convex1.emplace_back(*convex1.begin());
 			//convex2.emplace_back(*convex2.begin());
 			intersectionConvex = GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(convex1, convex2);
-
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
 			for (auto iter = convex1.begin(); iter != convex1.end(); ++iter)
@@ -62,6 +63,7 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoints(window, *m_camera, points1, sf::Color::Cyan);
 			RenderSFMLImpl::renderPoints(window, *m_camera, points2, sf::Color::Magenta);
 		}
+
 	private:
 		Container::Vector<Vector2> points1;
 		Container::Vector<Vector2> points2;

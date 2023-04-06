@@ -8,27 +8,30 @@ namespace Physics2D
 	{
 	public:
 		NarrowphaseFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Narrowphase", world, maintainer, tree, grid, camera)
+		                 Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Narrowphase", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			capsule.set(4.0f, 2.0f);
 			capsule2.set(2.0f, 0.5f);
-			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
+			triangle.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
 			smallBrick.set(1.0f, 1.0f);
 
 			brick.set(1.5f, 0.5f);
 
 			block.set(10, 0.1f);
-			edge.set(Vector2{ -100.0f, 0.0f }, Vector2{ 100.0f, 0.0f });
+			edge.set(Vector2{-100.0f, 0.0f}, Vector2{100.0f, 0.0f});
 
 			rectangle.set(0.3, 3.0);
-			polygon1.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
-			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f } });
+			polygon1.append({
+				{0.0f, 4.0f}, {-3.0f, 3.0f}, {-4.0f, 0.0f}, {-3.0f, -3.0f}, {0, -4.0f},
+				{3.0f, -3.0f}, {4.0f, 0.0f}, {3.0f, 3.0f}
+			});
 
-			polygon2.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
+			polygon2.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
 
 			circle.setRadius(2.0f);
 			ellipse.set(4.0f, 2.0f);
@@ -47,13 +50,13 @@ namespace Physics2D
 			shape1.transform.position.set(0.0, 3.0f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &polygon2;
+			shape2.shape = &smallBrick;
 			shape2.transform.position.set(0.0f, -3.0f);
 			//shape2.transform.rotation = Math::degreeToRadian(45);
 
 			//result = Detector::detect(shape1, shape2);
-
 		}
+
 		void onMousePress(sf::Event& event) override
 		{
 			if (event.mouseButton.button == sf::Mouse::Left)
@@ -74,17 +77,18 @@ namespace Physics2D
 				}
 			}
 		}
+
 		void onMouseMove(sf::Event& event) override
 		{
 			if (!isPicked)
 				return;
-			Vector2 pos(real(event.mouseMove.x), real(event.mouseMove.y));
+			Vector2 pos(static_cast<real>(event.mouseMove.x), static_cast<real>(event.mouseMove.y));
 			currentPos = m_camera->screenToWorld(pos);
 			Vector2 tf = currentPos - mousePos;
 
 			clickObject->transform.position = originTransform + tf;
-
 		}
+
 		void onMouseRelease(sf::Event& event) override
 		{
 			isPicked = false;
@@ -93,16 +97,17 @@ namespace Physics2D
 			originTransform.clear();
 			clickObject = nullptr;
 		}
+
 		void onKeyPressed(sf::Event& event) override
 		{
-			if(event.key.code == sf::Keyboard::E)
+			if (event.key.code == sf::Keyboard::E)
 			{
 				shape1.transform.rotation += Math::degreeToRadian(1.0f);
 			}
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
-
 			RenderSFMLImpl::renderShape(window, *m_camera, shape1, sf::Color::Green);
 			RenderSFMLImpl::renderShape(window, *m_camera, shape2, sf::Color::Cyan);
 
@@ -118,10 +123,13 @@ namespace Physics2D
 
 				if (showPolytope)
 				{
-					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result, RenderConstant::Pink);
+					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result,
+					                           RenderConstant::Pink);
 					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::Pink);
 					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::Pink);
-					RenderSFMLImpl::renderFloat(window, *m_camera, iter->vertex.result, m_camera->font(), (real)std::distance(info.polytope.begin(), iter), RenderConstant::Pink);
+					RenderSFMLImpl::renderFloat(window, *m_camera, iter->vertex.result, m_camera->font(),
+					                            static_cast<real>(std::distance(info.polytope.begin(), iter)),
+					                            RenderConstant::Pink);
 					//RenderSFMLImpl::renderFloat(window, *m_camera, next->vertex.result, m_camera->font(), (real)std::distance(info.polytope.begin(), next), RenderConstant::Pink);
 				}
 			}
@@ -157,8 +165,8 @@ namespace Physics2D
 			////	//RenderSFMLImpl::renderPoint(window, *m_camera, p, RenderConstant::Orange);
 			////	//RenderSFMLImpl::renderLine(window, *m_camera, p, { 0,0 }, RenderConstant::Orange);
 
-			sf::Color color1 = sf::Color(239, 103, 50);
-			sf::Color color2 = sf::Color(252, 236, 86);
+			auto color1 = sf::Color(239, 103, 50);
+			auto color2 = sf::Color(252, 236, 86);
 
 			////	//draw feature simplex
 			if (showFeature)
@@ -166,12 +174,16 @@ namespace Physics2D
 				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[0], color1);
 				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[0], color1);
 				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[0],
-					info.simplex.vertices[1].point[0], color1);
+				                           info.simplex.vertices[1].point[0], color1);
 
 				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[0].point[1], color2);
 				RenderSFMLImpl::renderPoint(window, *m_camera, info.simplex.vertices[1].point[1], color2);
 				RenderSFMLImpl::renderLine(window, *m_camera, info.simplex.vertices[0].point[1],
-					info.simplex.vertices[1].point[1], color2);
+				                           info.simplex.vertices[1].point[1], color2);
+
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.pair.pointA, color1);
+				RenderSFMLImpl::renderPoint(window, *m_camera, info.pair.pointB, color2);
+				RenderSFMLImpl::renderLine(window, *m_camera, info.pair.pointA,info.pair.pointB, RenderConstant::Gray);
 			}
 			////	
 
@@ -209,7 +221,6 @@ namespace Physics2D
 			// draw cull
 			if (showHull)
 			{
-
 				for (auto& a : polygon1.vertices())
 				{
 					for (auto& b : polygon2.vertices())
@@ -227,8 +238,8 @@ namespace Physics2D
 					return;
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);
 			}
-
 		}
+
 		void renderUI() override
 		{
 			Vector2 pos(10.0f, 1.0f);
@@ -243,8 +254,8 @@ namespace Physics2D
 
 			ImGui::End();
 		}
-	private:
 
+	private:
 		Capsule capsule;
 		Capsule capsule2;
 		Edge edge;
@@ -266,7 +277,7 @@ namespace Physics2D
 		bool isPicked = false;
 
 		bool showPolytope = true;
-		bool showFeature = false;
+		bool showFeature = true;
 		bool showFeatureSimplex = false;
 		bool showHull = false;
 		Vector2 mousePos;

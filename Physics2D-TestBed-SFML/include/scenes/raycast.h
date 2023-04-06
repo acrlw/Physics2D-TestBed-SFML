@@ -2,24 +2,28 @@
 #define PHYSICS2D_SCENES_RAYCAST_H
 #include <random>
 #include "frame.h"
+
 namespace Physics2D
 {
 	class RaycastFrame : public Frame
 	{
 	public:
 		RaycastFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Raycast", world, maintainer, tree, grid, camera)
+		             Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Raycast", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			rectangle.set(0.5f, 0.5f);
 			circle.setRadius(0.5f);
 			capsule.set(1.5f, 0.5f);
-			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
-			polygon.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
-			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f }});
+			triangle.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
+			polygon.append({
+				{0.0f, 4.0f}, {-3.0f, 3.0f}, {-4.0f, 0.0f}, {-3.0f, -3.0f}, {0, -4.0f},
+				{3.0f, -3.0f}, {4.0f, 0.0f}, {3.0f, 3.0f}
+			});
 			triangle.scale(0.5f);
 			polygon.scale(0.1f);
 
@@ -37,7 +41,7 @@ namespace Physics2D
 			std::uniform_int_distribution<> dist2(0, 4);
 			std::uniform_real_distribution<> dist3(-Constant::Pi, Constant::Pi);
 
-			for(int i = 0;i < 100; i++)
+			for (int i = 0; i < 100; i++)
 			{
 				Body* body = m_world->createBody();
 				body->position().set(dist1(gen), dist1(gen));
@@ -48,8 +52,8 @@ namespace Physics2D
 
 				m_tree->insert(body);
 			}
-
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
 			Vector2 p;
@@ -62,7 +66,7 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoint(window, *m_camera, Vector2(0, 0), originColor);
 			RenderSFMLImpl::renderLine(window, *m_camera, p, d * 10.0f, dirColor);
 			auto bodyList = m_tree->raycast(p, d);
-			for(auto& elem: bodyList)
+			for (auto& elem : bodyList)
 			{
 				ShapePrimitive sp;
 				sp.transform.rotation = elem->rotation();
@@ -70,12 +74,13 @@ namespace Physics2D
 				sp.shape = elem->shape();
 				RenderSFMLImpl::renderShape(window, *m_camera, sp, hitColor);
 			}
-
 		}
+
 		void onMouseMove(sf::Event& event) override
 		{
-			m_mousePos  = m_camera->screenToWorld(Vector2(event.mouseMove.x, event.mouseMove.y));
+			m_mousePos = m_camera->screenToWorld(Vector2(event.mouseMove.x, event.mouseMove.y));
 		}
+
 	private:
 		Vector2 m_mousePos = Vector2(1, 1);
 		Rectangle rectangle;

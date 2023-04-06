@@ -1,25 +1,27 @@
 #ifndef PHYSICS2D_SCENES_FRICTION_H
 #define PHYSICS2D_SCENES_FRICTION_H
 #include "frame.h"
+
 namespace Physics2D
 {
 	class FrictionFrame : public Frame
 	{
 	public:
 		FrictionFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Friction", world, maintainer, tree, grid, camera)
+		              Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Friction", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
-			edge.set({ 0, 0 }, { 20, 0 });
-			
-			ramp.set({ -10, 4 }, { 0, 0 });
+			edge.set({0, 0}, {20, 0});
+
+			ramp.set({-10, 4}, {0, 0});
 
 			rectangle.set(0.5f, 0.5f);
-			
-			for(real i = 0;i < 3.0f;i += 1.0f)
+
+			for (real i = 0; i < 3.0f; i += 1.0f)
 			{
 				Body* ground = m_world->createBody();
 				ground->setShape(&edge);
@@ -52,13 +54,12 @@ namespace Physics2D
 				cube->setType(Body::BodyType::Dynamic);
 				m_tree->insert(cube);
 			}
-
-
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
-
 		}
+
 	private:
 		Rectangle rectangle;
 		Edge edge;

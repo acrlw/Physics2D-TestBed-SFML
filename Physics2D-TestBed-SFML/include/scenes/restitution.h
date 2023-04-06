@@ -1,32 +1,34 @@
 #ifndef PHYSICS2D_SCENES_RESTITUTION_H
 #define PHYSICS2D_SCENES_RESTITUTION_H
 #include "frame.h"
+
 namespace Physics2D
 {
 	class RestitutionFrame : public Frame
 	{
 	public:
 		RestitutionFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Restitution", world, maintainer, tree, grid, camera)
+		                 Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Restitution", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			circle.setRadius(1.0f);
-			
-			edge.set(Vector2{ -100.0, 0 }, Vector2{ 100.0, 0 });
+
+			edge.set(Vector2{-100.0, 0}, Vector2{100.0, 0});
 
 			Body* ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->setMass(Constant::Max);
 			ground->setRestitution(1.0f);
 			ground->setFriction(0.9f);
-			ground->position().set({ 0, 0 });
+			ground->position().set({0, 0});
 			ground->setType(Body::BodyType::Static);
 			m_tree->insert(ground);
 
-			for(real i = 0;i < 10.0f;i += 1.0f)
+			for (real i = 0; i < 10.0f; i += 1.0f)
 			{
 				Body* body = m_world->createBody();
 				body->setShape(&circle);
@@ -38,10 +40,11 @@ namespace Physics2D
 				m_tree->insert(body);
 			}
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
-
 		}
+
 	private:
 		Circle circle;
 		Edge edge;

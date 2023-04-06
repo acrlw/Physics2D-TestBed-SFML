@@ -2,7 +2,6 @@
 #define PHYSICS2D_COMMON_H
 
 
-
 #include "cassert"
 #include <cmath>
 #include <cfloat>
@@ -24,20 +23,22 @@
 #endif
 
 #define SINGLE_PRECISION
+
 namespace Physics2D
 {
 	using Index = uint32_t;
+
 	namespace Container
 	{
-		template<class T>
+		template <class T>
 		using Vector = std::vector<T>;
 
-		template<typename K, typename V>
+		template <typename K, typename V>
 		using Map = std::map<K, V>;
-
 	}
 #ifdef SINGLE_PRECISION
 	using real = float;
+
 	namespace Constant
 	{
 		constexpr unsigned int SimplexMax = 8;
@@ -47,8 +48,8 @@ namespace Physics2D
 		constexpr real PositiveMin = FLT_MIN;
 		constexpr real NegativeMin = -Max;
 		constexpr real Pi = 3.14159265f;
-		constexpr real HalfPi = Constant::Pi / 2.0f;
-		constexpr real DoublePi = Constant::Pi * 2.0f;
+		constexpr real HalfPi = Pi / 2.0f;
+		constexpr real DoublePi = Pi * 2.0f;
 		constexpr real ReciprocalOfPi = 0.3183098861f;
 		constexpr real GeometryEpsilon = 1e-6f;
 		constexpr real TrignometryEpsilon = 1e-3f;

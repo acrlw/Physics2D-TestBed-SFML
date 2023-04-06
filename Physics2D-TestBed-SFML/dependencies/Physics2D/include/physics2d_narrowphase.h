@@ -26,7 +26,7 @@ namespace Physics2D
 		//circle and ellipse, use index 0
 		//edge use index 0 and 1
 		Vector2 vertex[2];
-		Index index[2] = { UINT32_MAX, UINT32_MAX };
+		Index index[2] = {UINT32_MAX, UINT32_MAX};
 	};
 
 	struct PHYSICS2D_API ClipVertex
@@ -58,7 +58,6 @@ namespace Physics2D
 	};
 
 
-
 	struct PHYSICS2D_API VertexPair
 	{
 		VertexPair() = default;
@@ -76,15 +75,17 @@ namespace Physics2D
 				|| (other.pointB.fuzzyEqual(this->pointA) && other.pointA.fuzzyEqual(this->pointB));
 		}
 	};
+
 	struct PHYSICS2D_API CollisionInfo
 	{
 		Vector2 normal;
 		real penetration = 0;
 		Simplex simplex;
-		
+		VertexPair pair;
 		//[Debug]
 		std::list<SimplexVertexWithOriginDistance> polytope;
 	};
+
 	class PHYSICS2D_API Narrowphase
 	{
 	public:
@@ -105,7 +106,7 @@ namespace Physics2D
 
 	private:
 		static void reconstructSimplexByVoronoi(Simplex& simplex);
-		static void reconstructSimplexByTriangulation(Simplex& simplex);
+
 		static bool perturbSimplex(Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
 		                           const Vector2& dir);
 
@@ -148,7 +149,8 @@ namespace Physics2D
 		static void polytopeIterPrev(std::list<SimplexVertexWithOriginDistance>::iterator& targetIter,
 		                             std::list<SimplexVertexWithOriginDistance>& list);
 
-		static void buildPolytopeFromSimplex(std::list<SimplexVertexWithOriginDistance>& polytope, const Simplex& simplex);
+		static void buildPolytopeFromSimplex(std::list<SimplexVertexWithOriginDistance>& polytope,
+		                                     const Simplex& simplex);
 	};
 }
 #endif

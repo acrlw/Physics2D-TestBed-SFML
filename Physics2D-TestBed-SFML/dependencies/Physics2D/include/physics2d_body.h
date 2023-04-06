@@ -20,7 +20,6 @@ namespace Physics2D
 	class PHYSICS2D_API Body
 	{
 	public:
-
 		struct PHYSICS2D_API BodyPair
 		{
 			using BodyPairID = uint64_t;
@@ -98,16 +97,16 @@ namespace Physics2D
 		Vector2 toWorldPoint(const Vector2& point) const;
 		Vector2 toActualPoint(const Vector2& point) const;
 
-		uint32_t id()const;
+		uint32_t id() const;
 		void setId(const uint32_t& id);
 
-		uint32_t bitmask()const;
+		uint32_t bitmask() const;
 		void setBitmask(const uint32_t& bitmask);
 
-		real restitution()const;
+		real restitution() const;
 		void setRestitution(const real& restitution);
-		
-		real kineticEnergy()const;
+
+		real kineticEnergy() const;
 
 	private:
 		void calcInertia();
@@ -137,10 +136,8 @@ namespace Physics2D
 		bool m_sleep = false;
 		real m_friction = 0.1f;
 		real m_restitution = 0.0f;
-		
-		uint32_t m_sleepCountdown = 0;
 
-		
+		uint32_t m_sleepCountdown = 0;
 	};
 }
 #endif

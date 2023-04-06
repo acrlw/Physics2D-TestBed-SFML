@@ -4,27 +4,31 @@
 #include "physics2d_grid.h"
 #include "frame.h"
 #include "physics2d_sap.h"
+
 namespace Physics2D
 {
 	class BroadPhaseFrame : public Frame
 	{
 	public:
 		BroadPhaseFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Broadphase", world, maintainer, tree, grid, camera)
+		                Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Broadphase", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			rectangle.set(0.5f, 0.5f);
 			circle.setRadius(0.5f);
 			capsule.set(1.5f, 0.5f);
-			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f}});
-			polygon.append({ {0.0f, 4.0f},{-3.0f, 3.0f},{-4.0f, 0.0f},{-3.0f, -3.0f},{0, -4.0f},
-			{3.0f, -3.0f}, {4.0f, 0.0f }, {3.0f, 3.0f } });
+			triangle.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
+			polygon.append({
+				{0.0f, 4.0f}, {-3.0f, 3.0f}, {-4.0f, 0.0f}, {-3.0f, -3.0f}, {0, -4.0f},
+				{3.0f, -3.0f}, {4.0f, 0.0f}, {3.0f, 3.0f}
+			});
 			triangle.scale(0.5f);
 			polygon.scale(0.1f);
-			
+
 
 			Shape* shapeArray[5];
 			shapeArray[0] = &rectangle;
@@ -51,7 +55,7 @@ namespace Physics2D
 				m_tree->insert(body);
 				grid.insert(body);
 			}
-			for(auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
+			for (auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
 			{
 				bodyList.emplace_back(iter->get());
 			}
@@ -64,8 +68,8 @@ namespace Physics2D
 			//grid.insert(body)
 
 			//m_tree->insert(body);
-
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
 			//grid spatial hashing
@@ -85,13 +89,13 @@ namespace Physics2D
 
 			for (auto&& elem : grid.m_cellsToBodies)
 			{
-				Vector2 topLeft(real(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f, real(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
+				Vector2 topLeft(static_cast<real>(elem.first.x) * grid.cellWidth() - grid.width() * 0.5f,
+				                static_cast<real>(elem.first.y) * grid.cellHeight() - grid.height() * 0.5f);
 				AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
 				//cell.expand(-0.05f);
 
 				RenderSFMLImpl::renderAABB(window, *m_camera, cell, cellColor);
 			}
-
 
 
 			//for (auto&& [key, value] : resultBodies)
@@ -120,9 +124,8 @@ namespace Physics2D
 			//	RenderSFMLImpl::renderAABB(window, *m_camera, elem->aabb(), hitColor);
 
 			//spatial hash grid
-
-
 		}
+
 	private:
 		UniformGrid grid;
 		Body* body;

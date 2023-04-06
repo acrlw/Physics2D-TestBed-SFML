@@ -1,30 +1,31 @@
 #ifndef PHYSICS2D_SCENES_DOMINO_H
 #define PHYSICS2D_SCENES_DOMINO_H
 #include "frame.h"
+
 namespace Physics2D
 {
 	class DominoFrame : public Frame
 	{
 	public:
 		DominoFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Domino", world, maintainer, tree, grid, camera)
+		            Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Domino", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
-
 			block.set(200, 1.0f);
 			floor.set(15.0f, 0.8f);
 			rectangle.set(0.5f, 0.5f);
 			brick.set(0.5f, 3.0f);
-			edge.set(Vector2{ -100.0f, 0 }, Vector2{ 100.0f, 0 });
+			edge.set(Vector2{-100.0f, 0}, Vector2{100.0f, 0});
 
 			Body* ground = m_world->createBody();
 			ground->setShape(&edge);
 			ground->setType(Body::BodyType::Static);
 			ground->setMass(Constant::Max);
-			ground->position().set({ 0, 0.0f });
+			ground->position().set({0, 0.0f});
 			ground->setFriction(0.1f);
 			ground->setRestitution(0.0f);
 			m_tree->insert(ground);
@@ -36,7 +37,7 @@ namespace Physics2D
 			tile->setFriction(0.15f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = Math::degreeToRadian(20);
-			tile->position().set({ 4, 10 });
+			tile->position().set({4, 10});
 			m_tree->insert(tile);
 
 			tile = m_world->createBody();
@@ -46,7 +47,7 @@ namespace Physics2D
 			tile->setFriction(0.15f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = Math::degreeToRadian(-20);
-			tile->position().set({ -4, 4 });
+			tile->position().set({-4, 4});
 			m_tree->insert(tile);
 
 
@@ -57,10 +58,10 @@ namespace Physics2D
 			tile->setFriction(0.15f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = 0;
-			tile->position().set({ -5, 13 });
+			tile->position().set({-5, 13});
 			m_tree->insert(tile);
 
-			for(real i = 0;i < 9.0; i += 1.0f)
+			for (real i = 0; i < 9.0; i += 1.0f)
 			{
 				Body* card = m_world->createBody();
 				card->setShape(&brick);
@@ -68,7 +69,7 @@ namespace Physics2D
 				card->setFriction(0.1f);
 				card->setRestitution(0);
 				card->setType(Body::BodyType::Dynamic);
-				card->position().set({ -10.0f + i * 1.2f, 15.0f });
+				card->position().set({-10.0f + i * 1.2f, 15.0f});
 				m_tree->insert(card);
 			}
 
@@ -95,13 +96,13 @@ namespace Physics2D
 			m_world->createJoint(ojp);
 
 			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
-
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
 			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
-
 		}
+
 	private:
 		Rectangle block;
 		Rectangle brick;

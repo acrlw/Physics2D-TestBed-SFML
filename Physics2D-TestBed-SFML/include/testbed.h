@@ -31,6 +31,7 @@
 #include <thread>
 #include <condition_variable>
 #include <chrono>
+
 namespace Physics2D
 {
 	class TestBed
@@ -39,20 +40,21 @@ namespace Physics2D
 		TestBed();
 		~TestBed();
 		void exec();
+
 	private:
-        //events
-        void onResized(sf::Event &event);
-        void onClosed(sf::Event &event);
-        void onKeyReleased(sf::Event &event);
+		//events
+		void onResized(sf::Event& event);
+		void onClosed(sf::Event& event);
+		void onKeyReleased(sf::Event& event);
 		void onKeyPressed(sf::Event& event);
-        void onMouseReleased(sf::Event &event);
-        void onMouseMoved(sf::Event &event);
-        void onMousePressed(sf::Event &event);
-        void onWheelScrolled(sf::Event& event);
-        //render
+		void onMouseReleased(sf::Event& event);
+		void onMouseMoved(sf::Event& event);
+		void onMousePressed(sf::Event& event);
+		void onWheelScrolled(sf::Event& event);
+		//render
 		void renderGUI(sf::RenderWindow& window, sf::Clock& clock);
 		void render(sf::RenderWindow& window);
-        //simulation
+		//simulation
 		void pause();
 		void restart();
 		void step();
@@ -69,13 +71,13 @@ namespace Physics2D
 		bool m_running = true;
 		bool m_cameraViewportMovement = false;
 
-		
+
 		int m_currentItem = 11;
 
 		Frame* m_currentFrame = nullptr;
 
 		PhysicsSystem m_system;
-		
+
 		Body* m_selectedBody = nullptr;
 		PointJoint* m_mouseJoint = nullptr;
 		PointJointPrimitive m_pointJointPrimitive;
@@ -83,12 +85,12 @@ namespace Physics2D
 
 		Vector2 m_mousePos;
 
-        std::unique_ptr<sf::RenderWindow> m_window;
+		std::unique_ptr<sf::RenderWindow> m_window;
 
-		std::array<std::function<Frame* ()>, 21> m_frameList;
+		std::array<std::function<Frame*()>, 21> m_frameList;
 
 		bool m_onDistanceCheck = false;
 		Vector2 m_mouseArray[2];
-    };
+	};
 }
 #endif

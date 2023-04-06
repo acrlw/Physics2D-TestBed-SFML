@@ -11,119 +11,120 @@
 
 namespace Physics2D
 {
-    class PHYSICS2D_API PhysicsWorld
-    {
-		public:
-        
-            PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f), m_bias(0.8f), m_linearVelocityThreshold(0.02f), m_angularVelocityThreshold(0.02f), m_airFrictionCoefficient(0.7f)
-            {}
-            ~PhysicsWorld();
-			//disable copy
-            PhysicsWorld(const PhysicsWorld&) = delete;
-            PhysicsWorld& operator=(const PhysicsWorld&) = delete;
-            void prepareVelocityConstraint(const real& dt);
-            void stepVelocity(const real& dt);
-            void solveVelocityConstraint(real dt);
-            void stepPosition(const real& dt);
-            void solvePositionConstraint(real dt);
-            
+	class PHYSICS2D_API PhysicsWorld
+	{
+	public:
+		PhysicsWorld() : m_gravity(0, -9.8f), m_linearVelocityDamping(0.9f), m_angularVelocityDamping(0.9f),
+		                 m_linearVelocityThreshold(0.02f), m_angularVelocityThreshold(0.02f),
+		                 m_airFrictionCoefficient(0.7f), m_bias(0.8f)
+		{
+		}
 
-            Vector2 gravity() const;
-            void setGravity(const Vector2 &gravity);
+		~PhysicsWorld();
+		//disable copy
+		PhysicsWorld(const PhysicsWorld&) = delete;
+		PhysicsWorld& operator=(const PhysicsWorld&) = delete;
+		void prepareVelocityConstraint(const real& dt);
+		void stepVelocity(const real& dt);
+		void solveVelocityConstraint(real dt);
+		void stepPosition(const real& dt);
+		void solvePositionConstraint(real dt);
 
-            real linearVelocityDamping() const;
-            void setLinearVelocityDamping(const real&linearVelocityDamping);
 
-            real angularVelocityDamping() const;
-            void setAngularVelocityDamping(const real &angularVelocityDamping);
+		Vector2 gravity() const;
+		void setGravity(const Vector2& gravity);
 
-            real linearVelocityThreshold() const;
-            void setLinearVelocityThreshold(const real&linearVelocityThreshold);
+		real linearVelocityDamping() const;
+		void setLinearVelocityDamping(const real& linearVelocityDamping);
 
-            real angularVelocityThreshold() const;
-            void setAngularVelocityThreshold(const real &angularVelocityThreshold);
+		real angularVelocityDamping() const;
+		void setAngularVelocityDamping(const real& angularVelocityDamping);
 
-            real airFrictionCoefficient()const;
-    		void setAirFrictionCoefficient(const real& airFrictionCoefficient);
+		real linearVelocityThreshold() const;
+		void setLinearVelocityThreshold(const real& linearVelocityThreshold);
 
-            bool enableGravity() const;
-            void setEnableGravity(bool enableGravity);
+		real angularVelocityThreshold() const;
+		void setAngularVelocityThreshold(const real& angularVelocityThreshold);
 
-            bool enableDamping() const;
-            void setEnableDamping(bool enableDamping);
-            
-            Body* createBody();
-            void removeBody(Body* body);
+		real airFrictionCoefficient() const;
+		void setAirFrictionCoefficient(const real& airFrictionCoefficient);
 
-            void removeJoint(Joint* joint);
+		bool enableGravity() const;
+		void setEnableGravity(bool enableGravity);
 
-            void clearAllBodies();
-            void clearAllJoints();
-    	
-            RotationJoint* createJoint(const RotationJointPrimitive& primitive);
-            PointJoint* createJoint(const PointJointPrimitive& primitive);
-            DistanceJoint* createJoint(const DistanceJointPrimitive& primitive);
-            PulleyJoint* createJoint(const PulleyJointPrimitive& primitive);
-            RevoluteJoint* createJoint(const RevoluteJointPrimitive& primitive);
-            WeldJoint* createJoint(const WeldJointPrimitive& primitive);
-            OrientationJoint* createJoint(const OrientationJointPrimitive& primitive);
-            
-            real bias() const;
-            void setBias(const real &bias);
+		bool enableDamping() const;
+		void setEnableDamping(bool enableDamping);
 
-            Container::Vector<std::unique_ptr<Body>>& bodyList();
-    	
-            Container::Vector<std::unique_ptr<Joint>>& jointList();
+		Body* createBody();
+		void removeBody(Body* body);
 
-			bool& enableSleep();
-        private:
+		void removeJoint(Joint* joint);
 
-            Vector2 m_gravity;
-            real m_linearVelocityDamping;
-            real m_angularVelocityDamping;
-            real m_linearVelocityThreshold;
-            real m_angularVelocityThreshold;
-            real m_airFrictionCoefficient;
+		void clearAllBodies();
+		void clearAllJoints();
 
-            real m_bias;
-    		
-    		bool m_enableGravity = true;
-    		bool m_enableDamping = true;
-            bool m_enableSleep = false;
-            Container::Vector<std::unique_ptr<Body>> m_bodyList;
-            Container::Vector<std::unique_ptr<Joint>> m_jointList;
+		RotationJoint* createJoint(const RotationJointPrimitive& primitive);
+		PointJoint* createJoint(const PointJointPrimitive& primitive);
+		DistanceJoint* createJoint(const DistanceJointPrimitive& primitive);
+		PulleyJoint* createJoint(const PulleyJointPrimitive& primitive);
+		RevoluteJoint* createJoint(const RevoluteJointPrimitive& primitive);
+		WeldJoint* createJoint(const WeldJointPrimitive& primitive);
+		OrientationJoint* createJoint(const OrientationJointPrimitive& primitive);
 
-    };
-    class PHYSICS2D_API DiscreteWorld
-    {
-    public:
+		real bias() const;
+		void setBias(const real& bias);
 
-        
-        using ObjectID = uint32_t;
-        ObjectID createBody(const ShapePrimitive& primitive);
-        ObjectID createJoint();
+		Container::Vector<std::unique_ptr<Body>>& bodyList();
 
-        void step(real dt);
-        void stepPosition(real dt);
-        void stepVelocity(real dt);
+		Container::Vector<std::unique_ptr<Joint>>& jointList();
 
-        void removeBody(const ObjectID& id);
-        void removeJoint(const ObjectID& id);
+		bool& enableSleep();
 
-        void solveVelocity(real dt);
-        void solvePosition(real dt);
+	private:
+		Vector2 m_gravity;
+		real m_linearVelocityDamping;
+		real m_angularVelocityDamping;
+		real m_linearVelocityThreshold;
+		real m_angularVelocityThreshold;
+		real m_airFrictionCoefficient;
 
-    private:
-        Container::Vector<ObjectID> m_bodyList;
-        Container::Vector<ObjectID> m_jointList;
-        Container::Vector<bool> m_sleepList;
+		real m_bias;
 
-        Vector2 m_gravity;
-        real m_linearVelocityDamping = 0.9f;
-        real m_angularVelocityDamping = 0.9f;
-        real m_linearVelocityThreshold = 0.02f;
-        real m_angularVelocityThreshold = 0.02f;
-        real m_airFrictionCoefficient = 0.7f;
-    };
+		bool m_enableGravity = true;
+		bool m_enableDamping = true;
+		bool m_enableSleep = false;
+		Container::Vector<std::unique_ptr<Body>> m_bodyList;
+		Container::Vector<std::unique_ptr<Joint>> m_jointList;
+	};
+
+	class PHYSICS2D_API DiscreteWorld
+	{
+	public:
+		using ObjectID = uint32_t;
+		ObjectID createBody(const ShapePrimitive& primitive);
+		ObjectID createJoint();
+
+		void step(real dt);
+		void stepPosition(real dt);
+		void stepVelocity(real dt);
+
+		void removeBody(const ObjectID& id);
+		void removeJoint(const ObjectID& id);
+
+		void solveVelocity(real dt);
+		void solvePosition(real dt);
+
+	private:
+		Container::Vector<ObjectID> m_bodyList;
+		Container::Vector<ObjectID> m_jointList;
+		Container::Vector<bool> m_sleepList;
+
+		Vector2 m_gravity;
+		real m_linearVelocityDamping = 0.9f;
+		real m_angularVelocityDamping = 0.9f;
+		real m_linearVelocityThreshold = 0.02f;
+		real m_angularVelocityThreshold = 0.02f;
+		real m_airFrictionCoefficient = 0.7f;
+	};
 }
 #endif

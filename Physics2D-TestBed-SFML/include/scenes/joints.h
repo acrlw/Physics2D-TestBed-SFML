@@ -8,17 +8,18 @@ namespace Physics2D
 	{
 	public:
 		JointsFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Joints", world, maintainer, tree, grid, camera)
+		            Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Joints", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			capsule.set(1.5f, 0.5f);
-			triangle.append({ {-1.0f, 1.0f},{0.0f, -2.0f},{1.0f, -1.0f} });
+			triangle.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
 			triangle.scale(0.5f);
-			edge.set({ -100, 0 }, { 100, 0 });
-			edge2.set({ 0, 0 }, { 100, 40 });
+			edge.set({-100, 0}, {100, 0});
+			edge2.set({0, 0}, {100, 40});
 			rectangle.set(1.0f, 1.0f);
 
 			wheel.setRadius(1.0f);
@@ -49,7 +50,7 @@ namespace Physics2D
 			rjp.maxForce = 10000;
 			rjp.localPointA.set(-0.5, 0.5);
 			rjp.localPointB.set(0.5, 0.5);
-			
+
 			joint = m_world->createJoint(rjp);
 
 			updateJoint();
@@ -97,7 +98,7 @@ namespace Physics2D
 
 			Body* ground = m_world->createBody();
 			ground->setShape(&edge);
-			ground->position().set({ 0, -2.0 });
+			ground->position().set({0, -2.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.4f);
@@ -112,33 +113,36 @@ namespace Physics2D
 			ground->setFriction(0.4f);
 			ground->setBitmask(0x01);
 			m_tree->insert(ground);
-
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
 			sf::Color color = sf::Color::Cyan;
 			color.a = 155;
 			Vector2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
-			RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal, color);
-
+			RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal,
+			                           color);
 		}
+
 		void release() override
 		{
 			m_camera->setTargetBody(nullptr);
 		}
+
 		void postStep(real dt) override
 		{
 			updateJoint();
 		}
-		void onKeyPressed(sf::Event& event) 
+
+		void onKeyPressed(sf::Event& event) override
 		{
 			switch (event.key.code)
 			{
 			case sf::Keyboard::D:
-			{
-				wheel1->applyImpulse(Vector2(0.0f, -50.0f), Vector2(1.0f, 0.0f));
-				break;
-			}
+				{
+					wheel1->applyImpulse(Vector2(0.0f, -50.0f), Vector2(1.0f, 0.0f));
+					break;
+				}
 			default:
 				break;
 			}
@@ -153,8 +157,8 @@ namespace Physics2D
 			//Vector2 pa = pair.pointA - 0.5f * distance * normal;
 			//joint->primitive().localPointA = bodyA->toLocalPoint(pa);
 			//joint->primitive().localPointB = bodyB->toLocalPoint(pb);
-
 		}
+
 		Capsule capsule;
 		Polygon triangle;
 		Rectangle rectangle;
@@ -168,7 +172,7 @@ namespace Physics2D
 		WeldJoint* joint;
 		Body* bodyA;
 		Body* bodyB;
-		Body* block; 
+		Body* block;
 		Body* wheel1;
 		Body* wheel2;
 	};

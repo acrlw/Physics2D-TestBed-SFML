@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "render.h"
+
 namespace Physics2D
 {
 	Camera::Camera()
@@ -10,6 +11,7 @@ namespace Physics2D
 		if (!m_font.loadFromFile("font/MiSans-Medium.ttf"))
 			std::cout << "Cannot load font." << std::endl;
 	}
+
 	void Camera::render(sf::RenderWindow& window)
 	{
 		if (m_visible)
@@ -28,7 +30,8 @@ namespace Physics2D
 			if (m_targetBody != nullptr)
 			{
 				Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
-				Vector2 target(-(m_targetBody->position().x + m_targetBody->shape()->center().x), m_targetBody->position().y + m_targetBody->shape()->center().y);
+				Vector2 target(-(m_targetBody->position().x + m_targetBody->shape()->center().x),
+				               m_targetBody->position().y + m_targetBody->shape()->center().y);
 				target = worldToScreen(target) - real_origin;
 
 				Vector2 c = target - m_transform;
@@ -36,48 +39,45 @@ namespace Physics2D
 				switch (m_easingType)
 				{
 				case EasingType::Exponential:
-				{
-					if (c.lengthSquare() < 0.1f)
-						m_transform = target;
-					else
-						m_transform -= (1.0f - std::exp(m_restitution * inv_dt)) * c;
-					break;
-				}
+					{
+						if (c.lengthSquare() < 0.1f)
+							m_transform = target;
+						else
+							m_transform -= (1.0f - std::exp(m_restitution * inv_dt)) * c;
+						break;
+					}
 				case EasingType::Lerp:
-				{
-					if (c.lengthSquare() < 0.1f)
-						m_transform = target;
-					else
-						m_transform += 0.02f * c;
-					break;
-				}
+					{
+						if (c.lengthSquare() < 0.1f)
+							m_transform = target;
+						else
+							m_transform += 0.02f * c;
+						break;
+					}
 				case EasingType::Uniform:
-				{
-					break;
+					{
+						break;
+					}
 				}
-				}
-
-
 			}
 
 
 			//draw background
 			window.clear(sf::Color(50, 50, 50));
-			
 
-			
+
 			if (m_jointVisible)
 			{
-				for(auto iter = m_world->jointList().begin(); iter != m_world->jointList().end(); ++iter)
+				for (auto iter = m_world->jointList().begin(); iter != m_world->jointList().end(); ++iter)
 				{
 					if ((*iter)->active())
 						RenderSFMLImpl::renderJoint(window, *this, (*iter).get(), sf::Color::Green);
 				}
 			}
-			
+
 			if (m_aabbVisible)
 			{
-				for(auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
+				for (auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
 				{
 					if ((*iter).get() != nullptr)
 						RenderSFMLImpl::renderAABB(window, *this, (*iter)->aabb(), sf::Color::Cyan);
@@ -87,11 +87,12 @@ namespace Physics2D
 			{
 				drawTree(m_tree->rootIndex(), window);
 			}
-			if(m_uniformGridVisible)
+			if (m_uniformGridVisible)
 			{
 				for (auto&& elem : m_grid->m_cellsToBodies)
 				{
-					Vector2 topLeft(real(elem.first.x) * m_grid->cellWidth() - m_grid->width() * 0.5f, real(elem.first.y) * m_grid->cellHeight() - m_grid->height() * 0.5f);
+					Vector2 topLeft(static_cast<real>(elem.first.x) * m_grid->cellWidth() - m_grid->width() * 0.5f,
+					                static_cast<real>(elem.first.y) * m_grid->cellHeight() - m_grid->height() * 0.5f);
 					AABB cell(topLeft, m_grid->cellWidth(), m_grid->cellHeight());
 					//cell.expand(-0.05f);
 
@@ -110,17 +111,18 @@ namespace Physics2D
 
 				for (int i = -m_axisPointCount; i <= m_axisPointCount; ++i)
 				{
-					axisPoints.emplace_back(Vector2(0, real(i)));
-					axisPoints.emplace_back(Vector2(real(i), 0));
+					axisPoints.emplace_back(Vector2(0, static_cast<real>(i)));
+					axisPoints.emplace_back(Vector2(static_cast<real>(i), 0));
 				}
 
 				//draw grid
 				drawGridScaleLine(window);
 				RenderSFMLImpl::renderPoints(window, *this, axisPoints, color);
 				color.a = 140;
-				RenderSFMLImpl::renderLine(window, *this, Vector2(0.0f, real(-m_axisPointCount)), Vector2(0.0f, real(m_axisPointCount)), color);
-				RenderSFMLImpl::renderLine(window, *this, Vector2(real(-m_axisPointCount), 0.0f), Vector2(real(m_axisPointCount), 0.0f), color);
-
+				RenderSFMLImpl::renderLine(window, *this, Vector2(0.0f, static_cast<real>(-m_axisPointCount)),
+				                           Vector2(0.0f, static_cast<real>(m_axisPointCount)), color);
+				RenderSFMLImpl::renderLine(window, *this, Vector2(static_cast<real>(-m_axisPointCount), 0.0f),
+				                           Vector2(static_cast<real>(m_axisPointCount), 0.0f), color);
 			}
 			if (m_bodyVisible)
 			{
@@ -150,15 +152,17 @@ namespace Physics2D
 					{
 						if (m_bodyVelocity)
 						{
-							RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + body->velocity(), RenderConstant::Orange, 0.2);
+							RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position,
+							                            primitive.transform.position + body->velocity(),
+							                            RenderConstant::Orange, 0.2);
 						}
 
 						if (m_bodyVelocityMagnitude)
 						{
 							std::string str = std::format("{:.3f}", body->velocity().length());
 							const Vector2 offset(-0.01f, 0.01f);
-							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font, str, RenderConstant::Orange, 16);
-
+							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font,
+							                           str, RenderConstant::Orange, 16);
 						}
 
 						if (m_bodyVelocityNormal)
@@ -166,11 +170,11 @@ namespace Physics2D
 							Vector2 vel = body->velocity();
 							const real length = vel.length();
 							if (!realEqual(length, 0.0f))
-								RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position, primitive.transform.position + vel / length, RenderConstant::Orange, 0.2);
-
+								RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position,
+								                            primitive.transform.position + vel / length,
+								                            RenderConstant::Orange, 0.2);
 						}
 					}
-
 				}
 			}
 			if (m_contactVisible)
@@ -281,14 +285,17 @@ namespace Physics2D
 	void Camera::setViewport(const Viewport& viewport)
 	{
 		m_viewport = viewport;
-		m_origin.set((m_viewport.topLeft.x + m_viewport.bottomRight.x) * (0.5), (m_viewport.topLeft.y + m_viewport.bottomRight.y) * (0.5));
+		m_origin.set((m_viewport.topLeft.x + m_viewport.bottomRight.x) * (0.5),
+		             (m_viewport.topLeft.y + m_viewport.bottomRight.y) * (0.5));
 	}
-	Vector2 Camera::worldToScreen(const Vector2& pos)const
+
+	Vector2 Camera::worldToScreen(const Vector2& pos) const
 	{
 		Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
 		return Vector2(real_origin.x + pos.x * m_meterToPixel, real_origin.y - pos.y * m_meterToPixel);
 	}
-	Vector2 Camera::screenToWorld(const Vector2& pos)const
+
+	Vector2 Camera::screenToWorld(const Vector2& pos) const
 	{
 		Vector2 real_origin(m_origin.x + m_transform.x, m_origin.y - m_transform.y);
 		Vector2 result = pos - real_origin;
@@ -307,7 +314,7 @@ namespace Physics2D
 		m_tree = tree;
 	}
 
-	bool& Camera::visible() 
+	bool& Camera::visible()
 	{
 		return m_visible;
 	}
@@ -327,7 +334,6 @@ namespace Physics2D
 	{
 		m_deltaTime = deltaTime;
 	}
-	
 
 
 	bool& Camera::centerVisible()
@@ -335,7 +341,7 @@ namespace Physics2D
 		return m_centerVisible;
 	}
 
-	bool& Camera::contactVisible() 
+	bool& Camera::contactVisible()
 	{
 		return m_contactVisible;
 	}
@@ -428,6 +434,7 @@ namespace Physics2D
 		if (!m_tree->tree()[nodeIndex].isLeaf())
 			RenderSFMLImpl::renderAABB(window, *this, aabb, sf::Color::Cyan);
 	}
+
 	void Camera::drawContacts(sf::RenderWindow& window)
 	{
 		sf::Color pink = RenderConstant::Pink;
@@ -442,19 +449,24 @@ namespace Physics2D
 				const Vector2 realA = elem.bodyA->toWorldPoint(elem.vcp.localA);
 				const Vector2 realB = elem.bodyB->toWorldPoint(elem.vcp.localB);
 				if (m_contactImpulseVisible)
-					RenderSFMLImpl::renderArrow(window, *this, realB, realB - elem.vcp.normal * elem.vcp.accumulatedNormalImpulse, RenderConstant::Cyan, 0.2f);
+					RenderSFMLImpl::renderArrow(window, *this, realB,
+					                            realB - elem.vcp.normal * elem.vcp.accumulatedNormalImpulse,
+					                            RenderConstant::Cyan, 0.2f);
 
 				if (m_contactImpulseMagnitude)
-					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse, RenderConstant::Cyan, 16);
+					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse,
+					                            RenderConstant::Cyan, 16);
 
 				if (m_contactFrictionVisible)
-					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.vcp.localB), elem.bodyB->toWorldPoint(elem.vcp.localB) - elem.vcp.tangent * elem.vcp.accumulatedTangentImpulse, RenderConstant::Yellow, 0.2f);
+					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.vcp.localB),
+					                            elem.bodyB->toWorldPoint(elem.vcp.localB) - elem.vcp.tangent * elem.vcp.
+					                            accumulatedTangentImpulse, RenderConstant::Yellow, 0.2f);
 
 				if (m_contactFrictionMagnitude)
 				{
 					const Vector2 offset(0.05f, -0.05f);
-					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedTangentImpulse, yellow, 16, offset);
-
+					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedTangentImpulse,
+					                            yellow, 16, offset);
 				}
 
 				RenderSFMLImpl::renderPoint(window, *this, realA, pink);
@@ -462,6 +474,7 @@ namespace Physics2D
 			}
 		}
 	}
+
 	void Camera::drawGridScaleLine(sf::RenderWindow& window)
 	{
 		sf::Color thick = RenderConstant::DarkGreen;
@@ -487,12 +500,12 @@ namespace Physics2D
 		{
 			if (i == 0)
 				continue;
-			Vector2 p1 = { real(i), real(m_axisPointCount) };
-			Vector2 p2 = { real(i), real(-m_axisPointCount) };
+			Vector2 p1 = {static_cast<real>(i), static_cast<real>(m_axisPointCount)};
+			Vector2 p2 = {static_cast<real>(i), static_cast<real>(-m_axisPointCount)};
 			lines.emplace_back(std::make_pair(p1, p2));
 
-			p1.set(real(-m_axisPointCount), real(i));
-			p2.set(real(m_axisPointCount), real(i));
+			p1.set(static_cast<real>(-m_axisPointCount), static_cast<real>(i));
+			p2.set(static_cast<real>(m_axisPointCount), static_cast<real>(i));
 			lines.emplace_back(std::make_pair(p1, p2));
 		}
 		RenderSFMLImpl::renderLines(window, *this, lines, thick);
@@ -510,19 +523,19 @@ namespace Physics2D
 			else if (m_meterToPixel < 2000)
 				slice = 20;
 
-			const real inv = 1.0f / real(slice);
+			const real inv = 1.0f / static_cast<real>(slice);
 			for (int i = -m_axisPointCount, j = -m_axisPointCount + h; i < m_axisPointCount; i += h, j += h)
 			{
 				for (int k = 1; k < slice; ++k)
 				{
-					real index = real(k) * inv;
+					real index = static_cast<real>(k) * inv;
 
-					Vector2 p1 = { real(i) + index, real(m_axisPointCount)};
-					Vector2 p2 = { real(i) + index, real(-m_axisPointCount) };
+					Vector2 p1 = {static_cast<real>(i) + index, static_cast<real>(m_axisPointCount)};
+					Vector2 p2 = {static_cast<real>(i) + index, static_cast<real>(-m_axisPointCount)};
 					lines.emplace_back(std::make_pair(p1, p2));
 
-					p1.set(real(-m_axisPointCount), real(i) + index);
-					p2.set(real(m_axisPointCount), real(i) + index);
+					p1.set(static_cast<real>(-m_axisPointCount), static_cast<real>(i) + index);
+					p2.set(static_cast<real>(m_axisPointCount), static_cast<real>(i) + index);
 					lines.emplace_back(std::make_pair(p1, p2));
 				}
 			}
@@ -534,18 +547,22 @@ namespace Physics2D
 	{
 		return bottomRight.x - topLeft.x;
 	}
+
 	real Camera::Viewport::height()
 	{
 		return bottomRight.y - topLeft.y;
 	}
+
 	void Camera::Viewport::setWidth(const real& width)
 	{
 		bottomRight.x = topLeft.x + width;
 	}
+
 	void Camera::Viewport::setHeight(const real& height)
 	{
 		bottomRight.y = topLeft.y + height;
 	}
+
 	void Camera::Viewport::set(const real& width, const real& height)
 	{
 		setWidth(width);

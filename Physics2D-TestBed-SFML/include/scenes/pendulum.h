@@ -3,16 +3,18 @@
 
 #include "frame.h"
 #include <deque>
+
 namespace Physics2D
 {
 	class PendulumFrame : public Frame
 	{
 	public:
 		PendulumFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Pendulum", world, maintainer, tree, grid, camera)
+		              Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Pendulum", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			points.resize(400);
@@ -76,11 +78,12 @@ namespace Physics2D
 
 			m_world->setEnableDamping(false);
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
 			if (points.size() > 400)
 				points.pop_front();
-			points.emplace_back(stick3->toWorldPoint(Vector2{ 2.0f, 0.0f }));
+			points.emplace_back(stick3->toWorldPoint(Vector2{2.0f, 0.0f}));
 
 			Container::Vector<sf::Vertex> vertices;
 			vertices.reserve(points.size());
@@ -93,20 +96,19 @@ namespace Physics2D
 				vertices.emplace_back(vertex);
 			}
 			window.draw(&vertices[0], vertices.size(), sf::Points);
-
-
 		}
+
 		void release() override
 		{
 			m_world->setEnableDamping(true);
 		}
+
 	private:
 		Body* stick1 = nullptr;
 		Body* stick2 = nullptr;
 		Body* stick3 = nullptr;
 		std::deque<Vector2> points;
 		Rectangle rectangle;
-
 	};
 }
 

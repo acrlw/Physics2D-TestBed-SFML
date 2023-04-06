@@ -3,9 +3,6 @@
 
 namespace Physics2D
 {
-
-
-
 	void ContactMaintainer::clearAll()
 	{
 		m_contactTable.clear();
@@ -65,7 +62,6 @@ namespace Physics2D
 
 				ccp.bodyA->applyImpulse(impulse_n, vcp.ra);
 				ccp.bodyB->applyImpulse(-impulse_n, vcp.rb);
-
 			}
 		}
 	}
@@ -104,7 +100,6 @@ namespace Physics2D
 				dr = bodyB->inverseInertia() * rb.cross(impulse);
 				bodyB->position() -= dp;
 				bodyB->rotation() -= dr;
-
 			}
 		}
 	}
@@ -116,7 +111,7 @@ namespace Physics2D
 		const auto relation = Body::BodyPair::generateBodyPairID(collision.bodyA, collision.bodyB);
 		auto& contactList = m_contactTable[relation];
 
-		for(uint8_t i = 0; i < collision.contactList.count; i += 2)
+		for (uint8_t i = 0; i < collision.contactList.count; i += 2)
 		{
 			VertexPair elem;
 			elem.pointA = collision.contactList.points[i];
@@ -139,7 +134,6 @@ namespace Physics2D
 					existed = true;
 					break;
 				}
-
 			}
 			if (existed)
 				continue;
@@ -164,11 +158,10 @@ namespace Physics2D
 			});
 		}
 		std::erase_if(m_contactTable, [](const auto& item)
-			{
-				auto const& [key, value] = item;
-				return value.empty();
-			});
-		
+		{
+			const auto& [key, value] = item;
+			return value.empty();
+		});
 	}
 
 	void ContactMaintainer::deactivateAllPoints()
@@ -235,13 +228,10 @@ namespace Physics2D
 		//accumulate inherited impulse
 		Vector2 impulse = vcp.accumulatedNormalImpulse * vcp.normal + vcp.accumulatedTangentImpulse * vcp.tangent;
 		//Vector2 impulse;
-		if(m_warmStart)
+		if (m_warmStart)
 		{
 			ccp.bodyA->applyImpulse(impulse, vcp.ra);
 			ccp.bodyB->applyImpulse(-impulse, vcp.rb);
 		}
-		
-
-
 	}
 }

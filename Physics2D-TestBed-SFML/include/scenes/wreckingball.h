@@ -1,15 +1,16 @@
 #ifndef PHYSICS2D_SCENES_WRECKINGBALL_H
 #define PHYSICS2D_SCENES_WRECKINGBALL_H
 #include "frame.h"
+
 namespace Physics2D
 {
 	class WreckingBallFrame : public Frame
 	{
 	public:
 		WreckingBallFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Wrecking Ball", world, maintainer, tree, grid, camera)
+		                  Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Wrecking Ball", world, maintainer, tree, grid, camera)
 		{
-
 		}
 
 		void load() override
@@ -21,7 +22,7 @@ namespace Physics2D
 			rectangle.set(1.0f, 1.0f);
 			circle.setRadius(1.5f);
 			brick.set(1.5f, 0.5f);
-			edge.set({ -100, 0 }, { 100, 0 });
+			edge.set({-100, 0}, {100, 0});
 
 
 			DistanceJointPrimitive distancePrim;
@@ -29,7 +30,7 @@ namespace Physics2D
 
 			ground = m_world->createBody();
 			ground->setShape(&edge);
-			ground->position().set({ 0, 0.0 });
+			ground->position().set({0, 0.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
 			m_tree->insert(ground);
@@ -39,7 +40,7 @@ namespace Physics2D
 				for (real i = 0; i < 1.0; i += 1.0f)
 				{
 					Body* body = m_world->createBody();
-					body->position().set({ i * 1.05f - 32.0f, j * 1.05f - ground->position().y + 0.55f });
+					body->position().set({i * 1.05f - 32.0f, j * 1.05f - ground->position().y + 0.55f});
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
 					body->setMass(1.0f);
@@ -54,7 +55,7 @@ namespace Physics2D
 				for (real i = 0; i < 6.0; i += 1.0f)
 				{
 					Body* body = m_world->createBody();
-					body->position().set({ i * 1.05f - 0.0f, j * 1.05f - ground->position().y + 0.55f });
+					body->position().set({i * 1.05f - 0.0f, j * 1.05f - ground->position().y + 0.55f});
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
 					body->setMass(1.0f);
@@ -68,7 +69,7 @@ namespace Physics2D
 			real half = brick.width() / 2.0f + 0.1f;
 			rect = m_world->createBody();
 			rect->setShape(&brick);
-			rect->position().set({ -20.0f, 20.0f });
+			rect->position().set({-20.0f, 20.0f});
 			rect->rotation() = 0;
 			rect->setMass(1.0f);
 			rect->setRestitution(0.2f);
@@ -90,7 +91,7 @@ namespace Physics2D
 			{
 				rect2 = m_world->createBody();
 				rect2->setShape(&brick);
-				rect2->position().set({ -20.0f + i * brick.width() + i * 0.1f, 20.0f });
+				rect2->position().set({-20.0f + i * brick.width() + i * 0.1f, 20.0f});
 				rect2->rotation() = 0;
 				rect2->setMass(2.0f);
 				rect2->setFriction(0.1f);
@@ -110,7 +111,7 @@ namespace Physics2D
 			}
 			rect2 = m_world->createBody();
 			rect2->setShape(&circle);
-			rect2->position().set({ -20.0f + max * brick.width() + max * 0.1f + half, 20.0f });
+			rect2->position().set({-20.0f + max * brick.width() + max * 0.1f + half, 20.0f});
 			rect2->rotation() = 0;
 			rect2->setMass(50.0f);
 			rect2->setFriction(0.1f);
@@ -130,7 +131,7 @@ namespace Physics2D
 
 			rect2 = m_world->createBody();
 			rect2->setShape(&circle);
-			rect2->position().set({ 21.5f + half, 20.0f });
+			rect2->position().set({21.5f + half, 20.0f});
 			rect2->rotation() = 0;
 			rect2->setMass(50.0f);
 			rect2->setFriction(0.1f);
@@ -138,13 +139,12 @@ namespace Physics2D
 			m_tree->insert(rect2);
 
 			distancePrim.bodyA = rect2;
-			distancePrim.localPointA.set({ 0, 0 });
+			distancePrim.localPointA.set({0, 0});
 			distancePrim.minDistance = 11.5f + half;
 			distancePrim.maxDistance = 11.5f + half;
-			distancePrim.targetPoint.set({ 10, 20 });
+			distancePrim.targetPoint.set({10, 20});
 
 			m_world->createJoint(distancePrim);
-
 		}
 
 	private:
@@ -152,7 +152,6 @@ namespace Physics2D
 		Rectangle brick;
 		Edge edge;
 		Circle circle;
-
 	};
 }
 #endif

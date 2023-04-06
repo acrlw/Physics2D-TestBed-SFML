@@ -8,147 +8,154 @@
 #include <SFML/Graphics.hpp>
 
 #include "physics2d.h"
+
 namespace Physics2D
 {
-    class Camera
-    {
-    public:
-        enum class EasingType
-        {
-            Lerp,
-            Exponential,
-            Uniform
-        };
-        struct Viewport
-        {
-            Viewport() = default;
-            Viewport(const Vector2& top_left, const Vector2& bottom_right) : topLeft(top_left), bottomRight(bottom_right) {}
-            Vector2 topLeft = { 0, 0 };
-            Vector2 bottomRight = { 800, 600 };
-            real width();
-            real height();
-            void setWidth(const real& width);
-            void setHeight(const real& height);
-            void set(const real& width, const real& height);
-        };
-        Camera();
-        void render(sf::RenderWindow& window);
+	class Camera
+	{
+	public:
+		enum class EasingType
+		{
+			Lerp,
+			Exponential,
+			Uniform
+		};
 
-        bool& aabbVisible();
-        bool& jointVisible();
-        bool& bodyVisible();
-        bool& gridScaleLineVisible();
-        bool& visible();
-        bool& treeVisible();
-        bool& centerVisible();
-        bool& contactVisible();
-        bool& uniformGridVisible();
-        bool& contactImpulseVisible();
-        bool& contactImpulseMagnitude();
-        bool& contactFrictionVisible();
-        bool& contactFrictionMagnitude();
-        bool& bodyVelocity();
-        bool& bodyVelocityNormal();
-        bool& bodyVelocityMagnitude();
-        sf::Font& font();
+		struct Viewport
+		{
+			Viewport() = default;
 
-        real axisPointCount()const;
-        void setAxisPointCount(real count);
+			Viewport(const Vector2& top_left, const Vector2& bottom_right) : topLeft(top_left),
+			                                                                 bottomRight(bottom_right)
+			{
+			}
 
-        real meterToPixel() const;
-        void setMeterToPixel(const real& meterToPixel);
-        real pixelToMeter() const;
+			Vector2 topLeft = {0, 0};
+			Vector2 bottomRight = {800, 600};
+			real width();
+			real height();
+			void setWidth(const real& width);
+			void setHeight(const real& height);
+			void set(const real& width, const real& height);
+		};
 
-        Vector2 transform() const;
-        void setTransform(const Vector2& transform);
+		Camera();
+		void render(sf::RenderWindow& window);
 
-        void setWorld(PhysicsWorld* world);
-        PhysicsWorld* world()const;
+		bool& aabbVisible();
+		bool& jointVisible();
+		bool& bodyVisible();
+		bool& gridScaleLineVisible();
+		bool& visible();
+		bool& treeVisible();
+		bool& centerVisible();
+		bool& contactVisible();
+		bool& uniformGridVisible();
+		bool& contactImpulseVisible();
+		bool& contactImpulseMagnitude();
+		bool& contactFrictionVisible();
+		bool& contactFrictionMagnitude();
+		bool& bodyVelocity();
+		bool& bodyVelocityNormal();
+		bool& bodyVelocityMagnitude();
+		sf::Font& font();
 
-        Body* targetBody() const;
-        void setTargetBody(Body* targetBody);
+		real axisPointCount() const;
+		void setAxisPointCount(real count);
 
-        real zoomFactor() const;
-        void setZoomFactor(const real& zoomFactor);
+		real meterToPixel() const;
+		void setMeterToPixel(const real& meterToPixel);
+		real pixelToMeter() const;
 
+		Vector2 transform() const;
+		void setTransform(const Vector2& transform);
 
-        Viewport viewport() const;
-        void setViewport(const Viewport& viewport);
+		void setWorld(PhysicsWorld* world);
+		PhysicsWorld* world() const;
 
-        Vector2 worldToScreen(const Vector2& pos)const;
-        Vector2 screenToWorld(const Vector2& pos)const;
+		Body* targetBody() const;
+		void setTargetBody(Body* targetBody);
 
-        Tree* tree()const;
-        void setTree(Tree* tree);
+		real zoomFactor() const;
+		void setZoomFactor(const real& zoomFactor);
 
 
-        real deltaTime()const;
-        void setDeltaTime(const real& deltaTime);
+		Viewport viewport() const;
+		void setViewport(const Viewport& viewport);
+
+		Vector2 worldToScreen(const Vector2& pos) const;
+		Vector2 screenToWorld(const Vector2& pos) const;
+
+		Tree* tree() const;
+		void setTree(Tree* tree);
 
 
-        ContactMaintainer* maintainer()const;
-        void setContactMaintainer(ContactMaintainer* maintainer);
-
-        EasingType easingType()const;
-        void setEasingType(EasingType type);
+		real deltaTime() const;
+		void setDeltaTime(const real& deltaTime);
 
 
-        UniformGrid* uniformGrid()const;
-        void setUniformGrid(UniformGrid* grid);
-    private:
-        void drawGridScaleLine(sf::RenderWindow& window);
+		ContactMaintainer* maintainer() const;
+		void setContactMaintainer(ContactMaintainer* maintainer);
 
-        void drawTree(int nodeIndex, sf::RenderWindow& window);
-        void drawContacts(sf::RenderWindow& window);
-
-        bool m_visible = true;
-        bool m_aabbVisible = false;
-        bool m_jointVisible = true;
-        bool m_bodyVisible = true;
-
-        bool m_treeVisible = false;
-        bool m_uniformGridVisible = false;
-        bool m_gridScaleLineVisible = true;
-        bool m_centerVisible = false;
-
-        bool m_contactVisible = false;
-        bool m_contactImpulseVisible = false;
-        bool m_contactFrictionVisible = false;
-
-        bool m_contactImpulseMagnitude = false;
-        bool m_contactFrictionMagnitude = false;
-
-        bool m_bodyVelocity = false;
-        bool m_bodyVelocityNormal = false;
-        bool m_bodyVelocityMagnitude = false;
+		EasingType easingType() const;
+		void setEasingType(EasingType type);
 
 
-        real m_meterToPixel = 50.0f;
-        real m_pixelToMeter = 0.02f;
+		UniformGrid* uniformGrid() const;
+		void setUniformGrid(UniformGrid* grid);
 
-        real m_targetMeterToPixel = 80.0f;
-        real m_targetPixelToMeter = 0.02f;
+	private:
+		void drawGridScaleLine(sf::RenderWindow& window);
 
-        Vector2 m_transform;
-        Vector2 m_origin;
-        Viewport m_viewport;
-        PhysicsWorld* m_world = nullptr;
-        Body* m_targetBody = nullptr;
+		void drawTree(int nodeIndex, sf::RenderWindow& window);
+		void drawContacts(sf::RenderWindow& window);
 
-        Tree* m_tree = nullptr;
-        UniformGrid* m_grid = nullptr;
-        ContactMaintainer* m_maintainer = nullptr;
+		bool m_visible = true;
+		bool m_aabbVisible = false;
+		bool m_jointVisible = true;
+		bool m_bodyVisible = true;
 
-        real m_zoomFactor = 1.0f;
-        real m_restitution = 2.0f;
-        real m_deltaTime = 15.0f;
-        int m_axisPointCount = 50;
+		bool m_treeVisible = false;
+		bool m_uniformGridVisible = false;
+		bool m_gridScaleLineVisible = true;
+		bool m_centerVisible = false;
 
-        EasingType m_easingType = EasingType::Exponential;
+		bool m_contactVisible = false;
+		bool m_contactImpulseVisible = false;
+		bool m_contactFrictionVisible = false;
 
-        sf::Font m_font;
-    };
+		bool m_contactImpulseMagnitude = false;
+		bool m_contactFrictionMagnitude = false;
+
+		bool m_bodyVelocity = false;
+		bool m_bodyVelocityNormal = false;
+		bool m_bodyVelocityMagnitude = false;
 
 
+		real m_meterToPixel = 50.0f;
+		real m_pixelToMeter = 0.02f;
+
+		real m_targetMeterToPixel = 80.0f;
+		real m_targetPixelToMeter = 0.02f;
+
+		Vector2 m_transform;
+		Vector2 m_origin;
+		Viewport m_viewport;
+		PhysicsWorld* m_world = nullptr;
+		Body* m_targetBody = nullptr;
+
+		Tree* m_tree = nullptr;
+		UniformGrid* m_grid = nullptr;
+		ContactMaintainer* m_maintainer = nullptr;
+
+		real m_zoomFactor = 1.0f;
+		real m_restitution = 2.0f;
+		real m_deltaTime = 15.0f;
+		int m_axisPointCount = 50;
+
+		EasingType m_easingType = EasingType::Exponential;
+
+		sf::Font m_font;
+	};
 }
 #endif

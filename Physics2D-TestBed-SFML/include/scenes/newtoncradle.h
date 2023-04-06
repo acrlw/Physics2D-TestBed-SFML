@@ -2,16 +2,18 @@
 #define PHYSICS2D_TESTBED_SCENES_NEWTONCRADLE_H
 
 #include "frame.h"
+
 namespace Physics2D
 {
 	class NewtonCradleFrame : public Frame
 	{
 	public:
 		NewtonCradleFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Newton Cradle", world, maintainer, tree, grid, camera)
+		                  Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Newton Cradle", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			real startX = -5.0f;
@@ -35,7 +37,7 @@ namespace Physics2D
 			m_tree->insert(ball);
 
 
-			for(real i = 0;i < 5.0f; i++)
+			for (real i = 0; i < 5.0f; i++)
 			{
 				startX += 2.01f;
 				ball = m_world->createBody();
@@ -68,13 +70,11 @@ namespace Physics2D
 
 		void render(sf::RenderWindow& window) override
 		{
-
 		}
+
 	private:
 		Circle circle;
-
 	};
 }
 
 #endif // !PHYSICS2D_TESTBED_SCENES_NEWTONCRADLE_H
-

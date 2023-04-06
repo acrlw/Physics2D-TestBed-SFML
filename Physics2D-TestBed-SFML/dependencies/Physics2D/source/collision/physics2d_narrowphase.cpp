@@ -390,7 +390,7 @@ namespace Physics2D
 
 		int errorCount = 0;
 
-		auto rewindSimplex = [&info, &polytope, &iterStart, &iterEnd, &iterTemp]
+		auto reindexSimplex = [&info, &polytope, &iterStart, &iterEnd, &iterTemp]
 		{
 			std::swap(info.simplex.vertices[1], info.simplex.vertices[2]);
 			std::swap(info.simplex.vertices[0], info.simplex.vertices[1]);
@@ -414,10 +414,10 @@ namespace Physics2D
 				if (polytope.size() >= 4) //polytope has been expanded, terminate the loop
 					break;
 
-				if (errorCount == 3 ) //fail to rewind simplex, terminate
+				if (errorCount == 3) //fail to rewind simplex, terminate
 					break;
 
-				rewindSimplex();
+				reindexSimplex();
 
 				iter--;
 
@@ -449,14 +449,14 @@ namespace Physics2D
 
 			if (!validConvexity) //invalid vertex
 			{
-				if(polytope.size() >= 4)
+				if (polytope.size() >= 4) //if polytope is expanded, terminate the loop
 					break;
 
-				if(errorCount == 3) //fail to rewind simplex, terminate
+				if (errorCount == 3) //fail to rewind simplex, terminate
 					break;
 
 				//try to rewind
-				rewindSimplex();
+				reindexSimplex();
 				errorCount++;
 				iter--;
 				continue;
@@ -504,7 +504,37 @@ namespace Physics2D
 			info.simplex.vertices[1] = iterTemp->vertex;
 			errorCount = 0;
 		}
+		info.simplex.removeEnd();
+		//Convex combination for calculating distance points
+		//https://dyn4j.org/2010/04/gjk-distance-closest-points/
+		Vector2& A_s1 = info.simplex.vertices[0].point[0];
+		Vector2& B_s1 = info.simplex.vertices[1].point[0];
+		Vector2& A_s2 = info.simplex.vertices[0].point[1];
+		Vector2& B_s2 = info.simplex.vertices[1].point[1];
 
+		Vector2 a = info.simplex.vertices[0].result;
+		Vector2 b = info.simplex.vertices[1].result;
+
+		Vector2 l = b - a;
+		real ll = l.dot(l);
+		real la = l.dot(a);
+		real lambda2 = -la / ll;
+		real lambda1 = 1 - lambda2;
+
+		result.pointA.set(lambda1* A_s1 + lambda2 * B_s1);
+		result.pointB.set(lambda1* A_s2 + lambda2 * B_s2);
+
+		if (l.fuzzyEqual({ 0, 0 }) || lambda2 < 0)
+		{
+			result.pointA.set(A_s1);
+			result.pointB.set(A_s2);
+		}
+		if (lambda1 < 0)
+		{
+			result.pointA.set(B_s1);
+			result.pointB.set(B_s2);
+		}
+		info.pair = result;
 		return info;
 	}
 
@@ -574,10 +604,6 @@ namespace Physics2D
 				simplex.vertices[2] = vb;
 			}
 		}
-	}
-
-	void Narrowphase::reconstructSimplexByTriangulation(Simplex& simplex)
-	{
 	}
 
 	bool Narrowphase::perturbSimplex(Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
@@ -1216,7 +1242,9 @@ namespace Physics2D
 			targetIter = list.end();
 		--targetIter;
 	}
-	void Narrowphase::buildPolytopeFromSimplex(std::list<SimplexVertexWithOriginDistance>& polytope, const Simplex& simplex)
+
+	void Narrowphase::buildPolytopeFromSimplex(std::list<SimplexVertexWithOriginDistance>& polytope,
+	                                           const Simplex& simplex)
 	{
 		for (auto iter = simplex.vertices.begin(); iter != simplex.vertices.end(); ++iter)
 		{
@@ -1225,7 +1253,7 @@ namespace Physics2D
 				next = simplex.vertices.begin();
 			SimplexVertexWithOriginDistance pair;
 			pair.vertex = *iter;
-			pair.distance = GeometryAlgorithm2D::pointToLineSegment(iter->result, next->result, { 0, 0 })
+			pair.distance = GeometryAlgorithm2D::pointToLineSegment(iter->result, next->result, {0, 0})
 				.lengthSquare(); //use lengthSquare() to avoid sqrt
 			polytope.emplace_back(pair);
 		}

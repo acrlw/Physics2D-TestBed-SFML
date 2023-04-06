@@ -1,25 +1,28 @@
 #ifndef PHYSICS2D_SCENES_PBD_H
 #define PHYSICS2D_SCENES_PBD_H
 #include "frame.h"
+
 namespace Physics2D
 {
 	class PBDFrame : public Frame
 	{
 	public:
 		PBDFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Position Based Dynamics", world, maintainer, tree, grid, camera)
+		         Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Position Based Dynamics", world, maintainer,
+		                                                                tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
-			for(int i = 0;i < 10; ++i)
+			for (int i = 0; i < 10; ++i)
 			{
 				positions[i].x = static_cast<real>(i) * 2.0;
 				prePositions[i].x = static_cast<real>(i) * 2.0;
 				invMasses[i] = 0.5;
 			}
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
 			sf::Color color = sf::Color::Yellow;
@@ -32,17 +35,18 @@ namespace Physics2D
 				RenderSFMLImpl::renderLine(window, *m_camera, positions[i], positions[i + 1], color);
 			}
 		}
+
 		void postStep(real dt) override
 		{
-			for(size_t i = 0;i < 10;++i)
+			for (size_t i = 0; i < 10; ++i)
 			{
 				velocities[i] += dt * gravity;
 				prePositions[i] = positions[i];
 				positions[i] += dt * velocities[i];
 			}
-			for(size_t j = 0;j < iterations;++j)
+			for (size_t j = 0; j < iterations; ++j)
 			{
-				for(size_t i = 0;i < 9; ++i)
+				for (size_t i = 0; i < 9; ++i)
 				{
 					real k = invMasses[i] / (invMasses[i] + invMasses[i + 1]);
 					Vector2 l = (positions[i + 1] - positions[i]);
@@ -54,7 +58,7 @@ namespace Physics2D
 				}
 			}
 			//update velocities
-			for(size_t i = 0;i < 10;++i)
+			for (size_t i = 0; i < 10; ++i)
 			{
 				velocities[i] = (positions[i] - prePositions[i]) / dt;
 			}
@@ -63,6 +67,7 @@ namespace Physics2D
 			positions[9] = prePositions[9];
 			velocities[9].clear();
 		}
+
 	private:
 		Vector2 positions[10];
 		Vector2 prePositions[10];

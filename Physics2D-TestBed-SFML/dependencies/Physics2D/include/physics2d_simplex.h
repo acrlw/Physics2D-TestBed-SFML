@@ -3,12 +3,15 @@
 
 #include "physics2d_algorithm_2d.h"
 #include <array>
+
 namespace Physics2D
 {
 	struct PHYSICS2D_API SimplexVertex
 	{
 		SimplexVertex() = default;
-		SimplexVertex(const Vector2& point_a, const Vector2& point_b, const Index& index_a = UINT32_MAX, const Index& index_b = UINT32_MAX)
+
+		SimplexVertex(const Vector2& point_a, const Vector2& point_b, const Index& index_a = UINT32_MAX,
+		              const Index& index_b = UINT32_MAX)
 		{
 			point[0] = point_a;
 			point[1] = point_b;
@@ -17,28 +20,33 @@ namespace Physics2D
 			index[1] = index_b;
 		}
 
-		inline bool operator ==(const SimplexVertex& rhs) const
+		bool operator ==(const SimplexVertex& rhs) const
 		{
 			return point[0] == rhs.point[0] && point[1] == rhs.point[1];
 		}
 
-		inline bool operator !=(const SimplexVertex& rhs) const
+		bool operator !=(const SimplexVertex& rhs) const
 		{
 			return !(point[0] == rhs.point[0] && point[1] == rhs.point[1]);
 		}
-		inline bool isEmpty()const
+
+		bool isEmpty() const
 		{
-			return point[0].isOrigin() && point[1].isOrigin() && result.isOrigin() && index[0] == UINT32_MAX && index[1] == UINT32_MAX;
+			return point[0].isOrigin() && point[1].isOrigin() && result.isOrigin() && index[0] == UINT32_MAX && index[1]
+				== UINT32_MAX;
 		}
-		inline bool isIndexAValid()const
+
+		bool isIndexAValid() const
 		{
 			return index[0] != UINT32_MAX;
 		}
-		inline bool isIndexBValid()const
+
+		bool isIndexBValid() const
 		{
 			return index[1] != UINT32_MAX;
 		}
-		inline void clear()
+
+		void clear()
 		{
 			point[0].clear();
 			point[1].clear();
@@ -46,6 +54,7 @@ namespace Physics2D
 			index[0] = UINT32_MAX;
 			index[1] = UINT32_MAX;
 		}
+
 		//point[0] : pointA
 		//point[1] : pointB
 		Vector2 point[2];
@@ -54,7 +63,6 @@ namespace Physics2D
 		//index[0] : indexA
 		//index[1] : indexB
 		Index index[2];
-
 	};
 
 	/**
@@ -92,6 +100,5 @@ namespace Physics2D
 		void removeEnd();
 		void removeAll();
 	};
-	
 }
 #endif

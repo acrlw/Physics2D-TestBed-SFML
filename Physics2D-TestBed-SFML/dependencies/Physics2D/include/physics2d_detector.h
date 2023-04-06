@@ -5,6 +5,7 @@
 #include "physics2d_shape.h"
 #include "physics2d_body.h"
 #include "physics2d_narrowphase.h"
+
 namespace Physics2D
 {
 	struct PHYSICS2D_API Collision
@@ -19,7 +20,6 @@ namespace Physics2D
 
 	class PHYSICS2D_API Detector
 	{
-
 	public:
 		static bool collide(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 		static bool collide(Body* bodyA, Body* bodyB);
@@ -35,9 +35,8 @@ namespace Physics2D
 		static CollisionInfo distance(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB);
 		static CollisionInfo distance(Body* bodyA, const ShapePrimitive& shapeB);
 		static CollisionInfo distance(const ShapePrimitive& shapeA, Body* bodyB);
-		
+
 	private:
 	};
-	
 }
 #endif

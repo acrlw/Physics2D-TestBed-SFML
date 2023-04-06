@@ -1,6 +1,7 @@
 #ifndef PHYSICS2D_DYNAMICS_JOINT_POINT_H
 #define PHYSICS2D_DYNAMICS_JOINT_POINT_H
 #include "physics2d_joint.h"
+
 namespace Physics2D
 {
 	struct PHYSICS2D_API PointJointPrimitive
@@ -19,6 +20,7 @@ namespace Physics2D
 		Vector2 bias;
 		Matrix2x2 effectiveMass;
 		Vector2 accumulatedImpulse;
+
 		void clear()
 		{
 			accumulatedImpulse.clear();
@@ -26,6 +28,7 @@ namespace Physics2D
 			bias.clear();
 		}
 	};
+
 	class PHYSICS2D_API PointJoint : public Joint
 	{
 	public:
@@ -33,14 +36,17 @@ namespace Physics2D
 		{
 			m_type = JointType::Point;
 		}
+
 		PointJoint(const PointJointPrimitive& prim) : m_primitive(prim)
 		{
 			m_type = JointType::Point;
 		}
+
 		void set(const PointJointPrimitive& prim)
 		{
 			m_primitive = prim;
 		}
+
 		void prepare(const real& dt) override
 		{
 			if (m_primitive.bodyA == nullptr)
@@ -50,7 +56,7 @@ namespace Physics2D
 			real m_a = bodyA->mass();
 			real im_a = bodyA->inverseMass();
 			real ii_a = bodyA->inverseInertia();
-			if(m_primitive.frequency > 0.0)
+			if (m_primitive.frequency > 0.0)
 			{
 				real nf = naturalFrequency(m_primitive.frequency);
 				m_primitive.stiffness = springStiffness(m_a, nf);
@@ -61,7 +67,7 @@ namespace Physics2D
 				m_primitive.stiffness = 0.0;
 				m_primitive.damping = 0.0;
 			}
-			m_primitive.gamma = constraintImpulseMixing(dt, m_primitive.stiffness, m_primitive.damping);	
+			m_primitive.gamma = constraintImpulseMixing(dt, m_primitive.stiffness, m_primitive.damping);
 			real erp = errorReductionParameter(dt, m_primitive.stiffness, m_primitive.damping);
 
 
@@ -82,16 +88,17 @@ namespace Physics2D
 			m_primitive.effectiveMass = k.invert();
 			//warmstart
 			//m_primitive.impulse *= dt / dt;
-			
-			bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);
 
+			bodyA->applyImpulse(m_primitive.accumulatedImpulse, ra);
 		}
+
 		void solveVelocity(const real& dt) override
 		{
 			if (m_primitive.bodyA == nullptr)
 				return;
 			Vector2 ra = m_primitive.bodyA->toWorldPoint(m_primitive.localPointA) - m_primitive.bodyA->position();
-			Vector2 va = m_primitive.bodyA->velocity() + Vector2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
+			Vector2 va = m_primitive.bodyA->velocity() +
+				Vector2::crossProduct(m_primitive.bodyA->angularVelocity(), ra);
 			Vector2 jvb = va;
 			jvb += m_primitive.bias;
 			jvb += m_primitive.accumulatedImpulse * m_primitive.gamma;
@@ -101,7 +108,7 @@ namespace Physics2D
 			Vector2 oldImpulse = m_primitive.accumulatedImpulse;
 			m_primitive.accumulatedImpulse += J;
 			real maxImpulse = dt * m_primitive.maxForce;
-			if(m_primitive.accumulatedImpulse.lengthSquare() > maxImpulse * maxImpulse)
+			if (m_primitive.accumulatedImpulse.lengthSquare() > maxImpulse * maxImpulse)
 			{
 				m_primitive.accumulatedImpulse.normalize();
 				m_primitive.accumulatedImpulse *= maxImpulse;
@@ -110,15 +117,16 @@ namespace Physics2D
 
 			m_primitive.bodyA->applyImpulse(J, ra);
 		}
+
 		void solvePosition(const real& dt) override
 		{
-			
-			
 		}
+
 		PointJointPrimitive& primitive()
 		{
 			return m_primitive;
 		}
+
 	private:
 		PointJointPrimitive m_primitive;
 		real m_factor = 0.22f;

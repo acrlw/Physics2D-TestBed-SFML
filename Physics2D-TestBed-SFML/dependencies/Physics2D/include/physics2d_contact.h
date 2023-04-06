@@ -5,6 +5,7 @@
 #include "physics2d_body.h"
 #include "physics2d_random.h"
 #include "physics2d_detector.h"
+
 namespace Physics2D
 {
 	struct PHYSICS2D_API VelocityConstraintPoint
@@ -27,7 +28,7 @@ namespace Physics2D
 		real accumulatedTangentImpulse = 0;
 		Vector2 positionCorrectionImpulse;
 	};
-	
+
 	struct PHYSICS2D_API ContactConstraintPoint
 	{
 		ContactConstraintPoint() = default;
@@ -40,6 +41,7 @@ namespace Physics2D
 		Body* bodyB = nullptr;
 		VelocityConstraintPoint vcp;
 	};
+
 	class PHYSICS2D_API ContactMaintainer
 	{
 	public:
@@ -56,9 +58,8 @@ namespace Physics2D
 		bool m_velocityBlockSolver = true;
 		bool m_positionBlockSolver = false;
 		Container::Map<Body::BodyPair::BodyPairID, Container::Vector<ContactConstraintPoint>> m_contactTable;
+
 	private:
 	};
-
-	
 }
 #endif

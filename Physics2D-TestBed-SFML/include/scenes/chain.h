@@ -1,21 +1,23 @@
 #ifndef PHYSICS2D_SCENES_CHAIN_H
 #define PHYSICS2D_SCENES_CHAIN_H
 #include "frame.h"
+
 namespace Physics2D
 {
 	class ChainFrame : public Frame
 	{
 	public:
 		ChainFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-			Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Chain", world, maintainer, tree, grid, camera)
+		           Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
+			"Chain", world, maintainer, tree, grid, camera)
 		{
-
 		}
+
 		void load() override
 		{
 			brick.set(1.5f, 0.5f);
 
-			edge.set({ -100, 0 }, { 100, 0 });
+			edge.set({-100, 0}, {100, 0});
 
 			Body* rect;
 			Body* rect2;
@@ -24,7 +26,7 @@ namespace Physics2D
 			real half = brick.width() / 2.0f;
 			rect = m_world->createBody();
 			rect->setShape(&brick);
-			rect->position().set({ offset, 0.0f });
+			rect->position().set({offset, 0.0f});
 			rect->rotation() = 0;
 			rect->setMass(1.0f);
 			rect->setRestitution(0.2f);
@@ -33,7 +35,7 @@ namespace Physics2D
 
 			ground = m_world->createBody();
 			ground->setShape(&edge);
-			ground->position().set({ 0, -15.0 });
+			ground->position().set({0, -15.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
 			m_tree->insert(ground);
@@ -54,7 +56,7 @@ namespace Physics2D
 			{
 				rect2 = m_world->createBody();
 				rect2->setShape(&brick);
-				rect2->position().set({ offset + i * brick.width() * 1.4f, 0.0f });
+				rect2->position().set({offset + i * brick.width() * 1.4f, 0.0f});
 				rect2->rotation() = 0;
 				rect2->setMass(1.0f);
 				rect2->setFriction(0.01f);
@@ -72,16 +74,15 @@ namespace Physics2D
 
 				rect = rect2;
 			}
-
 		}
+
 		void render(sf::RenderWindow& window) override
 		{
-
 		}
+
 	private:
 		Rectangle brick;
 		Edge edge;
-
 	};
 }
 #endif
