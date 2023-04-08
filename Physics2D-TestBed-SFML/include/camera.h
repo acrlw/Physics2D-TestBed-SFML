@@ -59,13 +59,15 @@ namespace Physics2D
 		bool& bodyVelocity();
 		bool& bodyVelocityNormal();
 		bool& bodyVelocityMagnitude();
+		bool& coordinateScale();
+		bool& smoothZoom();
 		sf::Font& font();
 
-		real axisPointCount() const;
-		void setAxisPointCount(real count);
+		int axisPointCount() const;
+		void setAxisPointCount(int count);
 
 		real meterToPixel() const;
-		void setMeterToPixel(const real& meterToPixel);
+		void setTargetMeterToPixel(const real& meterToPixel);
 		real pixelToMeter() const;
 
 		Vector2 transform() const;
@@ -76,9 +78,6 @@ namespace Physics2D
 
 		Body* targetBody() const;
 		void setTargetBody(Body* targetBody);
-
-		real zoomFactor() const;
-		void setZoomFactor(const real& zoomFactor);
 
 
 		Viewport viewport() const;
@@ -104,6 +103,12 @@ namespace Physics2D
 
 		UniformGrid* uniformGrid() const;
 		void setUniformGrid(UniformGrid* grid);
+
+		real defaultMeterToPixel()const;
+		void setDefaultMeterToPixel(const real& number);
+
+		void setPreScreenMousePos(const Vector2& pos);
+
 
 	private:
 		void drawGridScaleLine(sf::RenderWindow& window);
@@ -132,7 +137,10 @@ namespace Physics2D
 		bool m_bodyVelocityNormal = false;
 		bool m_bodyVelocityMagnitude = false;
 
+		bool m_drawCoordinateScale = true;
+		bool m_smoothZoom = true;
 
+		real m_defaultMeterToPixel = 50.0f;
 		real m_meterToPixel = 50.0f;
 		real m_pixelToMeter = 0.02f;
 
@@ -149,10 +157,13 @@ namespace Physics2D
 		UniformGrid* m_grid = nullptr;
 		ContactMaintainer* m_maintainer = nullptr;
 
-		real m_zoomFactor = 1.0f;
+
 		real m_restitution = 2.0f;
 		real m_deltaTime = 15.0f;
 		int m_axisPointCount = 50;
+
+		Vector2 m_preScreenMousePos;
+		Vector2 m_preWorldMousePos;
 
 		EasingType m_easingType = EasingType::Exponential;
 

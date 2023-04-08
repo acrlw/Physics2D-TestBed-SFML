@@ -21,11 +21,19 @@ namespace Physics2D
 			real inv_dt = 1.0f / m_deltaTime;
 
 			real scale = m_targetMeterToPixel - m_meterToPixel;
-			if (std::fabs(scale) < 0.1f || m_meterToPixel < 1.0f)
-				m_meterToPixel = m_targetMeterToPixel;
-			else
+			bool isZooming = !realEqual(m_meterToPixel, m_targetMeterToPixel);
+			
+			
+			if (m_smoothZoom && !(std::fabs(scale) < 0.1f || m_meterToPixel < 1.0f))
 				m_meterToPixel -= (1.0f - std::exp(m_restitution * inv_dt)) * scale;
+			else
+				m_meterToPixel = m_targetMeterToPixel;
+
 			m_pixelToMeter = 1.0f / m_meterToPixel;
+
+			if (isZooming && !m_preScreenMousePos.isOrigin())
+				m_transform += (screenToWorld(m_preScreenMousePos) - m_preWorldMousePos) * m_meterToPixel;
+
 
 			if (m_targetBody != nullptr)
 			{
@@ -114,6 +122,7 @@ namespace Physics2D
 					axisPoints.emplace_back(Vector2(0, static_cast<real>(i)));
 					axisPoints.emplace_back(Vector2(static_cast<real>(i), 0));
 				}
+				
 
 				//draw grid
 				drawGridScaleLine(window);
@@ -154,12 +163,12 @@ namespace Physics2D
 						{
 							RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position,
 							                            primitive.transform.position + body->velocity(),
-							                            RenderConstant::Orange, 0.2);
+							                            RenderConstant::Orange, 0.2f);
 						}
 
 						if (m_bodyVelocityMagnitude)
 						{
-							std::string str = std::format("{:.3f}", body->velocity().length());
+							std::string str = std::format("{:.2f}", body->velocity().length());
 							const Vector2 offset(-0.01f, 0.01f);
 							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font,
 							                           str, RenderConstant::Orange, 16);
@@ -172,7 +181,7 @@ namespace Physics2D
 							if (!realEqual(length, 0.0f))
 								RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position,
 								                            primitive.transform.position + vel / length,
-								                            RenderConstant::Orange, 0.2);
+								                            RenderConstant::Orange, 0.2f);
 						}
 					}
 				}
@@ -204,12 +213,12 @@ namespace Physics2D
 		return m_gridScaleLineVisible;
 	}
 
-	real Camera::axisPointCount() const
+	int Camera::axisPointCount() const
 	{
 		return m_axisPointCount;
 	}
 
-	void Camera::setAxisPointCount(real count)
+	void Camera::setAxisPointCount(int count)
 	{
 		m_axisPointCount = count;
 	}
@@ -219,12 +228,12 @@ namespace Physics2D
 		return m_meterToPixel;
 	}
 
-	void Camera::setMeterToPixel(const real& meterToPixel)
+	void Camera::setTargetMeterToPixel(const real& meterToPixel)
 	{
-		if (meterToPixel < 1.0)
+		if (meterToPixel < 1.0f)
 		{
-			m_targetMeterToPixel = 1.0;
-			m_targetPixelToMeter = 1.0;
+			m_targetMeterToPixel = 1.0f;
+			m_targetPixelToMeter = 1.0f;
 			return;
 		}
 		m_targetMeterToPixel = meterToPixel;
@@ -264,16 +273,6 @@ namespace Physics2D
 	void Camera::setTargetBody(Body* targetBody)
 	{
 		m_targetBody = targetBody;
-	}
-
-	real Camera::zoomFactor() const
-	{
-		return m_zoomFactor;
-	}
-
-	void Camera::setZoomFactor(const real& zoomFactor)
-	{
-		m_zoomFactor = zoomFactor;
 	}
 
 
@@ -391,6 +390,16 @@ namespace Physics2D
 		return m_bodyVelocityMagnitude;
 	}
 
+	bool& Camera::coordinateScale()
+	{
+		return m_drawCoordinateScale;
+	}
+
+	bool& Camera::smoothZoom()
+	{
+		return m_smoothZoom;
+	}
+
 	ContactMaintainer* Camera::maintainer() const
 	{
 		return m_maintainer;
@@ -420,6 +429,23 @@ namespace Physics2D
 	{
 		m_grid = grid;
 	}
+
+	real Camera::defaultMeterToPixel() const
+	{
+		return m_defaultMeterToPixel;
+	}
+
+	void Camera::setDefaultMeterToPixel(const real& number)
+	{
+		m_defaultMeterToPixel = number;
+	}
+
+	void Camera::setPreScreenMousePos(const Vector2& pos)
+	{
+		m_preScreenMousePos = pos;
+		m_preWorldMousePos = screenToWorld(pos);
+	}
+
 
 	void Camera::drawTree(int nodeIndex, sf::RenderWindow& window)
 	{
@@ -455,7 +481,7 @@ namespace Physics2D
 
 				if (m_contactImpulseMagnitude)
 					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse,
-					                            RenderConstant::Cyan, 16);
+					                            RenderConstant::Cyan, 16, elem.vcp.normal * 0.55f);
 
 				if (m_contactFrictionVisible)
 					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.vcp.localB),
@@ -496,10 +522,10 @@ namespace Physics2D
 		else if (m_meterToPixel < 120)
 			h = 2;
 
+		sf::Color color = sf::Color::Green;
+		color.a = 100;
 		for (int i = -m_axisPointCount; i <= m_axisPointCount; i += h)
 		{
-			if (i == 0)
-				continue;
 			Vector2 p1 = {static_cast<real>(i), static_cast<real>(m_axisPointCount)};
 			Vector2 p2 = {static_cast<real>(i), static_cast<real>(-m_axisPointCount)};
 			lines.emplace_back(std::make_pair(p1, p2));
@@ -507,8 +533,20 @@ namespace Physics2D
 			p1.set(static_cast<real>(-m_axisPointCount), static_cast<real>(i));
 			p2.set(static_cast<real>(m_axisPointCount), static_cast<real>(i));
 			lines.emplace_back(std::make_pair(p1, p2));
+
+			//draw number
+			if(!m_drawCoordinateScale)
+				continue;
+
+			std::string str = std::format("{}", i);
+			RenderSFMLImpl::renderText(window, *this, Vector2(static_cast<real>(i), 0.0f), m_font, str, color, 16, { -0.25f, -0.25f });
+			if (i == 0)
+				continue;
+			RenderSFMLImpl::renderText(window, *this, Vector2(0.0f, static_cast<real>(i)), m_font, str, color, 16, { -0.25f, -0.25f });
+
 		}
 		RenderSFMLImpl::renderLines(window, *this, lines, thick);
+
 
 		if (fineEnough)
 		{
@@ -537,6 +575,7 @@ namespace Physics2D
 					p1.set(static_cast<real>(-m_axisPointCount), static_cast<real>(i) + index);
 					p2.set(static_cast<real>(m_axisPointCount), static_cast<real>(i) + index);
 					lines.emplace_back(std::make_pair(p1, p2));
+
 				}
 			}
 			RenderSFMLImpl::renderLines(window, *this, lines, thin);

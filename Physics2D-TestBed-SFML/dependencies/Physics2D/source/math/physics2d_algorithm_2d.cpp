@@ -382,6 +382,30 @@ namespace Physics2D
 		return Vector2();
 	}
 
+	Vector2 GeometryAlgorithm2D::calculateCenter(const std::list<Vector2>& vertices)
+	{
+		if(vertices.size() >= 3)
+		{
+			Vector2 pos;
+			real area = 0;
+			auto end = std::prev(vertices.end());
+			for(auto itLast = vertices.begin(); itLast != end; ++itLast)
+			{
+				auto itCurr = std::next(itLast);
+				auto itNext = std::next(itCurr);
+				if (itNext == vertices.end())
+					itNext = vertices.begin();
+				real a = triangleArea(*itLast, *itCurr, *itNext);
+				Vector2 p = triangleCentroid(*itLast, *itCurr, *itNext);
+				pos += p * a;
+				area += a;
+			}
+			pos /= area;
+			return pos;
+		}
+		return Vector2();
+	}
+
 	std::tuple<Vector2, Vector2> GeometryAlgorithm2D::shortestLengthLineSegmentEllipse(
 		const real& a, const real& b, const Vector2& p1, const Vector2& p2)
 	{

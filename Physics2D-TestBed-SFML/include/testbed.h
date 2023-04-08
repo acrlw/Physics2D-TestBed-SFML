@@ -84,6 +84,11 @@ namespace Physics2D
 		Camera m_camera;
 
 		Vector2 m_mousePos;
+		Vector2 m_screenMousePos;
+
+		real m_zoomFactor = 0.5f;
+
+		bool m_enableDistanceCheck = true;
 
 		std::unique_ptr<sf::RenderWindow> m_window;
 

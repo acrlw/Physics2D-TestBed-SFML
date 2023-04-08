@@ -25,11 +25,13 @@ namespace Physics2D
 			block.set(10, 0.1f);
 			edge.set(Vector2{-100.0f, 0.0f}, Vector2{100.0f, 0.0f});
 
-			rectangle.set(0.3, 3.0);
+			rectangle.set(0.3f, 3.0f);
 			polygon1.append({
 				{0.0f, 4.0f}, {-3.0f, 3.0f}, {-4.0f, 0.0f}, {-3.0f, -3.0f}, {0, -4.0f},
 				{3.0f, -3.0f}, {4.0f, 0.0f}, {3.0f, 3.0f}
 			});
+
+			polygon1.scale(0.5f);
 
 			polygon2.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
 
@@ -47,12 +49,12 @@ namespace Physics2D
 			//shape2.transform.rotation = -9.10090932e-07f;
 
 			shape1.shape = &polygon1;
-			shape1.transform.position.set(0.0f, 4.0f);
+			shape1.transform.position.set(0.0f, 2.0f);
 			//shape1.transform.position.set(-0.2875f, -1.6625f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &polygon2;
-			shape2.transform.position.set(0.0f, -3.0f);
+			shape2.shape = &capsule;
+			shape2.transform.position.set(0.0f, -1.0f);
 			//shape2.transform.rotation = Math::degreeToRadian(45);
 
 			//result = Detector::detect(shape1, shape2);
@@ -115,24 +117,13 @@ namespace Physics2D
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape1.transform.position, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_camera, shape2.transform.position, sf::Color::Cyan);
 			auto info = Narrowphase::gjkDistance(shape1, shape2);
-			for (auto iter = info.polytope.begin(); iter != info.polytope.end(); ++iter)
-			{
-				auto next = iter;
-				++next;
-				if (next == info.polytope.end())
-					next = info.polytope.begin();
 
-				if (showPolytope)
-				{
-					RenderSFMLImpl::renderLine(window, *m_camera, iter->vertex.result, next->vertex.result,
-					                           RenderConstant::Pink);
-					RenderSFMLImpl::renderPoint(window, *m_camera, iter->vertex.result, RenderConstant::Pink);
-					RenderSFMLImpl::renderPoint(window, *m_camera, next->vertex.result, RenderConstant::Pink);
-					RenderSFMLImpl::renderInt(window, *m_camera, iter->vertex.result, m_camera->font(),
-					                            std::distance(info.polytope.begin(), iter),
-					                            RenderConstant::Pink);
-					//RenderSFMLImpl::renderFloat(window, *m_camera, next->vertex.result, m_camera->font(), (real)std::distance(info.polytope.begin(), next), RenderConstant::Pink);
-				}
+			if(showPolytope)
+			{
+				std::vector<Vector2> polytope;
+				for (auto&& elem : info.polytope)
+					polytope.emplace_back(elem.vertex.result);
+				RenderSFMLImpl::renderPolytope(window, *m_camera, polytope, RenderConstant::Pink, m_camera->font());
 			}
 
 			if (showOriginalSimplex)
@@ -198,10 +189,9 @@ namespace Physics2D
 				RenderSFMLImpl::renderPoint(window, *m_camera, info.pair.pointB, color2);
 				RenderSFMLImpl::renderLine(window, *m_camera, info.pair.pointA,info.pair.pointB, RenderConstant::Gray);
 
-				std::string str1 = std::format("({:.3f}, {:.3f})", info.pair.pointA.x, info.pair.pointA.y);
-				std::string str2 = std::format("({:.3f}, {:.3f})", info.pair.pointB.x, info.pair.pointB.y);
-				RenderSFMLImpl::renderText(window, *m_camera, info.pair.pointA, m_camera->font(), str1, color1, 14, { 1.0f, 1.0f });
-				RenderSFMLImpl::renderText(window, *m_camera, info.pair.pointB, m_camera->font(), str2, color2, 14, { 1.0f, 1.0f });
+				RenderSFMLImpl::renderPosition(window, *m_camera, info.pair.pointA, color1, m_camera->font());
+				RenderSFMLImpl::renderPosition(window, *m_camera, info.pair.pointB, color2, m_camera->font());
+				
 			}
 			//////	
 
@@ -237,40 +227,43 @@ namespace Physics2D
 
 			//}
 			// draw cull
-			if (showHull)
-			{
-				for (auto& a : polygon1.vertices())
-				{
-					for (auto& b : polygon2.vertices())
-					{
-						Vector2 p1 = shape1.transform.translatePoint(a);
-						Vector2 p2 = shape2.transform.translatePoint(b);
-						Vector2 v = p1 - p2;
-						RenderSFMLImpl::renderPoint(window, *m_camera, v, RenderConstant::Yellow);
-					}
-				}
-			}
-			if (isPicked)
+			//if (showHull)
+			//{
+			//	for (auto& a : polygon1.vertices())
+			//	{
+			//		for (auto& b : polygon2.vertices())
+			//		{
+			//			Vector2 p1 = shape1.transform.translatePoint(a);
+			//			Vector2 p2 = shape2.transform.translatePoint(b);
+			//			Vector2 v = p1 - p2;
+			//			RenderSFMLImpl::renderPoint(window, *m_camera, v, RenderConstant::Yellow);
+			//		}
+			//	}
+			//}
+
+			if (isPicked && showMouseTransform)
 			{
 				if (mousePos.isOrigin() || currentPos.isOrigin())
 					return;
+
 				RenderSFMLImpl::renderArrow(window, *m_camera, mousePos, currentPos, sf::Color::Yellow);
 			}
 		}
 
 		void renderUI() override
 		{
-			Vector2 pos(10.0f, 1.0f);
+			Vector2 pos(10.0f, 0.0f);
 			pos = m_camera->worldToScreen(pos);
-			ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Once);
+			ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Once | ImGuiWindowFlags_AlwaysAutoResize);
 
 			ImGui::Begin("Distance");
 			ImGui::Checkbox("Show Polytope", &showPolytope);
-			ImGui::Checkbox("Show GJK Simplex", &showGJKSimplex);
+			//ImGui::Checkbox("Show GJK Simplex", &showGJKSimplex);
 			ImGui::Checkbox("Show Original Simplex", &showOriginalSimplex);
-			ImGui::Checkbox("Show Feature", &showFeature);
+			ImGui::Checkbox("Show Closest Feature", &showFeature);
 			ImGui::Checkbox("Show Feature Simplex", &showFeatureSimplex);
-			ImGui::Checkbox("Show Hull", &showHull);
+			//ImGui::Checkbox("Show Hull", &showHull);
+			ImGui::Checkbox("Show Mouse Transform", &showMouseTransform);
 
 			ImGui::End();
 		}
@@ -300,6 +293,7 @@ namespace Physics2D
 		bool showFeature = false;
 		bool showFeatureSimplex = false;
 		bool showOriginalSimplex = true;
+		bool showMouseTransform = true;
 
 		bool showHull = false;
 

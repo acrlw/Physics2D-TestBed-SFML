@@ -158,37 +158,37 @@ namespace Physics2D
 		switch (event.key.code)
 		{
 		case sf::Keyboard::Space:
-			{
-				m_running = !m_running;
-				break;
-			}
-		case sf::Keyboard::N:
-			{
-				//N means next
-				step();
-				break;
-			}
+		{
+			m_running = !m_running;
+			break;
+		}
+		case sf::Keyboard::S:
+		{
+			//N means next
+			step();
+			break;
+		}
 		case sf::Keyboard::T:
-			{
-				//T means stepping twice
-				step();
-				step();
-				break;
-			}
+		{
+			//T means stepping twice
+			step();
+			step();
+			break;
+		}
 		case sf::Keyboard::R:
-			{
-				restart();
-				break;
-			}
-		case sf::Keyboard::LAlt:
-			{
-				m_onDistanceCheck = false;
-				m_mouseArray[0].clear();
-				m_mouseArray[1].clear();
-				break;
-			}
+		{
+			restart();
+			break;
+		}
 		default:
 			break;
+		}
+		//combo
+		if(event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::LControl && m_onDistanceCheck)
+		{
+			m_onDistanceCheck = false;
+			m_mouseArray[0].clear();
+			m_mouseArray[1].clear();
 		}
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onKeyRelease(event);
@@ -199,14 +199,16 @@ namespace Physics2D
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onKeyPressed(event);
 
-		if (event.key.code == sf::Keyboard::LAlt)
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && m_enableDistanceCheck)
 			m_onDistanceCheck = true;
+		
 	}
 
 	void TestBed::onMouseReleased(sf::Event& event)
 	{
 		Vector2 pos(static_cast<real>(event.mouseButton.x), static_cast<real>(event.mouseButton.y));
 		m_mousePos = m_camera.screenToWorld(pos);
+		m_screenMousePos = pos;
 
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onMouseRelease(event);
@@ -227,6 +229,7 @@ namespace Physics2D
 			m_currentFrame->onMouseMove(event);
 
 		Vector2 pos(static_cast<real>(event.mouseMove.x), static_cast<real>(event.mouseMove.y));
+		m_screenMousePos = pos;
 
 		Vector2 tf = m_camera.screenToWorld(pos) - m_mousePos;
 		if (m_cameraViewportMovement)
@@ -259,8 +262,8 @@ namespace Physics2D
 	void TestBed::onMousePressed(sf::Event& event)
 	{
 		Vector2 pos(static_cast<real>(event.mouseButton.x), static_cast<real>(event.mouseButton.y));
+		m_screenMousePos = pos;
 		m_mousePos = m_camera.screenToWorld(pos);
-
 
 		if (event.mouseButton.button == sf::Mouse::Right)
 			m_cameraViewportMovement = true;
@@ -303,16 +306,12 @@ namespace Physics2D
 
 	void TestBed::onWheelScrolled(sf::Event& event)
 	{
+		m_camera.setPreScreenMousePos(m_screenMousePos);
 		if (event.mouseWheelScroll.delta > 0)
-		{
-			m_camera.setZoomFactor(m_camera.zoomFactor() * 1.25f);
-			m_camera.setMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 4.0f);
-		}
+			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() * m_zoomFactor);
 		else
-		{
-			m_camera.setZoomFactor(m_camera.zoomFactor() / 1.25f);
-			m_camera.setMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 4.0f);
-		}
+			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() * m_zoomFactor);
+		
 	}
 
 	void TestBed::exec()
@@ -467,23 +466,35 @@ namespace Physics2D
 		ImGui::Columns(1, nullptr);
 
 		ImGui::Separator();
-		ImGui::Text("Render");
+		ImGui::Text("Visible");
 		ImGui::Columns(2, nullptr);
 		ImGui::Checkbox("Body", &m_camera.bodyVisible());
 		ImGui::Checkbox("Joint", &m_camera.jointVisible());
 		ImGui::Checkbox("Center", &m_camera.centerVisible());
-		ImGui::Checkbox("User Draw", &m_userDrawVisible);
 		ImGui::NextColumn();
-
 		ImGui::Checkbox("AABB", &m_camera.aabbVisible());
-		ImGui::Checkbox("Grid Scale Line", &m_camera.gridScaleLineVisible());
 		ImGui::Checkbox("Tree", &m_camera.treeVisible());
 		ImGui::Checkbox("Uniform Grid", &m_camera.uniformGridVisible());
 		ImGui::NextColumn();
 		ImGui::Columns(1, nullptr);
 
 		ImGui::Separator();
-		ImGui::Text("Data");
+		ImGui::Text("Camera");
+		ImGui::Columns(2, nullptr);
+
+		ImGui::Checkbox("Grid Lines", &m_camera.gridScaleLineVisible());
+		ImGui::Checkbox("Show Numbers", &m_camera.coordinateScale());
+		ImGui::Checkbox("User Draw", &m_userDrawVisible);
+		ImGui::NextColumn();
+		ImGui::Checkbox("Smooth Zooming", &m_camera.smoothZoom());
+		ImGui::SliderFloat("Zoom", &m_zoomFactor, 0.1f, 0.9f, "%.1f");
+		ImGui::Checkbox("Distance Check", &m_enableDistanceCheck);
+
+		ImGui::NextColumn();
+		ImGui::Columns(1, nullptr);
+
+		ImGui::Separator();
+		ImGui::Text("Physics");
 		ImGui::Columns(2, nullptr);
 		ImGui::Checkbox("Contacts", &m_camera.contactVisible());
 		ImGui::Checkbox("Contacts Impulse", &m_camera.contactImpulseVisible());
@@ -499,6 +510,7 @@ namespace Physics2D
 
 		ImGui::Columns(1, nullptr);
 
+
 		ImGui::Separator();
 		ImGui::Text("Running: %s", m_running ? "True" : "False");
 
@@ -510,6 +522,19 @@ namespace Physics2D
 			step();
 		if (ImGui::Button("Restart", ImVec2(-FLT_MIN, 0.0f)))
 			restart();
+
+		ImGui::End();
+
+		Vector2 pos(10.0f, 8.0f);
+		pos = m_camera.worldToScreen(pos);
+		ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Once);
+
+		ImGui::Begin("Help");
+		ImGui::Text("Press LCtrl+D to check distance.");
+		ImGui::Text("Press S/T to step once/twice.");
+		ImGui::Text("Press Space to pause/continue.");
+		ImGui::Text("Hold mouse right to move camera.");
+		ImGui::Text("Scroll down to zoom.");
 
 		ImGui::End();
 
