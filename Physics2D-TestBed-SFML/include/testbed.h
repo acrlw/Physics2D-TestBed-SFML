@@ -88,6 +88,8 @@ namespace Physics2D
 
 		real m_zoomFactor = 0.5f;
 
+		bool m_enableDistanceCheck = true;
+
 		std::unique_ptr<sf::RenderWindow> m_window;
 
 		std::array<std::function<Frame*()>, 21> m_frameList;

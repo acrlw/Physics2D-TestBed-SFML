@@ -158,37 +158,37 @@ namespace Physics2D
 		switch (event.key.code)
 		{
 		case sf::Keyboard::Space:
-			{
-				m_running = !m_running;
-				break;
-			}
-		case sf::Keyboard::N:
-			{
-				//N means next
-				step();
-				break;
-			}
+		{
+			m_running = !m_running;
+			break;
+		}
+		case sf::Keyboard::S:
+		{
+			//N means next
+			step();
+			break;
+		}
 		case sf::Keyboard::T:
-			{
-				//T means stepping twice
-				step();
-				step();
-				break;
-			}
+		{
+			//T means stepping twice
+			step();
+			step();
+			break;
+		}
 		case sf::Keyboard::R:
-			{
-				restart();
-				break;
-			}
-		case sf::Keyboard::LAlt:
-			{
-				m_onDistanceCheck = false;
-				m_mouseArray[0].clear();
-				m_mouseArray[1].clear();
-				break;
-			}
+		{
+			restart();
+			break;
+		}
 		default:
 			break;
+		}
+		//combo
+		if(event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::LControl && m_onDistanceCheck)
+		{
+			m_onDistanceCheck = false;
+			m_mouseArray[0].clear();
+			m_mouseArray[1].clear();
 		}
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onKeyRelease(event);
@@ -199,8 +199,9 @@ namespace Physics2D
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onKeyPressed(event);
 
-		if (event.key.code == sf::Keyboard::LAlt)
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && m_enableDistanceCheck)
 			m_onDistanceCheck = true;
+		
 	}
 
 	void TestBed::onMouseReleased(sf::Event& event)
@@ -479,6 +480,7 @@ namespace Physics2D
 		ImGui::Checkbox("Show Numbers", &m_camera.coordinateScale());
 		ImGui::Checkbox("Smooth Zooming", &m_camera.smoothZoom());
 		ImGui::SliderFloat("Zoom", &m_zoomFactor, 0.1f, 0.9f, "%.1f");
+		ImGui::Checkbox("Distance Check", &m_enableDistanceCheck);
 		ImGui::Checkbox("User Draw", &m_userDrawVisible);
 		ImGui::NextColumn();
 		ImGui::Columns(1, nullptr);
@@ -512,6 +514,19 @@ namespace Physics2D
 			step();
 		if (ImGui::Button("Restart", ImVec2(-FLT_MIN, 0.0f)))
 			restart();
+
+		ImGui::End();
+
+		Vector2 pos(25.0f, 8.0f);
+		pos = m_camera.worldToScreen(pos);
+		ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Once);
+
+		ImGui::Begin("Help");
+		ImGui::Text("Press LCtrl+D to check distance.");
+		ImGui::Text("Press S/T to step once/twice.");
+		ImGui::Text("Press Space to pause/continue.");
+		ImGui::Text("Hold mouse right to move camera.");
+		ImGui::Text("Scroll down to zoom.");
 
 		ImGui::End();
 

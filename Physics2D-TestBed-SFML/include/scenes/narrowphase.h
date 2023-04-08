@@ -25,11 +25,13 @@ namespace Physics2D
 			block.set(10, 0.1f);
 			edge.set(Vector2{-100.0f, 0.0f}, Vector2{100.0f, 0.0f});
 
-			rectangle.set(0.3, 3.0);
+			rectangle.set(0.3f, 3.0f);
 			polygon1.append({
 				{0.0f, 4.0f}, {-3.0f, 3.0f}, {-4.0f, 0.0f}, {-3.0f, -3.0f}, {0, -4.0f},
 				{3.0f, -3.0f}, {4.0f, 0.0f}, {3.0f, 3.0f}
 			});
+
+			polygon1.scale(0.5f);
 
 			polygon2.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
 
@@ -47,12 +49,12 @@ namespace Physics2D
 			//shape2.transform.rotation = -9.10090932e-07f;
 
 			shape1.shape = &polygon1;
-			shape1.transform.position.set(0.0f, 4.0f);
+			shape1.transform.position.set(0.0f, 2.0f);
 			//shape1.transform.position.set(-0.2875f, -1.6625f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
 			shape2.shape = &capsule;
-			shape2.transform.position.set(0.0f, -3.0f);
+			shape2.transform.position.set(0.0f, -1.0f);
 			//shape2.transform.rotation = Math::degreeToRadian(45);
 
 			//result = Detector::detect(shape1, shape2);
@@ -250,13 +252,13 @@ namespace Physics2D
 
 		void renderUI() override
 		{
-			Vector2 pos(10.0f, 0.0f);
+			Vector2 pos(25.0f, 0.0f);
 			pos = m_camera->worldToScreen(pos);
 			ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Once | ImGuiWindowFlags_AlwaysAutoResize);
 
 			ImGui::Begin("Distance");
 			ImGui::Checkbox("Show Polytope", &showPolytope);
-			ImGui::Checkbox("Show GJK Simplex", &showGJKSimplex);
+			//ImGui::Checkbox("Show GJK Simplex", &showGJKSimplex);
 			ImGui::Checkbox("Show Original Simplex", &showOriginalSimplex);
 			ImGui::Checkbox("Show Closest Feature", &showFeature);
 			ImGui::Checkbox("Show Feature Simplex", &showFeatureSimplex);
