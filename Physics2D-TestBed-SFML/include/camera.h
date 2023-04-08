@@ -61,8 +61,8 @@ namespace Physics2D
 		bool& bodyVelocityMagnitude();
 		sf::Font& font();
 
-		real axisPointCount() const;
-		void setAxisPointCount(real count);
+		int axisPointCount() const;
+		void setAxisPointCount(int count);
 
 		real meterToPixel() const;
 		void setMeterToPixel(const real& meterToPixel);
@@ -105,6 +105,8 @@ namespace Physics2D
 		UniformGrid* uniformGrid() const;
 		void setUniformGrid(UniformGrid* grid);
 
+		real defaultMeterToPixel()const;
+		void setDefaultMeterToPixel(const real& number);
 	private:
 		void drawGridScaleLine(sf::RenderWindow& window);
 
@@ -132,7 +134,7 @@ namespace Physics2D
 		bool m_bodyVelocityNormal = false;
 		bool m_bodyVelocityMagnitude = false;
 
-
+		real m_defaultMeterToPixel = 50.0f;
 		real m_meterToPixel = 50.0f;
 		real m_pixelToMeter = 0.02f;
 

@@ -142,6 +142,7 @@ namespace Physics2D
 		 * \return 
 		 */
 		static Vector2 calculateCenter(const Container::Vector<Vector2>& vertices);
+		static Vector2 calculateCenter(const std::list<Vector2>& vertices);
 		/**
 		 * \brief Calculate two points on line segment and ellipse respectively. The length of two points is the shortest distance of line segment and ellipse
 		 * \param a major axis a

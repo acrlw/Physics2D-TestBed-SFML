@@ -465,7 +465,7 @@ namespace Physics2D
 	}
 
 	void RenderSFMLImpl::renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
-	                                   const sf::Color& color, bool showIndex)
+	                                   const sf::Color& color, bool showIndex, const unsigned int& indexSize)
 	{
 		sf::Color lineColor = color;
 		lineColor.a = 150;
@@ -475,8 +475,8 @@ namespace Physics2D
 			break;
 		case 1:
 			renderPoint(window, camera, simplex.vertices[0].result, color);
-			if(showIndex)
-				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor);
+			if (showIndex)
+				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor, indexSize);
 			break;
 		case 2:
 			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
@@ -484,8 +484,10 @@ namespace Physics2D
 			renderPoint(window, camera, simplex.vertices[1].result, color);
 			if (showIndex)
 			{
-				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor);
-				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor);
+				Vector2 offset = simplex.vertices[1].result - simplex.vertices[0].result;
+				offset = -offset.perpendicular().normal() * 0.3f;
+				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor, indexSize, offset);
+				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor, indexSize, offset);
 			}
 			break;
 		case 3:
@@ -497,9 +499,20 @@ namespace Physics2D
 			renderPoint(window, camera, simplex.vertices[2].result, color);
 			if (showIndex)
 			{
-				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor);
-				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor);
-				renderInt(window, camera, simplex.vertices[2].result, camera.font(), 2, lineColor);
+				Vector2 center = (simplex.vertices[0].result + simplex.vertices[1].result + simplex.vertices[2].result)
+					/ 3.0f;
+
+				Vector2 offset = simplex.vertices[0].result - center;
+				offset = offset.normal() * 0.3f;
+				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor, indexSize, offset);
+
+				offset = simplex.vertices[1].result - center;
+				offset = offset.normal() * 0.3f;
+				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor, indexSize, offset);
+
+				offset = simplex.vertices[2].result - center;
+				offset = offset.normal() * 0.3f;
+				renderInt(window, camera, simplex.vertices[2].result, camera.font(), 2, lineColor, indexSize, offset);
 			}
 			break;
 		default:
@@ -547,14 +560,15 @@ namespace Physics2D
 	{
 		sf::Text text;
 		text.setFont(font);
-		text.setString(txt);
 		text.setCharacterSize(size);
+		text.setString(txt);
 		text.setFillColor(color);
 		sf::FloatRect text_rect = text.getLocalBounds();
 		text.setOrigin(text_rect.left + text_rect.width / 2.0f, text_rect.top + text_rect.height / 2.0f);
 		Vector2 offset = screenOffset;
-		if(camera.zoomFactor() > 1)
-			offset /= std::sqrt(camera.zoomFactor());
+		if (camera.meterToPixel() > camera.defaultMeterToPixel())
+			offset /= camera.meterToPixel() / camera.defaultMeterToPixel();
+
 		auto pos = toVector2f(camera.worldToScreen(position + offset));
 
 		text.setPosition(pos);
@@ -567,12 +581,43 @@ namespace Physics2D
 	                                 const real& value, const sf::Color& color, const unsigned int& size,
 	                                 const Vector2& offset)
 	{
-		std::string str = std::format("{:.4f}", value);
+		std::string str = std::format("{:.3f}", value);
 		renderText(window, camera, position, font, str, color, size, offset);
 	}
-	void RenderSFMLImpl::renderInt(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font, const int& value, const sf::Color& color, const unsigned int& size, const Vector2& offset)
+
+	void RenderSFMLImpl::renderInt(sf::RenderWindow& window, Camera& camera, const Vector2& position,
+	                               const sf::Font& font, const int& value, const sf::Color& color,
+	                               const unsigned int& size, const Vector2& offset)
 	{
 		std::string str = std::format("{}", value);
 		renderText(window, camera, position, font, str, color, size, offset);
+	}
+
+	void RenderSFMLImpl::renderPolytope(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& polytope,
+	                                    const sf::Color& color,
+	                                    const sf::Font& font, real pointSize, const unsigned int& indexSize,
+	                                    bool showIndex)
+	{
+		Vector2 center = GeometryAlgorithm2D::calculateCenter(polytope);
+		for (int i = 0; i < polytope.size(); ++i)
+		{
+			int j = (i + 1) % polytope.size();
+			Vector2 offset = (polytope[i] - center).normal() * 0.3f;
+
+			renderPoint(window, camera, polytope[i], color, pointSize);
+			renderPoint(window, camera, polytope[j], color, pointSize);
+			renderLine(window, camera, polytope[i], polytope[j], color);
+
+			if (showIndex)
+				renderInt(window, camera, polytope[i], font, i, color, indexSize, offset);
+		}
+	}
+
+	void RenderSFMLImpl::renderPosition(sf::RenderWindow& window, Camera& camera, const Vector2& position,
+	                                    const sf::Color& color, const sf::Font& font, const unsigned int& size,
+	                                    const Vector2& screenOffset)
+	{
+		std::string str1 = std::format("({:.3f}, {:.3f})", position.x, position.y);
+		renderText(window, camera, position, font, str1, color, size, screenOffset);
 	}
 }

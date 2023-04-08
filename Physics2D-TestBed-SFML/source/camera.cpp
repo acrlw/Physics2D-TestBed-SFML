@@ -204,12 +204,12 @@ namespace Physics2D
 		return m_gridScaleLineVisible;
 	}
 
-	real Camera::axisPointCount() const
+	int Camera::axisPointCount() const
 	{
 		return m_axisPointCount;
 	}
 
-	void Camera::setAxisPointCount(real count)
+	void Camera::setAxisPointCount(int count)
 	{
 		m_axisPointCount = count;
 	}
@@ -221,10 +221,11 @@ namespace Physics2D
 
 	void Camera::setMeterToPixel(const real& meterToPixel)
 	{
-		if (meterToPixel < 1.0)
+		m_zoomFactor = m_targetMeterToPixel / m_defaultMeterToPixel;
+		if (meterToPixel < 1.0f)
 		{
-			m_targetMeterToPixel = 1.0;
-			m_targetPixelToMeter = 1.0;
+			m_targetMeterToPixel = 1.0f;
+			m_targetPixelToMeter = 1.0f;
 			return;
 		}
 		m_targetMeterToPixel = meterToPixel;
@@ -421,6 +422,16 @@ namespace Physics2D
 		m_grid = grid;
 	}
 
+	real Camera::defaultMeterToPixel() const
+	{
+		return m_defaultMeterToPixel;
+	}
+
+	void Camera::setDefaultMeterToPixel(const real& number)
+	{
+		m_defaultMeterToPixel = number;
+	}
+
 	void Camera::drawTree(int nodeIndex, sf::RenderWindow& window)
 	{
 		if (nodeIndex == -1)
@@ -455,7 +466,7 @@ namespace Physics2D
 
 				if (m_contactImpulseMagnitude)
 					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse,
-					                            RenderConstant::Cyan, 16);
+					                            RenderConstant::Cyan, 16, elem.vcp.normal * 0.55f);
 
 				if (m_contactFrictionVisible)
 					RenderSFMLImpl::renderArrow(window, *this, elem.bodyB->toWorldPoint(elem.vcp.localB),

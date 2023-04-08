@@ -85,20 +85,33 @@ namespace Physics2D
 		static void renderWheelJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 		static void renderWeldJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 
-		static void renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
-		                          const sf::Color& color, bool showIndex = true);
 		static void renderArrow(sf::RenderWindow& window, Camera& camera, const Vector2& start, const Vector2& end,
 		                        const sf::Color& color,
 		                        const real& size = 0.30f, const real& degree = 30);
 		static void renderText(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font,
-		                       const std::string& text, const sf::Color& color, const unsigned int& size = 14, const Vector2& screenOffset = {0, 0});
+		                       const std::string& text, const sf::Color& color, const unsigned int& size = 18,
+		                       const Vector2& screenOffset = {0, 0});
+
 		static void renderFloat(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font,
-		                        const real& value, const sf::Color& color, const unsigned int& size = 14,
+		                        const real& value, const sf::Color& color, const unsigned int& size = 18,
 		                        const Vector2& screenOffset = Vector2(-0.2f, -0.2f));
 
 		static void renderInt(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font,
-					                      const int& value, const sf::Color& color, const unsigned int& size = 14,
-					                      const Vector2& screenOffset = Vector2(-0.2f, -0.2f));
+		                      const int& value, const sf::Color& color, const unsigned int& size = 18,
+		                      const Vector2& screenOffset = Vector2(-0.2f, -0.2f));
+
+		static void renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
+		                          const sf::Color& color, bool showIndex = true, const unsigned int& indexSize = 18);
+
+
+		static void renderPolytope(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& polytope,
+		                           const sf::Color& color, const sf::Font& font,
+		                           real pointSize = RenderConstant::PointSize, const unsigned int& indexSize = 18,
+		                           bool showIndex = true);
+
+		static void renderPosition(sf::RenderWindow& window, Camera& camera, const Vector2& position,
+		                           const sf::Color& color, const sf::Font& font, const unsigned int& size = 18,
+		                           const Vector2& screenOffset = Vector2(0.6f, 0.6f));
 	};
 }
 #endif
