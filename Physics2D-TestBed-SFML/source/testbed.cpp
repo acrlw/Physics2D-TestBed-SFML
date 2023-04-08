@@ -207,6 +207,7 @@ namespace Physics2D
 	{
 		Vector2 pos(static_cast<real>(event.mouseButton.x), static_cast<real>(event.mouseButton.y));
 		m_mousePos = m_camera.screenToWorld(pos);
+		m_screenMousePos = pos;
 
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onMouseRelease(event);
@@ -227,6 +228,7 @@ namespace Physics2D
 			m_currentFrame->onMouseMove(event);
 
 		Vector2 pos(static_cast<real>(event.mouseMove.x), static_cast<real>(event.mouseMove.y));
+		m_screenMousePos = pos;
 
 		Vector2 tf = m_camera.screenToWorld(pos) - m_mousePos;
 		if (m_cameraViewportMovement)
@@ -259,8 +261,8 @@ namespace Physics2D
 	void TestBed::onMousePressed(sf::Event& event)
 	{
 		Vector2 pos(static_cast<real>(event.mouseButton.x), static_cast<real>(event.mouseButton.y));
+		m_screenMousePos = pos;
 		m_mousePos = m_camera.screenToWorld(pos);
-
 
 		if (event.mouseButton.button == sf::Mouse::Right)
 			m_cameraViewportMovement = true;
@@ -303,10 +305,11 @@ namespace Physics2D
 
 	void TestBed::onWheelScrolled(sf::Event& event)
 	{
+		m_camera.setPreScreenMousePos(m_screenMousePos);
 		if (event.mouseWheelScroll.delta > 0)
-			m_camera.setMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 4.0f);
+			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 2.0f);
 		else
-			m_camera.setMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 4.0f);
+			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 2.0f);
 		
 	}
 

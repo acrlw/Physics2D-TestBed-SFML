@@ -84,6 +84,7 @@ namespace Physics2D
 		Camera m_camera;
 
 		Vector2 m_mousePos;
+		Vector2 m_screenMousePos;
 
 		std::unique_ptr<sf::RenderWindow> m_window;
 
