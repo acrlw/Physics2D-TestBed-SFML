@@ -84,22 +84,29 @@ namespace Physics2D
 				Vector2 c = pb - pa;
 
 				const real bias = Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
+
+				const real im_a = bodyA->inverseMass();
+				const real im_b = bodyB->inverseMass();
+				const real ii_a = bodyA->inverseInertia();
+				const real ii_b = bodyB->inverseInertia();
+
+				const real rn_a = ra.cross(vcp.normal);
+				const real rn_b = rb.cross(vcp.normal);
+
+				const real kNormal = im_a + ii_a * rn_a * rn_a +
+					im_b + ii_b * rn_b * rn_b;
+
+				vcp.effectiveMassNormal = realEqual(kNormal, 0.0f) ? 0 : 1.0f / kNormal;
+
 				real lambda = vcp.effectiveMassNormal * bias;
 
 				Vector2 impulse = lambda * vcp.normal;
-
-				vcp.positionCorrectionImpulse = impulse;
-
-				Vector2 dp = bodyA->inverseMass() * impulse;
-				real dr = bodyA->inverseInertia() * ra.cross(impulse);
-				bodyA->position() += dp;
-				bodyA->rotation() += dr;
-
-
-				dp = bodyB->inverseMass() * impulse;
-				dr = bodyB->inverseInertia() * rb.cross(impulse);
-				bodyB->position() -= dp;
-				bodyB->rotation() -= dr;
+				
+				bodyA->position() += bodyA->inverseMass() * impulse;
+				bodyA->rotation() += bodyA->inverseInertia() * ra.cross(impulse);
+				
+				bodyB->position() -= bodyB->inverseMass() * impulse;
+				bodyB->rotation() -= bodyB->inverseInertia() * rb.cross(impulse);
 			}
 		}
 	}

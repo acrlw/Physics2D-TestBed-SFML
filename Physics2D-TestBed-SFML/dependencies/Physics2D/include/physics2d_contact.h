@@ -26,7 +26,6 @@ namespace Physics2D
 		real effectiveMassTangent = 0;
 		real accumulatedNormalImpulse = 0;
 		real accumulatedTangentImpulse = 0;
-		Vector2 positionCorrectionImpulse;
 	};
 
 	struct PHYSICS2D_API ContactConstraintPoint

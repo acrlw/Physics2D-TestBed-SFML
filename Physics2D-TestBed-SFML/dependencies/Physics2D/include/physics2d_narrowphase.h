@@ -83,6 +83,7 @@ namespace Physics2D
 		Simplex simplex;
 		VertexPair pair;
 		//[Debug]
+		Simplex originalSimplex;
 		std::list<SimplexVertexWithOriginDistance> polytope;
 	};
 

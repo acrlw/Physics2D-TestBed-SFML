@@ -304,9 +304,15 @@ namespace Physics2D
 	void TestBed::onWheelScrolled(sf::Event& event)
 	{
 		if (event.mouseWheelScroll.delta > 0)
+		{
+			m_camera.setZoomFactor(m_camera.zoomFactor() * 1.25f);
 			m_camera.setMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 4.0f);
+		}
 		else
+		{
+			m_camera.setZoomFactor(m_camera.zoomFactor() / 1.25f);
 			m_camera.setMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 4.0f);
+		}
 	}
 
 	void TestBed::exec()

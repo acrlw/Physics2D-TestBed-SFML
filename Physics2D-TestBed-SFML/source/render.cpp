@@ -465,7 +465,7 @@ namespace Physics2D
 	}
 
 	void RenderSFMLImpl::renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
-	                                   const sf::Color& color)
+	                                   const sf::Color& color, bool showIndex)
 	{
 		sf::Color lineColor = color;
 		lineColor.a = 150;
@@ -475,14 +475,18 @@ namespace Physics2D
 			break;
 		case 1:
 			renderPoint(window, camera, simplex.vertices[0].result, color);
-			renderFloat(window, camera, simplex.vertices[0].result, camera.font(), 0.0f, lineColor);
+			if(showIndex)
+				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor);
 			break;
 		case 2:
 			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
 			renderPoint(window, camera, simplex.vertices[0].result, color);
 			renderPoint(window, camera, simplex.vertices[1].result, color);
-			renderFloat(window, camera, simplex.vertices[0].result, camera.font(), 0.0f, lineColor);
-			renderFloat(window, camera, simplex.vertices[1].result, camera.font(), 1.0f, lineColor);
+			if (showIndex)
+			{
+				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor);
+				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor);
+			}
 			break;
 		case 3:
 			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
@@ -491,9 +495,12 @@ namespace Physics2D
 			renderPoint(window, camera, simplex.vertices[0].result, color);
 			renderPoint(window, camera, simplex.vertices[1].result, color);
 			renderPoint(window, camera, simplex.vertices[2].result, color);
-			renderFloat(window, camera, simplex.vertices[0].result, camera.font(), 0.0f, lineColor);
-			renderFloat(window, camera, simplex.vertices[1].result, camera.font(), 1.0f, lineColor);
-			renderFloat(window, camera, simplex.vertices[2].result, camera.font(), 2.0f, lineColor);
+			if (showIndex)
+			{
+				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor);
+				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor);
+				renderInt(window, camera, simplex.vertices[2].result, camera.font(), 2, lineColor);
+			}
 			break;
 		default:
 			assert(false && "Simplex count is more than 3");
@@ -536,7 +543,7 @@ namespace Physics2D
 
 	void RenderSFMLImpl::renderText(sf::RenderWindow& window, Camera& camera, const Vector2& position,
 	                                const sf::Font& font, const std::string& txt, const sf::Color& color,
-	                                const unsigned int& size)
+	                                const unsigned int& size, const Vector2& screenOffset)
 	{
 		sf::Text text;
 		text.setFont(font);
@@ -545,7 +552,11 @@ namespace Physics2D
 		text.setFillColor(color);
 		sf::FloatRect text_rect = text.getLocalBounds();
 		text.setOrigin(text_rect.left + text_rect.width / 2.0f, text_rect.top + text_rect.height / 2.0f);
-		auto pos = toVector2f(camera.worldToScreen(position));
+		Vector2 offset = screenOffset;
+		if(camera.zoomFactor() > 1)
+			offset /= std::sqrt(camera.zoomFactor());
+		auto pos = toVector2f(camera.worldToScreen(position + offset));
+
 		text.setPosition(pos);
 
 		window.draw(text);
@@ -557,6 +568,11 @@ namespace Physics2D
 	                                 const Vector2& offset)
 	{
 		std::string str = std::format("{:.4f}", value);
-		renderText(window, camera, position + offset, font, str, color, size);
+		renderText(window, camera, position, font, str, color, size, offset);
+	}
+	void RenderSFMLImpl::renderInt(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font, const int& value, const sf::Color& color, const unsigned int& size, const Vector2& offset)
+	{
+		std::string str = std::format("{}", value);
+		renderText(window, camera, position, font, str, color, size, offset);
 	}
 }

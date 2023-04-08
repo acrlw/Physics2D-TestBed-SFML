@@ -34,6 +34,7 @@ namespace Physics2D
 			Vector2 bottomRight = {800, 600};
 			real width();
 			real height();
+			Vector2 center()const;
 			void setWidth(const real& width);
 			void setHeight(const real& height);
 			void set(const real& width, const real& height);

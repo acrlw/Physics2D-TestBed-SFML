@@ -153,6 +153,8 @@ namespace Physics2D
 			//reset simplex
 			info.simplex.vertices[0] = iterStart->vertex;
 			info.simplex.vertices[1] = iterTemp->vertex;
+
+
 		}
 
 		const Vector2 temp = -GeometryAlgorithm2D::pointToLineSegment(info.simplex.vertices[0].result,
@@ -378,6 +380,7 @@ namespace Physics2D
 		info.simplex.addSimplexVertex(vertex);
 
 		reconstructSimplexByVoronoi(info.simplex);
+		info.originalSimplex = info.simplex;
 		//[DEBUG]
 		std::list<SimplexVertexWithOriginDistance>& polytope = info.polytope;
 		//std::list<SimplexVertexWithOriginDistance> polytope;
@@ -507,34 +510,36 @@ namespace Physics2D
 		info.simplex.removeEnd();
 		//Convex combination for calculating distance points
 		//https://dyn4j.org/2010/04/gjk-distance-closest-points/
-		Vector2& A_s1 = info.simplex.vertices[0].point[0];
-		Vector2& B_s1 = info.simplex.vertices[1].point[0];
-		Vector2& A_s2 = info.simplex.vertices[0].point[1];
-		Vector2& B_s2 = info.simplex.vertices[1].point[1];
 
-		Vector2 a = info.simplex.vertices[0].result;
-		Vector2 b = info.simplex.vertices[1].result;
+		Vector2& A_0 = info.simplex.vertices[0].point[0];
+		Vector2& B_0 = info.simplex.vertices[0].point[1];
+		Vector2& A_1 = info.simplex.vertices[1].point[0];
+		Vector2& B_1 = info.simplex.vertices[1].point[1];
 
-		Vector2 l = b - a;
-		real ll = l.dot(l);
-		real la = l.dot(a);
-		real lambda2 = -la / ll;
-		real lambda1 = 1 - lambda2;
+		Vector2 M_0 = info.simplex.vertices[0].result;
+		Vector2 M_1 = info.simplex.vertices[1].result;
 
-		result.pointA.set(lambda1* A_s1 + lambda2 * B_s1);
-		result.pointB.set(lambda1* A_s2 + lambda2 * B_s2);
+		Vector2 M0_M1 = M_1 - M_0;
+		real M0_O_proj = -M_0.dot(M0_M1);
+		real M0_M1_proj = M0_M1.dot(M0_M1);
+		real v = M0_O_proj / M0_M1_proj;
+		real u = 1 - v;
 
-		if (l.fuzzyEqual({ 0, 0 }) || lambda2 < 0)
+		result.pointA.set(u * A_0 + v * A_1);
+		result.pointB.set(u * B_0 + v * B_1);
+
+		if(M0_M1.fuzzyEqual({0, 0}) || v < 0)
 		{
-			result.pointA.set(A_s1);
-			result.pointB.set(A_s2);
+			result.pointA.set(A_0);
+			result.pointB.set(B_0);
 		}
-		if (lambda1 < 0)
+		else if (u < 0)
 		{
-			result.pointA.set(B_s1);
-			result.pointB.set(B_s2);
+			result.pointA.set(A_1);
+			result.pointB.set(B_1);
 		}
 		info.pair = result;
+
 		return info;
 	}
 
@@ -573,13 +578,9 @@ namespace Physics2D
 
 
 		if (u_ac > 0 && v_ac > 0 && v <= 0)
-		{
 			std::swap(simplex.vertices[1], simplex.vertices[2]);
-		}
 		else if (u_bc > 0 && v_bc > 0 && u <= 0)
-		{
 			std::swap(simplex.vertices[0], simplex.vertices[2]);
-		}
 		else if (u > 0 && v > 0 && w > 0)
 		{
 			//in region ABC, origin is inside simplex
@@ -591,18 +592,11 @@ namespace Physics2D
 			const real h_v = v / ac_length;
 			const real h_w = w / ab_length;
 			const real min = Math::tripleMin(h_u, h_v, h_w);
-			if (min == h_u)
-			{
-				//c b a
-				simplex.vertices[0] = vc;
-				simplex.vertices[2] = va;
-			}
-			else if (min == h_v)
-			{
-				//a c b
-				simplex.vertices[1] = vc;
-				simplex.vertices[2] = vb;
-			}
+			if (min == h_u) //c b a
+				std::swap(simplex.vertices[0], simplex.vertices[2]);
+			else if (min == h_v) //a c b
+				std::swap(simplex.vertices[1], simplex.vertices[2]);
+			
 		}
 	}
 
@@ -610,9 +604,8 @@ namespace Physics2D
 	                                 const Vector2& dir)
 	{
 		Vector2 direction = dir;
-		for (int i = 0; i <= Constant::GJKRetryTimes; ++i)
+		for (int i = 0; i < Constant::GJKRetryTimes; ++i)
 		{
-			//return simplex;
 			direction.set(-direction.y + static_cast<real>(i), -direction.x - static_cast<real>(i));
 			SimplexVertex v = support(shapeA, shapeB, direction);
 			simplex.vertices[0] = v;
@@ -623,7 +616,7 @@ namespace Physics2D
 			if (!simplex.containsOrigin())
 				return true;
 		}
-		//can't reconfigure, just not process
+		//can't reconstruct
 		return false;
 	}
 

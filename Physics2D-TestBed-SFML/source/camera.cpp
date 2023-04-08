@@ -553,6 +553,11 @@ namespace Physics2D
 		return bottomRight.y - topLeft.y;
 	}
 
+	Vector2 Camera::Viewport::center() const
+	{
+		return bottomRight * 0.5f;
+	}
+
 	void Camera::Viewport::setWidth(const real& width)
 	{
 		bottomRight.x = topLeft.x + width;
