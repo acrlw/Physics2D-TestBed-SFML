@@ -7,7 +7,7 @@ The Testbed of Physics2D, using SFML and ImGui.
 Use [XMake](https://github.com/xmake-io/xmake) to build project:
 
 ```
-xmake build
+xmake -w
 ```
 
 # Requirement
@@ -19,18 +19,10 @@ xmake build
 
 # Features
 
-- Basic GUI
-- Basic Debug Drawing
-  - Rigid Body
-  - AABB
-  - DBVH
-  - Joint
-- Basic 2D Camera
-  - Zooming
-  - Smooth Transition
-  - Tracing Specified Body
-- Grid Drawing
-- Basic Test Frame
+- GUI: Control Panel, Debug Panel
+- Debug Drawing: Body, Joint, AABB, Dynamic BVH, User Draw
+- Camera: Tracing Body, Smooth Zooming, Panning
+- Test Frame: Collision, Stacking, Continuous...
 
 # Screenshot
 
