@@ -307,9 +307,9 @@ namespace Physics2D
 	{
 		m_camera.setPreScreenMousePos(m_screenMousePos);
 		if (event.mouseWheelScroll.delta > 0)
-			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() / 2.0f);
+			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() * m_zoomFactor);
 		else
-			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() / 2.0f);
+			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() * m_zoomFactor);
 		
 	}
 
@@ -470,13 +470,16 @@ namespace Physics2D
 		ImGui::Checkbox("Body", &m_camera.bodyVisible());
 		ImGui::Checkbox("Joint", &m_camera.jointVisible());
 		ImGui::Checkbox("Center", &m_camera.centerVisible());
-		ImGui::Checkbox("User Draw", &m_userDrawVisible);
-		ImGui::NextColumn();
-
 		ImGui::Checkbox("AABB", &m_camera.aabbVisible());
-		ImGui::Checkbox("Grid Scale Line", &m_camera.gridScaleLineVisible());
 		ImGui::Checkbox("Tree", &m_camera.treeVisible());
 		ImGui::Checkbox("Uniform Grid", &m_camera.uniformGridVisible());
+		ImGui::NextColumn();
+
+		ImGui::Checkbox("Grid Lines", &m_camera.gridScaleLineVisible());
+		ImGui::Checkbox("Show Numbers", &m_camera.coordinateScale());
+		ImGui::Checkbox("Smooth Zooming", &m_camera.smoothZoom());
+		ImGui::SliderFloat("Zoom", &m_zoomFactor, 0.1f, 0.9f, "%.1f");
+		ImGui::Checkbox("User Draw", &m_userDrawVisible);
 		ImGui::NextColumn();
 		ImGui::Columns(1, nullptr);
 
@@ -496,6 +499,7 @@ namespace Physics2D
 		ImGui::NextColumn();
 
 		ImGui::Columns(1, nullptr);
+
 
 		ImGui::Separator();
 		ImGui::Text("Running: %s", m_running ? "True" : "False");

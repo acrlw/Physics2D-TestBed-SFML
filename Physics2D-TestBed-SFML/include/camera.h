@@ -59,6 +59,8 @@ namespace Physics2D
 		bool& bodyVelocity();
 		bool& bodyVelocityNormal();
 		bool& bodyVelocityMagnitude();
+		bool& coordinateScale();
+		bool& smoothZoom();
 		sf::Font& font();
 
 		int axisPointCount() const;
@@ -135,11 +137,14 @@ namespace Physics2D
 		bool m_bodyVelocityNormal = false;
 		bool m_bodyVelocityMagnitude = false;
 
+		bool m_drawCoordinateScale = true;
+		bool m_smoothZoom = true;
+
 		real m_defaultMeterToPixel = 50.0f;
 		real m_meterToPixel = 50.0f;
 		real m_pixelToMeter = 0.02f;
 
-		real m_targetMeterToPixel = 50.0f;
+		real m_targetMeterToPixel = 80.0f;
 		real m_targetPixelToMeter = 0.02f;
 
 		Vector2 m_transform;

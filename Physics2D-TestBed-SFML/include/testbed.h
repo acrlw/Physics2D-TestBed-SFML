@@ -86,6 +86,8 @@ namespace Physics2D
 		Vector2 m_mousePos;
 		Vector2 m_screenMousePos;
 
+		real m_zoomFactor = 0.5f;
+
 		std::unique_ptr<sf::RenderWindow> m_window;
 
 		std::array<std::function<Frame*()>, 21> m_frameList;

@@ -23,17 +23,16 @@ namespace Physics2D
 			real scale = m_targetMeterToPixel - m_meterToPixel;
 			bool isZooming = !realEqual(m_meterToPixel, m_targetMeterToPixel);
 			
-
-			//m_meterToPixel = m_targetMeterToPixel;
-			if (std::fabs(scale) < 0.1f || m_meterToPixel < 1.0f)
-				m_meterToPixel = m_targetMeterToPixel;
-			else
+			
+			if (m_smoothZoom && !(std::fabs(scale) < 0.1f || m_meterToPixel < 1.0f))
 				m_meterToPixel -= (1.0f - std::exp(m_restitution * inv_dt)) * scale;
+			else
+				m_meterToPixel = m_targetMeterToPixel;
+
 			m_pixelToMeter = 1.0f / m_meterToPixel;
 
-			if (isZooming)
+			if (isZooming && !m_preScreenMousePos.isOrigin())
 				m_transform += (screenToWorld(m_preScreenMousePos) - m_preWorldMousePos) * m_meterToPixel;
-			
 
 
 			if (m_targetBody != nullptr)
@@ -164,12 +163,12 @@ namespace Physics2D
 						{
 							RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position,
 							                            primitive.transform.position + body->velocity(),
-							                            RenderConstant::Orange, 0.2);
+							                            RenderConstant::Orange, 0.2f);
 						}
 
 						if (m_bodyVelocityMagnitude)
 						{
-							std::string str = std::format("{:.3f}", body->velocity().length());
+							std::string str = std::format("{:.2f}", body->velocity().length());
 							const Vector2 offset(-0.01f, 0.01f);
 							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font,
 							                           str, RenderConstant::Orange, 16);
@@ -182,7 +181,7 @@ namespace Physics2D
 							if (!realEqual(length, 0.0f))
 								RenderSFMLImpl::renderArrow(window, *this, primitive.transform.position,
 								                            primitive.transform.position + vel / length,
-								                            RenderConstant::Orange, 0.2);
+								                            RenderConstant::Orange, 0.2f);
 						}
 					}
 				}
@@ -391,6 +390,16 @@ namespace Physics2D
 		return m_bodyVelocityMagnitude;
 	}
 
+	bool& Camera::coordinateScale()
+	{
+		return m_drawCoordinateScale;
+	}
+
+	bool& Camera::smoothZoom()
+	{
+		return m_smoothZoom;
+	}
+
 	ContactMaintainer* Camera::maintainer() const
 	{
 		return m_maintainer;
@@ -526,6 +535,9 @@ namespace Physics2D
 			lines.emplace_back(std::make_pair(p1, p2));
 
 			//draw number
+			if(!m_drawCoordinateScale)
+				continue;
+
 			std::string str = std::format("{}", i);
 			RenderSFMLImpl::renderText(window, *this, Vector2(static_cast<real>(i), 0.0f), m_font, str, color, 16, { -0.25f, -0.25f });
 			if (i == 0)
