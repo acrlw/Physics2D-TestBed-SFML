@@ -477,14 +477,6 @@ namespace Physics2D
 		ImGui::Checkbox("Uniform Grid", &m_camera.uniformGridVisible());
 		ImGui::NextColumn();
 
-		ImGui::Checkbox("Grid Lines", &m_camera.gridScaleLineVisible());
-		ImGui::Checkbox("Show Numbers", &m_camera.coordinateScale());
-		ImGui::Checkbox("Smooth Zooming", &m_camera.smoothZoom());
-		ImGui::SliderFloat("Zoom", &m_zoomFactor, 0.1f, 0.9f, "%.1f");
-		ImGui::Checkbox("Distance Check", &m_enableDistanceCheck);
-		ImGui::Checkbox("User Draw", &m_userDrawVisible);
-		ImGui::NextColumn();
-		ImGui::Columns(1, nullptr);
 
 		ImGui::Separator();
 		ImGui::Text("Camera");
