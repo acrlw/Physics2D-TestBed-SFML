@@ -517,7 +517,7 @@ namespace Physics2D
 
 		ImGui::End();
 
-		Vector2 pos(25.0f, 8.0f);
+		Vector2 pos(10.0f, 8.0f);
 		pos = m_camera.worldToScreen(pos);
 		ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Once);
 
