@@ -10,13 +10,11 @@ namespace Physics2D
 	class BroadPhaseFrame : public Frame
 	{
 	public:
-		BroadPhaseFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		                Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Broadphase", world, maintainer, tree, grid, camera)
+		BroadPhaseFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			rectangle.set(0.5f, 0.5f);
 			circle.setRadius(0.5f);
@@ -45,17 +43,17 @@ namespace Physics2D
 
 			for (int i = 0; i < 200; i++)
 			{
-				Body* body = m_world->createBody();
+				Body* body = m_settings.world->createBody();
 				body->position().set(dist1(gen), dist1(gen));
 				body->setShape(shapeArray[dist2(gen)]);
 				body->rotation() = dist3(gen);
 				body->setMass(1);
 				body->setType(Body::BodyType::Kinematic);
 
-				m_tree->insert(body);
+				m_settings.tree->insert(body);
 				grid.insert(body);
 			}
-			for (auto iter = m_world->bodyList().begin(); iter != m_world->bodyList().end(); ++iter)
+			for (auto iter = m_settings.world->bodyList().begin(); iter != m_settings.world->bodyList().end(); ++iter)
 			{
 				bodyList.emplace_back(iter->get());
 			}
@@ -70,7 +68,7 @@ namespace Physics2D
 			//m_tree->insert(body);
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 			//grid spatial hashing
 			grid.updateAll();
@@ -83,8 +81,8 @@ namespace Physics2D
 			collisionColor.a = 50;
 			for (auto&& elem : pairs)
 			{
-				RenderSFMLImpl::renderBody(window, *m_camera, elem.first, collisionColor);
-				RenderSFMLImpl::renderBody(window, *m_camera, elem.second, collisionColor);
+				RenderSFMLImpl::renderBody(window, *m_settings.camera, elem.first, collisionColor);
+				RenderSFMLImpl::renderBody(window, *m_settings.camera, elem.second, collisionColor);
 			}
 
 			for (auto&& elem : grid.m_cellsToBodies)
@@ -94,7 +92,7 @@ namespace Physics2D
 				AABB cell(topLeft, grid.cellWidth(), grid.cellHeight());
 				//cell.expand(-0.05f);
 
-				RenderSFMLImpl::renderAABB(window, *m_camera, cell, cellColor);
+				RenderSFMLImpl::renderAABB(window, *m_settings.camera, cell, cellColor);
 			}
 
 

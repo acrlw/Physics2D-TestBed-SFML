@@ -7,17 +7,15 @@ namespace Physics2D
 	class XPBDFrame : public Frame
 	{
 	public:
-		XPBDFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		          Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Extended Position-Based Dynamics", world, maintainer, tree, grid, camera)
+		XPBDFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 		}
 

@@ -8,13 +8,11 @@ namespace Physics2D
 	class RaycastFrame : public Frame
 	{
 	public:
-		RaycastFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		             Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Raycast", world, maintainer, tree, grid, camera)
+		RaycastFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			rectangle.set(0.5f, 0.5f);
 			circle.setRadius(0.5f);
@@ -43,46 +41,46 @@ namespace Physics2D
 
 			for (int i = 0; i < 100; i++)
 			{
-				Body* body = m_world->createBody();
+				Body* body = m_settings.world->createBody();
 				body->position().set(dist1(gen), dist1(gen));
 				body->setShape(shapeArray[dist2(gen)]);
 				body->rotation() = dist3(gen);
 				body->setMass(1);
 				body->setType(Body::BodyType::Static);
 
-				m_tree->insert(body);
+				m_settings.tree->insert(body);
 			}
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 			Vector2 p;
-			Vector2 d = m_mousePos.normal();
+			Vector2 d = mousePos.normal();
 			sf::Color originColor = RenderConstant::Gray;
 			sf::Color dirColor = RenderConstant::DarkGreen;
 			sf::Color hitColor = sf::Color::Cyan;
 
 
-			RenderSFMLImpl::renderPoint(window, *m_camera, Vector2(0, 0), originColor);
-			RenderSFMLImpl::renderLine(window, *m_camera, p, d * 10.0f, dirColor);
-			auto bodyList = m_tree->raycast(p, d);
+			RenderSFMLImpl::renderPoint(window, *m_settings.camera, Vector2(0, 0), originColor);
+			RenderSFMLImpl::renderLine(window, *m_settings.camera, p, d * 10.0f, dirColor);
+			auto bodyList = m_settings.tree->raycast(p, d);
 			for (auto& elem : bodyList)
 			{
 				ShapePrimitive sp;
 				sp.transform.rotation = elem->rotation();
 				sp.transform.position = elem->position();
 				sp.shape = elem->shape();
-				RenderSFMLImpl::renderShape(window, *m_camera, sp, hitColor);
+				RenderSFMLImpl::renderShape(window, *m_settings.camera, sp, hitColor);
 			}
 		}
 
 		void onMouseMove(sf::Event& event) override
 		{
-			m_mousePos = m_camera->screenToWorld(Vector2(event.mouseMove.x, event.mouseMove.y));
+			mousePos = m_settings.camera->screenToWorld(Vector2(event.mouseMove.x, event.mouseMove.y));
 		}
 
 	private:
-		Vector2 m_mousePos = Vector2(1, 1);
+		Vector2 mousePos = Vector2(1, 1);
 		Rectangle rectangle;
 		Circle circle;
 		Polygon polygon;

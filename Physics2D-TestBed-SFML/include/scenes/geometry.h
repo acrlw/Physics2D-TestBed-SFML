@@ -7,13 +7,11 @@ namespace Physics2D
 	class GeometryFrame : public Frame
 	{
 	public:
-		GeometryFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		              Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Geometry", world, maintainer, tree, grid, camera)
+		GeometryFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			std::random_device rd;
 			std::mt19937 gen(rd());
@@ -34,14 +32,14 @@ namespace Physics2D
 			intersectionConvex = GeometryAlgorithm2D::Clipper::sutherlandHodgmentPolygonClipping(convex1, convex2);
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 			for (auto iter = convex1.begin(); iter != convex1.end(); ++iter)
 			{
 				auto next = iter + 1;
 				if (next == convex1.end())
 					next = convex1.begin();
-				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, sf::Color::Green);
+				RenderSFMLImpl::renderLine(window, *m_settings.camera, *iter, *next, sf::Color::Green);
 			}
 
 			for (auto iter = convex2.begin(); iter != convex2.end(); ++iter)
@@ -49,7 +47,7 @@ namespace Physics2D
 				auto next = iter + 1;
 				if (next == convex2.end())
 					next = convex2.begin();
-				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, RenderConstant::Blue);
+				RenderSFMLImpl::renderLine(window, *m_settings.camera, *iter, *next, RenderConstant::Blue);
 			}
 
 			for (auto iter = intersectionConvex.begin(); iter != intersectionConvex.end(); ++iter)
@@ -57,11 +55,11 @@ namespace Physics2D
 				auto next = iter + 1;
 				if (next == intersectionConvex.end())
 					next = intersectionConvex.begin();
-				RenderSFMLImpl::renderLine(window, *m_camera, *iter, *next, sf::Color::Yellow);
+				RenderSFMLImpl::renderLine(window, *m_settings.camera, *iter, *next, sf::Color::Yellow);
 			}
 
-			RenderSFMLImpl::renderPoints(window, *m_camera, points1, sf::Color::Cyan);
-			RenderSFMLImpl::renderPoints(window, *m_camera, points2, sf::Color::Magenta);
+			RenderSFMLImpl::renderPoints(window, *m_settings.camera, points1, sf::Color::Cyan);
+			RenderSFMLImpl::renderPoints(window, *m_settings.camera, points2, sf::Color::Magenta);
 		}
 
 	private:

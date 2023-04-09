@@ -9,27 +9,25 @@ namespace Physics2D
 	class PendulumFrame : public Frame
 	{
 	public:
-		PendulumFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		              Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Pendulum", world, maintainer, tree, grid, camera)
+		PendulumFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			points.resize(400);
 
 			uint32_t mask = 0x01;
 			rectangle.set(4.0f, 0.25f);
 
-			stick1 = m_world->createBody();
+			stick1 = m_settings.world->createBody();
 			stick1->setShape(&rectangle);
 			stick1->setMass(2.0f);
 			stick1->setBitmask(mask << 1);
 			stick1->setType(Body::BodyType::Dynamic);
 			stick1->position().set(0, 0);
 
-			stick2 = m_world->createBody();
+			stick2 = m_settings.world->createBody();
 			stick2->setShape(&rectangle);
 			stick2->setMass(2.0f);
 			stick2->setBitmask(mask << 2);
@@ -37,7 +35,7 @@ namespace Physics2D
 			stick2->position().set(3.0f, 0);
 			stick2->rotation() = 0;
 
-			stick3 = m_world->createBody();
+			stick3 = m_settings.world->createBody();
 			stick3->setShape(&rectangle);
 			stick3->setMass(2.0f);
 			stick3->setBitmask(mask << 3);
@@ -53,7 +51,7 @@ namespace Physics2D
 			rjp.localPointB.set(-1.5f, 0);
 			rjp.frequency = 10;
 			rjp.dampingRatio = 0.8f;
-			m_world->createJoint(rjp);
+			m_settings.world->createJoint(rjp);
 
 			rjp.bodyA = stick2;
 			rjp.bodyB = stick3;
@@ -61,7 +59,7 @@ namespace Physics2D
 			rjp.localPointB.set(-1.5f, 0);
 			rjp.frequency = 10;
 			rjp.dampingRatio = 0.8f;
-			m_world->createJoint(rjp);
+			m_settings.world->createJoint(rjp);
 
 			PointJointPrimitive pjp;
 			pjp.bodyA = stick1;
@@ -70,16 +68,16 @@ namespace Physics2D
 			pjp.maxForce = 10000;
 			pjp.targetPoint.set(-1.5f, 0);
 			pjp.localPointA.set(-1.5f, 0);
-			m_world->createJoint(pjp);
+			m_settings.world->createJoint(pjp);
 
-			m_tree->insert(stick1);
-			m_tree->insert(stick2);
-			m_tree->insert(stick3);
+			m_settings.tree->insert(stick1);
+			m_settings.tree->insert(stick2);
+			m_settings.tree->insert(stick3);
 
-			m_world->setEnableDamping(false);
+			m_settings.world->setEnableDamping(false);
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 			if (points.size() > 400)
 				points.pop_front();
@@ -89,7 +87,7 @@ namespace Physics2D
 			vertices.reserve(points.size());
 			for (auto& elem : points)
 			{
-				Vector2 screenPos = m_camera->worldToScreen(elem);
+				Vector2 screenPos = m_settings.camera->worldToScreen(elem);
 				sf::Vertex vertex;
 				vertex.position = RenderSFMLImpl::toVector2f(screenPos);
 				vertex.color = sf::Color::Cyan;
@@ -98,9 +96,9 @@ namespace Physics2D
 			window.draw(&vertices[0], vertices.size(), sf::Points);
 		}
 
-		void release() override
+		void onUnLoad() override
 		{
-			m_world->setEnableDamping(true);
+			m_settings.world->setEnableDamping(true);
 		}
 
 	private:

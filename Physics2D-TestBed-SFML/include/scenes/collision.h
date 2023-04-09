@@ -7,13 +7,11 @@ namespace Physics2D
 	class CollisionFrame : public Frame
 	{
 	public:
-		CollisionFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		               Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Collision", world, maintainer, tree, grid, camera)
+		CollisionFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			smallBrick.set(1.0f, 1.0f);
 			triangle.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
@@ -23,16 +21,16 @@ namespace Physics2D
 			rectangle.set(1.0f, 1.0f);
 
 
-			ground = m_world->createBody();
+			ground = m_settings.world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({0, 0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.7f);
 			ground->setRestitution(1.0);
-			m_tree->insert(ground);
+			m_settings.tree->insert(ground);
 
-			rect = m_world->createBody();
+			rect = m_settings.world->createBody();
 			rect->setShape(&capsule);
 			rect->position().set({0, 1});
 			rect->rotation() = Math::degreeToRadian(0);
@@ -40,9 +38,9 @@ namespace Physics2D
 			rect->setType(Body::BodyType::Dynamic);
 			rect->setFriction(0.4f);
 			rect->setRestitution(0.0f);
-			m_tree->insert(rect);
+			m_settings.tree->insert(rect);
 
-			//rect = m_world->createBody();
+			//rect = m_settings.world->createBody();
 			//rect->setShape(&smallBrick);
 			//rect->position().set({ -0.5f, 0.5f });
 			//rect->rotation() = Math::degreeToRadian(0);
@@ -50,9 +48,9 @@ namespace Physics2D
 			//rect->setType(Body::BodyType::Dynamic);
 			//rect->setFriction(0.4f);
 			//rect->setRestitution(0.0f);
-			//m_tree->insert(rect);
+			//m_settings.tree->insert(rect);
 
-			//rect = m_world->createBody();
+			//rect = m_settings.world->createBody();
 			//rect->setShape(&smallBrick);
 			//rect->position().set({ 0.5f, 0.5f });
 			//rect->rotation() = Math::degreeToRadian(0);
@@ -60,10 +58,10 @@ namespace Physics2D
 			//rect->setType(Body::BodyType::Dynamic);
 			//rect->setFriction(0.4f);
 			//rect->setRestitution(0.0f);
-			//m_tree->insert(rect);
+			//m_settings.tree->insert(rect);
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 			int a = 0;
 		}

@@ -7,13 +7,11 @@ namespace Physics2D
 	class PBDFrame : public Frame
 	{
 	public:
-		PBDFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		         Tree* tree, UniformGrid* grid, Camera* camera) : Frame("Position Based Dynamics", world, maintainer,
-		                                                                tree, grid, camera)
+		PBDFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			for (int i = 0; i < 10; ++i)
 			{
@@ -23,20 +21,20 @@ namespace Physics2D
 			}
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 			sf::Color color = sf::Color::Yellow;
 			for (int i = 0; i < 10; ++i)
-				RenderSFMLImpl::renderPoint(window, *m_camera, positions[i], color);
+				RenderSFMLImpl::renderPoint(window, *m_settings.camera, positions[i], color);
 
 			for (int i = 0; i < 9; ++i)
 			{
 				color.a = 150;
-				RenderSFMLImpl::renderLine(window, *m_camera, positions[i], positions[i + 1], color);
+				RenderSFMLImpl::renderLine(window, *m_settings.camera, positions[i], positions[i + 1], color);
 			}
 		}
 
-		void postStep(real dt) override
+		void onPostStep(real dt) override
 		{
 			for (size_t i = 0; i < 10; ++i)
 			{

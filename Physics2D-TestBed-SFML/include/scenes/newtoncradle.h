@@ -8,13 +8,11 @@ namespace Physics2D
 	class NewtonCradleFrame : public Frame
 	{
 	public:
-		NewtonCradleFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		                  Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Newton Cradle", world, maintainer, tree, grid, camera)
+		NewtonCradleFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			real startX = -5.0f;
 			circle.setRadius(1.0f);
@@ -23,7 +21,7 @@ namespace Physics2D
 			djp.maxDistance = 5.0f;
 			djp.localPointA.set(0, 0);
 
-			Body* ball = m_world->createBody();
+			Body* ball = m_settings.world->createBody();
 			ball->setShape(&circle);
 			ball->setMass(1.0f);
 			ball->setType(Body::BodyType::Dynamic);
@@ -32,15 +30,15 @@ namespace Physics2D
 
 			djp.targetPoint.set(startX, 10.0f);
 			djp.bodyA = ball;
-			m_world->createJoint(djp);
+			m_settings.world->createJoint(djp);
 
-			m_tree->insert(ball);
+			m_settings.tree->insert(ball);
 
 
 			for (real i = 0; i < 5.0f; i++)
 			{
 				startX += 2.01f;
-				ball = m_world->createBody();
+				ball = m_settings.world->createBody();
 				ball->setShape(&circle);
 				ball->setMass(1.0f);
 				ball->setType(Body::BodyType::Dynamic);
@@ -49,12 +47,12 @@ namespace Physics2D
 				ball->position().set(startX, 5.0);
 				djp.targetPoint.set(startX, 10.0f);
 				djp.bodyA = ball;
-				m_world->createJoint(djp);
-				m_tree->insert(ball);
+				m_settings.world->createJoint(djp);
+				m_settings.tree->insert(ball);
 			}
 
 			startX += 2.01f;
-			ball = m_world->createBody();
+			ball = m_settings.world->createBody();
 			ball->setShape(&circle);
 			ball->setMass(1.0f);
 			ball->setType(Body::BodyType::Dynamic);
@@ -63,12 +61,12 @@ namespace Physics2D
 
 			djp.targetPoint.set(startX, 10.0f);
 			djp.bodyA = ball;
-			m_world->createJoint(djp);
+			m_settings.world->createJoint(djp);
 
-			m_tree->insert(ball);
+			m_settings.tree->insert(ball);
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 		}
 

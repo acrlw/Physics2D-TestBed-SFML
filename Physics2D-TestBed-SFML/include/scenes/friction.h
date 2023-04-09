@@ -7,13 +7,11 @@ namespace Physics2D
 	class FrictionFrame : public Frame
 	{
 	public:
-		FrictionFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		              Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Friction", world, maintainer, tree, grid, camera)
+		FrictionFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			edge.set({0, 0}, {20, 0});
 
@@ -23,7 +21,7 @@ namespace Physics2D
 
 			for (real i = 0; i < 3.0f; i += 1.0f)
 			{
-				Body* ground = m_world->createBody();
+				Body* ground = m_settings.world->createBody();
 				ground->setShape(&edge);
 				ground->setFriction(0.1f);
 				ground->setMass(Constant::Max);
@@ -31,7 +29,7 @@ namespace Physics2D
 				ground->setRestitution(0);
 				ground->setType(Body::BodyType::Static);
 
-				Body* rampBody = m_world->createBody();
+				Body* rampBody = m_settings.world->createBody();
 				rampBody->setShape(&ramp);
 				rampBody->setFriction(0.1f);
 				rampBody->setMass(Constant::Max);
@@ -39,24 +37,24 @@ namespace Physics2D
 				rampBody->setRestitution(0);
 				rampBody->setType(Body::BodyType::Static);
 
-				m_tree->insert(ground);
-				m_tree->insert(rampBody);
+				m_settings.tree->insert(ground);
+				m_settings.tree->insert(rampBody);
 			}
 
 			for (real i = 1; i < 4.0f; i += 1.0f)
 			{
-				Body* cube = m_world->createBody();
+				Body* cube = m_settings.world->createBody();
 				cube->setShape(&rectangle);
 				cube->setFriction(i * 0.05f);
 				cube->setMass(1);
 				cube->position().set(-5.0f, i * 3.5f);
 				cube->setRestitution(0);
 				cube->setType(Body::BodyType::Dynamic);
-				m_tree->insert(cube);
+				m_settings.tree->insert(cube);
 			}
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 		}
 

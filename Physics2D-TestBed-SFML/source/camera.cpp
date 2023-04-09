@@ -8,8 +8,7 @@ namespace Physics2D
 {
 	Camera::Camera()
 	{
-		if (!m_font.loadFromFile("font/MiSans-Medium.ttf"))
-			std::cout << "Cannot load font." << std::endl;
+
 	}
 
 	void Camera::render(sf::RenderWindow& window)
@@ -170,7 +169,7 @@ namespace Physics2D
 						{
 							std::string str = std::format("{:.2f}", body->velocity().length());
 							const Vector2 offset(-0.01f, 0.01f);
-							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, m_font,
+							RenderSFMLImpl::renderText(window, *this, primitive.transform.position + offset, *m_font,
 							                           str, RenderConstant::Orange, 16);
 						}
 
@@ -370,7 +369,12 @@ namespace Physics2D
 		return m_contactFrictionMagnitude;
 	}
 
-	sf::Font& Camera::font()
+	void Camera::setFont(sf::Font* font)
+	{
+		m_font = font;
+	}
+
+	sf::Font* Camera::font()
 	{
 		return m_font;
 	}
@@ -480,7 +484,7 @@ namespace Physics2D
 					                            RenderConstant::Cyan, 0.2f);
 
 				if (m_contactImpulseMagnitude)
-					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedNormalImpulse,
+					RenderSFMLImpl::renderFloat(window, *this, realB, *m_font, elem.vcp.accumulatedNormalImpulse,
 					                            RenderConstant::Cyan, 16, elem.vcp.normal * 0.55f);
 
 				if (m_contactFrictionVisible)
@@ -491,7 +495,7 @@ namespace Physics2D
 				if (m_contactFrictionMagnitude)
 				{
 					const Vector2 offset(0.05f, -0.05f);
-					RenderSFMLImpl::renderFloat(window, *this, realB, m_font, elem.vcp.accumulatedTangentImpulse,
+					RenderSFMLImpl::renderFloat(window, *this, realB, *m_font, elem.vcp.accumulatedTangentImpulse,
 					                            yellow, 16, offset);
 				}
 
@@ -539,10 +543,10 @@ namespace Physics2D
 				continue;
 
 			std::string str = std::format("{}", i);
-			RenderSFMLImpl::renderText(window, *this, Vector2(static_cast<real>(i), 0.0f), m_font, str, color, 16, { -0.25f, -0.25f });
+			RenderSFMLImpl::renderText(window, *this, Vector2(static_cast<real>(i), 0.0f), *m_font, str, color, 16, { -0.25f, -0.25f });
 			if (i == 0)
 				continue;
-			RenderSFMLImpl::renderText(window, *this, Vector2(0.0f, static_cast<real>(i)), m_font, str, color, 16, { -0.25f, -0.25f });
+			RenderSFMLImpl::renderText(window, *this, Vector2(0.0f, static_cast<real>(i)), *m_font, str, color, 16, { -0.25f, -0.25f });
 
 		}
 		RenderSFMLImpl::renderLines(window, *this, lines, thick);

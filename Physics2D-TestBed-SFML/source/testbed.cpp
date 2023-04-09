@@ -6,110 +6,89 @@ namespace Physics2D
 	{
 		m_frameList = {
 			{
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                        &m_system.grid(), &m_camera);
+					return new BitmaskFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                       &m_system.grid(), &m_camera);
+					return new BridgeFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                           &m_system.grid(), &m_camera);
+					return new BroadPhaseFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(),
-					                      &m_camera);
+					return new ChainFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                          &m_system.grid(), &m_camera);
+					return new CollisionFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                           &m_system.grid(), &m_camera);
+					return new ContinuousFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new CustomFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                       &m_system.grid(), &m_camera);
+					return new CustomFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                       &m_system.grid(), &m_camera);
+					return new DominoFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                         &m_system.grid(), &m_camera);
+					return new FrictionFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                         &m_system.grid(), &m_camera);
+					return new GeometryFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                       &m_system.grid(), &m_camera);
+					return new JointsFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                            &m_system.grid(), &m_camera);
+					return new NarrowphaseFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                             &m_system.grid(), &m_camera);
+					return new NewtonCradleFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new PBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(),
-					                    &m_camera);
+					return new PBDFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                         &m_system.grid(), &m_camera);
+					return new PendulumFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                        &m_system.grid(), &m_camera);
+					return new RaycastFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                            &m_system.grid(), &m_camera);
+					return new RestitutionFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                       &m_system.grid(), &m_camera);
+					return new SensorFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                         &m_system.grid(), &m_camera);
+					return new StackingFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(),
-					                             &m_system.grid(), &m_camera);
+					return new WreckingBallFrame(settings);
 				},
-				[&]
+				[&](const FrameSettings& settings)
 				{
-					return new XPBDFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_system.grid(),
-					                     &m_camera);
+					return new XPBDFrame(settings);
 				}
 			}
 		};
@@ -158,33 +137,33 @@ namespace Physics2D
 		switch (event.key.code)
 		{
 		case sf::Keyboard::Space:
-		{
-			m_running = !m_running;
-			break;
-		}
+			{
+				m_running = !m_running;
+				break;
+			}
 		case sf::Keyboard::S:
-		{
-			//N means next
-			step();
-			break;
-		}
+			{
+				//N means next
+				step();
+				break;
+			}
 		case sf::Keyboard::T:
-		{
-			//T means stepping twice
-			step();
-			step();
-			break;
-		}
+			{
+				//T means stepping twice
+				step();
+				step();
+				break;
+			}
 		case sf::Keyboard::R:
-		{
-			restart();
-			break;
-		}
+			{
+				restart();
+				break;
+			}
 		default:
 			break;
 		}
 		//combo
-		if(event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::LControl && m_onDistanceCheck)
+		if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::LControl && m_onDistanceCheck)
 		{
 			m_onDistanceCheck = false;
 			m_mouseArray[0].clear();
@@ -199,14 +178,14 @@ namespace Physics2D
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onKeyPressed(event);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && m_enableDistanceCheck)
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
+			m_enableDistanceCheck)
 			m_onDistanceCheck = true;
-		
 	}
 
 	void TestBed::onMouseReleased(sf::Event& event)
 	{
-		Vector2 pos(static_cast<real>(event.mouseButton.x), static_cast<real>(event.mouseButton.y));
+		Vector2 pos(event.mouseButton.x, event.mouseButton.y);
 		m_mousePos = m_camera.screenToWorld(pos);
 		m_screenMousePos = pos;
 
@@ -228,7 +207,7 @@ namespace Physics2D
 		if (m_currentFrame != nullptr)
 			m_currentFrame->onMouseMove(event);
 
-		Vector2 pos(static_cast<real>(event.mouseMove.x), static_cast<real>(event.mouseMove.y));
+		Vector2 pos(event.mouseMove.x, event.mouseMove.y);
 		m_screenMousePos = pos;
 
 		Vector2 tf = m_camera.screenToWorld(pos) - m_mousePos;
@@ -261,7 +240,7 @@ namespace Physics2D
 
 	void TestBed::onMousePressed(sf::Event& event)
 	{
-		Vector2 pos(static_cast<real>(event.mouseButton.x), static_cast<real>(event.mouseButton.y));
+		Vector2 pos(event.mouseButton.x, event.mouseButton.y);
 		m_screenMousePos = pos;
 		m_mousePos = m_camera.screenToWorld(pos);
 
@@ -311,7 +290,6 @@ namespace Physics2D
 			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() + m_camera.meterToPixel() * m_zoomFactor);
 		else
 			m_camera.setTargetMeterToPixel(m_camera.meterToPixel() - m_camera.meterToPixel() * m_zoomFactor);
-		
 	}
 
 	void TestBed::exec()
@@ -322,6 +300,7 @@ namespace Physics2D
 		m_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "Testbed", sf::Style::Default,
 		                                              settings);
 		ImGui::SFML::Init(*m_window);
+
 		m_window->setActive(false);
 		m_window->setFramerateLimit(60);
 
@@ -329,6 +308,14 @@ namespace Physics2D
 		io.Fonts->AddFontFromFileTTF("font/MiSans-Medium.ttf", 18.0f);
 		io.FontDefault = io.Fonts->Fonts[1];
 		ImGui::SFML::UpdateFontTexture();
+
+		if (!m_font.loadFromFile("font/MiSans-Medium.ttf"))
+		{
+			std::cout << "Cannot load font." << std::endl;
+			return;
+		}
+
+		m_camera.setFont(&m_font);
 
 		sf::Clock deltaClock;
 		while (m_window->isOpen())
@@ -387,17 +374,18 @@ namespace Physics2D
 
 			const bool show = m_currentFrame != nullptr && m_userDrawVisible;
 			if (show)
-				m_currentFrame->preRender(*m_window);
+				m_currentFrame->onPreRender(*m_window);
 
 			simulate();
 
 			m_camera.render(*m_window);
 			if (show)
-				m_currentFrame->render(*m_window);
+				m_currentFrame->onPostRender(*m_window);
+
+			render(*m_window);
 
 			renderGUI(*m_window, deltaClock);
 
-			render(*m_window);
 
 			m_window->display();
 		}
@@ -476,7 +464,7 @@ namespace Physics2D
 		ImGui::Checkbox("Tree", &m_camera.treeVisible());
 		ImGui::Checkbox("Uniform Grid", &m_camera.uniformGridVisible());
 		ImGui::NextColumn();
-
+		ImGui::Columns(1, nullptr);
 
 		ImGui::Separator();
 		ImGui::Text("Camera");
@@ -487,7 +475,7 @@ namespace Physics2D
 		ImGui::Checkbox("User Draw", &m_userDrawVisible);
 		ImGui::NextColumn();
 		ImGui::Checkbox("Smooth Zooming", &m_camera.smoothZoom());
-		ImGui::SliderFloat("Zoom", &m_zoomFactor, 0.1f, 0.9f, "%.1f");
+		ImGui::SliderFloat("Zoom", &m_zoomFactor, 0.1f, 0.5f, "%.1f");
 		ImGui::Checkbox("Distance Check", &m_enableDistanceCheck);
 
 		ImGui::NextColumn();
@@ -539,7 +527,7 @@ namespace Physics2D
 		ImGui::End();
 
 		if (m_currentFrame != nullptr)
-			m_currentFrame->renderUI();
+			m_currentFrame->onRenderUI();
 
 		ImGui::SFML::Render(window);
 	}
@@ -560,7 +548,7 @@ namespace Physics2D
 			RenderSFMLImpl::renderLine(window, m_camera, m_mouseArray[0], m_mouseArray[1], RenderConstant::Green);
 			std::string str = std::format("{:.6f}", length);
 			sf::Text text;
-			text.setFont(m_camera.font());
+			text.setFont(m_font);
 			text.setString(str);
 			text.setCharacterSize(16);
 			text.setFillColor(RenderConstant::Green);
@@ -591,12 +579,12 @@ namespace Physics2D
 		const real dt = 1.0f / static_cast<real>(m_frequency);
 		const bool valid = m_currentFrame != nullptr;
 		if (valid)
-			m_currentFrame->preStep(dt);
+			m_currentFrame->onPreStep(dt);
 
 		m_system.step(dt);
 
 		if (valid)
-			m_currentFrame->postStep(dt);
+			m_currentFrame->onPostStep(dt);
 	}
 
 	void TestBed::simulate()
@@ -613,10 +601,18 @@ namespace Physics2D
 	void TestBed::changeFrame()
 	{
 		clearAll();
-		//optimize this code
-		m_currentFrame = m_frameList[m_currentItem]();
+		
+		FrameSettings settings;
+		settings.world = &m_system.world();
+		settings.maintainer = &m_system.maintainer();
+		settings.tree = &m_system.tree();
+		settings.grid = &m_system.grid();
+		settings.camera = &m_camera;
+		settings.font = &m_font;
+		
+		m_currentFrame = m_frameList[m_currentItem](settings);
 		if (m_currentFrame != nullptr)
-			m_currentFrame->load();
+			m_currentFrame->onLoad();
 	}
 
 	void TestBed::clearAll()
@@ -631,7 +627,7 @@ namespace Physics2D
 		m_mouseJoint->setActive(false);
 		if (m_currentFrame != nullptr)
 		{
-			m_currentFrame->release();
+			m_currentFrame->onUnLoad();
 			delete m_currentFrame;
 			m_currentFrame = nullptr;
 		}

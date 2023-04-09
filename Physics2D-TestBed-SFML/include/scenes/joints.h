@@ -7,13 +7,11 @@ namespace Physics2D
 	class JointsFrame : public Frame
 	{
 	public:
-		JointsFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		            Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Joints", world, maintainer, tree, grid, camera)
+		JointsFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			capsule.set(1.5f, 0.5f);
 			triangle.append({{-1.0f, 1.0f}, {0.0f, -2.0f}, {1.0f, -1.0f}});
@@ -26,21 +24,21 @@ namespace Physics2D
 
 			uint32_t bitmask = 0x01;
 
-			bodyA = m_world->createBody();
+			bodyA = m_settings.world->createBody();
 			bodyA->setShape(&rectangle);
 			bodyA->setMass(1.0f);
 			bodyA->setType(Body::BodyType::Dynamic);
 			bodyA->position().set(2.00, 0.0f);
 			bodyA->setBitmask(0x01);
-			m_tree->insert(bodyA);
+			m_settings.tree->insert(bodyA);
 
-			bodyB = m_world->createBody();
+			bodyB = m_settings.world->createBody();
 			bodyB->setShape(&rectangle);
 			bodyB->setMass(1.0f);
 			bodyB->setType(Body::BodyType::Dynamic);
 			bodyB->position().set(0, 0.0f);
 			bodyB->setBitmask(0x01);
-			m_tree->insert(bodyB);
+			m_settings.tree->insert(bodyB);
 
 			WeldJointPrimitive rjp;
 			rjp.bodyA = bodyA;
@@ -51,7 +49,7 @@ namespace Physics2D
 			rjp.localPointA.set(-0.5, 0.5);
 			rjp.localPointB.set(0.5, 0.5);
 
-			joint = m_world->createJoint(rjp);
+			joint = m_settings.world->createJoint(rjp);
 
 			updateJoint();
 
@@ -59,18 +57,18 @@ namespace Physics2D
 			rotationPrim.bodyA = bodyA;
 			rotationPrim.bodyB = bodyB;
 			rotationPrim.referenceRotation = Math::degreeToRadian(30);
-			m_world->createJoint(rotationPrim);
+			m_settings.world->createJoint(rotationPrim);
 
-			block = m_world->createBody();
+			block = m_settings.world->createBody();
 			block->setShape(&rectangle);
 			block->setType(Body::BodyType::Dynamic);
 			block->setMass(4.0f);
 			block->position().set(5.0f, 2.0f);
 			block->setBitmask(0x01 << 1);
-			m_tree->insert(block);
+			m_settings.tree->insert(block);
 
-			wheel1 = m_world->createBody();
-			wheel2 = m_world->createBody();
+			wheel1 = m_settings.world->createBody();
+			wheel2 = m_settings.world->createBody();
 			wheel1->setShape(&wheel);
 			wheel2->setShape(&wheel);
 			wheel1->setMass(4.0f);
@@ -81,8 +79,8 @@ namespace Physics2D
 			wheel2->setType(Body::BodyType::Dynamic);
 			wheel1->setBitmask(0x01 << 2 | 0x01);
 			wheel2->setBitmask(0x01 << 3 | 0x01);
-			m_tree->insert(wheel1);
-			m_tree->insert(wheel2);
+			m_settings.tree->insert(wheel1);
+			m_settings.tree->insert(wheel2);
 
 			WeldJointPrimitive rjp1, rjp2;
 			rjp1.bodyA = wheel1;
@@ -93,43 +91,43 @@ namespace Physics2D
 			rjp2.localPointA.clear();
 			rjp1.localPointB.set(-2.0f, -1.0f);
 			rjp2.localPointB.set(2.0f, -1.0f);
-			m_world->createJoint(rjp1);
-			m_world->createJoint(rjp2);
+			m_settings.world->createJoint(rjp1);
+			m_settings.world->createJoint(rjp2);
 
-			Body* ground = m_world->createBody();
+			Body* ground = m_settings.world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({0, -2.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.4f);
 			ground->setBitmask(0x01);
-			m_tree->insert(ground);
+			m_settings.tree->insert(ground);
 
-			ground = m_world->createBody();
+			ground = m_settings.world->createBody();
 			ground->setShape(&edge2);
 			ground->position().set(100.0f, -2.0f);
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.4f);
 			ground->setBitmask(0x01);
-			m_tree->insert(ground);
+			m_settings.tree->insert(ground);
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 			sf::Color color = sf::Color::Cyan;
 			color.a = 155;
 			Vector2 p = bodyA->toWorldPoint(joint->primitive().localPointA);
-			RenderSFMLImpl::renderLine(window, *m_camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal,
+			RenderSFMLImpl::renderLine(window, *m_settings.camera, p - 0.5f * distance * normal, p + 0.5f * distance * normal,
 			                           color);
 		}
 
-		void release() override
+		void onUnLoad() override
 		{
-			m_camera->setTargetBody(nullptr);
+			m_settings.camera->setTargetBody(nullptr);
 		}
 
-		void postStep(real dt) override
+		void onPostStep(real dt) override
 		{
 			updateJoint();
 		}

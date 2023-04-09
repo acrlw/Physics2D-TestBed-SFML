@@ -7,13 +7,11 @@ namespace Physics2D
 	class CustomFrame : public Frame
 	{
 	public:
-		CustomFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		            Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Custom", world, maintainer, tree, grid, camera)
+		CustomFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			block.set(20, 1.0f);
 			rectangle.set(1.0f, 1.0f);
@@ -23,7 +21,7 @@ namespace Physics2D
 			real max = 1.0f;
 			for (real i = 0; i < max; i += 1.0f)
 			{
-				Body* ground = m_world->createBody();
+				Body* ground = m_settings.world->createBody();
 				ground->setShape(&edge);
 				ground->position().set({0, 0 + i * 3.0f});
 				ground->setFriction(0.4f);
@@ -32,12 +30,12 @@ namespace Physics2D
 				ground->setMass(Constant::Max);
 				ground->setType(Body::BodyType::Static);
 				mask = mask << 1;
-				m_tree->insert(ground);
+				m_settings.tree->insert(ground);
 			}
 			mask = 0x01;
 			for (real i = 0; i < max; i += 1.0f)
 			{
-				Body* body = m_world->createBody();
+				Body* body = m_settings.world->createBody();
 				body->setShape(&rectangle);
 				body->position().set({i * 3.0f + 0.5f, 0.5f});
 				body->setFriction(0.9f);
@@ -46,11 +44,11 @@ namespace Physics2D
 				body->setMass(1);
 				body->setType(Body::BodyType::Dynamic);
 				mask = mask << 1;
-				m_tree->insert(body);
+				m_settings.tree->insert(body);
 			}
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 		}
 

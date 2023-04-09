@@ -7,13 +7,11 @@ namespace Physics2D
 	class DominoFrame : public Frame
 	{
 	public:
-		DominoFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		            Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Domino", world, maintainer, tree, grid, camera)
+		DominoFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			block.set(200, 1.0f);
 			floor.set(15.0f, 0.8f);
@@ -21,16 +19,16 @@ namespace Physics2D
 			brick.set(0.5f, 3.0f);
 			edge.set(Vector2{-100.0f, 0}, Vector2{100.0f, 0});
 
-			Body* ground = m_world->createBody();
+			Body* ground = m_settings.world->createBody();
 			ground->setShape(&edge);
 			ground->setType(Body::BodyType::Static);
 			ground->setMass(Constant::Max);
 			ground->position().set({0, 0.0f});
 			ground->setFriction(0.1f);
 			ground->setRestitution(0.0f);
-			m_tree->insert(ground);
+			m_settings.tree->insert(ground);
 
-			Body* tile = m_world->createBody();
+			Body* tile = m_settings.world->createBody();
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
@@ -38,9 +36,9 @@ namespace Physics2D
 			tile->setRestitution(0.0f);
 			tile->rotation() = Math::degreeToRadian(20);
 			tile->position().set({4, 10});
-			m_tree->insert(tile);
+			m_settings.tree->insert(tile);
 
-			tile = m_world->createBody();
+			tile = m_settings.world->createBody();
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
@@ -48,10 +46,10 @@ namespace Physics2D
 			tile->setRestitution(0.0f);
 			tile->rotation() = Math::degreeToRadian(-20);
 			tile->position().set({-4, 4});
-			m_tree->insert(tile);
+			m_settings.tree->insert(tile);
 
 
-			tile = m_world->createBody();
+			tile = m_settings.world->createBody();
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
@@ -59,27 +57,27 @@ namespace Physics2D
 			tile->setRestitution(0.0f);
 			tile->rotation() = 0;
 			tile->position().set({-5, 13});
-			m_tree->insert(tile);
+			m_settings.tree->insert(tile);
 
 			for (real i = 0; i < 9.0; i += 1.0f)
 			{
-				Body* card = m_world->createBody();
+				Body* card = m_settings.world->createBody();
 				card->setShape(&brick);
 				card->setMass(1.5f);
 				card->setFriction(0.1f);
 				card->setRestitution(0);
 				card->setType(Body::BodyType::Dynamic);
 				card->position().set({-10.0f + i * 1.2f, 15.0f});
-				m_tree->insert(card);
+				m_settings.tree->insert(card);
 			}
 
-			Body* stammer = m_world->createBody();
+			Body* stammer = m_settings.world->createBody();
 			stammer->setShape(&rectangle);
 			stammer->setMass(10.0f);
 			stammer->setFriction(0.1f);
 			stammer->setType(Body::BodyType::Dynamic);
 			stammer->position().set(-16.0f, 19.5f);
-			m_tree->insert(stammer);
+			m_settings.tree->insert(stammer);
 
 			DistanceJointPrimitive djp;
 			djp.bodyA = stammer;
@@ -87,20 +85,20 @@ namespace Physics2D
 			djp.minDistance = 1.0f;
 			djp.maxDistance = 4.0f;
 			djp.targetPoint.set(-12.0f, 19.5f);
-			m_world->createJoint(djp);
+			m_settings.world->createJoint(djp);
 
 			OrientationJointPrimitive ojp;
 			ojp.targetPoint.set(-12.0f, 19.5f);
 			ojp.bodyA = stammer;
 			ojp.referenceRotation = 0;
-			m_world->createJoint(ojp);
+			m_settings.world->createJoint(ojp);
 
-			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
+			//std::cout << "size:" << m_settings.world->bodyList().size() << std::endl;
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
-			//std::cout << "size:" << m_world->bodyList().size() << std::endl;
+			//std::cout << "size:" << m_settings.world->bodyList().size() << std::endl;
 		}
 
 	private:

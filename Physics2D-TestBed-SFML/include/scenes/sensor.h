@@ -7,13 +7,11 @@ namespace Physics2D
 	class SensorFrame : public Frame
 	{
 	public:
-		SensorFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		            Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Sensor", world, maintainer, tree, grid, camera)
+		SensorFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			edge.set({-100, 0}, {100, 0});
 			rectangle.set(1.0f, 1.0f);
@@ -21,18 +19,18 @@ namespace Physics2D
 
 			Body* ground;
 
-			ground = m_world->createBody();
+			ground = m_settings.world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({0.0, 0.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
-			m_tree->insert(ground);
+			m_settings.tree->insert(ground);
 
 			real offset = 0.0f;
 			real max = 25.0f;
 			for (real j = 0; j < max; j += 1.0f)
 			{
-				Body* body = m_world->createBody();
+				Body* body = m_settings.world->createBody();
 				body->position().set({-5.0f, 30.0f + j * 4.0f});
 				body->setShape(&rectangle);
 				body->rotation() = 0;
@@ -40,12 +38,12 @@ namespace Physics2D
 				body->setType(Body::BodyType::Dynamic);
 				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
-				m_tree->insert(body);
+				m_settings.tree->insert(body);
 			}
 
 			for (real j = 0; j < max; j += 1.0f)
 			{
-				Body* body = m_world->createBody();
+				Body* body = m_settings.world->createBody();
 				body->position().set({5.0f, 32.5f + j * 4.0f});
 				body->setShape(&rectangle);
 				body->rotation() = 0;
@@ -53,7 +51,7 @@ namespace Physics2D
 				body->setType(Body::BodyType::Dynamic);
 				body->setFriction(0.5f);
 				body->setRestitution(0.0f);
-				m_tree->insert(body);
+				m_settings.tree->insert(body);
 			}
 
 			sensorRegion.transform.rotation = Math::degreeToRadian(-45);
@@ -61,14 +59,14 @@ namespace Physics2D
 			sensorRegion.transform.position.set(0.0f, 15.0f);
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
-			RenderSFMLImpl::renderShape(window, *m_camera, sensorRegion, sf::Color::Cyan);
+			RenderSFMLImpl::renderShape(window, *m_settings.camera, sensorRegion, sf::Color::Cyan);
 		}
 
-		void postStep(real dt) override
+		void onPostStep(real dt) override
 		{
-			auto bodyList = m_tree->query(AABB::fromShape(sensorRegion));
+			auto bodyList = m_settings.tree->query(AABB::fromShape(sensorRegion));
 			for (auto& body : bodyList)
 			{
 				ShapePrimitive primitive;

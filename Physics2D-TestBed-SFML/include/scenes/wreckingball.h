@@ -7,13 +7,11 @@ namespace Physics2D
 	class WreckingBallFrame : public Frame
 	{
 	public:
-		WreckingBallFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		                  Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Wrecking Ball", world, maintainer, tree, grid, camera)
+		WreckingBallFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			Body* rect;
 			Body* rect2;
@@ -28,18 +26,18 @@ namespace Physics2D
 			DistanceJointPrimitive distancePrim;
 
 
-			ground = m_world->createBody();
+			ground = m_settings.world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({0, 0.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
-			m_tree->insert(ground);
+			m_settings.tree->insert(ground);
 
 			for (real j = 0; j < 25.0f; j += 1.0f)
 			{
 				for (real i = 0; i < 1.0; i += 1.0f)
 				{
-					Body* body = m_world->createBody();
+					Body* body = m_settings.world->createBody();
 					body->position().set({i * 1.05f - 32.0f, j * 1.05f - ground->position().y + 0.55f});
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
@@ -47,14 +45,14 @@ namespace Physics2D
 					body->setType(Body::BodyType::Dynamic);
 					body->setFriction(0.9f);
 					body->setRestitution(0.0f);
-					m_tree->insert(body);
+					m_settings.tree->insert(body);
 				}
 			}
 			for (real j = 0; j < 15.0f; j += 1.0f)
 			{
 				for (real i = 0; i < 6.0; i += 1.0f)
 				{
-					Body* body = m_world->createBody();
+					Body* body = m_settings.world->createBody();
 					body->position().set({i * 1.05f - 0.0f, j * 1.05f - ground->position().y + 0.55f});
 					body->setShape(&rectangle);
 					body->rotation() = 0.0f;
@@ -62,12 +60,12 @@ namespace Physics2D
 					body->setType(Body::BodyType::Dynamic);
 					body->setFriction(0.9f);
 					body->setRestitution(0.0f);
-					m_tree->insert(body);
+					m_settings.tree->insert(body);
 				}
 			}
 
 			real half = brick.width() / 2.0f + 0.1f;
-			rect = m_world->createBody();
+			rect = m_settings.world->createBody();
 			rect->setShape(&brick);
 			rect->position().set({-20.0f, 20.0f});
 			rect->rotation() = 0;
@@ -84,12 +82,12 @@ namespace Physics2D
 			ppm.dampingRatio = 1.0f;
 			ppm.frequency = 10;
 			ppm.maxForce = Constant::Max;
-			m_world->createJoint(ppm);
+			m_settings.world->createJoint(ppm);
 			real max = 7.0f;
-			m_tree->insert(rect);
+			m_settings.tree->insert(rect);
 			for (real i = 1.0f; i < max; i += 1.0f)
 			{
-				rect2 = m_world->createBody();
+				rect2 = m_settings.world->createBody();
 				rect2->setShape(&brick);
 				rect2->position().set({-20.0f + i * brick.width() + i * 0.1f, 20.0f});
 				rect2->rotation() = 0;
@@ -97,7 +95,7 @@ namespace Physics2D
 				rect2->setFriction(0.1f);
 				rect2->setType(Body::BodyType::Dynamic);
 
-				m_tree->insert(rect2);
+				m_settings.tree->insert(rect2);
 				RevoluteJointPrimitive revolutePrim;
 				revolutePrim.bodyA = rect;
 				revolutePrim.bodyB = rect2;
@@ -106,10 +104,10 @@ namespace Physics2D
 				revolutePrim.dampingRatio = 0.707f;
 				revolutePrim.frequency = 10;
 				revolutePrim.maxForce = Constant::Max;
-				m_world->createJoint(revolutePrim);
+				m_settings.world->createJoint(revolutePrim);
 				rect = rect2;
 			}
-			rect2 = m_world->createBody();
+			rect2 = m_settings.world->createBody();
 			rect2->setShape(&circle);
 			rect2->position().set({-20.0f + max * brick.width() + max * 0.1f + half, 20.0f});
 			rect2->rotation() = 0;
@@ -117,7 +115,7 @@ namespace Physics2D
 			rect2->setFriction(0.1f);
 			rect2->setType(Body::BodyType::Dynamic);
 
-			m_tree->insert(rect2);
+			m_settings.tree->insert(rect2);
 			RevoluteJointPrimitive revolutePrim;
 			revolutePrim.bodyA = rect;
 			revolutePrim.bodyB = rect2;
@@ -126,17 +124,17 @@ namespace Physics2D
 			revolutePrim.dampingRatio = 0.8f;
 			revolutePrim.frequency = 20;
 			revolutePrim.maxForce = Constant::Max;
-			m_world->createJoint(revolutePrim);
+			m_settings.world->createJoint(revolutePrim);
 
 
-			rect2 = m_world->createBody();
+			rect2 = m_settings.world->createBody();
 			rect2->setShape(&circle);
 			rect2->position().set({21.5f + half, 20.0f});
 			rect2->rotation() = 0;
 			rect2->setMass(50.0f);
 			rect2->setFriction(0.1f);
 			rect2->setType(Body::BodyType::Dynamic);
-			m_tree->insert(rect2);
+			m_settings.tree->insert(rect2);
 
 			distancePrim.bodyA = rect2;
 			distancePrim.localPointA.set({0, 0});
@@ -144,7 +142,7 @@ namespace Physics2D
 			distancePrim.maxDistance = 11.5f + half;
 			distancePrim.targetPoint.set({10, 20});
 
-			m_world->createJoint(distancePrim);
+			m_settings.world->createJoint(distancePrim);
 		}
 
 	private:

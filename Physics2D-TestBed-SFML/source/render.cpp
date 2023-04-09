@@ -465,7 +465,7 @@ namespace Physics2D
 	}
 
 	void RenderSFMLImpl::renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
-	                                   const sf::Color& color, bool showIndex, const unsigned int& indexSize)
+	                                   const sf::Color& color, const sf::Font& font, bool showIndex, const unsigned int& indexSize)
 	{
 		sf::Color lineColor = color;
 		lineColor.a = 150;
@@ -476,7 +476,7 @@ namespace Physics2D
 		case 1:
 			renderPoint(window, camera, simplex.vertices[0].result, color);
 			if (showIndex)
-				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor, indexSize);
+				renderInt(window, camera, simplex.vertices[0].result, font, 0, lineColor, indexSize);
 			break;
 		case 2:
 			renderLine(window, camera, simplex.vertices[0].result, simplex.vertices[1].result, lineColor);
@@ -486,8 +486,8 @@ namespace Physics2D
 			{
 				Vector2 offset = simplex.vertices[1].result - simplex.vertices[0].result;
 				offset = -offset.perpendicular().normal() * 0.3f;
-				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor, indexSize, offset);
-				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor, indexSize, offset);
+				renderInt(window, camera, simplex.vertices[0].result, font, 0, lineColor, indexSize, offset);
+				renderInt(window, camera, simplex.vertices[1].result, font, 1, lineColor, indexSize, offset);
 			}
 			break;
 		case 3:
@@ -504,15 +504,15 @@ namespace Physics2D
 
 				Vector2 offset = simplex.vertices[0].result - center;
 				offset = offset.normal() * 0.3f;
-				renderInt(window, camera, simplex.vertices[0].result, camera.font(), 0, lineColor, indexSize, offset);
+				renderInt(window, camera, simplex.vertices[0].result, font, 0, lineColor, indexSize, offset);
 
 				offset = simplex.vertices[1].result - center;
 				offset = offset.normal() * 0.3f;
-				renderInt(window, camera, simplex.vertices[1].result, camera.font(), 1, lineColor, indexSize, offset);
+				renderInt(window, camera, simplex.vertices[1].result, font, 1, lineColor, indexSize, offset);
 
 				offset = simplex.vertices[2].result - center;
 				offset = offset.normal() * 0.3f;
-				renderInt(window, camera, simplex.vertices[2].result, camera.font(), 2, lineColor, indexSize, offset);
+				renderInt(window, camera, simplex.vertices[2].result, font, 2, lineColor, indexSize, offset);
 			}
 			break;
 		default:

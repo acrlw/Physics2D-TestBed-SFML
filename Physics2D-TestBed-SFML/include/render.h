@@ -101,7 +101,7 @@ namespace Physics2D
 		                      const Vector2& screenOffset = Vector2(-0.2f, -0.2f));
 
 		static void renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
-		                          const sf::Color& color, bool showIndex = true, const unsigned int& indexSize = 18);
+		                          const sf::Color& color, const sf::Font& font, bool showIndex = true, const unsigned int& indexSize = 18);
 
 
 		static void renderPolytope(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& polytope,

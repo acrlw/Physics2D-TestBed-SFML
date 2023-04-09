@@ -7,13 +7,11 @@ namespace Physics2D
 	class ChainFrame : public Frame
 	{
 	public:
-		ChainFrame(PhysicsWorld* world, ContactMaintainer* maintainer,
-		           Tree* tree, UniformGrid* grid, Camera* camera) : Frame(
-			"Chain", world, maintainer, tree, grid, camera)
+		ChainFrame(const FrameSettings& settings) : Frame(settings)
 		{
 		}
 
-		void load() override
+		void onLoad() override
 		{
 			brick.set(1.5f, 0.5f);
 
@@ -24,7 +22,7 @@ namespace Physics2D
 			Body* ground;
 			const real offset = 0.75f;
 			real half = brick.width() / 2.0f;
-			rect = m_world->createBody();
+			rect = m_settings.world->createBody();
 			rect->setShape(&brick);
 			rect->position().set({offset, 0.0f});
 			rect->rotation() = 0;
@@ -33,12 +31,12 @@ namespace Physics2D
 			rect->setFriction(0.01f);
 			rect->setType(Body::BodyType::Dynamic);
 
-			ground = m_world->createBody();
+			ground = m_settings.world->createBody();
 			ground->setShape(&edge);
 			ground->position().set({0, -15.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
-			m_tree->insert(ground);
+			m_settings.tree->insert(ground);
 
 			PointJointPrimitive ppm;
 			RevoluteJointPrimitive revolutePrim;
@@ -49,12 +47,12 @@ namespace Physics2D
 			ppm.dampingRatio = 0.8f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;
-			m_world->createJoint(ppm);
+			m_settings.world->createJoint(ppm);
 			real max = 9.0f;
-			m_tree->insert(rect);
+			m_settings.tree->insert(rect);
 			for (real i = 1.0f; i < max; i += 1.0f)
 			{
-				rect2 = m_world->createBody();
+				rect2 = m_settings.world->createBody();
 				rect2->setShape(&brick);
 				rect2->position().set({offset + i * brick.width() * 1.4f, 0.0f});
 				rect2->rotation() = 0;
@@ -62,7 +60,7 @@ namespace Physics2D
 				rect2->setFriction(0.01f);
 				rect2->setType(Body::BodyType::Dynamic);
 
-				this->m_tree->insert(rect2);
+				m_settings.tree->insert(rect2);
 				revolutePrim.bodyA = rect;
 				revolutePrim.bodyB = rect2;
 				revolutePrim.localPointA.set(half + brick.width() * 0.2f, 0);
@@ -70,13 +68,13 @@ namespace Physics2D
 				revolutePrim.dampingRatio = 0.8f;
 				revolutePrim.frequency = 10;
 				revolutePrim.maxForce = 10000;
-				m_world->createJoint(revolutePrim);
+				m_settings.world->createJoint(revolutePrim);
 
 				rect = rect2;
 			}
 		}
 
-		void render(sf::RenderWindow& window) override
+		void onPostRender(sf::RenderWindow& window) override
 		{
 		}
 

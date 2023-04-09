@@ -61,7 +61,6 @@ namespace Physics2D
 		bool& bodyVelocityMagnitude();
 		bool& coordinateScale();
 		bool& smoothZoom();
-		sf::Font& font();
 
 		int axisPointCount() const;
 		void setAxisPointCount(int count);
@@ -109,7 +108,8 @@ namespace Physics2D
 
 		void setPreScreenMousePos(const Vector2& pos);
 
-
+		void setFont(sf::Font* font);
+		sf::Font* font();
 	private:
 		void drawGridScaleLine(sf::RenderWindow& window);
 
@@ -167,7 +167,7 @@ namespace Physics2D
 
 		EasingType m_easingType = EasingType::Exponential;
 
-		sf::Font m_font;
+		sf::Font* m_font = nullptr;
 	};
 }
 #endif

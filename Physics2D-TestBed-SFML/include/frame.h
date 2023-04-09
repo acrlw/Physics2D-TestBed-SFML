@@ -12,12 +12,22 @@
 
 namespace Physics2D
 {
+	struct FrameSettings
+	{
+		//Physics
+		PhysicsWorld* world = nullptr;
+		ContactMaintainer* maintainer = nullptr;
+		Tree* tree = nullptr;
+		UniformGrid* grid = nullptr;
+
+		//Render
+		Camera* camera = nullptr;
+		sf::Font* font = nullptr;
+	};
 	class Frame
 	{
 	public:
-		Frame(std::string name, PhysicsWorld* world, ContactMaintainer* maintainer,
-		      Tree* tree, UniformGrid* grid, Camera* camera) : m_name(name), m_world(world), m_maintainer(maintainer),
-		                                                       m_tree(tree), m_grid(grid), m_camera(camera)
+		Frame(const FrameSettings& settings) : m_settings(settings)
 		{
 		}
 
@@ -25,31 +35,31 @@ namespace Physics2D
 		{
 		}
 
-		virtual void postStep(real dt)
+		virtual void onPostStep(real dt)
 		{
 		}
 
-		virtual void preStep(real dt)
+		virtual void onPreStep(real dt)
 		{
 		}
 
-		virtual void load()
+		virtual void onLoad()
 		{
 		}
 
-		virtual void release()
+		virtual void onUnLoad()
 		{
 		}
 
-		virtual void preRender(sf::RenderWindow& window)
+		virtual void onPreRender(sf::RenderWindow& window)
 		{
 		}
 
-		virtual void render(sf::RenderWindow& window)
+		virtual void onPostRender(sf::RenderWindow& window)
 		{
 		}
 
-		virtual void renderUI()
+		virtual void onRenderUI()
 		{
 		}
 
@@ -80,23 +90,9 @@ namespace Physics2D
 		void setCurrentBody(Body* body) { m_currentBody = body; }
 		Body* currentBody() const { return m_currentBody; }
 
-		std::string name() const
-		{
-			return m_name;
-		}
-
-		void setName(const std::string& name)
-		{
-			m_name = name;
-		}
 
 	protected:
-		std::string m_name;
-		PhysicsWorld* m_world = nullptr;
-		ContactMaintainer* m_maintainer = nullptr;
-		Tree* m_tree = nullptr;
-		UniformGrid* m_grid = nullptr;
-		Camera* m_camera = nullptr;
+		FrameSettings m_settings;
 		Body* m_currentBody = nullptr;
 	};
 }
