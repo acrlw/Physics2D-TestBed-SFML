@@ -224,20 +224,20 @@ namespace Physics2D
 			//////	RenderSFMLImpl::renderArrow(window, *m_settings.camera, shape1.transform.position, shape1.transform.position + info.normal, sf::Color::Cyan);
 
 			//}
-			// draw cull
-			//if (showHull)
-			//{
-			//	for (auto& a : polygon1.vertices())
-			//	{
-			//		for (auto& b : polygon2.vertices())
-			//		{
-			//			Vector2 p1 = shape1.transform.translatePoint(a);
-			//			Vector2 p2 = shape2.transform.translatePoint(b);
-			//			Vector2 v = p1 - p2;
-			//			RenderSFMLImpl::renderPoint(window, *m_settings.camera, v, RenderConstant::Yellow);
-			//		}
-			//	}
-			//}
+			// draw hull
+			if (showHull)
+			{
+				//for (auto& a : polygon1.vertices())
+				//{
+				//	for (auto& b : triangle.vertices())
+				//	{
+				//		Vector2 p1 = shape1.transform.translatePoint(a);
+				//		Vector2 p2 = shape2.transform.translatePoint(b);
+				//		Vector2 v = p1 - p2;
+				//		RenderSFMLImpl::renderPoint(window, *m_settings.camera, v, RenderConstant::Yellow);
+				//	}
+				//}
+			}
 
 			if (isPicked && showMouseTransform)
 			{
@@ -262,6 +262,7 @@ namespace Physics2D
 			ImGui::Checkbox("Show Feature Simplex", &showFeatureSimplex);
 			//ImGui::Checkbox("Show Hull", &showHull);
 			ImGui::Checkbox("Show Mouse Transform", &showMouseTransform);
+			ImGui::Checkbox("Show Hull", &showHull);
 
 			ImGui::End();
 		}

@@ -16,11 +16,11 @@ namespace Physics2D
 {
 	namespace RenderConstant
 	{
-		const real PointSize = 2.0f;
-		const int BorderSize = 1;
-		const int FillAlpha = 38;
-		const int BasicCirclePointCount = 60;
-		const real BasicDashLength = 2;
+		constexpr real PointSize = 2.0f;
+		constexpr int BorderSize = 1;
+		constexpr int FillAlpha = 38;
+		constexpr int BasicCirclePointCount = 60;
+		constexpr real BasicDashLength = 2;
 		const sf::Color Yellow = sf::Color(255, 235, 59);
 		const sf::Color Red = sf::Color(244, 67, 54);
 		const sf::Color Blue = sf::Color(55, 133, 205);

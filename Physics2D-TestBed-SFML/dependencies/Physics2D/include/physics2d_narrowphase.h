@@ -13,6 +13,7 @@
 #include "physics2d_rectangle.h"
 
 
+
 namespace Physics2D
 {
 	struct PHYSICS2D_API SimplexVertexWithOriginDistance
@@ -47,6 +48,7 @@ namespace Physics2D
 		//	points[2]: pointA
 		//	points[3]: pointB
 		std::array<Vector2, 4> points;
+		std::array<uint64_t, 2> ids;
 		uint32_t count = 0;
 
 		void addContact(const Vector2& pointA, const Vector2& pointB)

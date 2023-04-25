@@ -445,11 +445,11 @@ namespace Physics2D
 		ImGui::Columns(2, nullptr);
 		ImGui::Checkbox("Solve Joint Vel", &m_system.solveJointVelocity());
 		ImGui::Checkbox("Solve Joint Pos", &m_system.solveJointPosition());
+		ImGui::Checkbox("Warmstart", &m_system.maintainer().m_warmStart);
 		ImGui::NextColumn();
 		ImGui::Checkbox("Solve Contact Vel", &m_system.solveContactVelocity());
 		ImGui::Checkbox("Solve Contact Pos", &m_system.solveContactPosition());
-		ImGui::NextColumn();
-		ImGui::Checkbox("Warmstart", &m_system.maintainer().m_warmStart);
+		ImGui::Checkbox("Vel Block Solver", &m_system.maintainer().m_velocityBlockSolver);
 		ImGui::NextColumn();
 		ImGui::Columns(1, nullptr);
 

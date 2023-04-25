@@ -39,30 +39,39 @@ namespace Physics2D
 				ccp.bodyB->applyImpulse(-impulse_t, vcp.rb);
 			}
 
-			for (auto&& ccp : elem.second)
+			if(m_velocityBlockSolver && elem.second.size() == 2)
 			{
-				if (!ccp.active)
-					continue;
+				//start block solver
 
-				auto& vcp = ccp.vcp;
-
-				Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
-				Vector2 wb = Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
-				vcp.va = ccp.bodyA->velocity() + wa;
-				vcp.vb = ccp.bodyB->velocity() + wb;
-
-				Vector2 dv = vcp.va - vcp.vb;
-				real jv = vcp.normal.dot(dv - vcp.velocityBias);
-				real lambda_n = vcp.effectiveMassNormal * -jv;
-				real oldImpulse = vcp.accumulatedNormalImpulse;
-				vcp.accumulatedNormalImpulse = Math::max(oldImpulse + lambda_n, 0);
-				lambda_n = vcp.accumulatedNormalImpulse - oldImpulse;
-
-				Vector2 impulse_n = lambda_n * vcp.normal;
-
-				ccp.bodyA->applyImpulse(impulse_n, vcp.ra);
-				ccp.bodyB->applyImpulse(-impulse_n, vcp.rb);
 			}
+			else
+			{
+				for (auto&& ccp : elem.second)
+				{
+					if (!ccp.active)
+						continue;
+
+					auto& vcp = ccp.vcp;
+
+					Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
+					Vector2 wb = Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
+					vcp.va = ccp.bodyA->velocity() + wa;
+					vcp.vb = ccp.bodyB->velocity() + wb;
+
+					Vector2 dv = vcp.va - vcp.vb;
+					real jv = vcp.normal.dot(dv - vcp.velocityBias);
+					real lambda_n = vcp.effectiveMassNormal * -jv;
+					real oldImpulse = vcp.accumulatedNormalImpulse;
+					vcp.accumulatedNormalImpulse = Math::max(oldImpulse + lambda_n, 0);
+					lambda_n = vcp.accumulatedNormalImpulse - oldImpulse;
+
+					Vector2 impulse_n = lambda_n * vcp.normal;
+
+					ccp.bodyA->applyImpulse(impulse_n, vcp.ra);
+					ccp.bodyB->applyImpulse(-impulse_n, vcp.rb);
+				}
+			}
+
 		}
 	}
 
@@ -72,41 +81,51 @@ namespace Physics2D
 		{
 			if (elem.second.empty() || !elem.second[0].active)
 				continue;
-			for (auto&& ccp : elem.second)
+
+			if(m_positionBlockSolver && elem.second.size() == 2)
 			{
-				auto&& vcp = ccp.vcp;
-				Body* bodyA = ccp.bodyA;
-				Body* bodyB = ccp.bodyB;
-				Vector2 pa = bodyA->toWorldPoint(vcp.localA);
-				Vector2 pb = bodyB->toWorldPoint(vcp.localB);
-				Vector2 ra = pa - bodyA->position();
-				Vector2 rb = pb - bodyB->position();
-				Vector2 c = pb - pa;
+				//start block solver
 
-				const real bias = Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
+			}
+			else
+			{
 
-				const real im_a = bodyA->inverseMass();
-				const real im_b = bodyB->inverseMass();
-				const real ii_a = bodyA->inverseInertia();
-				const real ii_b = bodyB->inverseInertia();
+				for (auto&& ccp : elem.second)
+				{
+					auto&& vcp = ccp.vcp;
+					Body* bodyA = ccp.bodyA;
+					Body* bodyB = ccp.bodyB;
+					Vector2 pa = bodyA->toWorldPoint(vcp.localA);
+					Vector2 pb = bodyB->toWorldPoint(vcp.localB);
+					Vector2 ra = pa - bodyA->position();
+					Vector2 rb = pb - bodyB->position();
+					Vector2 c = pb - pa;
 
-				const real rn_a = ra.cross(vcp.normal);
-				const real rn_b = rb.cross(vcp.normal);
+					const real bias = Math::max(m_biasFactor * (c.dot(vcp.normal) - m_maxPenetration), 0.0f);
 
-				const real kNormal = im_a + ii_a * rn_a * rn_a +
-					im_b + ii_b * rn_b * rn_b;
+					const real im_a = bodyA->inverseMass();
+					const real im_b = bodyB->inverseMass();
+					const real ii_a = bodyA->inverseInertia();
+					const real ii_b = bodyB->inverseInertia();
 
-				vcp.effectiveMassNormal = realEqual(kNormal, 0.0f) ? 0 : 1.0f / kNormal;
+					const real rn_a = ra.cross(vcp.normal);
+					const real rn_b = rb.cross(vcp.normal);
 
-				real lambda = vcp.effectiveMassNormal * bias;
+					const real kNormal = im_a + ii_a * rn_a * rn_a +
+						im_b + ii_b * rn_b * rn_b;
 
-				Vector2 impulse = lambda * vcp.normal;
-				
-				bodyA->position() += bodyA->inverseMass() * impulse;
-				bodyA->rotation() += bodyA->inverseInertia() * ra.cross(impulse);
-				
-				bodyB->position() -= bodyB->inverseMass() * impulse;
-				bodyB->rotation() -= bodyB->inverseInertia() * rb.cross(impulse);
+					vcp.effectiveMassNormal = realEqual(kNormal, 0.0f) ? 0 : 1.0f / kNormal;
+
+					real lambda = vcp.effectiveMassNormal * bias;
+
+					Vector2 impulse = lambda * vcp.normal;
+
+					bodyA->position() += bodyA->inverseMass() * impulse;
+					bodyA->rotation() += bodyA->inverseInertia() * ra.cross(impulse);
+
+					bodyB->position() -= bodyB->inverseMass() * impulse;
+					bodyB->rotation() -= bodyB->inverseInertia() * rb.cross(impulse);
+				}
 			}
 		}
 	}
@@ -131,7 +150,7 @@ namespace Physics2D
 			{
 				const bool isPointA = localA.fuzzyEqual(contact.localA, Constant::TrignometryEpsilon);
 				const bool isPointB = localB.fuzzyEqual(contact.localB, Constant::TrignometryEpsilon);
-
+				
 				if (isPointA || isPointB)
 				{
 					//satisfy the condition, transmit the old accumulated value to new value
@@ -151,6 +170,36 @@ namespace Physics2D
 			ccp.relation = relation;
 			prepare(ccp, elem, collision);
 			contactList.emplace_back(ccp);
+		}
+		if(m_velocityBlockSolver && collision.contactList.count == 2)
+		{
+			//start block solver
+			auto& vcp1 = contactList[0].vcp;
+			auto& vcp2 = contactList[1].vcp;
+
+			real rn1A = vcp1.ra.cross(collision.normal);
+			real rn1B = vcp1.rb.cross(collision.normal);
+			real rn2A = vcp2.ra.cross(collision.normal);
+			real rn2B = vcp2.rb.cross(collision.normal);
+
+
+			real k11 = bodyA->inverseMass() + bodyA->inverseInertia() * rn1A * rn1A +
+				bodyB->inverseMass() + bodyB->inverseInertia() * rn1B * rn1B;
+			real k22 = bodyA->inverseMass() + bodyA->inverseInertia() * rn2A * rn2A +
+				bodyB->inverseMass() + bodyB->inverseInertia() * rn2B * rn2B;
+			real k12 = bodyA->inverseMass() + bodyA->inverseInertia() * rn1A * rn2A +
+				bodyB->inverseMass() + bodyB->inverseInertia() * rn1B * rn2B;
+
+				
+			if(k11 * k11 < 1000.0f * (k11 * k22 - k12 * k12))
+			{
+				Matrix2x2 k(k11, k12, k12, k22);
+				contactList[0].k = k;
+				contactList[1].k = k;
+				k.invert();
+				contactList[0].normalMass = k;
+				contactList[1].normalMass = k;
+			}
 		}
 	}
 

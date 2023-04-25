@@ -39,6 +39,8 @@ namespace Physics2D
 		Body* bodyA = nullptr;
 		Body* bodyB = nullptr;
 		VelocityConstraintPoint vcp;
+		Matrix2x2 k;
+		Matrix2x2 normalMass;
 	};
 
 	class PHYSICS2D_API ContactMaintainer
@@ -51,10 +53,10 @@ namespace Physics2D
 		void prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision);
 		void clearInactivePoints();
 		void deactivateAllPoints();
-		real m_maxPenetration = 0.005f;
+		real m_maxPenetration = 0.001f;
 		real m_biasFactor = 0.2f;
 		bool m_warmStart = true;
-		bool m_velocityBlockSolver = true;
+		bool m_velocityBlockSolver = false;
 		bool m_positionBlockSolver = false;
 		Container::Map<Body::BodyPair::BodyPairID, Container::Vector<ContactConstraintPoint>> m_contactTable;
 

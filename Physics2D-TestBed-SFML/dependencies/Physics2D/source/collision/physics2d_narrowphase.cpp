@@ -292,6 +292,11 @@ namespace Physics2D
 		//find feature
 		const Feature featureA = findFeatures(info.simplex, info.normal, realShapeA, idxA);
 		const Feature featureB = findFeatures(info.simplex, info.normal, realShapeB, idxB);
+		auto idA = std::pair{ featureA.index[0], featureA.index[1] };
+		pair.ids[0] = reinterpret_cast<uint64_t&>(idA);
+
+		auto idB = std::pair{ featureB.index[0], featureB.index[1] };
+		pair.ids[1] = reinterpret_cast<uint64_t&>(idB);
 
 		if (typeA == Shape::Type::Polygon)
 		{
@@ -351,6 +356,7 @@ namespace Physics2D
 		{
 			std::swap(pair.points[0], pair.points[1]);
 			std::swap(pair.points[2], pair.points[3]);
+			std::swap(pair.ids[0], pair.ids[1]);
 			//restore normal
 			info.normal.negate();
 		}
@@ -404,6 +410,8 @@ namespace Physics2D
 			iterTemp = polytope.begin();
 		};
 
+		int sameDistCount = 0;
+
 		for (Index iter = 0; iter < iteration; ++iter)
 		{
 			//indices of closest edge are set to 0 and 1
@@ -414,6 +422,22 @@ namespace Physics2D
 			//cannot find any new vertex
 			if (info.simplex.contains(vertex))
 			{
+				if(sameDistCount == 1)
+				{
+					//check edge case
+					polytopeIterNext(iterStart, polytope);
+					iterEnd = iterStart;
+					polytopeIterPrev(iterEnd, polytope);
+					iterTemp = iterStart;
+					polytopeIterNext(iterTemp, polytope);
+
+					info.simplex.vertices[0] = iterStart->vertex;
+					info.simplex.vertices[1] = iterTemp->vertex;
+					iter--;
+					//do not process anymore
+					sameDistCount = -1;
+					continue;
+				}
 				if (polytope.size() >= 4) //polytope has been expanded, terminate the loop
 					break;
 
@@ -477,6 +501,8 @@ namespace Physics2D
 			itA->distance = dist1;
 			pair.distance = dist2;
 			polytope.insert(itB, pair);
+			//TODO: if dist1 == dist2, and dist1 cannot be extended and dist2 can be extended.
+			sameDistCount = realEqual(dist1, dist2) ? sameDistCount + 1 : sameDistCount;
 
 			//set to begin
 			iterTemp = iterStart;
@@ -507,6 +533,9 @@ namespace Physics2D
 			info.simplex.vertices[1] = iterTemp->vertex;
 			errorCount = 0;
 		}
+		auto idxStart = std::distance(polytope.begin(), iterStart);
+		polytopeIterNext(iterStart, polytope);
+		auto idxNext = std::distance(polytope.begin(), iterStart);
 		info.simplex.removeEnd();
 		//Convex combination for calculating distance points
 		//https://dyn4j.org/2010/04/gjk-distance-closest-points/

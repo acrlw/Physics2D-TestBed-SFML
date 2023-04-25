@@ -69,6 +69,8 @@ namespace Physics2D
 
 		bool contains(const Vector2& point, const real& epsilon = Constant::GeometryEpsilon) const
 		{
+			if (shape == nullptr)
+				return false;
 			return shape->contains(transform.inverseTranslatePoint(point), epsilon);
 		}
 	};

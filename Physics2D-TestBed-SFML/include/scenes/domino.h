@@ -16,7 +16,7 @@ namespace Physics2D
 			block.set(200, 1.0f);
 			floor.set(15.0f, 0.8f);
 			rectangle.set(0.5f, 0.5f);
-			brick.set(0.5f, 3.0f);
+			brick.set(0.35f, 3.0f);
 			edge.set(Vector2{-100.0f, 0}, Vector2{100.0f, 0});
 
 			Body* ground = m_settings.world->createBody();
@@ -32,7 +32,7 @@ namespace Physics2D
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
-			tile->setFriction(0.15f);
+			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = Math::degreeToRadian(20);
 			tile->position().set({4, 10});
@@ -42,7 +42,7 @@ namespace Physics2D
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
-			tile->setFriction(0.15f);
+			tile->setFriction(0.1f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = Math::degreeToRadian(-20);
 			tile->position().set({-4, 4});
