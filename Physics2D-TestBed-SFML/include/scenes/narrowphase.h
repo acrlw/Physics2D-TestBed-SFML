@@ -51,8 +51,8 @@ namespace Physics2D
 			//shape1.transform.position.set(-0.2875f, -1.6625f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &capsule;
-			shape2.transform.position.set(0.0f, -1.0f);
+			shape2.shape = &triangle;
+			shape2.transform.position.set(-2.0f, -2.0f);
 			//shape2.transform.rotation = Math::degreeToRadian(45);
 
 			//result = Detector::detect(shape1, shape2);
@@ -128,7 +128,7 @@ namespace Physics2D
 				RenderSFMLImpl::renderSimplex(window, *m_settings.camera, info.originalSimplex, RenderConstant::Yellow, *m_settings.font);
 
 			if (showFeatureSimplex)
-				RenderSFMLImpl::renderSimplex(window, *m_settings.camera, info.simplex, RenderConstant::Yellow, *m_settings.font);
+				RenderSFMLImpl::renderSimplex(window, *m_settings.camera, info.simplex, RenderConstant::Yellow, *m_settings.font, false);
 
 			//Simplex simplex = Narrowphase::gjk(shape1, shape2);
 			//sf::Color color = simplex.isContainOrigin ? RenderConstant::Teal : RenderConstant::Orange;
@@ -289,10 +289,10 @@ namespace Physics2D
 		bool isPicked = false;
 
 		bool showPolytope = true;
-		bool showFeature = false;
-		bool showFeatureSimplex = false;
-		bool showOriginalSimplex = true;
-		bool showMouseTransform = true;
+		bool showFeature = true;
+		bool showFeatureSimplex = true;
+		bool showOriginalSimplex = false;
+		bool showMouseTransform = false;
 
 		bool showHull = false;
 
