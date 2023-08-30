@@ -72,7 +72,7 @@ namespace Physics2D
 		bool m_cameraViewportMovement = false;
 
 
-		int m_currentItem = 11;
+		int m_currentItem = 0;
 
 		Frame* m_currentFrame = nullptr;
 
