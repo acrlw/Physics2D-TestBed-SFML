@@ -80,6 +80,10 @@ namespace Physics2D
 				},
 				[&](const FrameSettings& settings)
 				{
+					return new SolverFrame(settings);
+				},
+				[&](const FrameSettings& settings)
+				{
 					return new StackingFrame(settings);
 				},
 				[&](const FrameSettings& settings)
@@ -397,7 +401,7 @@ namespace Physics2D
 		const char* items[] = {
 			"Bitmask", "Bridge", "Broadphase", "Chain", "Collision", "Continuous", "Custom", "Domino", "Friction",
 			"Geometry", "Joints", "Narrowphase", "Newton's Cradle", "Position-Based Dynamics", "Pendulum",
-			"AABB Raycast", "Restitution", "Sensor", "Stacking",
+			"AABB Raycast", "Restitution", "Sensor", "Solver", "Stacking",
 			"Wrecking Ball", "Extended Position-Based Dynamics"
 		};
 

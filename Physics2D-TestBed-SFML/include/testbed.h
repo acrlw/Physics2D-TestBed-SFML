@@ -25,6 +25,7 @@
 #include "scenes/wreckingball.h"
 #include "scenes/pendulum.h"
 #include "scenes/pbd.h"
+#include "scenes/solver.h"
 #include "scenes/xpbd.h"
 
 #include <mutex>
@@ -92,7 +93,7 @@ namespace Physics2D
 
 		std::unique_ptr<sf::RenderWindow> m_window;
 
-		std::array<std::function<Frame*(const FrameSettings& settings)>, 21> m_frameList;
+		std::array<std::function<Frame*(const FrameSettings& settings)>, 22> m_frameList;
 
 		bool m_onDistanceCheck = false;
 		Vector2 m_mouseArray[2];
