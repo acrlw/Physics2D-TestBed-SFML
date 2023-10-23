@@ -6,19 +6,20 @@
 
 namespace Physics2D
 {
+
+	enum class ShapeType
+	{
+		Polygon,
+		Edge,
+		Capsule,
+		Circle,
+		Ellipse
+	};
 	class PHYSICS2D_API Shape
 	{
 	public:
-		enum class Type
-		{
-			Polygon,
-			Edge,
-			Capsule,
-			Circle,
-			Ellipse
-		};
 
-		Type type() const
+		ShapeType type() const
 		{
 			return m_type;
 		}
@@ -32,7 +33,7 @@ namespace Physics2D
 		virtual Vector2 center() const = 0;
 
 	protected:
-		Type m_type;
+		ShapeType m_type;
 	};
 
 	struct PHYSICS2D_API Transform

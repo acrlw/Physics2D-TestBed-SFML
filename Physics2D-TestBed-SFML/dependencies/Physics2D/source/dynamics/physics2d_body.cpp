@@ -211,14 +211,14 @@ namespace Physics2D {
     void Body::calcInertia()
     {
         switch (m_shape->type()) {
-        case Shape::Type::Circle:
+        case ShapeType::Circle:
         {
             const Circle* circle = static_cast<Circle*>(m_shape);
 
             m_inertia = m_mass * circle->radius() * circle->radius() / 2;
             break;
         }
-        case Shape::Type::Polygon:
+        case ShapeType::Polygon:
         {
             const Polygon* polygon = static_cast<Polygon*>(m_shape);
 
@@ -242,7 +242,7 @@ namespace Physics2D {
             m_inertia = m_mass * (1.0f / 6.0f) * sum1 / sum2;
             break;
         }
-        case Shape::Type::Ellipse:
+        case ShapeType::Ellipse:
         {
             const Ellipse* ellipse = static_cast<Ellipse*>(m_shape);
 
@@ -252,7 +252,7 @@ namespace Physics2D {
 
             break;
         }
-        case Shape::Type::Capsule:
+        case ShapeType::Capsule:
         {
             const Capsule* capsule = static_cast<Capsule*>(m_shape);
             real r = 0, h = 0, massS = 0, inertiaS = 0, massC = 0, inertiaC = 0, volume = 0;

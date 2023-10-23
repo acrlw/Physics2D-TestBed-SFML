@@ -189,24 +189,24 @@ namespace Physics2D
 		Index finalIndex = UINT32_MAX;
 		switch (shape.shape->type())
 		{
-		case Shape::Type::Polygon:
+		case ShapeType::Polygon:
 			{
 				auto polygon = static_cast<const Polygon*>(shape.shape);
 				std::tie(target, finalIndex) = findFurthestPoint(polygon->vertices(), rot_dir);
 				break;
 			}
-		case Shape::Type::Circle:
+		case ShapeType::Circle:
 			{
 				auto circle = static_cast<const Circle*>(shape.shape);
 				return std::make_pair(direction.normal() * circle->radius() + shape.transform.position, finalIndex);
 			}
-		case Shape::Type::Ellipse:
+		case ShapeType::Ellipse:
 			{
 				auto ellipse = static_cast<const Ellipse*>(shape.shape);
 				target = GeometryAlgorithm2D::calculateEllipseProjectionPoint(ellipse->A(), ellipse->B(), rot_dir);
 				break;
 			}
-		case Shape::Type::Edge:
+		case ShapeType::Edge:
 			{
 				auto edge = static_cast<const Edge*>(shape.shape);
 				const real dot1 = Vector2::dotProduct(edge->startPoint(), direction);
@@ -214,7 +214,7 @@ namespace Physics2D
 				target = dot1 > dot2 ? edge->startPoint() : edge->endPoint();
 				break;
 			}
-		case Shape::Type::Capsule:
+		case ShapeType::Capsule:
 			{
 				auto capsule = static_cast<const Capsule*>(shape.shape);
 				target = GeometryAlgorithm2D::calculateCapsuleProjectionPoint(
@@ -270,8 +270,8 @@ namespace Physics2D
 	                                          const ShapePrimitive& shapeB, CollisionInfo& info)
 	{
 		ContactPair pair;
-		Shape::Type typeA = shapeA.shape->type();
-		Shape::Type typeB = shapeB.shape->type();
+		ShapeType typeA = shapeA.shape->type();
+		ShapeType typeB = shapeB.shape->type();
 
 		ShapePrimitive realShapeA = shapeA;
 		ShapePrimitive realShapeB = shapeB;
@@ -298,50 +298,50 @@ namespace Physics2D
 		auto idB = std::pair{ featureB.index[0], featureB.index[1] };
 		pair.ids[1] = reinterpret_cast<uint64_t&>(idB);
 
-		if (typeA == Shape::Type::Polygon)
+		if (typeA == ShapeType::Polygon)
 		{
 			switch (typeB)
 			{
-			case Shape::Type::Polygon:
+			case ShapeType::Polygon:
 				pair = clipPolygonPolygon(realShapeA, realShapeB, featureA, featureB, info);
 				break;
-			case Shape::Type::Edge:
+			case ShapeType::Edge:
 				pair = clipPolygonEdge(realShapeA, realShapeB, featureA, featureB, info);
 				break;
-			case Shape::Type::Capsule:
+			case ShapeType::Capsule:
 				pair = clipPolygonCapsule(realShapeA, realShapeB, featureA, featureB, info);
 				break;
-			case Shape::Type::Circle:
-			case Shape::Type::Ellipse:
+			case ShapeType::Circle:
+			case ShapeType::Ellipse:
 				pair = clipPolygonRound(realShapeA, realShapeB, featureA, featureB, info);
 				break;
 			}
 		}
-		else if (typeA == Shape::Type::Edge)
+		else if (typeA == ShapeType::Edge)
 		{
 			switch (typeB)
 			{
-			case Shape::Type::Edge:
+			case ShapeType::Edge:
 				assert(false && "Not support edge and edge.");
 				break;
-			case Shape::Type::Capsule:
+			case ShapeType::Capsule:
 				pair = clipEdgeCapsule(realShapeA, realShapeB, featureA, featureB, info);
 				break;
-			case Shape::Type::Circle:
-			case Shape::Type::Ellipse:
+			case ShapeType::Circle:
+			case ShapeType::Ellipse:
 				pair = clipEdgeRound(realShapeA, realShapeB, featureA, featureB, info);
 				break;
 			}
 		}
-		else if (typeA == Shape::Type::Capsule)
+		else if (typeA == ShapeType::Capsule)
 		{
 			switch (typeB)
 			{
-			case Shape::Type::Capsule:
+			case ShapeType::Capsule:
 				pair = clipCapsuleCapsule(realShapeA, realShapeB, featureA, featureB, info);
 				break;
-			case Shape::Type::Circle:
-			case Shape::Type::Ellipse:
+			case ShapeType::Circle:
+			case ShapeType::Ellipse:
 				pair = clipCapsuleRound(realShapeA, realShapeB, featureA, featureB, info);
 				break;
 			}
@@ -655,7 +655,7 @@ namespace Physics2D
 		Feature feature;
 		feature.index[0] = simplex.vertices[0].index[AorB];
 		feature.index[1] = simplex.vertices[1].index[AorB];
-		if (shape.shape->type() == Shape::Type::Polygon)
+		if (shape.shape->type() == ShapeType::Polygon)
 		{
 			if (simplex.vertices[0].point[AorB] == simplex.vertices[1].point[AorB])
 			{

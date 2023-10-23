@@ -55,8 +55,29 @@ namespace Physics2D
 		assert(shapeA.shape != nullptr && shapeB.shape != nullptr);
 
 		//not support two edge
-		if (shapeA.shape->type() == Shape::Type::Edge && shapeB.shape->type() == Shape::Type::Edge)
+		if (shapeA.shape->type() == ShapeType::Edge && shapeB.shape->type() == ShapeType::Edge)
 			return result;
+
+		//check if two circle
+		if (shapeA.shape->type() == ShapeType::Circle && shapeB.shape->type() == ShapeType::Circle)
+		{
+			const Circle* circleA = static_cast<Circle*>(shapeA.shape);
+			const Circle* circleB = static_cast<Circle*>(shapeB.shape);
+			const Vector2 dir = shapeA.transform.position - shapeB.transform.position;
+			const real distance = dir.length();
+			const Vector2 normal = dir.normal();
+
+			const real radius = circleA->radius() + circleB->radius();
+			if (distance > radius)
+				return result;
+
+			result.isColliding = true;
+			result.normal = normal;
+			result.penetration = radius - distance;
+			result.contactList.addContact(shapeA.transform.position - normal * circleA->radius(), shapeB.transform.position + normal * circleB->radius());
+
+			return result;
+		}
 
 		Simplex simplex = Narrowphase::gjk(shapeA, shapeB);
 		bool isColliding = simplex.isContainOrigin;

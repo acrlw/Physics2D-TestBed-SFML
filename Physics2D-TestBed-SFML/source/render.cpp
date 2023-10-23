@@ -74,27 +74,27 @@ namespace Physics2D
 	{
 		switch (shape.shape->type())
 		{
-		case Shape::Type::Polygon:
+		case ShapeType::Polygon:
 			{
 				renderPolygon(window, camera, shape, color);
 				break;
 			}
-		case Shape::Type::Ellipse:
+		case ShapeType::Ellipse:
 			{
 				renderEllipse(window, camera, shape, color);
 				break;
 			}
-		case Shape::Type::Circle:
+		case ShapeType::Circle:
 			{
 				renderCircle(window, camera, shape, color);
 				break;
 			}
-		case Shape::Type::Edge:
+		case ShapeType::Edge:
 			{
 				renderEdge(window, camera, shape, color);
 				break;
 			}
-		case Shape::Type::Capsule:
+		case ShapeType::Capsule:
 			{
 				renderCapsule(window, camera, shape, color);
 				break;
@@ -108,7 +108,7 @@ namespace Physics2D
 	                                   const sf::Color& color)
 	{
 		assert(shape.shape != nullptr);
-		assert(shape.shape->type() == Shape::Type::Polygon);
+		assert(shape.shape->type() == ShapeType::Polygon);
 		sf::ConvexShape convex;
 		auto polygon = static_cast<Polygon*>(shape.shape);
 		convex.setPointCount(polygon->vertices().size());
@@ -130,7 +130,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderEdge(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape,
 	                                const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Edge);
+		assert(shape.shape->type() == ShapeType::Edge);
 		auto edge = static_cast<Edge*>(shape.shape);
 		renderPoint(window, camera, edge->startPoint() + shape.transform.position, color);
 		renderPoint(window, camera, edge->endPoint() + shape.transform.position, color);
@@ -146,14 +146,14 @@ namespace Physics2D
 	                                     const sf::Color& color)
 	{
 		assert(shape.shape != nullptr);
-		assert(shape.shape->type() == Shape::Type::Polygon);
+		assert(shape.shape->type() == ShapeType::Polygon);
 		renderPolygon(window, camera, shape, color);
 	}
 
 	void RenderSFMLImpl::renderCircle(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape,
 	                                  const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Circle);
+		assert(shape.shape->type() == ShapeType::Circle);
 		const Circle* circle = static_cast<Circle*>(shape.shape);
 		const Vector2 screenPos = camera.worldToScreen(shape.transform.position);
 		sf::CircleShape circleShape(circle->radius() * RenderConstant::ScaleFactor * camera.meterToPixel());
@@ -170,7 +170,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderCapsule(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape,
 	                                   const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Capsule);
+		assert(shape.shape->type() == ShapeType::Capsule);
 		Container::Vector<sf::Vertex> vertices;
 
 		const Capsule* capsule = static_cast<Capsule*>(shape.shape);
@@ -223,7 +223,7 @@ namespace Physics2D
 	void RenderSFMLImpl::renderEllipse(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape,
 	                                   const sf::Color& color)
 	{
-		assert(shape.shape->type() == Shape::Type::Ellipse);
+		assert(shape.shape->type() == ShapeType::Ellipse);
 		Container::Vector<sf::Vertex> vertices;
 
 		const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);

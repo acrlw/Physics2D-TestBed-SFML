@@ -117,6 +117,7 @@ namespace Physics2D
 					vcp.effectiveMassNormal = realEqual(kNormal, 0.0f) ? 0 : 1.0f / kNormal;
 
 					real lambda = vcp.effectiveMassNormal * bias;
+					lambda = Math::max(lambda, 0);
 
 					Vector2 impulse = lambda * vcp.normal;
 
@@ -279,7 +280,8 @@ namespace Physics2D
 		vcp.va = ccp.bodyA->velocity() + wa;
 		vcp.vb = ccp.bodyB->velocity() + wb;
 
-		vcp.velocityBias = -vcp.restitution * (vcp.va - vcp.vb);
+		//vcp.velocityBias = -vcp.restitution * (vcp.va - vcp.vb);
+		vcp.velocityBias = 0;
 
 		//accumulate inherited impulse
 		Vector2 impulse = vcp.accumulatedNormalImpulse * vcp.normal + vcp.accumulatedTangentImpulse * vcp.tangent;

@@ -4,7 +4,7 @@ namespace Physics2D
 {
 	Polygon::Polygon()
 	{
-		m_type = Type::Polygon;
+		m_type = ShapeType::Polygon;
 		m_vertices.reserve(4);
 	}
 

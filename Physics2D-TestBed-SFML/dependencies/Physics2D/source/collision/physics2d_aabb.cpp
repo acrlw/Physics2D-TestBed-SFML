@@ -124,7 +124,7 @@ namespace Physics2D
 		AABB aabb;
 		switch (shape.shape->type())
 		{
-		case Shape::Type::Polygon:
+		case ShapeType::Polygon:
 		{
 			const Polygon* polygon = static_cast<Polygon*>(shape.shape);
 			real max_x = Constant::NegativeMin, max_y = Constant::NegativeMin, min_x = Constant::Max, min_y = Constant::Max;
@@ -148,7 +148,7 @@ namespace Physics2D
 			aabb.position.set((max_x + min_x) * 0.5f, (max_y + min_y) * 0.5f);
 			break;
 		}
-		case Shape::Type::Ellipse:
+		case ShapeType::Ellipse:
 		{
 			const Ellipse* ellipse = static_cast<Ellipse*>(shape.shape);
 
@@ -176,14 +176,14 @@ namespace Physics2D
 			aabb.width = std::fabs(right.x - left.x);
 			break;
 		}
-		case Shape::Type::Circle:
+		case ShapeType::Circle:
 		{
 			const Circle* circle = static_cast<Circle*>(shape.shape);
 			aabb.width = circle->radius() * 2;
 			aabb.height = circle->radius() * 2;
 			break;
 		}
-		case Shape::Type::Edge:
+		case ShapeType::Edge:
 		{
 			const Edge* edge = static_cast<Edge*>(shape.shape);
 			aabb.width = std::fabs(edge->startPoint().x - edge->endPoint().x);
@@ -193,7 +193,7 @@ namespace Physics2D
 			aabb.expand(0.5f);
 			break;
 		}
-		case Shape::Type::Capsule:
+		case ShapeType::Capsule:
 		{
 			auto [p1, idx1] = Narrowphase::findFurthestPoint(shape, {1, 0});
 			auto [p2, idx2] = Narrowphase::findFurthestPoint(shape, { 0, 1 });

@@ -4,7 +4,7 @@ namespace Physics2D
 {
 	Ellipse::Ellipse(const real& width, const real& height) : m_width(width), m_height(height)
 	{
-		m_type = Type::Ellipse;
+		m_type = ShapeType::Ellipse;
 	}
 
 	void Ellipse::set(const Vector2& leftTop, const Vector2& rightBottom)

@@ -102,8 +102,8 @@ namespace Physics2D
 		m_system.world().setAirFrictionCoefficient(0.8f);
 		m_system.world().setAngularVelocityDamping(0.1f);
 		m_system.world().setEnableDamping(true);
-		m_system.positionIteration() = 3;
-		m_system.velocityIteration() = 6;
+		m_system.positionIteration() = 1;
+		m_system.velocityIteration() = 1;
 
 		m_pointJointPrimitive.bodyA = nullptr;
 		m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);

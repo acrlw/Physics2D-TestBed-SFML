@@ -16,10 +16,11 @@ namespace Physics2D
 			block.set(20, 1.0f);
 			rectangle.set(1.0f, 1.0f);
 			edge.set(Vector2{-10.0f, 0.0f}, Vector2{10.0f, 0.0f});
+			circle.setRadius(0.5f);
 
 			uint32_t mask = 0x01;
-			real max = 1.0f;
-			for (real i = 0; i < max; i += 1.0f)
+			real max = 6.0f;
+			for (real i = 0; i < 1.0f; i += 1.0f)
 			{
 				Body* ground = m_settings.world->createBody();
 				ground->setShape(&edge);
@@ -36,26 +37,32 @@ namespace Physics2D
 			for (real i = 0; i < max; i += 1.0f)
 			{
 				Body* body = m_settings.world->createBody();
-				body->setShape(&rectangle);
-				body->position().set({i * 3.0f + 0.5f, 0.5f});
+				body->setShape(&circle);
+				body->position().set({ 0.5f, 1.5f + i * 1.5f});
 				body->setFriction(0.9f);
 				body->setBitmask(mask);
 				body->setRestitution(0);
 				body->setMass(1);
 				body->setType(Body::BodyType::Dynamic);
-				mask = mask << 1;
+				//mask = mask << 1;
 				m_settings.tree->insert(body);
 			}
+			//m_settings.world->setEnableDamping(false);
 		}
 
 		void onPostRender(sf::RenderWindow& window) override
 		{
 		}
 
+		void onUnLoad() override
+		{
+			//m_settings.world->setEnableDamping(true);
+		}
 	private:
 		Rectangle rectangle;
 		Rectangle block;
 		Edge edge;
+		Circle circle;
 	};
 }
 #endif

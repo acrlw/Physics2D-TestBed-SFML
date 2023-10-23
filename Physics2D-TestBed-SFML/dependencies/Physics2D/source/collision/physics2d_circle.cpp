@@ -3,7 +3,7 @@ namespace Physics2D
 {
 	Circle::Circle(real radius) : m_radius(radius)
 	{
-		m_type = Type::Circle;
+		m_type = ShapeType::Circle;
 	}
 
 	real Circle::radius() const

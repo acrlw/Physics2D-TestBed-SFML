@@ -4,7 +4,7 @@ namespace Physics2D
 {
 	Edge::Edge()
 	{
-		m_type = Type::Edge;
+		m_type = ShapeType::Edge;
 	}
 
 	void Edge::set(const Vector2& start, const Vector2& end)

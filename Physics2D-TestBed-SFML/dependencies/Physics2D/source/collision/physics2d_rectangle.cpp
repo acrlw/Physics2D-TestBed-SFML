@@ -3,7 +3,7 @@ namespace Physics2D
 {
 	Rectangle::Rectangle(const real& width, const real& height)
 	{
-		m_type = Type::Polygon;
+		m_type = ShapeType::Polygon;
 		this->set(width, height);
 	}
 

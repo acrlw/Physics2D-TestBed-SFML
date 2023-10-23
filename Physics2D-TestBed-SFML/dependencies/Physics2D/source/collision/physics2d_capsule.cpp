@@ -4,7 +4,7 @@ namespace Physics2D
 
 	Capsule::Capsule(real width, real height) : m_halfWidth(width / 2.0f), m_halfHeight(height / 2.0f)
 	{
-		m_type = Type::Capsule;
+		m_type = ShapeType::Capsule;
 	}
 	bool Capsule::contains(const Vector2& point, const real& epsilon)
 	{
