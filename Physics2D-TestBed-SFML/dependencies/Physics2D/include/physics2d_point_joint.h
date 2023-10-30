@@ -13,7 +13,7 @@ namespace Physics2D
 
 		real damping = 0.0;
 		real stiffness = 0.0;
-		real frequency = 10;
+		real frequency = 5;
 		real maxForce = 1000;
 		real dampingRatio = 0.707f;
 		real gamma = 0.0;

@@ -246,7 +246,7 @@ namespace Physics2D
 		m_airFrictionCoefficient = airFrictionCoefficient;
 	}
 
-	bool PhysicsWorld::enableGravity() const
+	bool& PhysicsWorld::gravity()
 	{
 		return m_enableGravity;
 	}

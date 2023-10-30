@@ -98,9 +98,9 @@ namespace Physics2D
 		};
 
 		m_system.world().setEnableGravity(true);
-		m_system.world().setLinearVelocityDamping(0.1f);
-		m_system.world().setAirFrictionCoefficient(0.8f);
-		m_system.world().setAngularVelocityDamping(0.1f);
+		m_system.world().setLinearVelocityDamping(0.0f);
+		m_system.world().setAirFrictionCoefficient(0.0f);
+		m_system.world().setAngularVelocityDamping(0.0f);
 		m_system.world().setEnableDamping(true);
 		m_system.positionIteration() = 1;
 		m_system.velocityIteration() = 1;
@@ -441,8 +441,12 @@ namespace Physics2D
 		ImGui::SliderFloat("Max Penetration", &m_system.maintainer().m_maxPenetration, 0.001f, 0.1f);
 
 		ImGui::Separator();
-		ImGui::Text("Body");
+		ImGui::Text("World");
+		ImGui::Columns(2, nullptr);
 		ImGui::Checkbox("Sleep", &m_system.world().enableSleep());
+		ImGui::NextColumn();
+		ImGui::Checkbox("Gravity", &m_system.world().gravity());
+		ImGui::Columns(1, nullptr);
 
 		ImGui::Separator();
 		ImGui::Text("Solver");
@@ -454,6 +458,7 @@ namespace Physics2D
 		ImGui::Checkbox("Solve Contact Vel", &m_system.solveContactVelocity());
 		ImGui::Checkbox("Solve Contact Pos", &m_system.solveContactPosition());
 		ImGui::Checkbox("Vel Block Solver", &m_system.maintainer().m_velocityBlockSolver);
+		ImGui::Checkbox("Pos Block Solver", &m_system.maintainer().m_positionBlockSolver);
 		ImGui::NextColumn();
 		ImGui::Columns(1, nullptr);
 
