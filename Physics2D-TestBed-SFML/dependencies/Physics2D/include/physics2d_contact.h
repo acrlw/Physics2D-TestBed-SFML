@@ -54,7 +54,7 @@ namespace Physics2D
 		void clearInactivePoints();
 		void deactivateAllPoints();
 
-		real m_maxPenetration = 0.001f;
+		real m_maxPenetration = 0.002f;
 		real m_biasFactor = 0.25f;
 		bool m_warmStart = true;
 		bool m_velocityBlockSolver = true;

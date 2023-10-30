@@ -98,12 +98,12 @@ namespace Physics2D
 		};
 
 		m_system.world().setEnableGravity(true);
-		m_system.world().setLinearVelocityDamping(0.0f);
+		m_system.world().setLinearVelocityDamping(0.1f);
 		m_system.world().setAirFrictionCoefficient(0.0f);
-		m_system.world().setAngularVelocityDamping(0.0f);
+		m_system.world().setAngularVelocityDamping(0.1f);
 		m_system.world().setEnableDamping(true);
-		m_system.positionIteration() = 1;
-		m_system.velocityIteration() = 1;
+		m_system.positionIteration() = 2;
+		m_system.velocityIteration() = 4;
 
 		m_pointJointPrimitive.bodyA = nullptr;
 		m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
