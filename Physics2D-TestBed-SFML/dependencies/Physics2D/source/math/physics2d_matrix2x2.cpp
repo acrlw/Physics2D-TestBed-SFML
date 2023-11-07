@@ -164,6 +164,13 @@ namespace Physics2D
 		return *this;
 	}
 
+	Matrix2x2 Matrix2x2::fromRadian(const real& radian)
+	{
+		Matrix2x2 mat;
+		mat.set(radian);
+		return mat;
+	}
+
 	Matrix2x2 Matrix2x2::skewSymmetricMatrix(const Vector2& r)
 	{
 		return Matrix2x2(0, -r.y, r.x, 0);

@@ -137,10 +137,11 @@ namespace Physics2D
 			m_settings.tree->insert(rect2);
 
 			distancePrim.bodyA = rect2;
+			distancePrim.bodyB = ground;
 			distancePrim.localPointA.set({0, 0});
+			distancePrim.localPointB.set({ 10, 20 });
 			distancePrim.minDistance = 11.5f + half;
 			distancePrim.maxDistance = 11.5f + half;
-			distancePrim.targetPoint.set({10, 20});
 
 			m_settings.world->createJoint(distancePrim);
 		}

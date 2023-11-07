@@ -73,14 +73,7 @@ namespace Physics2D
 			window.clear(sf::Color(50, 50, 50));
 
 
-			if (m_jointVisible)
-			{
-				for (auto iter = m_world->jointList().begin(); iter != m_world->jointList().end(); ++iter)
-				{
-					if ((*iter)->active())
-						RenderSFMLImpl::renderJoint(window, *this, (*iter).get(), sf::Color::Green);
-				}
-			}
+
 
 			if (m_aabbVisible)
 			{
@@ -152,7 +145,6 @@ namespace Physics2D
 
 					if (m_centerVisible)
 					{
-						RenderSFMLImpl::renderPoint(window, *this, primitive.transform.position, RenderConstant::Gray);
 						RenderSFMLImpl::renderAngleLine(window, *this, primitive, sf::Color::Green);
 					}
 
@@ -183,6 +175,14 @@ namespace Physics2D
 								                            RenderConstant::Orange, 0.2f);
 						}
 					}
+				}
+			}
+			if (m_jointVisible)
+			{
+				for (auto iter = m_world->jointList().begin(); iter != m_world->jointList().end(); ++iter)
+				{
+					if ((*iter)->active())
+						RenderSFMLImpl::renderJoint(window, *this, (*iter).get(), sf::Color::Green);
 				}
 			}
 			if (m_contactVisible)
@@ -508,9 +508,9 @@ namespace Physics2D
 	void Camera::drawGridScaleLine(sf::RenderWindow& window)
 	{
 		sf::Color thick = RenderConstant::DarkGreen;
-		thick.a = 210;
+		thick.a = 160;
 		sf::Color thin = RenderConstant::DarkGreen;
-		thin.a = 75;
+		thin.a = 60;
 
 		const bool fineEnough = m_meterToPixel > 125;
 
@@ -527,7 +527,7 @@ namespace Physics2D
 			h = 2;
 
 		sf::Color color = sf::Color::Green;
-		color.a = 100;
+		color.a = 80;
 		for (int i = -m_axisPointCount; i <= m_axisPointCount; i += h)
 		{
 			Vector2 p1 = {static_cast<real>(i), static_cast<real>(m_axisPointCount)};

@@ -265,10 +265,8 @@ namespace Physics2D
 	void RenderSFMLImpl::renderAngleLine(sf::RenderWindow& window, Camera& camera, const ShapePrimitive& shape,
 	                                     const sf::Color& color)
 	{
-		sf::Color colorX(139, 195, 74);
-		sf::Color colorY(255, 235, 59);
-		colorX.a = 204;
-		colorY.a = 204;
+		sf::Color colorX(3, 169, 244);
+		sf::Color colorY(244, 67, 54);
 		Vector2 xP(0.15f, 0);
 		Vector2 yP(0, 0.15f);
 		xP = shape.transform.translatePoint(xP);
@@ -347,6 +345,11 @@ namespace Physics2D
 				renderWeldJoint(window, camera, joint, color);
 				break;
 			}
+		case JointType::Motor:
+			{
+				renderMotorJoint(window, camera, joint, color);
+				break;
+			}
 		default:
 			break;
 		}
@@ -363,23 +366,34 @@ namespace Physics2D
 		assert(joint != nullptr);
 		auto distanceJoint = static_cast<DistanceJoint*>(joint);
 		Vector2 pa = distanceJoint->primitive().bodyA->toWorldPoint(distanceJoint->primitive().localPointA);
-		Vector2 pb = distanceJoint->primitive().targetPoint;
+		Vector2 pb = distanceJoint->primitive().bodyB->toWorldPoint(distanceJoint->primitive().localPointB);
 		Vector2 n = (pa - pb).normal();
-		Vector2 minPoint = n * distanceJoint->primitive().minDistance + pb;
-		Vector2 maxPoint = n * distanceJoint->primitive().maxDistance + pb;
+		Vector2 mid = pb + n * (pa - pb).length() * 0.5f;
+
+		Vector2 maxPoint1 = mid + 0.5f * n * distanceJoint->primitive().maxDistance;
+		Vector2 maxPoint2 = mid - 0.5f * n * distanceJoint->primitive().maxDistance;
+		Vector2 minPoint1 = mid + 0.5f * n * distanceJoint->primitive().minDistance;
+		Vector2 minPoint2 = mid - 0.5f * n * distanceJoint->primitive().minDistance;
+		
 		sf::Color minColor = RenderConstant::Blue;
 		sf::Color maxColor = RenderConstant::Red;
 		minColor.a = 204;
 		maxColor.a = 204;
 		renderPoint(window, camera, pa, RenderConstant::Gray);
 		renderPoint(window, camera, pb, RenderConstant::Gray);
-		renderPoint(window, camera, minPoint, minColor);
-		renderPoint(window, camera, maxPoint, maxColor);
-		sf::Color lineColor = RenderConstant::Gray;
+		renderPoint(window, camera, minPoint1, minColor);
+		renderPoint(window, camera, maxPoint1, maxColor);
+		renderPoint(window, camera, minPoint2, minColor);
+		renderPoint(window, camera, maxPoint2, maxColor);
+		sf::Color lineColor = RenderConstant::DarkGreen;
 		lineColor.a = 150;
 		renderLine(window, camera, pa, pb, lineColor);
 	}
 
+	void renderMotorJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
+	{
+		assert(joint != nullptr);
+	}
 	void RenderSFMLImpl::renderPointJoint(sf::RenderWindow& window, Camera& camera, Joint* joint,
 	                                      const sf::Color& color)
 	{
@@ -396,6 +410,78 @@ namespace Physics2D
 		renderPoint(window, camera, pa, point, 2);
 		renderPoint(window, camera, pb, point, 2);
 		renderLine(window, camera, pa, pb, green);
+	}
+
+	void RenderSFMLImpl::renderMotorJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
+	{
+		assert(joint != nullptr);
+		auto motorJoint = static_cast<MotorJoint*>(joint);
+		//Vector2 pa = motorJoint->primitive().bodyA->toWorldPoint(motorJoint->primitive().localPointA);
+		//Vector2 pb = motorJoint->primitive().bodyB->toWorldPoint(motorJoint->primitive().localPointB);
+
+		//sf::Color point = RenderConstant::Pink;
+		//sf::Color green = sf::Color::Green;
+		//point.a = 204;
+		//green.a = 78;
+
+		//renderLine(window, camera, pa, pb, green);
+
+		Vector2 pa = motorJoint->primitive().bodyA->toWorldPoint(motorJoint->primitive().localPointA);
+		Vector2 pb = motorJoint->primitive().bodyB->toWorldPoint(motorJoint->primitive().localPointB);
+		sf::Color point = RenderConstant::Orange;
+		sf::Color green = sf::Color::Green;
+		point.a = 204;
+		green.a = 78;
+		renderPoint(window, camera, pa, point, 2);
+		renderPoint(window, camera, pb, point, 2);
+		renderLine(window, camera, pa, pb, green);
+		sf::Color colorX(3, 169, 244);
+		sf::Color colorY(244, 67, 54);
+		Vector2 xP(0.15f, 0);
+		Vector2 yP(0, 0.15f);
+
+
+		Vector2 s = motorJoint->primitive().bodyA->toWorldPoint(motorJoint->primitive().localPointA);
+		xP = motorJoint->primitive().bodyA->toWorldPoint(motorJoint->primitive().localPointA + xP);
+		yP = motorJoint->primitive().bodyA->toWorldPoint(motorJoint->primitive().localPointA + yP);
+		renderLine(window, camera, s, xP, colorX);
+		renderLine(window, camera, s, yP, colorY);
+
+		colorX = sf::Color(255, 235, 59);
+		colorY = sf::Color(139, 195, 74);
+
+
+		xP.set(0.15f, 0);
+		yP.set(0, 0.15f);
+
+		s = motorJoint->primitive().bodyB->toWorldPoint(motorJoint->primitive().localPointB);
+		xP = motorJoint->primitive().bodyB->toWorldPoint(motorJoint->primitive().localPointB + xP);
+		yP = motorJoint->primitive().bodyB->toWorldPoint(motorJoint->primitive().localPointB + yP);
+		renderLine(window, camera, s, xP, colorX);
+		renderLine(window, camera, s, yP, colorY);
+
+
+		renderPoint(window, camera, pa, RenderConstant::Red, 2);
+		renderPoint(window, camera, pb, RenderConstant::Blue, 2);
+	}
+
+	void RenderSFMLImpl::renderDashedLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, 
+		const sf::Color& color, const real& dashLength, const real& dashGap)
+	{
+		sf::VertexArray lines(sf::Lines);
+
+		Vector2 direction = p2 - p1;
+		real length = direction.length();
+		direction /= length;
+		for(real d = 0; d < length; d += dashLength + dashGap)
+		{
+			Vector2 dashStart = p1 + direction * d;
+			Vector2 dashEnd = p1 + direction * Math::min(d + dashLength, direction.length());
+			lines.append(sf::Vertex(toVector2f(camera.worldToScreen(dashStart)), color));
+			lines.append(sf::Vertex(toVector2f(camera.worldToScreen(dashEnd)), color));
+		}
+
+		window.draw(lines);
 	}
 
 	void RenderSFMLImpl::renderOrientationJoint(sf::RenderWindow& window, Camera& camera, Joint* joint,
@@ -424,6 +510,28 @@ namespace Physics2D
 	void RenderSFMLImpl::renderPrismaticJoint(sf::RenderWindow& window, Camera& camera, Joint* joint,
 	                                          const sf::Color& color)
 	{
+		assert(joint != nullptr);
+		auto prismaticJoint = static_cast<PrismaticJoint*>(joint);
+		Vector2 pa = prismaticJoint->primitive().bodyA->toWorldPoint(prismaticJoint->primitive().localPointA);
+		Vector2 pb = prismaticJoint->primitive().bodyB->toWorldPoint(prismaticJoint->primitive().localPointB);
+		Vector2 xAxis = prismaticJoint->primitive().xAxis;
+		Vector2 yAxis = prismaticJoint->primitive().yAxis;
+
+		renderPoint(window, camera, pa, RenderConstant::Red, 2);
+		renderPoint(window, camera, pb, RenderConstant::Blue, 2);
+		renderLine(window, camera, pa, pb, RenderConstant::LightCyan);
+
+		bool infiniteLine = prismaticJoint->primitive().lowerLimit == prismaticJoint->primitive().upperLimit;
+		if(!infiniteLine)
+		{
+			Vector2 lower = prismaticJoint->primitive().lowerLimit * xAxis;
+			Vector2 upper = prismaticJoint->primitive().upperLimit * xAxis;
+			renderLine(window, camera, pb + lower, pb + upper, RenderConstant::Gray);
+			real shift = 0.25f;
+			renderLine(window, camera, pb + lower + shift * yAxis, pb + lower - shift * yAxis, RenderConstant::LightBlue);
+			renderLine(window, camera, pb + upper + shift * yAxis, pb + upper - shift * yAxis, RenderConstant::Pink);
+		}
+
 	}
 
 	void RenderSFMLImpl::renderRevoluteJoint(sf::RenderWindow& window, Camera& camera, Joint* joint,
@@ -433,15 +541,56 @@ namespace Physics2D
 		auto revoluteJoint = static_cast<RevoluteJoint*>(joint);
 		Vector2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
 		Vector2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
-
 		sf::Color point = RenderConstant::Orange;
 		sf::Color green = sf::Color::Green;
 		point.a = 204;
 		green.a = 78;
-
 		renderPoint(window, camera, pa, point, 2);
 		renderPoint(window, camera, pb, point, 2);
 		renderLine(window, camera, pa, pb, green);
+		sf::Color colorX(3, 169, 244);
+		sf::Color colorY(244, 67, 54);
+		Vector2 xP(0.15f, 0);
+		Vector2 yP(0, 0.15f);
+
+
+		Vector2 s = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
+		xP = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA + xP);
+		yP = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA + yP);
+		renderLine(window, camera, s, xP, colorX);
+		renderLine(window, camera, s, yP, colorY);
+
+		colorX = sf::Color(255, 235, 59);
+		colorY = sf::Color(139, 195, 74);
+
+
+		xP.set(0.15f, 0);
+		yP.set(0, 0.15f);
+
+		s = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
+		xP = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB + xP);
+		yP = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB + yP);
+		renderLine(window, camera, s, xP, colorX);
+		renderLine(window, camera, s, yP, colorY);
+
+
+		renderPoint(window, camera, pa, RenderConstant::Red, 2);
+		renderPoint(window, camera, pb, RenderConstant::Blue, 2);
+
+		if(revoluteJoint->primitive().angularLimit)
+		{
+			real lower = revoluteJoint->primitive().lowerAngle + revoluteJoint->primitive().bodyB->rotation();
+			real upper = revoluteJoint->primitive().upperAngle + revoluteJoint->primitive().bodyB->rotation();
+
+			Vector2 axis(0.5f, 0.0f);
+			Vector2 low = Matrix2x2(lower).multiply(axis);
+			Vector2 up = Matrix2x2(upper).multiply(axis);
+
+			renderDashedLine(window, camera, s, s + low, RenderConstant::LightCyan);
+			renderDashedLine(window, camera, s, s + up, RenderConstant::Pink);
+
+			
+		}
 	}
 
 	void RenderSFMLImpl::renderWheelJoint(sf::RenderWindow& window, Camera& camera, Joint* joint,
@@ -462,6 +611,30 @@ namespace Physics2D
 		renderPoint(window, camera, pa, point, 2);
 		renderPoint(window, camera, pb, point, 2);
 		renderLine(window, camera, pa, pb, green);
+		sf::Color colorX(3, 169, 244);
+		sf::Color colorY(244, 67, 54);
+		Vector2 xP(0.15f, 0);
+		Vector2 yP(0, 0.15f);
+		
+
+		Vector2 s = weldJoint->primitive().bodyA->toWorldPoint(weldJoint->primitive().localPointA);
+		xP = weldJoint->primitive().bodyA->toWorldPoint(weldJoint->primitive().localPointA + xP);
+		yP = weldJoint->primitive().bodyA->toWorldPoint(weldJoint->primitive().localPointA + yP);
+		renderLine(window, camera, s, xP, colorX);
+		renderLine(window, camera, s, yP, colorY);
+
+		colorX = sf::Color(255, 235, 59);
+		colorY = sf::Color(139, 195, 74);
+
+
+		xP.set(0.15f, 0);
+		yP.set(0, 0.15f);
+
+		s = weldJoint->primitive().bodyB->toWorldPoint(weldJoint->primitive().localPointB);
+		xP = weldJoint->primitive().bodyB->toWorldPoint(weldJoint->primitive().localPointB + xP);
+		yP = weldJoint->primitive().bodyB->toWorldPoint(weldJoint->primitive().localPointB + yP);
+		renderLine(window, camera, s, xP, colorX);
+		renderLine(window, camera, s, yP, colorY);
 	}
 
 	void RenderSFMLImpl::renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
@@ -516,7 +689,7 @@ namespace Physics2D
 			}
 			break;
 		default:
-			assert(false && "Simplex count is more than 3");
+			assert(false && "Simplex count must be less than 3");
 			break;
 		}
 	}

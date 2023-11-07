@@ -1,4 +1,5 @@
 #include "physics2d_matrix3x3.h"
+#include "physics2d_matrix3x3.h"
 
 namespace Physics2D
 {
@@ -26,6 +27,18 @@ namespace Physics2D
 		column1 = rhs.column1;
 		column2 = rhs.column2;
 		column3 = rhs.column3;
+		return *this;
+	}
+
+	Matrix3x3& Matrix3x3::operator=(const Matrix2x2& rhs)
+	{
+		column1.x = rhs.column1.x;
+		column1.y = rhs.column1.y;
+		column1.z = 0;
+		column2.x = rhs.column2.x;
+		column2.y = rhs.column2.y;
+		column2.z = 0;
+		column3.clear();
 		return *this;
 	}
 
@@ -180,6 +193,11 @@ namespace Physics2D
 		return multiply(*this, rhs);
 	}
 
+	Vector2 Matrix3x3::multiply(const Vector2& rhs) const
+	{
+		return multiply(*this, rhs);
+	}
+
 	Matrix3x3& Matrix3x3::multiply(const Matrix3x3& rhs)
 	{
 		*this = multiply(*this, rhs);
@@ -211,6 +229,12 @@ namespace Physics2D
 		return Vector3(lhs.column1.x * rhs.x + lhs.column2.x * rhs.y + lhs.column3.x * rhs.z,
 		               lhs.column1.y * rhs.x + lhs.column2.y * rhs.y + lhs.column3.y * rhs.z,
 		               lhs.column1.z * rhs.x + lhs.column2.z * rhs.y + lhs.column3.z * rhs.z);
+	}
+
+	Vector2 Matrix3x3::multiply(const Matrix3x3& lhs, const Vector2& rhs)
+	{
+		return Vector2(lhs.column1.x * rhs.x + lhs.column2.x * rhs.y,
+				               lhs.column1.y * rhs.x + lhs.column2.y * rhs.y);
 	}
 
 	real Matrix3x3::determinant(const Matrix3x3& mat)

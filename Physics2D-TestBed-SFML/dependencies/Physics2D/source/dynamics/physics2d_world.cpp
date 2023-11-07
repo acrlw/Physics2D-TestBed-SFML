@@ -318,6 +318,15 @@ namespace Physics2D
 		m_jointList.clear();
 	}
 
+	PrismaticJoint* PhysicsWorld::createJoint(const PrismaticJointPrimitive& primitive)
+	{
+		auto joint = std::make_unique<PrismaticJoint>(primitive);
+		PrismaticJoint* temp = joint.get();
+		temp->setId(RandomGenerator::unique());
+		m_jointList.emplace_back(std::move(joint));
+		return temp;
+	}
+
 	RotationJoint* PhysicsWorld::createJoint(const RotationJointPrimitive& primitive)
 	{
 		auto joint = std::make_unique<RotationJoint>(primitive);
@@ -362,6 +371,16 @@ namespace Physics2D
 		m_jointList.emplace_back(std::move(joint));
 		return temp;
 	}
+
+	MotorJoint* PhysicsWorld::createJoint(const MotorJointPrimitive& primitive)
+	{
+		auto joint = std::make_unique<MotorJoint>(primitive);
+		MotorJoint* temp = joint.get();
+		temp->setId(RandomGenerator::unique());
+		m_jointList.emplace_back(std::move(joint));
+		return temp;
+	}
+
 	WeldJoint* PhysicsWorld::createJoint(const WeldJointPrimitive& primitive)
 	{
 		auto joint = std::make_unique<WeldJoint>(primitive);

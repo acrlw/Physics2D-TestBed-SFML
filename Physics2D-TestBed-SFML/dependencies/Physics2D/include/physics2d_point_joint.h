@@ -14,7 +14,7 @@ namespace Physics2D
 		real damping = 0.0;
 		real stiffness = 0.0;
 		real frequency = 5;
-		real maxForce = 1000;
+		real maxForce = 5000;
 		real dampingRatio = 0.707f;
 		real gamma = 0.0;
 		Vector2 bias;
@@ -56,6 +56,7 @@ namespace Physics2D
 			real m_a = bodyA->mass();
 			real im_a = bodyA->inverseMass();
 			real ii_a = bodyA->inverseInertia();
+
 			if (m_primitive.frequency > 0.0)
 			{
 				real nf = naturalFrequency(m_primitive.frequency);

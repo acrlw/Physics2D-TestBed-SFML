@@ -68,6 +68,7 @@ namespace Physics2D
 				revolutePrim.dampingRatio = 0.8f;
 				revolutePrim.frequency = 10;
 				revolutePrim.maxForce = 10000;
+				revolutePrim.angularLimit = false;
 				m_settings.world->createJoint(revolutePrim);
 
 				rect = rect2;

@@ -20,11 +20,14 @@ namespace Physics2D
 		constexpr int BorderSize = 1;
 		constexpr int FillAlpha = 38;
 		constexpr int BasicCirclePointCount = 60;
-		constexpr real BasicDashLength = 2;
+		constexpr real BasicDashLength = 0.04f;
+		constexpr real BasicDashGap = 0.04f;
 		const sf::Color Yellow = sf::Color(255, 235, 59);
 		const sf::Color Red = sf::Color(244, 67, 54);
 		const sf::Color Blue = sf::Color(55, 133, 205);
+		const sf::Color LightBlue = sf::Color(3, 169, 244);
 		const sf::Color Cyan = sf::Color(78, 184, 210);
+		const sf::Color LightCyan = sf::Color(0, 188, 212);
 		const sf::Color Green = sf::Color(15, 250, 14);
 		const sf::Color Pink = sf::Color(233, 30, 99);
 		const sf::Color DarkGreen = sf::Color(44, 113, 48);
@@ -74,7 +77,11 @@ namespace Physics2D
 		static void renderRotationJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 		static void renderDistanceJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 		static void renderPointJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
+		static void renderMotorJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 
+		static void renderDashedLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2,
+					                             const sf::Color& color, const real& dashLength = RenderConstant::BasicDashLength,
+					                             const real& dashGap = RenderConstant::BasicDashGap);
 
 		static void renderOrientationJoint(sf::RenderWindow& window, Camera& camera, Joint* joint,
 		                                   const sf::Color& color);

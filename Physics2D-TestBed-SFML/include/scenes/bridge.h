@@ -38,12 +38,13 @@ namespace Physics2D
 			ground->setType(Body::BodyType::Static);
 			m_settings.tree->insert(ground);
 
-			PointJointPrimitive ppm;
+			RevoluteJointPrimitive ppm;
 			RevoluteJointPrimitive revolutePrim;
 
 			ppm.bodyA = rect;
+			ppm.bodyB = ground;
 			ppm.localPointA.set(-half, 0);
-			ppm.targetPoint.set(-15.0f - half, 0.0f);
+			ppm.localPointB.set(-15.0f - half, 15.0f);
 			ppm.dampingRatio = 0.1f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;
@@ -68,13 +69,15 @@ namespace Physics2D
 				revolutePrim.dampingRatio = 0.8f;
 				revolutePrim.frequency = 10;
 				revolutePrim.maxForce = 10000;
+				revolutePrim.angularLimit = false;
 				m_settings.world->createJoint(revolutePrim);
 				rect = rect2;
 			}
 
 			ppm.bodyA = rect2;
+			ppm.bodyB = ground;
 			ppm.localPointA.set(0.75f, 0);
-			ppm.targetPoint.set(rect2->toWorldPoint(Vector2(0.75f, 0.0f)));
+			ppm.localPointB.set(rect2->toWorldPoint(Vector2(0.75f, 15.0f)));
 			ppm.dampingRatio = 0.1f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;

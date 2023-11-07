@@ -4,6 +4,7 @@
 #include "physics2d_math.h"
 #include "physics2d_vector2.h"
 #include "physics2d_vector3.h"
+#include "physics2d_matrix2x2.h"
 namespace Physics2D
 {
 
@@ -18,6 +19,7 @@ namespace Physics2D
 		Matrix3x3(Matrix3x3&& other) = default;
 
         Matrix3x3& operator=(const Matrix3x3& rhs);
+        Matrix3x3& operator=(const Matrix2x2& rhs);
         Matrix3x3& operator+=(const Matrix3x3& rhs);
         Matrix3x3& operator-=(const Matrix3x3& rhs);
         Matrix3x3& operator*=(const real& factor);
@@ -47,6 +49,7 @@ namespace Physics2D
         Matrix3x3& clear();
 
         Vector3 multiply(const Vector3& rhs)const;
+        Vector2 multiply(const Vector2& rhs)const;
         Matrix3x3& multiply(const Matrix3x3& rhs);
         real determinant()const;
         Matrix3x3& transpose();
@@ -56,6 +59,7 @@ namespace Physics2D
         static Matrix3x3 identityMatrix();
         static Matrix3x3 multiply(const Matrix3x3& lhs, const Matrix3x3& rhs);
         static Vector3 multiply(const Matrix3x3& lhs, const Vector3& rhs);
+        static Vector2 multiply(const Matrix3x3& lhs, const Vector2& rhs);
         static real determinant(const Matrix3x3& mat);
         static bool invert(Matrix3x3& mat);
 

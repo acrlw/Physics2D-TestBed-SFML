@@ -5,7 +5,7 @@ namespace Physics2D
 {
 	struct PHYSICS2D_API Vector3
 	{
-        Vector3(const real& x = 0.0, const real& y = 0.0, const real& z = 0.0);
+        Vector3(const real& x = 0.0f, const real& y = 0.0f, const real& z = 0.0f);
         Vector3(const Vector3& copy);
         Vector3& operator=(const Vector3& copy);
 		Vector3(Vector3&& other) = default;

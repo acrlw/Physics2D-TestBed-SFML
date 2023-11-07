@@ -13,7 +13,8 @@ namespace Physics2D
 		Prismatic,
 		Weld,
 		Wheel,
-		Revolute
+		Revolute,
+		Motor,
 	};
 	class PHYSICS2D_API Joint
 	{

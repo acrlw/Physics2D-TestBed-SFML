@@ -63,11 +63,13 @@ namespace Physics2D
 		void clearAllBodies();
 		void clearAllJoints();
 
+		PrismaticJoint* createJoint(const PrismaticJointPrimitive& primitive);
 		RotationJoint* createJoint(const RotationJointPrimitive& primitive);
 		PointJoint* createJoint(const PointJointPrimitive& primitive);
 		DistanceJoint* createJoint(const DistanceJointPrimitive& primitive);
 		PulleyJoint* createJoint(const PulleyJointPrimitive& primitive);
 		RevoluteJoint* createJoint(const RevoluteJointPrimitive& primitive);
+		MotorJoint* createJoint(const MotorJointPrimitive& primitive);
 		WeldJoint* createJoint(const WeldJointPrimitive& primitive);
 		OrientationJoint* createJoint(const OrientationJointPrimitive& primitive);
 

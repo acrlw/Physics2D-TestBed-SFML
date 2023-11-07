@@ -10,6 +10,7 @@ namespace Physics2D
 		real referenceRotation = 0;
 		real effectiveMass = 0;
 		real bias = 0;
+		real accumulatedTorque = 0;
 	};
 	struct PHYSICS2D_API OrientationJointPrimitive
 	{
@@ -45,11 +46,18 @@ namespace Physics2D
 			m_primitive.effectiveMass = 1.0f / (ii_a + ii_b);
 			real c = m_primitive.bodyA->rotation() - m_primitive.bodyB->rotation() - m_primitive.referenceRotation;
 			m_primitive.bias = -m_factor * inv_dt * c;
+
+			m_primitive.bodyA->angularVelocity() += m_primitive.bodyA->inverseInertia() * m_primitive.accumulatedTorque;
+			m_primitive.bodyB->angularVelocity() -= m_primitive.bodyB->inverseInertia() * m_primitive.accumulatedTorque;
 		}
 		void solveVelocity(const real& dt) override
 		{
 			real dw = m_primitive.bodyA->angularVelocity() - m_primitive.bodyB->angularVelocity();
 			real impulse = m_primitive.effectiveMass * (-dw + m_primitive.bias);
+
+			real oldTorque = m_primitive.accumulatedTorque;
+			m_primitive.accumulatedTorque += impulse;
+
 
 			m_primitive.bodyA->angularVelocity() += m_primitive.bodyA->inverseInertia() * impulse;
 			m_primitive.bodyB->angularVelocity() -= m_primitive.bodyB->inverseInertia() * impulse;

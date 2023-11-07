@@ -81,10 +81,11 @@ namespace Physics2D
 
 			DistanceJointPrimitive djp;
 			djp.bodyA = stammer;
+			djp.bodyB = ground;
 			djp.localPointA.set(0, 0);
-			djp.minDistance = 1.0f;
+			djp.localPointB.set(-12.0f, 19.5f);
+			djp.minDistance = 4.0f;
 			djp.maxDistance = 4.0f;
-			djp.targetPoint.set(-12.0f, 19.5f);
 			m_settings.world->createJoint(djp);
 
 			OrientationJointPrimitive ojp;

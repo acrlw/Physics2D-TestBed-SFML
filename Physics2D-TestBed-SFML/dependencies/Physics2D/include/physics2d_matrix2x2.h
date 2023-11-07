@@ -43,6 +43,7 @@ namespace Physics2D
         Matrix2x2& set(const Matrix2x2& other);
         Matrix2x2& set(const real& radian);
 
+        static Matrix2x2 fromRadian(const real& radians);
         static Matrix2x2 skewSymmetricMatrix(const Vector2& r);
         static Matrix2x2 identityMatrix();
         static Vector2 multiply(const Matrix2x2& lhs, const Vector2& rhs);
