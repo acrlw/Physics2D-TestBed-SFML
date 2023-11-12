@@ -108,7 +108,7 @@ namespace Physics2D
 			PathJointPrimitive pjp;
 			pjp.bodyA = block;
 			pjp.origin.set(0.0f, 6.0f);
-			pjp.localPointA.set(0.0f, 0.0f);
+			pjp.localPointA.set(0.0f, 0.25f);
 
 			PathJoint * pj = m_settings.world->createJoint(pjp);
 

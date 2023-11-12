@@ -58,12 +58,14 @@ namespace Physics2D
 			Vector2 d = mousePos.normal();
 			sf::Color originColor = RenderConstant::Gray;
 			sf::Color dirColor = RenderConstant::DarkGreen;
-			sf::Color hitColor = sf::Color::Cyan;
+			sf::Color hitColor = RenderConstant::Yellow;
 
 
 			RenderSFMLImpl::renderPoint(window, *m_settings.camera, Vector2(0, 0), originColor);
 			RenderSFMLImpl::renderLine(window, *m_settings.camera, p, d * 10.0f, dirColor);
+
 			auto bodyList = m_settings.tree->raycast(p, d);
+
 			for (auto& elem : bodyList)
 			{
 				ShapePrimitive sp;

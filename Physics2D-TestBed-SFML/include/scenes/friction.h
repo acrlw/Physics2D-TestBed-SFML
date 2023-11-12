@@ -25,7 +25,7 @@ namespace Physics2D
 				ground->setShape(&edge);
 				ground->setFriction(0.1f);
 				ground->setMass(Constant::Max);
-				ground->position().set(0, i * 3.0f);
+				ground->position().set(0, i * 5.0f);
 				ground->setRestitution(0);
 				ground->setType(Body::BodyType::Static);
 
@@ -33,7 +33,7 @@ namespace Physics2D
 				rampBody->setShape(&ramp);
 				rampBody->setFriction(0.1f);
 				rampBody->setMass(Constant::Max);
-				rampBody->position().set(0, i * 3.0f);
+				rampBody->position().set(0, i * 5.0f);
 				rampBody->setRestitution(0);
 				rampBody->setType(Body::BodyType::Static);
 
@@ -47,7 +47,7 @@ namespace Physics2D
 				cube->setShape(&rectangle);
 				cube->setFriction(i * 0.05f);
 				cube->setMass(1);
-				cube->position().set(-5.0f, i * 3.5f);
+				cube->position().set(-5.0f, i * 5.0f - 1.0f);
 				cube->setRestitution(0);
 				cube->setType(Body::BodyType::Dynamic);
 				m_settings.tree->insert(cube);

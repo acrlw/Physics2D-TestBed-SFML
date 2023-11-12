@@ -279,7 +279,7 @@ namespace Physics2D
 
 		if(m_tree[nodeIndex].aabb.raycast(p, d))
 		{
-			if (m_tree[nodeIndex].isLeaf())
+			if (m_tree[nodeIndex].isLeaf() && m_tree[nodeIndex].body->aabb().raycast(p, d))
 				result.emplace_back(m_tree[nodeIndex].body);
 			else
 			{

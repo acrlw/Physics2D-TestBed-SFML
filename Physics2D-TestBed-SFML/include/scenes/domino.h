@@ -16,7 +16,7 @@ namespace Physics2D
 			block.set(200, 1.0f);
 			floor.set(15.0f, 0.8f);
 			rectangle.set(0.5f, 0.5f);
-			brick.set(0.35f, 3.0f);
+			brick.set(0.35f, 2.5f);
 			edge.set(Vector2{-100.0f, 0}, Vector2{100.0f, 0});
 
 			Body* ground = m_settings.world->createBody();
@@ -53,21 +53,21 @@ namespace Physics2D
 			tile->setShape(&floor);
 			tile->setType(Body::BodyType::Static);
 			tile->setMass(Constant::Max);
-			tile->setFriction(0.15f);
+			tile->setFriction(0.2f);
 			tile->setRestitution(0.0f);
 			tile->rotation() = 0;
 			tile->position().set({-5, 13});
 			m_settings.tree->insert(tile);
 
-			for (real i = 0; i < 9.0; i += 1.0f)
+			for (real i = 0; i < 13.0; i += 1.0f)
 			{
 				Body* card = m_settings.world->createBody();
 				card->setShape(&brick);
 				card->setMass(1.5f);
-				card->setFriction(0.1f);
+				card->setFriction(0.5f);
 				card->setRestitution(0);
 				card->setType(Body::BodyType::Dynamic);
-				card->position().set({-10.0f + i * 1.2f, 15.0f});
+				card->position().set({-9.8f + i * 1.0f, 15.0f});
 				m_settings.tree->insert(card);
 			}
 
