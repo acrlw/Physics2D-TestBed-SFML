@@ -25,6 +25,8 @@ namespace Physics2D
 		real upperImpulse = 0.0f;
 
 		Vector2 impulse;
+
+		Matrix3x3 invJMJt;
 	};
 	class PHYSICS2D_API PrismaticJoint : public Joint
 	{
@@ -72,6 +74,20 @@ namespace Physics2D
 			k.e21() = k.e12();
 			k.e22() = ii_a + ii_b;
 			k.invert();
+
+			//Matrix3x3& jmjt = m_primitive.invJMJt;
+
+			//jmjt.e11() = im_a + im_b + ii_a * ra.cross(n) * ra.cross(n) + ii_b * rb.cross(n) * rb.cross(n);
+			//jmjt.e12() = ii_a * ra.cross(n) * ra.cross(t) + ii_b * rb.cross(n) * rb.cross(t);
+			//jmjt.e13() = ii_a * ra.cross(n) + ii_b * rb.cross(n);
+			//jmjt.e21() = jmjt.e12();
+			//jmjt.e22() = ii_a + ii_b + ii_a * ra.cross(t) * ra.cross(t) + ii_b * rb.cross(t) * rb.cross(t);
+			//jmjt.e23() = ii_a * ra.cross(t) + ii_b * rb.cross(t);
+			//jmjt.e31() = jmjt.e13();
+			//jmjt.e32() = jmjt.e23();
+			//jmjt.e33() = ii_a + ii_b;
+
+			//jmjt.invert();
 
 			m_primitive.effectiveMass = 1.0f / (im_a + im_b + ii_a * ra.cross(t) * ra.cross(t) + ii_b * rb.cross(t) * rb.cross(t));
 
@@ -162,20 +178,22 @@ namespace Physics2D
 				bodyA->applyImpulse(P1, ra);
 				bodyB->applyImpulse(-P1, rb);
 			}
+
+			//Vector2 va = bodyA->velocity() + Vector2::crossProduct(bodyA->angularVelocity(), ra);
+			//Vector2 vb = bodyB->velocity() + Vector2::crossProduct(bodyB->angularVelocity(), rb);
 			//real nv = n.dot(va - vb);
-			//real tv = t.dot(va - vb) + m_primitive.translationError / dt;
+			//real tv = t.dot(va - vb);
 			//real dw = bodyA->angularVelocity() - bodyB->angularVelocity();
 
 			//Vector3 jv(nv, tv, dw);
-			//Vector3 lambda = m_primitive.inkK.multiply(-jv);
+			//Vector3 lambda = m_primitive.invJMJt.multiply(-jv);
 
 			//bodyA->angularVelocity() += bodyA->inverseInertia() * lambda.z;
 			//bodyB->angularVelocity() -= bodyB->inverseInertia() * lambda.z;
 
 			//Vector2 P1 = n * lambda.x;
-
-			//if(Math::abs(m_primitive.translationError) == 0.0f)
-			//	lambda.y = 0.0f;
+			//
+			//lambda.y = 0.0f;
 
 			//Vector2 P2 = t * lambda.y;
 
@@ -183,7 +201,8 @@ namespace Physics2D
 			//bodyA->applyImpulse(P1 + P2, ra);
 			//bodyB->applyImpulse(-P1 - P2, rb);
 
-			//m_primitive.impulse += lambda;
+			//m_primitive.impulse.x += lambda.x;
+			//m_primitive.impulse.y += lambda.z;
 
 		}
 		void solvePosition(const real& dt) override

@@ -78,6 +78,7 @@ namespace Physics2D
 		static void renderDistanceJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 		static void renderPointJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 		static void renderMotorJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
+		static void renderPathJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color);
 
 		static void renderDashedLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2,
 					                             const sf::Color& color, const real& dashLength = RenderConstant::BasicDashLength,

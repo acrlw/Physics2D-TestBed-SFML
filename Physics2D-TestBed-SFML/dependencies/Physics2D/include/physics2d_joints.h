@@ -7,4 +7,5 @@
 #include "physics2d_revolute_joint.h"
 #include "physics2d_motor_joint.h"
 #include "physics2d_prismatic_joint.h"
+#include "physics2d_path_joint.h"
 #endif

@@ -75,12 +75,14 @@ namespace Physics2D
 			rect->setType(Body::BodyType::Dynamic);
 
 
-			PointJointPrimitive ppm;
+			RevoluteJointPrimitive ppm;
 			ppm.bodyA = rect;
+			ppm.bodyB = ground;
 			ppm.localPointA.set(-half, 0);
-			ppm.targetPoint.set(-20.0f - half, 20.0f);
+			ppm.localPointB.set(-20.0f - half, 20.0f);
 			ppm.dampingRatio = 1.0f;
 			ppm.frequency = 10;
+			ppm.angularLimit = false;
 			ppm.maxForce = Constant::Max;
 			m_settings.world->createJoint(ppm);
 			real max = 7.0f;
@@ -104,6 +106,7 @@ namespace Physics2D
 				revolutePrim.dampingRatio = 0.707f;
 				revolutePrim.frequency = 10;
 				revolutePrim.maxForce = Constant::Max;
+				revolutePrim.angularLimit = false;
 				m_settings.world->createJoint(revolutePrim);
 				rect = rect2;
 			}

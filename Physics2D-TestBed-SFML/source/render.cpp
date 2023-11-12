@@ -301,55 +301,60 @@ namespace Physics2D
 		switch (joint->type())
 		{
 		case JointType::Rotation:
-			{
-				renderRotationJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderRotationJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Distance:
-			{
-				renderDistanceJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderDistanceJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Point:
-			{
-				renderPointJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderPointJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Orientation:
-			{
-				renderOrientationJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderOrientationJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Pulley:
-			{
-				renderPulleyJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderPulleyJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Prismatic:
-			{
-				renderPrismaticJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderPrismaticJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Revolute:
-			{
-				renderRevoluteJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderRevoluteJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Wheel:
-			{
-				renderWheelJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderWheelJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Weld:
-			{
-				renderWeldJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderWeldJoint(window, camera, joint, color);
+			break;
+		}
 		case JointType::Motor:
-			{
-				renderMotorJoint(window, camera, joint, color);
-				break;
-			}
+		{
+			renderMotorJoint(window, camera, joint, color);
+			break;
+		}
+		case JointType::Path:
+		{
+			renderPathJoint(window, camera, joint, color);
+			break;
+		}
 		default:
 			break;
 		}
@@ -465,8 +470,30 @@ namespace Physics2D
 		renderPoint(window, camera, pb, RenderConstant::Blue, 2);
 	}
 
+	void RenderSFMLImpl::renderPathJoint(sf::RenderWindow& window, Camera& camera, Joint* joint, const sf::Color& color)
+	{
+		assert(joint != nullptr);
+		auto pathJoint = static_cast<PathJoint*>(joint);
+
+		Vector2 pa = pathJoint->primitive().bodyA->toWorldPoint(pathJoint->primitive().localPointA);
+		Vector2 origin = pathJoint->primitive().origin;
+		const Vector2 screenPos = camera.worldToScreen(origin);
+		sf::CircleShape circleShape(pathJoint->primitive().radius * RenderConstant::ScaleFactor * camera.meterToPixel());
+		sf::Color fillColor(RenderConstant::Gray);
+		fillColor.a = 0;
+		circleShape.move(toVector2f(screenPos) - sf::Vector2f(circleShape.getRadius(), circleShape.getRadius()));
+		circleShape.setFillColor(fillColor);
+		circleShape.setOutlineThickness(RenderConstant::BorderSize);
+		fillColor.a = 80;
+		circleShape.setOutlineColor(fillColor);
+		circleShape.setPointCount(RenderConstant::BasicCirclePointCount + static_cast<size_t>(camera.meterToPixel()));
+		window.draw(circleShape);
+
+		renderPoint(window, camera, pa, RenderConstant::Red, 2);
+	}
+
 	void RenderSFMLImpl::renderDashedLine(sf::RenderWindow& window, Camera& camera, const Vector2& p1, const Vector2& p2, 
-		const sf::Color& color, const real& dashLength, const real& dashGap)
+	                                      const sf::Color& color, const real& dashLength, const real& dashGap)
 	{
 		sf::VertexArray lines(sf::Lines);
 

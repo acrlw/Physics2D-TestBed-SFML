@@ -15,6 +15,7 @@ namespace Physics2D
 		Wheel,
 		Revolute,
 		Motor,
+		Path,
 	};
 	class PHYSICS2D_API Joint
 	{

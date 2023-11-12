@@ -66,7 +66,7 @@ namespace Physics2D
 
 
 			block = m_settings.world->createBody();
-			block->setShape(&bar);
+			block->setShape(&rectangle);
 			block->setType(Body::BodyType::Dynamic);
 			block->setMass(8.0f);
 			block->position().set(2.5f, 1.0f);
@@ -105,18 +105,25 @@ namespace Physics2D
 
 			//RevoluteJoint* rj = m_settings.world->createJoint(rjp);
 
-			PrismaticJointPrimitive pjp;
+			PathJointPrimitive pjp;
 			pjp.bodyA = block;
-			pjp.bodyB = ground;
-			pjp.localPointA.set(0.5f, 0.0f);
-			pjp.localPointB.set(2.5f, 3.5f);
-			pjp.xAxis.set(1.0f, 0.0f);
-			pjp.xAxis.normalize();
-			pjp.referenceAngle = Math::degreeToRadian(-90);
-			
-			pjp.lowerLimit = -2.0f;
-			pjp.upperLimit = 2.0f;
-			PrismaticJoint * pj = m_settings.world->createJoint(pjp);
+			pjp.origin.set(0.0f, 6.0f);
+			pjp.localPointA.set(0.0f, 0.0f);
+
+			PathJoint * pj = m_settings.world->createJoint(pjp);
+
+			//PrismaticJointPrimitive pjp;
+			//pjp.bodyA = block;
+			//pjp.bodyB = ground;
+			//pjp.localPointA.set(0.5f, 0.0f);
+			//pjp.localPointB.set(2.5f, 3.5f);
+			//pjp.xAxis.set(1.0f, 0.0f);
+			//pjp.xAxis.normalize();
+			//pjp.referenceAngle = Math::degreeToRadian(-90);
+			//
+			//pjp.lowerLimit = -2.0f;
+			//pjp.upperLimit = 2.0f;
+			//PrismaticJoint * pj = m_settings.world->createJoint(pjp);
 
 			//wheel1 = m_settings.world->createBody();
 			//wheel2 = m_settings.world->createBody();

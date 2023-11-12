@@ -46,7 +46,7 @@ namespace Physics2D
 
 			Body* bullet = m_settings.world->createBody();
 			bullet->setShape(&stick);
-			bullet->position().set({-100.0f, 6.5f});
+			bullet->position().set({-100.0f, 8.5f});
 			bullet->setType(Body::BodyType::Bullet);
 			bullet->setMass(5.0f);
 			bullet->velocity().set({1000.0f, 0.0f});

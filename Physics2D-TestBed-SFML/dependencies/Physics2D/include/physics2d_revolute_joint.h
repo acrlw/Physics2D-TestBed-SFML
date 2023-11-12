@@ -109,7 +109,7 @@ namespace Physics2D
 					//non-negative constraint
 					real c = Math::max(0.0f, m_primitive.angularError - m_primitive.lowerAngle);
 					real dw = bodyA->angularVelocity() - bodyB->angularVelocity();
-					real dC = c;
+					real dC = c / dt;
 					dw += dC;
 
 					real impulse = m_primitive.angularMass * -dw;
@@ -128,7 +128,7 @@ namespace Physics2D
 					//non-negative constraint
 					real c = Math::max(0.0f, m_primitive.upperAngle - m_primitive.angularError);
 					real dw = (bodyB->angularVelocity() - bodyA->angularVelocity());
-					real dC = c;
+					real dC = c / dt;
 					dw += dC;
 
 					real impulse = m_primitive.angularMass * -dw;

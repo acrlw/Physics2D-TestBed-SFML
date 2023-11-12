@@ -72,6 +72,8 @@ namespace Physics2D
 		MotorJoint* createJoint(const MotorJointPrimitive& primitive);
 		WeldJoint* createJoint(const WeldJointPrimitive& primitive);
 		OrientationJoint* createJoint(const OrientationJointPrimitive& primitive);
+		PathJoint* createJoint(const PathJointPrimitive& primitive);
+
 
 		real bias() const;
 		void setBias(const real& bias);

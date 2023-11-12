@@ -398,4 +398,12 @@ namespace Physics2D
 		return temp;
 	}
 
+	PathJoint* PhysicsWorld::createJoint(const PathJointPrimitive& primitive)
+	{
+		auto joint = std::make_unique<PathJoint>(primitive);
+		PathJoint* temp = joint.get();
+		temp->setId(RandomGenerator::unique());
+		m_jointList.emplace_back(std::move(joint));
+		return temp;
+	}
 }
