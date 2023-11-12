@@ -14,56 +14,76 @@ namespace Physics2D
 
 		void onLoad() override
 		{
-			//real startX = -5.0f;
-			//circle.setRadius(1.0f);
-			//DistanceJointPrimitive djp;
-			//djp.minDistance = 4.9f;
-			//djp.maxDistance = 5.0f;
-			//djp.localPointA.set(0, 0);
+			Edge edge;
 
-			//Body* ball = m_settings.world->createBody();
-			//ball->setShape(&circle);
-			//ball->setMass(1.0f);
-			//ball->setType(Body::BodyType::Dynamic);
-			//ball->position().set(startX, 5.0);
-			//ball->setRestitution(1.0f);
+			edge.set({ -100, 0 }, { 100, 0 });
 
-			//djp.targetPoint.set(startX, 10.0f);
-			//djp.bodyA = ball;
-			//m_settings.world->createJoint(djp);
+			real startX = -5.0f;
+			circle.setRadius(1.0f);
+			DistanceJointPrimitive djp;
+			djp.minDistance = 5.0f;
+			djp.maxDistance = 5.0f;
+			djp.localPointA.set(0, 0);
 
-			//m_settings.tree->insert(ball);
+			Body* ball = m_settings.world->createBody();
+			ball->setShape(&circle);
+			ball->setMass(1.0f);
+			ball->setType(Body::BodyType::Dynamic);
+			ball->position().set(startX, 5.0);
+			ball->setRestitution(1.0f);
 
 
-			//for (real i = 0; i < 5.0f; i++)
-			//{
-			//	startX += 2.01f;
-			//	ball = m_settings.world->createBody();
-			//	ball->setShape(&circle);
-			//	ball->setMass(1.0f);
-			//	ball->setType(Body::BodyType::Dynamic);
-			//	ball->setFriction(0.1f);
-			//	ball->setRestitution(1.0f);
-			//	ball->position().set(startX, 5.0);
-			//	djp.targetPoint.set(startX, 10.0f);
-			//	djp.bodyA = ball;
-			//	m_settings.world->createJoint(djp);
-			//	m_settings.tree->insert(ball);
-			//}
+			Body* ground;
 
-			//startX += 2.01f;
-			//ball = m_settings.world->createBody();
-			//ball->setShape(&circle);
-			//ball->setMass(1.0f);
-			//ball->setType(Body::BodyType::Dynamic);
-			//ball->position().set(startX + 5.0f, 10.0f);
-			//ball->setRestitution(1.0f);
+			ground = m_settings.world->createBody();
+			ground->setShape(&edge);
+			ground->position().set({ 0.0, 0.0 });
+			ground->setMass(Constant::Max);
+			ground->setType(Body::BodyType::Static);
+			ground->setFriction(0.6f);
+			m_settings.tree->insert(ground);
 
-			//djp.targetPoint.set(startX, 10.0f);
-			//djp.bodyA = ball;
-			//m_settings.world->createJoint(djp);
 
-			//m_settings.tree->insert(ball);
+
+			djp.bodyB = ground;
+			djp.localPointB.set(startX, 10.0f);
+
+			djp.bodyA = ball;
+			
+			m_settings.world->createJoint(djp);
+
+			m_settings.tree->insert(ball);
+
+
+			for (real i = 0; i < 5.0f; i++)
+			{
+				startX += 2.01f;
+				ball = m_settings.world->createBody();
+				ball->setShape(&circle);
+				ball->setMass(1.0f);
+				ball->setType(Body::BodyType::Dynamic);
+				ball->setFriction(0.1f);
+				ball->setRestitution(1.0f);
+				ball->position().set(startX, 5.0);
+				djp.localPointB.set(startX, 10.0f);
+				djp.bodyA = ball;
+				m_settings.world->createJoint(djp);
+				m_settings.tree->insert(ball);
+			}
+
+			startX += 2.01f;
+			ball = m_settings.world->createBody();
+			ball->setShape(&circle);
+			ball->setMass(1.0f);
+			ball->setType(Body::BodyType::Dynamic);
+			ball->position().set(startX + 5.0f, 10.0f);
+			ball->setRestitution(1.0f);
+
+			djp.localPointB.set(startX, 10.0f);
+			djp.bodyA = ball;
+			m_settings.world->createJoint(djp);
+
+			m_settings.tree->insert(ball);
 		}
 
 		void onPostRender(sf::RenderWindow& window) override

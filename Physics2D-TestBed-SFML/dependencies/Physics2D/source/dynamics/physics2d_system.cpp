@@ -160,6 +160,9 @@ namespace Physics2D
             if (m_solveContactVelocity)
 				m_maintainer.solveVelocity(vdt);
         }
+
+        m_maintainer.solveRestitution(dt);
+
         m_world.stepPosition(dt);
 
         //solve penetration use contact pairs from previous velocity solver settings

@@ -26,6 +26,8 @@ namespace Physics2D
 		real effectiveMassTangent = 0;
 		real accumulatedNormalImpulse = 0;
 		real accumulatedTangentImpulse = 0;
+
+		real relativeVelocity;
 	};
 
 	struct PHYSICS2D_API ContactConstraintPoint
@@ -48,6 +50,7 @@ namespace Physics2D
 	public:
 		void clearAll();
 		void solveVelocity(real dt);
+		void solveRestitution(real dt);
 		void solvePosition(real dt);
 		void add(const Collision& collision);
 		void prepare(ContactConstraintPoint& ccp, const VertexPair& pair, const Collision& collision);

@@ -32,7 +32,7 @@ namespace Physics2D
 				body->setShape(&circle);
 				body->setMass(10.0f);
 				body->setFriction(0.1f);
-				body->setRestitution(i / 10.0f);
+				body->setRestitution(i / 15.0f);
 				body->position().set(i * 2.5f - 10, 10.0f);
 				body->setType(Body::BodyType::Dynamic);
 				m_settings.tree->insert(body);

@@ -273,6 +273,40 @@ namespace Physics2D
 		}
 	}
 
+	void ContactMaintainer::solveRestitution(real dt)
+	{
+		for (auto&& elem : m_contactTable)
+		{
+			if (elem.second.empty())
+				continue;
+			for (auto&& ccp : elem.second)
+			{
+				if (!ccp.active)
+					continue;
+
+				auto& vcp = ccp.vcp;
+
+				if(vcp.restitution == 0.0f || vcp.normal.isOrigin())
+					continue;
+
+				Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);
+				Vector2 wb = Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
+				vcp.va = ccp.bodyA->velocity() + wa;
+				vcp.vb = ccp.bodyB->velocity() + wb;
+
+				Vector2 dv = vcp.va - vcp.vb;
+				real jv = vcp.normal.dot(dv);
+
+				real lambda_r = vcp.effectiveMassNormal * -(jv + vcp.restitution * vcp.relativeVelocity);
+
+				Vector2 impulse_r = lambda_r * vcp.normal;
+
+				ccp.bodyA->applyImpulse(impulse_r, vcp.ra);
+				ccp.bodyB->applyImpulse(-impulse_r, vcp.rb);
+			}
+		}
+	}
+
 	void ContactMaintainer::solvePosition(real dt)
 	{
 		for (auto&& elem : m_contactTable)
@@ -616,5 +650,7 @@ namespace Physics2D
 		Vector2 wb = Vector2::crossProduct(ccp.bodyB->angularVelocity(), vcp.rb);
 		vcp.va = ccp.bodyA->velocity() + wa;
 		vcp.vb = ccp.bodyB->velocity() + wb;
+
+		vcp.relativeVelocity = vcp.normal.dot(vcp.va - vcp.vb);
 	}
 }
