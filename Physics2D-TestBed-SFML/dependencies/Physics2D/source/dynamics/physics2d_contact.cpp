@@ -286,7 +286,7 @@ namespace Physics2D
 
 				auto& vcp = ccp.vcp;
 
-				if(vcp.restitution == 0.0f || vcp.normal.isOrigin())
+				if(vcp.restitution == 0.0f || vcp.normal.isOrigin() && vcp.relativeVelocity < -1e-8f)
 					continue;
 
 				Vector2 wa = Vector2::crossProduct(ccp.bodyA->angularVelocity(), vcp.ra);

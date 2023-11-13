@@ -77,7 +77,7 @@ namespace Physics2D
 			sf::Color hitColor = RenderConstant::Blue;
 			sf::Color regionColor = RenderConstant::Yellow;
 			sf::Color cellColor = sf::Color::Cyan;
-			cellColor.a = 155;
+			cellColor.a = 80;
 			collisionColor.a = 50;
 			for (auto&& elem : pairs)
 			{

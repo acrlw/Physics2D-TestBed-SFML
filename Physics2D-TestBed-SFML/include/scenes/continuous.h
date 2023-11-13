@@ -13,7 +13,7 @@ namespace Physics2D
 
 		void onLoad() override
 		{
-			block.set(300, 3.0f);
+			block.set(300.0f, 60.0f);
 			edge.set({-200, 0}, {149.9f, 0});
 			rect.set(1.0f, 1.0f);
 			circle.setRadius(0.1f);
@@ -22,7 +22,7 @@ namespace Physics2D
 
 			Body* ground = m_settings.world->createBody();
 			ground->setShape(&block);
-			ground->position().set({0, -1.5});
+			ground->position().set({0, -30});
 			ground->setMass(100000);
 			ground->setType(Body::BodyType::Static);
 			ground->setFriction(0.3f);
@@ -33,7 +33,7 @@ namespace Physics2D
 				for (real i = 0; i < 3.0; i += 1.0f)
 				{
 					Body* body = m_settings.world->createBody();
-					body->position().set({i * 1.05f - 2.0f, j * 1.05f - ground->position().y + 0.55f});
+					body->position().set({i * 1.05f - 2.0f, j * 1.05f + 0.55f});
 					body->setShape(&rect);
 					body->rotation() = 0.0f;
 					body->setMass(1.0f);

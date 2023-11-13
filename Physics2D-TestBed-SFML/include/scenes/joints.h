@@ -19,7 +19,7 @@ namespace Physics2D
 			edge.set({-100, 0}, {100, 0});
 			edge2.set({0, 0}, {100, 40});
 			rectangle.set(1.0f, 1.0f);
-			bar.set(2.0f, 0.5f);
+			bar.set(3.5f, 0.5f);
 
 			wheel.setRadius(1.0f);
 
@@ -69,7 +69,7 @@ namespace Physics2D
 			block->setShape(&rectangle);
 			block->setType(Body::BodyType::Dynamic);
 			block->setMass(8.0f);
-			block->position().set(2.5f, 1.0f);
+			block->position().set(4.5f, 1.0f);
 			block->rotation() = Math::degreeToRadian(60);
 			block->setBitmask(0x01);
 			m_settings.tree->insert(block);
@@ -96,19 +96,19 @@ namespace Physics2D
 			//RevoluteJointPrimitive rjp;
 			//rjp.bodyA = block;
 			//rjp.bodyB = ground;
-			//rjp.localPointA.set(0.0f, 0.0f);
-			//rjp.localPointB.set(2.5f, 3.5f);
+			//rjp.localPointA.set(1.5f, 0.0f);
+			//rjp.localPointB.set(4.5f, 3.5f);
 			//rjp.angularLimit = true;
 			//rjp.referenceAngle = 0;
-			//rjp.lowerAngle = Math::degreeToRadian(30);
-			//rjp.upperAngle = Math::degreeToRadian(120);
+			//rjp.lowerAngle = Math::degreeToRadian(-30);
+			//rjp.upperAngle = Math::degreeToRadian(0);
 
 			//RevoluteJoint* rj = m_settings.world->createJoint(rjp);
 
 			PathJointPrimitive pjp;
 			pjp.bodyA = block;
 			pjp.origin.set(0.0f, 6.0f);
-			pjp.localPointA.set(0.0f, 0.25f);
+			pjp.localPointA.set(0.0f, 0.0f);
 
 			PathJoint * pj = m_settings.world->createJoint(pjp);
 

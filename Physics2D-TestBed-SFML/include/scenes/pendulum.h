@@ -15,6 +15,9 @@ namespace Physics2D
 
 		void onLoad() override
 		{
+			Edge edge;
+			edge.set(Vector2{ -100.0f, 0 }, Vector2{ 100.0f, 0 });
+
 			points.resize(400);
 
 			uint32_t mask = 0x01;
@@ -45,6 +48,7 @@ namespace Physics2D
 			stick3->rotation() = Math::degreeToRadian(45);
 
 			RevoluteJointPrimitive rjp;
+			rjp.angularLimit = false;
 			rjp.bodyA = stick1;
 			rjp.bodyB = stick2;
 			rjp.localPointA.set(1.5f, 0);
@@ -61,18 +65,29 @@ namespace Physics2D
 			rjp.dampingRatio = 0.8f;
 			m_settings.world->createJoint(rjp);
 
-			PointJointPrimitive pjp;
-			pjp.bodyA = stick1;
-			pjp.frequency = 50;
-			pjp.dampingRatio = 0.8f;
-			pjp.maxForce = 10000;
-			pjp.targetPoint.set(-1.5f, 0);
-			pjp.localPointA.set(-1.5f, 0);
-			m_settings.world->createJoint(pjp);
+			Body* ground = m_settings.world->createBody();
+			ground->setShape(&edge);
+			ground->setType(Body::BodyType::Static);
+			ground->setMass(Constant::Max);
+			ground->position().set({ 0.0f, 0.0f });
+			ground->rotation() = 0.0f;
+			ground->setFriction(0.1f);
+			ground->setRestitution(0.0f);
+			ground->setBitmask(mask << 4);
+			
+			rjp.bodyA = stick1;
+			rjp.bodyB = ground;
+			rjp.frequency = 50;
+			rjp.dampingRatio = 0.8f;
+			rjp.maxForce = 10000;
+			rjp.localPointA.set(-1.5f, 0);
+			rjp.localPointB.set(-1.5f, 0.0);
+			m_settings.world->createJoint(rjp);
 
 			m_settings.tree->insert(stick1);
 			m_settings.tree->insert(stick2);
 			m_settings.tree->insert(stick3);
+			m_settings.tree->insert(ground);
 
 			m_settings.world->setEnableDamping(false);
 		}
