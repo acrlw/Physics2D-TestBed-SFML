@@ -426,13 +426,13 @@ namespace Physics2D
 
 		ImGui::Separator();
 		ImGui::Text("Iteration");
-		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 20);
-		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 20);
+		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 60);
+		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 60);
 
 		ImGui::Separator();
 		ImGui::Text("Time");
 
-		ImGui::SliderInt("Delta Time", &m_frequency, 30, 240);
+		ImGui::SliderInt("Delta Time", &m_frequency, 10, 240);
 		ImGui::Checkbox("Slice Delta Time", &m_system.sliceDeltaTime());
 
 		ImGui::Separator();

@@ -475,6 +475,8 @@ namespace Physics2D
 	{
 		const Body* bodyA = collision.bodyA;
 		const Body* bodyB = collision.bodyB;
+		const bool isRoundA = bodyA->shape()->type() == ShapeType::Circle || bodyA->shape()->type() == ShapeType::Ellipse;
+		const bool isRoundB = bodyB->shape()->type() == ShapeType::Circle || bodyB->shape()->type() == ShapeType::Ellipse;
 		const auto relation = Body::BodyPair::generateBodyPairID(collision.bodyA, collision.bodyB);
 		auto& contactList = m_contactTable[relation];
 		uint32_t i = 0;
@@ -492,8 +494,7 @@ namespace Physics2D
 			{
 				const bool isPointA = localA.fuzzyEqual(contact.localA, Constant::TrignometryEpsilon);
 				const bool isPointB = localB.fuzzyEqual(contact.localB, Constant::TrignometryEpsilon);
-				
-				if (isPointA || isPointB)
+				if (isPointA || isPointB || isRoundA || isRoundB)
 				{
 					//satisfy the condition, give the old accumulated value to new value
 					contact.localA = localA;

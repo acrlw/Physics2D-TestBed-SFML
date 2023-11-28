@@ -37,8 +37,8 @@ namespace Physics2D
 			for (real i = 0; i < max; i += 1.0f)
 			{
 				Body* body = m_settings.world->createBody();
-				body->setShape(&rectangle);
-				body->position().set({ 0.5f, 0.6f + i * 1.1f});
+				body->setShape(&circle);
+				body->position().set({ 0.5f, 0.55f + i * 1.05f});
 				body->setFriction(0.9f);
 				body->setBitmask(mask);
 				body->setRestitution(0);

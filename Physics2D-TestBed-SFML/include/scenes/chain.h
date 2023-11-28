@@ -38,15 +38,17 @@ namespace Physics2D
 			ground->setType(Body::BodyType::Static);
 			m_settings.tree->insert(ground);
 
-			PointJointPrimitive ppm;
+			RevoluteJointPrimitive ppm;
 			RevoluteJointPrimitive revolutePrim;
 
 			ppm.bodyA = rect;
+			ppm.bodyB = ground;
 			ppm.localPointA.set(-half, 0);
-			ppm.targetPoint.set(offset - half, 0.0f);
+			ppm.localPointB.set(offset - half, 15.0f);
 			ppm.dampingRatio = 0.8f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;
+			ppm.angularLimit = false;
 			m_settings.world->createJoint(ppm);
 			real max = 9.0f;
 			m_settings.tree->insert(rect);

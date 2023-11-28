@@ -48,6 +48,7 @@ namespace Physics2D
 			ppm.dampingRatio = 0.1f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;
+			ppm.angularLimit = false;
 			m_settings.world->createJoint(ppm);
 			real max = 20.0f;
 			m_settings.tree->insert(rect);
