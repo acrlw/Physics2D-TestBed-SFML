@@ -91,7 +91,7 @@ namespace Physics2D
 			{
 				rect2 = m_settings.world->createBody();
 				rect2->setShape(&brick);
-				rect2->position().set({-20.0f + i * brick.width() + i * 0.1f, 20.0f});
+				rect2->position().set({-20.0f + i * brick.width() + i * 0.2f, 20.0f});
 				rect2->rotation() = 0;
 				rect2->setMass(2.0f);
 				rect2->setFriction(0.1f);
@@ -112,7 +112,7 @@ namespace Physics2D
 			}
 			rect2 = m_settings.world->createBody();
 			rect2->setShape(&circle);
-			rect2->position().set({-20.0f + max * brick.width() + max * 0.1f + half, 20.0f});
+			rect2->position().set({-20.0f + max * brick.width() + max * 0.2f + half, 20.0f});
 			rect2->rotation() = 0;
 			rect2->setMass(50.0f);
 			rect2->setFriction(0.1f);
@@ -127,6 +127,7 @@ namespace Physics2D
 			revolutePrim.dampingRatio = 0.8f;
 			revolutePrim.frequency = 20;
 			revolutePrim.maxForce = Constant::Max;
+			revolutePrim.angularLimit = false;
 			m_settings.world->createJoint(revolutePrim);
 
 

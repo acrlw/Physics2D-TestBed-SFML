@@ -36,7 +36,7 @@ namespace Physics2D
 				for (real i = 0.0; i < max - j; i += 1.0f)
 				{
 					Body* body = m_settings.world->createBody();
-					body->position().set({-10.0f + i * 1.05f + offset, j * 1.05f + 1.5f});
+					body->position().set({-10.0f + i * 1.05f + offset, j * 1.05f + 0.6f});
 					body->setShape(&rectangle);
 					body->rotation() = 0;
 					body->setMass(1.0f);
