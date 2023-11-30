@@ -29,7 +29,7 @@ namespace Physics2D
 
 			//m_settings.grid->insert(ground);
 
-			real offset = 0.0f;
+			real offset = 0.5f;
 			real max = 15.0;
 			for (real j = 0; j < max; j += 1.0f)
 			{

@@ -33,7 +33,7 @@ namespace Physics2D
 
 			ground = m_settings.world->createBody();
 			ground->setShape(&edge);
-			ground->position().set({0, -15.0});
+			ground->position().set({0, 80.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
 			m_settings.tree->insert(ground);
@@ -44,19 +44,19 @@ namespace Physics2D
 			ppm.bodyA = rect;
 			ppm.bodyB = ground;
 			ppm.localPointA.set(-half, 0);
-			ppm.localPointB.set(offset - half, 15.0f);
+			ppm.localPointB.set(offset - half, -80.0f);
 			ppm.dampingRatio = 0.8f;
 			ppm.frequency = 1000;
 			ppm.maxForce = 10000;
 			ppm.angularLimit = false;
 			m_settings.world->createJoint(ppm);
-			real max = 9.0f;
+			real max = 30.0f;
 			m_settings.tree->insert(rect);
 			for (real i = 1.0f; i < max; i += 1.0f)
 			{
 				rect2 = m_settings.world->createBody();
 				rect2->setShape(&brick);
-				rect2->position().set({offset + i * brick.width() * 1.4f, 0.0f});
+				rect2->position().set({offset + i * brick.width() * 1.2f, 0.0f});
 				rect2->rotation() = 0;
 				rect2->setMass(1.0f);
 				rect2->setFriction(0.01f);
@@ -65,8 +65,8 @@ namespace Physics2D
 				m_settings.tree->insert(rect2);
 				revolutePrim.bodyA = rect;
 				revolutePrim.bodyB = rect2;
-				revolutePrim.localPointA.set(half + brick.width() * 0.2f, 0);
-				revolutePrim.localPointB.set(-half - brick.width() * 0.2f, 0);
+				revolutePrim.localPointA.set(half + brick.width() * 0.1f, 0);
+				revolutePrim.localPointB.set(-half - brick.width() * 0.1f, 0);
 				revolutePrim.dampingRatio = 0.8f;
 				revolutePrim.frequency = 10;
 				revolutePrim.maxForce = 10000;

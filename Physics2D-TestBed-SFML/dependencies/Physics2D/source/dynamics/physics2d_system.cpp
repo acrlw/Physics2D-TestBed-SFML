@@ -150,7 +150,7 @@ namespace Physics2D
         }
         m_maintainer.clearInactivePoints();
 
-    		m_world.prepareVelocityConstraint(dt);
+    	m_world.prepareVelocityConstraint(vdt);
 
         for (int i = 0; i < m_velocityIteration; ++i)
         {
