@@ -16,7 +16,7 @@ namespace Physics2D
 			block.set(300.0f, 60.0f);
 			edge.set({-200, 0}, {149.9f, 0});
 			rect.set(1.0f, 1.0f);
-			circle.setRadius(0.1f);
+			circle.setRadius(0.5f);
 			stick.set(2.0f, 0.5f);
 			wall.set(60.0, 400.0f);
 
@@ -45,11 +45,11 @@ namespace Physics2D
 			}
 
 			Body* bullet = m_settings.world->createBody();
-			bullet->setShape(&stick);
+			bullet->setShape(&circle);
 			bullet->position().set({-100.0f, 8.5f});
 			bullet->setType(Body::BodyType::Bullet);
 			bullet->setMass(5.0f);
-			bullet->velocity().set({1000.0f, 0.0f});
+			bullet->velocity().set({1500.0f, 0.0f});
 			bullet->angularVelocity() = -500.0f;
 			m_settings.tree->insert(bullet);
 

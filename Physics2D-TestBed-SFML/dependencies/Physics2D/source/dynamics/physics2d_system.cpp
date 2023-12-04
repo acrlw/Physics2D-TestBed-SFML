@@ -1,4 +1,5 @@
 #include "physics2d_system.h"
+#include "physics2d_system.h"
 namespace Physics2D
 {
     int& PhysicsSystem::positionIteration()
@@ -102,8 +103,12 @@ namespace Physics2D
                     real toi = finals.value();
                     updateTree();
                     solve(toi);
-                    real ddt = (dt - toi) / real(Constant::CCDMaxIterations);
-                    for (int i = 0; i < Constant::CCDMaxIterations; ++i) {
+                    real iterVel = bullet->velocity().length() / 50;
+                    real iterAng = Math::abs(bullet->angularVelocity()) / 10;
+                    real iterReal = Math::max(real(Constant::CCDMaxIterations), Math::max(iterVel, iterAng));
+                    iterReal = std::ceil(iterReal);
+                	real ddt = (dt - toi) / iterReal;
+                    for (int i = 0; i < int(iterReal); ++i) {
                         updateTree();
                         solve(ddt);
                     }
@@ -114,6 +119,47 @@ namespace Physics2D
         }
         //there isn't a ccd case, solve nothing.
         return false;
+    }
+    void PhysicsSystem::solveOnce(const real& dt)
+    {
+        m_world.stepVelocity(dt);
+        //auto potentialList = m_grid.generate();
+
+        auto potentialList = m_tree.generate();
+        for (auto pair : potentialList)
+        {
+            auto result = Detector::detect(pair.first, pair.second);
+            if (result.isColliding) {
+                m_maintainer.add(result);
+            }
+        }
+        m_maintainer.clearInactivePoints();
+
+        m_world.prepareVelocityConstraint(dt);
+
+
+        if (m_solveJointVelocity)
+            m_world.solveVelocityConstraint(dt);
+
+        if (m_solveContactVelocity)
+            m_maintainer.solveVelocity(dt);
+        
+
+        m_maintainer.solveRestitution(dt);
+
+        m_world.stepPosition(dt);
+
+        //solve penetration use contact pairs from previous velocity solver settings
+        //TODO: Can generate another contact table just for position solving
+
+        if (m_solveContactPosition)
+            m_maintainer.solvePosition(dt);
+
+        if (m_solveJointPosition)
+            m_world.solvePositionConstraint(dt);
+        
+
+        m_maintainer.deactivateAllPoints();
     }
     void PhysicsSystem::solve(const real& dt)
     {

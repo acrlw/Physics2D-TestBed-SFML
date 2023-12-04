@@ -31,6 +31,7 @@ namespace Physics2D
 		void updateGrid();
 		void solve(const real& dt);
 		bool solveCCD(const real& dt);
+		void solveOnce(const real& dt);
 		int m_positionIteration = 1;
 		int m_velocityIteration = 1;
 		bool m_sliceDeltaTime = false;
