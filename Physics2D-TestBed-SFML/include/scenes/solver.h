@@ -14,9 +14,10 @@ namespace Physics2D
 		void onLoad() override
 		{
 			rect.set(1.0f, 1.0f);
+			circle.setRadius(0.5f);
 
 			body1 = m_settings.world->createBody();
-			body1->setShape(&rect);
+			body1->setShape(&circle);
 			body1->position().set({ 0.0f, 0.0f });
 			body1->setMass(1.0f);
 			body1->setType(Body::BodyType::Dynamic);
@@ -26,7 +27,7 @@ namespace Physics2D
 			m_settings.tree->insert(body1);
 
 			body2 = m_settings.world->createBody();
-			body2->setShape(&rect);
+			body2->setShape(&circle);
 			body2->position().set({ 2.0f, -2.0f });
 			body2->setMass(1.0f);
 			body2->setType(Body::BodyType::Dynamic);
@@ -37,7 +38,7 @@ namespace Physics2D
 			m_settings.tree->insert(body2);
 
 			body3 = m_settings.world->createBody();
-			body3->setShape(&rect);
+			body3->setShape(&circle);
 			body3->position().set({ 4.0f, 2.0f });
 			body3->setMass(1.0f);
 			body3->setType(Body::BodyType::Dynamic);
@@ -84,6 +85,7 @@ namespace Physics2D
 			m_settings.world->setEnableGravity(true);
 		}
 	private:
+		Circle circle;
 		Rectangle rect;
 		Edge edge;
 		Body* body1, *body2, *body3;

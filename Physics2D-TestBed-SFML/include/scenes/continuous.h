@@ -13,24 +13,24 @@ namespace Physics2D
 
 		void onLoad() override
 		{
-			block.set(300.0f, 60.0f);
+			block.set(1000.0f, 60.0f);
 			edge.set({-200, 0}, {149.9f, 0});
 			rect.set(1.0f, 1.0f);
 			circle.setRadius(0.5f);
 			stick.set(2.0f, 0.5f);
-			wall.set(60.0, 400.0f);
+			wall.set(60.0, 1000.0f);
 
 			Body* ground = m_settings.world->createBody();
 			ground->setShape(&block);
 			ground->position().set({0, -30});
-			ground->setMass(100000);
+			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
-			ground->setFriction(0.3f);
+			ground->setFriction(0.9f);
 			m_settings.tree->insert(ground);
 
 			for (real j = 0; j < 20.0f; j += 1.0f)
 			{
-				for (real i = 0; i < 3.0; i += 1.0f)
+				for (real i = 0; i < 1; i += 1.0f)
 				{
 					Body* body = m_settings.world->createBody();
 					body->position().set({i * 1.05f - 2.0f, j * 1.05f + 0.55f});
@@ -48,16 +48,17 @@ namespace Physics2D
 			bullet->setShape(&circle);
 			bullet->position().set({-100.0f, 8.5f});
 			bullet->setType(Body::BodyType::Bullet);
-			bullet->setMass(5.0f);
+			bullet->setMass(10.0f);
 			bullet->velocity().set({1500.0f, 0.0f});
 			bullet->angularVelocity() = -500.0f;
+			bullet->setFriction(0.9f);
 			m_settings.tree->insert(bullet);
 
 			Body* wallBody = m_settings.world->createBody();
 			wallBody->setShape(&wall);
 			wallBody->position().set(180.0f, 0.0f);
-			wallBody->setMass(100000);
-			wallBody->setFriction(0.1f);
+			wallBody->setMass(Constant::Max);
+			wallBody->setFriction(0.9f);
 			wallBody->setType(Body::BodyType::Static);
 
 			m_settings.tree->insert(wallBody);

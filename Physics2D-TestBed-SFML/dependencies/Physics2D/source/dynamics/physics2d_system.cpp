@@ -108,7 +108,7 @@ namespace Physics2D
                     real iterReal = Math::max(real(Constant::CCDMaxIterations), Math::max(iterVel, iterAng));
                     iterReal = std::ceil(iterReal);
                 	real ddt = (dt - toi) / iterReal;
-                    for (int i = 0; i < int(iterReal); ++i) {
+                    for (int i = 0; i <= int(iterReal); ++i) {
                         updateTree();
                         solve(ddt);
                     }

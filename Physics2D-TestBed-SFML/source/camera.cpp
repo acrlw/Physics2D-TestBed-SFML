@@ -141,6 +141,8 @@ namespace Physics2D
 						color = RenderConstant::Green;
 					if (body->type() == Body::BodyType::Static)
 						color = RenderConstant::Teal;
+					if (body->type() == Body::BodyType::Bullet)
+						color = RenderConstant::Pink;
 					RenderSFMLImpl::renderShape(window, *this, primitive, color);
 
 					if (m_centerVisible)
