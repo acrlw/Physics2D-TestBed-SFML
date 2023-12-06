@@ -19,13 +19,13 @@ namespace Physics2D
 			circle.setRadius(0.5f);
 
 			uint32_t mask = 0x01;
-			real max = 15.0f;
+			real max = 3.0f;
 			for (real i = 0; i < 1.0f; i += 1.0f)
 			{
 				Body* ground = m_settings.world->createBody();
 				ground->setShape(&edge);
-				ground->position().set({0, 0 + i * 3.0f});
-				ground->setFriction(0.4f);
+				ground->position().set({0, -circle.radius()});
+				ground->setFriction(1.0f);
 				ground->setBitmask(mask);
 				ground->setRestitution(0);
 				ground->setMass(Constant::Max);
@@ -34,15 +34,19 @@ namespace Physics2D
 				m_settings.tree->insert(ground);
 			}
 			mask = 0x01;
+			Vector2 pos[3];
+			pos[0].set({ -1.5f * circle.radius(), 0.0f });
+			pos[1].set({ 1.5f * circle.radius(), 0.0f });
+			pos[2].set({ 0.0f, circle.radius() * Math::sqrt(4.0f - 1.5f * 1.5f) });
 			for (real i = 0; i < max; i += 1.0f)
 			{
 				Body* body = m_settings.world->createBody();
 				body->setShape(&circle);
-				body->position().set({ 0.5f, 0.55f + i * 1.05f});
-				body->setFriction(0.9f);
+				body->position().set(pos[int(i)]);
+				body->setFriction(1.0f);
 				body->setBitmask(mask);
 				body->setRestitution(0);
-				body->setMass(1);
+				body->setMass(1.0f);
 				body->setType(Body::BodyType::Dynamic);
 				//mask = mask << 1;
 				m_settings.tree->insert(body);

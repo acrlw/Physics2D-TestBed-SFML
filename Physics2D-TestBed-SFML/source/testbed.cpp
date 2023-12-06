@@ -102,7 +102,7 @@ namespace Physics2D
 		m_system.world().setAirFrictionCoefficient(0.0f);
 		m_system.world().setAngularVelocityDamping(0.0f);
 		m_system.world().setEnableDamping(true);
-		m_system.positionIteration() = 3;
+		m_system.positionIteration() = 4;
 		m_system.velocityIteration() = 6;
 
 		m_pointJointPrimitive.bodyA = nullptr;
@@ -426,8 +426,8 @@ namespace Physics2D
 
 		ImGui::Separator();
 		ImGui::Text("Iteration");
-		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 60);
-		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 60);
+		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 30);
+		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 30);
 
 		ImGui::Separator();
 		ImGui::Text("Time");
