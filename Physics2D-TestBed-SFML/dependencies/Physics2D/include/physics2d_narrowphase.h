@@ -92,9 +92,9 @@ namespace Physics2D
 	class PHYSICS2D_API Narrowphase
 	{
 	public:
-		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 12);
+		static Simplex gjk(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB, const size_t& iteration = 30);
 		static CollisionInfo epa(const Simplex& simplex, const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
-		                         const size_t& iteration = 12, const real& epsilon = Constant::GeometryEpsilon);
+		                         const size_t& iteration = 30, const real& epsilon = Constant::GeometryEpsilon);
 		static SimplexVertex support(const ShapePrimitive& shapeA, const ShapePrimitive& shapeB,
 		                             const Vector2& direction);
 		static std::pair<Vector2, Index> findFurthestPoint(const ShapePrimitive& shape, const Vector2& direction);

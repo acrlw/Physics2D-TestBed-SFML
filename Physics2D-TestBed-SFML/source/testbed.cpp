@@ -426,8 +426,8 @@ namespace Physics2D
 
 		ImGui::Separator();
 		ImGui::Text("Iteration");
-		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 60);
-		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 60);
+		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 200);
+		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 200);
 
 		ImGui::Separator();
 		ImGui::Text("Time");
