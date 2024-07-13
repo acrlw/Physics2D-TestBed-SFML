@@ -279,16 +279,7 @@ namespace Physics2D
 			}
 
 		}
-		real accumulatedImpulse() override
-		{
-			Vector2 lambda(m_primitive.impulse.x, m_primitive.impulse.y);
-			return lambda.length();
-		}
-		Vector2 jacobian() override
-		{
-			Vector2 lambda(m_primitive.impulse.x, m_primitive.impulse.y);
-			return lambda.normal();
-		}
+
 		WeldJointPrimitive primitive()const
 		{
 			return m_primitive;

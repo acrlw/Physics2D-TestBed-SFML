@@ -49,7 +49,7 @@ namespace Physics2D
 		constexpr real Max = FLT_MAX;
 		constexpr real PositiveMin = FLT_MIN;
 		constexpr real NegativeMin = -Max;
-		constexpr real Pi = 3.14159265f;
+		constexpr real Pi = 3.1415926535f;
 		constexpr real HalfPi = Pi / 2.0f;
 		constexpr real DoublePi = Pi * 2.0f;
 		constexpr real ReciprocalOfPi = 0.3183098861f;

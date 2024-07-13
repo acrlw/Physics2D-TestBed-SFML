@@ -171,14 +171,7 @@ namespace Physics2D
 			bodyB->rotation() -= bodyB->inverseInertia() * rb.cross(P);
 
 		}
-		real accumulatedImpulse() override
-		{
-			return m_primitive.accumulatedImpulse;
-		}
-		Vector2 jacobian() override
-		{
-			return m_primitive.bias.normal();
-		}
+
 		DistanceJointPrimitive& primitive()
 		{
 			return m_primitive;
