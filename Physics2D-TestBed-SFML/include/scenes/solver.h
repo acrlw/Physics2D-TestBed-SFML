@@ -57,34 +57,15 @@ namespace Physics2D
 			vertices.push_back(p1);
 
 
-			float innerRadius = min - radius;
-			innerRadius *= m_innerRadiusPercentage;
-
-			std::vector<Vector2> innerCircle;
-
-			float innerCount = 4.0f * m_count;
-			float innerStep = 2.0f * Constant::Pi / innerCount;
-			for (float i = 0.0f; i <= innerCount; i += 1.0f)
-			{
-				float angle = i * innerStep;
-				Vector2 p(innerRadius * std::cos(angle), innerRadius * std::sin(angle));
-				innerCircle.push_back(p);
-				if (i == 0.0f)
-					continue;
-
-				if(m_showReferenceLine)
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, innerCircle[i - 1], innerCircle[i], gray);
-			}
-
 			//reference line
 
 			if (m_showReferenceLine)
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, center, corner, gray);
 
-			Vector2 refP1(innerRadius, m_halfHeight);
-			Vector2 refP2(innerRadius, 0.0f);
-			Vector2 refP3(m_halfWidth, innerRadius);
-			Vector2 refP4(0.0f, innerRadius);
+			Vector2 refP1(m_innerWidthFactor * (m_halfWidth - radius), m_halfHeight);
+			Vector2 refP2(m_innerWidthFactor * (m_halfWidth - radius), -m_halfHeight);
+			Vector2 refP3(m_halfWidth, m_innerHeightFactor * (m_halfHeight - radius));
+			Vector2 refP4(-m_halfWidth, m_innerHeightFactor * (m_halfHeight - radius));
 
 			if (m_showReferenceLine)
 			{
@@ -93,16 +74,16 @@ namespace Physics2D
 			}
 
 			refP1 = Vector2(m_halfWidth, m_halfHeight - radius);
-			refP2 = Vector2(0.0f, m_halfHeight - radius);
+			refP2 = Vector2(-m_halfWidth, m_halfHeight - radius);
 			refP3 = Vector2(m_halfWidth - radius, m_halfHeight);
-			refP4 = Vector2(m_halfWidth - radius, 0.0f);
+			refP4 = Vector2(m_halfWidth - radius, -m_halfHeight);
 			if (m_showReferenceLine)
 			{
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, refP1, refP2, gray);
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, refP3, refP4, gray);
 			}
-			refP1 = Vector2(corner.x, 0.0f);
-			refP2 = Vector2(0.0f, corner.y);
+			refP1 = Vector2(corner.x, -corner.y);
+			refP2 = Vector2(-corner.x, corner.y);
 			if (m_showReferenceLine)
 			{
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, corner, refP1, gray);
@@ -128,10 +109,10 @@ namespace Physics2D
 			m_startRoundedPos = refP1;
 
 
-			m_bezierPoints1[0] = Vector2(innerRadius, m_halfHeight);
+			m_bezierPoints1[0] = Vector2(m_innerWidthFactor * (m_halfWidth - radius), m_halfHeight);
 			m_bezierPoints1[3] = refP2;
 
-			m_bezierPoints2[0] = Vector2(m_halfWidth, innerRadius);
+			m_bezierPoints2[0] = Vector2(m_halfWidth, m_innerHeightFactor * (m_halfHeight - radius));
 			m_bezierPoints2[3] = refP1;
 
 			//RenderSFMLImpl::renderPoint(window, *m_settings.camera, m_bezierPoints[0], color, 4.0f);
@@ -425,9 +406,10 @@ namespace Physics2D
 
 			ImGui::DragFloat("Half Width", &m_halfWidth, 0.01f, 0.5f, 50.0f);
 			ImGui::DragFloat("Half Height", &m_halfHeight, 0.01f, 0.5f, 50.0f);
-			ImGui::DragFloat("Rounded Radius Percentage", &m_percentage, 0.01f, 0.1f, 1.0f);
-			ImGui::DragFloat("Inner Radius Percentage", &m_innerRadiusPercentage, 0.01f, 0.1f, 0.9f);
-			ImGui::DragFloat("Corner Percentage Angle", &m_cornerPercentage, 0.01f, 0.1f, 0.8f);
+			ImGui::DragFloat("Rounded Radius Percentage", &m_percentage, 0.005f, 0.1f, 1.0f);
+			ImGui::DragFloat("Inner Width Percentage", &m_innerWidthFactor, 0.001f, 0.0f, 1.0f);
+			ImGui::DragFloat("Inner Height Percentage", &m_innerHeightFactor, 0.001f, 0.0f, 1.0f);
+			ImGui::DragFloat("Corner Angle Percentage", &m_cornerPercentage, 0.005f, 0.01f, 0.99f);
 			ImGui::DragFloat("Bezier Sample Counts", &m_bezierCount, 1, 8.0f, 100.0f);
 			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.1f, 1.0f);
 			ImGui::DragFloat("Smoothness", &m_smoothness, 0.001f, 0.01f, 0.9f);
@@ -496,9 +478,9 @@ namespace Physics2D
 	private:
 		bool m_showG1 = true;
 		bool m_showG2 = true;
-		bool m_showRoundedCurvature = false;
-		bool m_showBezierCurvature = false;
-		bool m_showReferenceLine = false;
+		bool m_showRoundedCurvature = true;
+		bool m_showBezierCurvature = true;
+		bool m_showReferenceLine = true;
 
 		int m_currentIndex = -1;
 		bool m_isMoving = false;
@@ -512,14 +494,16 @@ namespace Physics2D
 
 		std::array<Vector2, 4> m_bezierPoints2;
 
+		float m_innerWidthFactor = 0.6f;
+		float m_innerHeightFactor = 0.6f;
 		float m_curvatureScaleFactor = 0.5f;
 		float m_bezierCount = 50.0f;
-		float m_count = 16;
+		float m_count = 50.0f;
 		float m_halfWidth = 1.0f;
 		float m_halfHeight = 1.0f;
 		float m_smoothness = 0.5f;
 		float m_percentage = 0.7f;
-		float m_innerRadiusPercentage = 0.8f;
+
 		float m_cornerPercentage = 0.2f;
 		sf::Color color = RenderConstant::Cyan;
 		sf::Color gray = sf::Color(158, 158, 158, 255);
