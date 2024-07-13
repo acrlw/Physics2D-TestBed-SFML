@@ -99,6 +99,7 @@ namespace Physics2D
 			m_primitive.normal = n;
 			m_primitive.effectiveMass = k > 0.0f ? 1.0f / k : 0.0f;
 
+			m_primitive.bias = pa - pb;
 			m_primitive.currentLength = (pa - pb).length();
 
 			Vector2 P = m_primitive.accumulatedImpulse * n;
@@ -170,7 +171,14 @@ namespace Physics2D
 			bodyB->rotation() -= bodyB->inverseInertia() * rb.cross(P);
 
 		}
-
+		real accumulatedImpulse() override
+		{
+			return m_primitive.accumulatedImpulse;
+		}
+		Vector2 jacobian() override
+		{
+			return m_primitive.bias.normal();
+		}
 		DistanceJointPrimitive& primitive()
 		{
 			return m_primitive;

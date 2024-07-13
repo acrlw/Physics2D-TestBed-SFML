@@ -223,7 +223,7 @@ namespace Physics2D
 			k.e12() = k.e21();
 			k.e22() = im_a + im_b + ra.x * ra.x * ii_a + rb.x * rb.x * ii_b;
 			k.e23() = ra.x * ii_a + rb.x * ii_b;
-			k.e31() = k.e31();
+			k.e31() = k.e13();
 			k.e32() = k.e23();
 			k.e33() = ii_a + ii_b;
 
@@ -246,9 +246,48 @@ namespace Physics2D
 			else
 			{
 				k.invert();
+				Vector2 c = pa - pb;
+				real a = bodyA->rotation() - bodyB->rotation() - m_primitive.referenceAngle;
+				Vector3 C(c.x, c.y, a);
+
+				Vector3 impulse = -k.multiply(C);
+				Vector2 lambda1 = Vector2(impulse.x, impulse.y);
+				real lambda2 = impulse.z;
+
+				Vector2 delta_p = 0.0f;
+				real delta_o = 0.0f;
+
+				bodyA->position() += im_a * lambda1;
+				bodyA->rotation() += ii_a * Vector2::crossProduct(ra, lambda1) + ii_a * lambda2;
+
+				delta_p += im_a * lambda1;
+				delta_o += Vector2::crossProduct(ra, lambda1) * ii_a + lambda2 * ii_a;
+
+				bodyB->position() += -im_b * lambda1;
+				bodyB->rotation() += -ii_b * Vector2::crossProduct(rb, lambda1) - ii_b * lambda2;
+
+				delta_p += -im_b * lambda1;
+				delta_o += -ii_b * Vector2::crossProduct(rb, lambda1) - ii_b * lambda2;
+
+
+				std::cout << "c:" << (pa - pb).length() << std::endl;
+				std::cout << "length of delta_p: " << delta_p.length() << std::endl;
+				std::cout << "delta_p: " << delta_p.x << "," << delta_p.y << std::endl;
+				std::cout << "sum of delta_o: " << delta_o << std::endl;
+
 				m_primitive.invK = k;
 			}
 
+		}
+		real accumulatedImpulse() override
+		{
+			Vector2 lambda(m_primitive.impulse.x, m_primitive.impulse.y);
+			return lambda.length();
+		}
+		Vector2 jacobian() override
+		{
+			Vector2 lambda(m_primitive.impulse.x, m_primitive.impulse.y);
+			return lambda.normal();
 		}
 		WeldJointPrimitive primitive()const
 		{

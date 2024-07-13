@@ -177,6 +177,12 @@ namespace Physics2D
 								                            RenderConstant::Orange, 0.2f);
 						}
 					}
+
+					if(m_bodyIDVisible)
+					{
+						RenderSFMLImpl::renderUInt(window, *this, primitive.transform.position,
+							*m_font, body->id(), RenderConstant::Orange, 16);
+					}
 				}
 			}
 			if (m_jointVisible)
@@ -191,6 +197,7 @@ namespace Physics2D
 			{
 				drawContacts(window);
 			}
+			
 		}
 	}
 
@@ -404,6 +411,16 @@ namespace Physics2D
 	bool& Camera::smoothZoom()
 	{
 		return m_smoothZoom;
+	}
+
+	bool& Camera::bodyIDVisible()
+	{
+		return m_bodyIDVisible;
+	}
+
+	bool& Camera::jointImpulseVisible()
+	{
+		return m_jointImpulseVisible;
 	}
 
 	ContactMaintainer* Camera::maintainer() const

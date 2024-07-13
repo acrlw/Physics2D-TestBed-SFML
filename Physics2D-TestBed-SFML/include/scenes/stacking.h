@@ -24,13 +24,13 @@ namespace Physics2D
 			ground->position().set({0.0, 0.0});
 			ground->setMass(Constant::Max);
 			ground->setType(Body::BodyType::Static);
-			ground->setFriction(0.6f);
+			ground->setFriction(1.0f);
 			m_settings.tree->insert(ground);
 
 			//m_settings.grid->insert(ground);
 
 			real offset = 0.5f;
-			real max = 15.0;
+			real max = 25.0;
 			for (real j = 0; j < max; j += 1.0f)
 			{
 				for (real i = 0.0; i < max - j; i += 1.0f)
@@ -41,13 +41,43 @@ namespace Physics2D
 					body->rotation() = 0;
 					body->setMass(1.0f);
 					body->setType(Body::BodyType::Dynamic);
-					body->setFriction(0.5f);
+					body->setFriction(1.0f);
 					body->setRestitution(0.0f);
 					m_settings.tree->insert(body);
 					//m_settings.grid->insert(body);
 				}
 				offset += 0.5f;
 			}
+			//Body* body = m_settings.world->createBody();
+			//body->position().set({0.5f, 0.5f});
+			//body->setShape(&rectangle);
+			//body->rotation() = 0;
+			//body->setMass(1.0f);
+			//body->setType(Body::BodyType::Dynamic);
+			//body->setFriction(1.0f);
+			//body->setRestitution(0.0f);
+			//m_settings.tree->insert(body);
+
+			//body = m_settings.world->createBody();
+			//body->position().set({ 1.7f, 0.5f });
+			//body->setShape(&rectangle);
+			//body->rotation() = 0;
+			//body->setMass(1.0f);
+			//body->setType(Body::BodyType::Dynamic);
+			//body->setFriction(1.0f);
+			//body->setRestitution(0.0f);
+			//m_settings.tree->insert(body);
+
+			//body = m_settings.world->createBody();
+			//body->position().set({ 1.1f, 1.5f });
+			//body->setShape(&rectangle);
+			//body->rotation() = 0;
+			//body->setMass(1.0f);
+			//body->setType(Body::BodyType::Dynamic);
+			//body->setFriction(1.0f);
+			//body->setRestitution(0.0f);
+			//m_settings.tree->insert(body);
+			//m_settings.grid->insert(body);
 		}
 
 		void onPostRender(sf::RenderWindow& window) override

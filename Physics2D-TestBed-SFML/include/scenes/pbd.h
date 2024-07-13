@@ -13,10 +13,13 @@ namespace Physics2D
 
 		void onLoad() override
 		{
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<> pos(-50.0f, 50.0f);
 			for (int i = 0; i < 10; ++i)
 			{
-				positions[i].x = static_cast<real>(i) * 2.0;
-				prePositions[i].x = static_cast<real>(i) * 2.0;
+				positions[i].set(pos(gen), pos(gen));
+				prePositions[i] = positions[i];
 				invMasses[i] = 0.5;
 			}
 		}
@@ -42,7 +45,7 @@ namespace Physics2D
 				prePositions[i] = positions[i];
 				positions[i] += dt * velocities[i];
 			}
-			for (size_t j = 0; j < iterations; ++j)
+			for (size_t j = 0; j < m_settings.system->positionIteration(); ++j)
 			{
 				for (size_t i = 0; i < 9; ++i)
 				{
@@ -62,7 +65,7 @@ namespace Physics2D
 			}
 			positions[0].clear();
 			velocities[0].clear();
-			positions[9] = prePositions[9];
+			positions[9].set(18.0f, 0.0f);
 			velocities[9].clear();
 		}
 

@@ -98,7 +98,8 @@ namespace Physics2D
 		};
 
 		m_system.world().setEnableGravity(true);
-		m_system.world().setLinearVelocityDamping(0.1f);
+		m_system.world().setGravity({ 0.0f, -10.0f });
+		m_system.world().setLinearVelocityDamping(0.0f);
 		m_system.world().setAirFrictionCoefficient(0.0f);
 		m_system.world().setAngularVelocityDamping(0.0f);
 		m_system.world().setEnableDamping(true);
@@ -162,6 +163,32 @@ namespace Physics2D
 			{
 				restart();
 				break;
+			}
+		case sf::Keyboard::M:
+			{
+				//print matrix
+				for(auto iter = m_system.world().bodyList().begin(); 
+					iter != m_system.world().bodyList().end(); ++iter)
+				{
+					auto index = std::distance(m_system.world().bodyList().begin(), iter);
+					std::cout << "body id:" << iter->get()->id() << std::endl
+					<< "--pos:[ " << iter->get()->position().x << "," << iter->get()->position().y << " ]" << std::endl
+					<< "--vel:[ " << iter->get()->velocity().x << "," << iter->get()->velocity().y << " ]" << std::endl;
+				}
+				std::cout << std::endl;
+				//std::cout << std::endl;
+				//for(auto iter = m_system.world().jointList().begin();
+				//	iter != m_system.world().jointList().end(); ++iter)
+				//{
+				//	auto index = std::distance(m_system.world().jointList().begin(), iter);
+				//	if(iter->get()->type() == JointType::Point)
+				//		continue;
+				//	Vector2 normal = iter->get()->jacobian();
+				//	std::cout << "joint idx:" << index << "  normal:[" << normal.x << "," << normal.y
+				//	<< "]  lambda:" << iter->get()->accumulatedImpulse() << std::endl;
+				//}
+				//std::cout << std::endl;
+			break;
 			}
 		default:
 			break;
@@ -426,8 +453,8 @@ namespace Physics2D
 
 		ImGui::Separator();
 		ImGui::Text("Iteration");
-		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 30);
-		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 30);
+		ImGui::SliderInt("Position Iteration", &m_system.positionIteration(), 1, 100);
+		ImGui::SliderInt("Velocity Iteration", &m_system.velocityIteration(), 1, 100);
 
 		ImGui::Separator();
 		ImGui::Text("Time");
@@ -468,6 +495,7 @@ namespace Physics2D
 		ImGui::Checkbox("Body", &m_camera.bodyVisible());
 		ImGui::Checkbox("Joint", &m_camera.jointVisible());
 		ImGui::Checkbox("Center", &m_camera.centerVisible());
+		ImGui::Checkbox("BodyID", &m_camera.bodyIDVisible());
 		ImGui::NextColumn();
 		ImGui::Checkbox("AABB", &m_camera.aabbVisible());
 		ImGui::Checkbox("Tree", &m_camera.treeVisible());
@@ -497,9 +525,10 @@ namespace Physics2D
 		ImGui::Checkbox("Contacts Impulse", &m_camera.contactImpulseVisible());
 		ImGui::Checkbox("Contacts Impulse Mag", &m_camera.contactImpulseMagnitude());
 		ImGui::Checkbox("Contacts Friction", &m_camera.contactFrictionVisible());
+		ImGui::Checkbox("Contacts Friction Mag", &m_camera.contactFrictionMagnitude());
 		ImGui::NextColumn();
 
-		ImGui::Checkbox("Contacts Friction Mag", &m_camera.contactFrictionMagnitude());
+		ImGui::Checkbox("Joint Impulse", &m_camera.jointImpulseVisible());
 		ImGui::Checkbox("Linear Velocity", &m_camera.bodyVelocity());
 		ImGui::Checkbox("Linear Velocity Mag", &m_camera.bodyVelocityMagnitude());
 		ImGui::Checkbox("Linear Velocity Normal", &m_camera.bodyVelocityNormal());
@@ -618,6 +647,7 @@ namespace Physics2D
 		settings.grid = &m_system.grid();
 		settings.camera = &m_camera;
 		settings.font = &m_font;
+		settings.system = &m_system;
 		
 		m_currentFrame = m_frameList[m_currentItem](settings);
 		if (m_currentFrame != nullptr)

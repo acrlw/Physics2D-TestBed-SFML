@@ -792,7 +792,13 @@ namespace Physics2D
 		std::string str = std::format("{}", value);
 		renderText(window, camera, position, font, str, color, size, offset);
 	}
-
+	void RenderSFMLImpl::renderUInt(sf::RenderWindow& window, Camera& camera, const Vector2& position,
+		const sf::Font& font, const uint32_t& value, const sf::Color& color,
+		const unsigned int& size, const Vector2& offset)
+	{
+		std::string str = std::format("{}", value);
+		renderText(window, camera, position, font, str, color, size, offset);
+	}
 	void RenderSFMLImpl::renderPolytope(sf::RenderWindow& window, Camera& camera, const std::vector<Vector2>& polytope,
 	                                    const sf::Color& color,
 	                                    const sf::Font& font, real pointSize, const unsigned int& indexSize,

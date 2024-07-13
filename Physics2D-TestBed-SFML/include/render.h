@@ -108,6 +108,10 @@ namespace Physics2D
 		                      const int& value, const sf::Color& color, const unsigned int& size = 18,
 		                      const Vector2& screenOffset = Vector2(-0.2f, -0.2f));
 
+		static void renderUInt(sf::RenderWindow& window, Camera& camera, const Vector2& position, const sf::Font& font, 
+		                       const uint32_t& value, const sf::Color& color, const unsigned int& size = 18, 
+							   const Vector2& offset = Vector2(0.0f, -0.2f));
+
 		static void renderSimplex(sf::RenderWindow& window, Camera& camera, const Simplex& simplex,
 		                          const sf::Color& color, const sf::Font& font, bool showIndex = true, const unsigned int& indexSize = 18);
 

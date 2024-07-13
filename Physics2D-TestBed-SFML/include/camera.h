@@ -61,6 +61,8 @@ namespace Physics2D
 		bool& bodyVelocityMagnitude();
 		bool& coordinateScale();
 		bool& smoothZoom();
+		bool& bodyIDVisible();
+		bool& jointImpulseVisible();
 
 		int axisPointCount() const;
 		void setAxisPointCount(int count);
@@ -126,12 +128,12 @@ namespace Physics2D
 		bool m_gridScaleLineVisible = true;
 		bool m_centerVisible = false;
 
-		bool m_contactVisible = true;
-		bool m_contactImpulseVisible = true;
-		bool m_contactFrictionVisible = true;
+		bool m_contactVisible = false;
+		bool m_contactImpulseVisible = false;
+		bool m_contactFrictionVisible = false;
 
-		bool m_contactImpulseMagnitude = true;
-		bool m_contactFrictionMagnitude = true;
+		bool m_contactImpulseMagnitude = false;
+		bool m_contactFrictionMagnitude = false;
 
 		bool m_bodyVelocity = false;
 		bool m_bodyVelocityNormal = false;
@@ -139,6 +141,9 @@ namespace Physics2D
 
 		bool m_drawCoordinateScale = true;
 		bool m_smoothZoom = true;
+
+		bool m_bodyIDVisible = false;
+		bool m_jointImpulseVisible = false;
 
 		real m_defaultMeterToPixel = 50.0f;
 		real m_meterToPixel = 50.0f;

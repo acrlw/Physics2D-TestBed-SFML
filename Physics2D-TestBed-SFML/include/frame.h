@@ -19,6 +19,7 @@ namespace Physics2D
 		ContactMaintainer* maintainer = nullptr;
 		Tree* tree = nullptr;
 		UniformGrid* grid = nullptr;
+		PhysicsSystem* system = nullptr;
 
 		//Render
 		Camera* camera = nullptr;

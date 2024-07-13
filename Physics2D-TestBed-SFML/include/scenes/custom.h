@@ -19,26 +19,17 @@ namespace Physics2D
 			circle.setRadius(0.5f);
 
 			uint32_t mask = 0x01;
-			real max = 3.0f;
-			for (real i = 0; i < 1.0f; i += 1.0f)
-			{
-				Body* ground = m_settings.world->createBody();
-				ground->setShape(&edge);
-				ground->position().set({0, -circle.radius()});
-				ground->setFriction(1.0f);
-				ground->setBitmask(mask);
-				ground->setRestitution(0);
-				ground->setMass(Constant::Max);
-				ground->setType(Body::BodyType::Static);
-				mask = mask << 1;
-				m_settings.tree->insert(ground);
-			}
+			real max = 2.0f;
+
 			mask = 0x01;
 			Vector2 pos[3];
-			pos[0].set({ -1.5f * circle.radius(), 0.0f });
-			pos[1].set({ 1.5f * circle.radius(), 0.0f });
-			pos[2].set({ 0.0f, circle.radius() * Math::sqrt(4.0f - 1.5f * 1.5f) });
-			for (real i = 0; i < max; i += 1.0f)
+			pos[0].set({ 0.0f, circle.radius() * Math::sqrt(4.0f - 1.5f * 1.5f)});
+			pos[1].set({ -1.5f * circle.radius(), 0.0f});
+			pos[2].set({ 1.5f * circle.radius(), 0.0f });
+			//pos[0].set({ 0.0f, 0.5f });
+			//pos[1].set({ 0.0f, 3.0f * 0.5f });
+			//pos[2].set({ 0.0f, 4.0f * 0.5f + circle.radius() });
+			for (real i = 0; i < 3; i += 1.0f)
 			{
 				Body* body = m_settings.world->createBody();
 				body->setShape(&circle);
@@ -51,11 +42,25 @@ namespace Physics2D
 				//mask = mask << 1;
 				m_settings.tree->insert(body);
 			}
+			for (real i = 0; i < 1.0f; i += 1.0f)
+			{
+				Body* ground = m_settings.world->createBody();
+				ground->setShape(&edge);
+				ground->position().set({ 0, -circle.radius() });
+				ground->setFriction(1.0f);
+				ground->setBitmask(mask);
+				ground->setRestitution(0);
+				ground->setMass(Constant::Max);
+				ground->setType(Body::BodyType::Static);
+				mask = mask << 1;
+				m_settings.tree->insert(ground);
+			}
 			//m_settings.world->setEnableDamping(false);
 		}
 
 		void onPostRender(sf::RenderWindow& window) override
 		{
+
 		}
 
 		void onUnLoad() override
