@@ -46,13 +46,13 @@ namespace Physics2D
 			//shape2.transform.position.set(0.500000477f, 0.499320120f);
 			//shape2.transform.rotation = -9.10090932e-07f;
 
-			shape1.shape = &ellipse;
-			shape1.transform.position.set(0.0f, 2.0f);
-			//shape1.transform.position.set(-0.2875f, -1.6625f);
+			shape1.shape = &circle;
+			//shape1.transform.position.set(0.0f, 2.0f);
+			shape1.transform.position.set(-0.2875f, -1.6625f);
 			//shape1.transform.rotation = 9.10090932e-07f;
 
-			shape2.shape = &triangle;
-			shape2.transform.position.set(-2.0f, -2.0f);
+			shape2.shape = &ellipse;
+			shape2.transform.position.set(0.0f, -3.0f);
 			//shape2.transform.rotation = Math::degreeToRadian(45);
 
 			//result = Detector::detect(shape1, shape2);
@@ -114,52 +114,67 @@ namespace Physics2D
 
 			RenderSFMLImpl::renderPoint(window, *m_settings.camera, shape1.transform.position, sf::Color::Green);
 			RenderSFMLImpl::renderPoint(window, *m_settings.camera, shape2.transform.position, sf::Color::Cyan);
-
 			auto gjkInfo = Narrowphase::gjk(shape1, shape2);
-			auto color1 = sf::Color(239, 103, 50);
-			auto color2 = sf::Color(252, 236, 86);
-			if (gjkInfo.isContainOrigin)
+
+			/*if (showGJKSimplex)
+				RenderSFMLImpl::renderSimplex(window, *m_settings.camera, 
+					gjkInfo, RenderConstant::Orange, *m_settings.font);*/
+			if (gjkInfo.containsOrigin())
 			{
-				if (showGJKSimplex)
-					RenderSFMLImpl::renderSimplex(window, *m_settings.camera, gjkInfo, color1, *m_settings.font);
-
 				auto epaInfo = Narrowphase::epa(gjkInfo, shape1, shape2);
-
-				for (auto iter = epaInfo.polytope.begin(); iter != epaInfo.polytope.end(); ++iter)
+				if(push)
 				{
-					auto next = iter;
-					++next;
-					if (next == epaInfo.polytope.end())
-						next = epaInfo.polytope.begin();
-
-					if (showPolytope)
+					if (clickObject != nullptr)
 					{
-						RenderSFMLImpl::renderLine(window, *m_settings.camera, iter->vertex.result, next->vertex.result,
-							RenderConstant::Pink);
-						RenderSFMLImpl::renderPoint(window, *m_settings.camera, iter->vertex.result, RenderConstant::Pink, 3);
-						RenderSFMLImpl::renderPoint(window, *m_settings.camera, next->vertex.result, RenderConstant::Pink, 3);
-
-						RenderSFMLImpl::renderInt(window, *m_settings.camera, iter->vertex.result, *m_settings.font,
-							std::distance(epaInfo.polytope.begin(), iter),
-							RenderConstant::Pink, 14, { -0.25f, -0.25f });
-
+						if (clickObject == &shape1)
+							shape2.transform.position += epaInfo.normal * epaInfo.penetration;
+						else
+							shape1.transform.position += epaInfo.normal * epaInfo.penetration;
 					}
 				}
+				else
+				{
+					if (showPolytope)
+					{
+						std::vector<Vector2> polytope;
+						for (auto&& elem : epaInfo.polytope)
+							polytope.push_back(elem.vertex.result);
 
-				RenderSFMLImpl::renderArrow(window, *m_settings.camera, Vector2(),
-					-epaInfo.normal * epaInfo.penetration, sf::Color::Green);
-				
+						RenderSFMLImpl::renderPolytope(window,
+							*m_settings.camera, polytope, RenderConstant::Pink, *m_settings.font);
+						
+					}
+
+					if (showOriginalSimplex)
+						RenderSFMLImpl::renderSimplex(window, *m_settings.camera, gjkInfo, RenderConstant::Yellow, *m_settings.font);
+
+					if (showFeatureSimplex)
+						RenderSFMLImpl::renderSimplex(window, *m_settings.camera, epaInfo.simplex, RenderConstant::Yellow, *m_settings.font, false);
+
+					Vector2 p = GeometryAlgorithm2D::pointToLineSegment(epaInfo.simplex.vertices[0].result,
+						epaInfo.simplex.vertices[1].result, { 0, 0 });
+					RenderSFMLImpl::renderPoint(window, *m_settings.camera, p, RenderConstant::Orange);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, p, { 0,0 }, RenderConstant::Orange);
+
+					RenderSFMLImpl::renderArrow(window, *m_settings.camera, Vector2(), epaInfo.normal * epaInfo.penetration, sf::Color::Green);
+					
+				}
 			}
 			else
 			{
 				auto info = Narrowphase::gjkDistance(shape1, shape2);
 
+
 				if (showPolytope)
 				{
 					std::vector<Vector2> polytope;
 					for (auto&& elem : info.polytope)
+					{
+						//std::cout << "Polytope:(" << elem.vertex.result.x << "," << elem.vertex.result.y << ")\n";
 						polytope.emplace_back(elem.vertex.result);
+					}
 					RenderSFMLImpl::renderPolytope(window, *m_settings.camera, polytope, RenderConstant::Pink, *m_settings.font);
+
 				}
 
 				if (showOriginalSimplex)
@@ -168,6 +183,8 @@ namespace Physics2D
 				if (showFeatureSimplex)
 					RenderSFMLImpl::renderSimplex(window, *m_settings.camera, info.simplex, RenderConstant::Yellow, *m_settings.font, false);
 
+				auto color1 = sf::Color(239, 103, 50);
+				auto color2 = sf::Color(252, 236, 86);
 
 				////////	//draw feature simplex
 				if (showFeature)
@@ -196,8 +213,7 @@ namespace Physics2D
 			//Simplex simplex = Narrowphase::gjk(shape1, shape2);
 			//sf::Color color = simplex.isContainOrigin ? RenderConstant::Teal : RenderConstant::Orange;
 
-			//if(showGJKSimplex)
-			//	RenderSFMLImpl::renderSimplex(window, *m_settings.camera, simplex, color);
+			
 			//if(simplex.isContainOrigin)
 			//{
 			//	//draw polytope
@@ -303,6 +319,7 @@ namespace Physics2D
 			//ImGui::Checkbox("Show Hull", &showHull);
 			ImGui::Checkbox("Show Mouse Transform", &showMouseTransform);
 			ImGui::Checkbox("Show Hull", &showHull);
+			ImGui::Checkbox("Push", &push);
 
 			ImGui::End();
 		}
@@ -337,6 +354,7 @@ namespace Physics2D
 		bool showHull = false;
 
 		bool showGJKSimplex = false;
+		bool push = false;
 		Vector2 mousePos;
 		Vector2 currentPos;
 		Vector2 originTransform;

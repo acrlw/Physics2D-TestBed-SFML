@@ -781,7 +781,7 @@ namespace Physics2D
 	                                 const real& value, const sf::Color& color, const unsigned int& size,
 	                                 const Vector2& offset)
 	{
-		std::string str = std::format("{:.7f}", value);
+		std::string str = std::format("{:.3f}", value);
 		renderText(window, camera, position, font, str, color, size, offset);
 	}
 

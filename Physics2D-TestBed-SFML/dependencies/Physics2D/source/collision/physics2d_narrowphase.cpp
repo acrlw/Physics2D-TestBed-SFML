@@ -88,32 +88,25 @@ namespace Physics2D
 			if (info.simplex.contains(vertex))
 				break;
 
-			//convex test, make sure polytope is always convex
+			//check if new vertex is located in support direction
+
+			bool validSide = GeometryAlgorithm2D::isPointOnSameSide(info.simplex.vertices[0].result,
+				info.simplex.vertices[1].result, info.simplex.vertices[0].result + direction,
+				vertex.result);
+
+			Vector2 ab = info.simplex.vertices[1].result - info.simplex.vertices[0].result;
+			Vector2 ac = vertex.result - info.simplex.vertices[0].result;
+			Vector2 bc = vertex.result - info.simplex.vertices[1].result;
+
+			bool validVoronoi = ab.dot(ac) > 0.0f && -ab.dot(bc) > 0.0f;
+
+			if (!validSide || !validVoronoi)
+				break;
 
 			auto itA = iterStart;
 
 			auto itB = itA;
 			polytopeIterNext(itB, polytope);
-
-			auto itC = itB;
-			polytopeIterNext(itC, polytope);
-
-			const Vector2 ab = itB->vertex.result - itA->vertex.result;
-			const Vector2 bc = itC->vertex.result - itB->vertex.result;
-			const real res1 = Vector2::crossProduct(ab, bc);
-
-			const Vector2 an = vertex.result - itA->vertex.result;
-			const Vector2 nb = itB->vertex.result - vertex.result;
-			const real res2 = Vector2::crossProduct(an, nb);
-
-			const real res3 = Vector2::crossProduct(nb, bc);
-
-			const bool validConvexity = Math::sameSignStrict(res1, res2, res3);
-
-			if (!validConvexity) //invalid vertex, just break
-				break;
-
-			//then insert new vertex
 
 			SimplexVertexWithOriginDistance pair;
 			pair.vertex = vertex;
@@ -646,7 +639,8 @@ namespace Physics2D
 				return true;
 		}
 		//can't reconstruct
-		return false;
+		__debugbreak();
+		return true;
 	}
 
 	Feature Narrowphase::findFeatures(const Simplex& simplex, const Vector2& normal, const ShapePrimitive& shape,
