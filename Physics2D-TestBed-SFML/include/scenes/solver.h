@@ -427,7 +427,7 @@ namespace Physics2D
 			ImGui::DragFloat("Half Height", &m_halfHeight, 0.01f, 0.5f, 50.0f);
 			ImGui::DragFloat("Rounded Radius Percentage", &m_percentage, 0.01f, 0.1f, 1.0f);
 			ImGui::DragFloat("Inner Radius Percentage", &m_innerRadiusPercentage, 0.01f, 0.1f, 0.9f);
-			ImGui::DragFloat("Corner Percentage Angle", &m_cornerPercentage, 0.01f, 0.2f, 0.6f);
+			ImGui::DragFloat("Corner Percentage Angle", &m_cornerPercentage, 0.01f, 0.1f, 0.8f);
 			ImGui::DragFloat("Bezier Sample Counts", &m_bezierCount, 1, 8.0f, 100.0f);
 			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.1f, 1.0f);
 			ImGui::DragFloat("Smoothness", &m_smoothness, 0.001f, 0.01f, 0.9f);
