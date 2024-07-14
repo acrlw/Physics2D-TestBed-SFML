@@ -4,6 +4,508 @@
 
 namespace Physics2D
 {
+
+	class RationalCubicBezier
+	{
+	public:
+
+		void set(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float w0 = 1.0f, float w1 = 1.0f, float w2 = 1.0f, float w3 = 1.0f)
+		{
+			m_points[0] = p0;
+			m_points[1] = p1;
+			m_points[2] = p2;
+			m_points[3] = p3;
+			m_weights[0] = w0;
+			m_weights[1] = w1;
+			m_weights[2] = w2;
+			m_weights[3] = w3;
+		}
+
+		Vector2& pointAt(size_t index)
+		{
+			return m_points[index];
+		}
+
+		float& weightAt(size_t index)
+		{
+			return m_weights[index];
+		}
+
+		Vector2 sample(float t)const
+		{
+			float u0 = m_weights[0] * Math::bernstein(t, 0.0f, 3.0f);
+			float u1 = m_weights[1] * Math::bernstein(t, 1.0f, 3.0f);
+			float u2 = m_weights[2] * Math::bernstein(t, 2.0f, 3.0f);
+			float u3 = m_weights[3] * Math::bernstein(t, 3.0f, 3.0f);
+
+			Vector2 result = (m_points[0] * u0 + m_points[1] * u1 + m_points[2] * u2 + m_points[3] * u3) / (u0 + u1 + u2 + u3);
+
+			return result;
+		}
+
+		std::vector<Vector2> samplePoints(size_t count)const
+		{
+			std::vector<Vector2> result;
+			result.reserve(count);
+			float step = 1.0f / static_cast<float>(count);
+
+			for (float t = 0.0f; t <= 1.0f; t += step)
+				result.push_back(sample(t));
+
+			return result;
+		}
+
+		std::vector<Vector2> curvaturePoints(size_t count, float scale = 1.0, bool flip = false) const
+		{
+			std::vector<Vector2> result;
+			result.reserve(count);
+
+			float step = 1.0f / static_cast<float>(count);
+			for (float t = 0.0f; t <= 1.0f; t += step)
+			{
+				Vector2 p1 = sample(t);
+
+
+				// \left( (t-1)^3w_0-t\left( 3(t-1)^2w_1+t\left( tw_3-3(t-1)w_2 \right) \right) \right) ^2
+				float det = std::pow((std::pow(t - 1.0f, 3.0f) * m_weights[0] - 
+					t * (3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1] + t * (t * m_weights[3] - 3.0f * (t - 1.0f) * m_weights[2]))), 2.0f);
+
+				// -3(t-1)^2w_0\left( (t-1)^2w_1+t\left( tw_3-2(t-1)w_2 \right) \right)
+
+				float dp0 = -3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[0] * 
+					(std::pow(t - 1.0f, 2.0f) * m_weights[1] + t * (t * m_weights[3] - 2.0f * (t - 1.0f) * m_weights[2]));
+
+				// +3(t-1)w_1\left( t^2\left( 2tw_3-3(t-1)w_2 \right) +(t-1)^3w_0 \right)
+
+				float dp1 = 3.0f * (t - 1.0f) * m_weights[1] * 
+					(t * t * (2.0f * t * m_weights[3] - 3.0f * (t - 1.0f) * m_weights[2]) + std::pow(t - 1.0f, 3.0f) * m_weights[0]);
+
+				// -3tw_2\left( t\left( t^2w_3-3(t-1)^2w_1 \right) +2(t-1)^3w_0 \right)
+
+				float dp2 = -3.0f * t * m_weights[2] * 
+					(t * (t * t * m_weights[3] - 3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1]) + 2.0f * std::pow(t - 1.0f, 3.0f) * m_weights[0]);
+
+				// +3t^2w_3\left( (t-1)^2w_0+t\left( tw_2-2(t-1)w_1 \right) \right)
+
+				float dp3 = 3.0f * t * t * m_weights[3] * 
+					(std::pow(t - 1.0f, 2.0f) * m_weights[0] + t * (t * m_weights[2] - 2.0f * (t - 1.0f) * m_weights[1]));
+
+				Vector2 dp = dp0 * m_points[0] + dp1 * m_points[1] + dp2 * m_points[2] + dp3 * m_points[3];
+				dp /= det;
+
+				// 6(t-1)w_0\left( (t-1)^3w_0\left( \left( -2t^2+t+1 \right) w_2+(t-1)^2w_1+t(t+1)w_3 \right) +t^2\left( t\left( 5t^2-13t+8 \right) w_3w_2-(t-2)t^2w_{3}^{2}-3(t-1)^2(2t-3)w_{2}^{2} \right) -3(t-1)^5w_{1}^{2}+t(t-1)^2w_1\left( 9(t-1)^2w_2+t(3-4t)w_3 \right) \right)
+
+				float ddp0 = 6.0f * (t - 1.0f) * m_weights[0] * 
+					(std::pow(t - 1.0f, 3.0f) * m_weights[0] * ((-2.0f * t * t + t + 1.0f) * m_weights[2] + std::pow(t - 1.0f, 2.0f) * m_weights[1] + t * (t + 1.0f) * m_weights[3]) + t * t * (t * (5.0f * t * t - 13.0f * t + 8.0f) * m_weights[3] * m_weights[2] - (t - 2.0f) * t * t * m_weights[3] * m_weights[3] - 3.0f * std::pow(t - 1.0f, 2.0f) * (2.0f * t - 3.0f) * m_weights[2] * m_weights[2]) - 3.0f * std::pow(t - 1.0f, 5.0f) * m_weights[1] * m_weights[1] + t * std::pow(t - 1.0f, 2.0f) * m_weights[1] * (9.0f * std::pow(t - 1.0f, 2.0f) * m_weights[2] + t * (3.0f - 4.0f * t) * m_weights[3]));
+
+				// -6w_1\left( t^3\left( t^2(3-2t)w_{3}^{2}-9(t-1)^3w_{2}^{2}+9t(t-1)^2w_2w_3+3(t-1)^2w_1\left( 3(t-1)w_2-(2t+1)w_3 \right) \right) +(t-1)^6w_{0}^{2}+(t-1)^3w_0\left( t\left( t(t+6)w_3-9(t-1)w_2 \right) -3(t-1)^3w_1 \right) \right) 
+
+				float ddp1 = -6.0f * m_weights[1] * 
+					(t * t * t * (t * t * (3.0f - 2.0f * t) * m_weights[3] * m_weights[3] - 9.0f * std::pow(t - 1.0f, 3.0f) * m_weights[2] * m_weights[2] + 9.0f * t * std::pow(t - 1.0f, 2.0f) * m_weights[2] * m_weights[3] + 3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1] * (3.0f * (t - 1.0f) * m_weights[2] - (2.0f * t + 1.0f) * m_weights[3])) + std::pow(t - 1.0f, 6.0f) * m_weights[0] * m_weights[0] + std::pow(t - 1.0f, 3.0f) * m_weights[0] * (t * (t * (t + 6.0f) * m_weights[3] - 9.0f * (t - 1.0f) * m_weights[2]) - 3.0f * std::pow(t - 1.0f, 3.0f) * m_weights[1]));
+
+				// 6w_2\left( t^3\left( t^3\left( 3w_2-w_3 \right) w_3+9(t-1)^3w_{1}^{2}-9(t-1)w_1\left( (t-1)^2w_2+tw_3 \right) \right) -t^2(t-1)^2w_0\left( -3\left( 2t^2-5t+3 \right) w_2+9(t-1)^2w_1+(t-7)tw_3 \right) +(2t+1)(t-1)^5w_{0}^{2} \right) 
+
+				float ddp2 = 6.0f * m_weights[2] * 
+					(t * t * t * (t * t * t * (3.0f * m_weights[2] - m_weights[3]) * m_weights[3] + 9.0f * std::pow(t - 1.0f, 3.0f) * m_weights[1] * m_weights[1] - 9.0f * (t - 1.0f) * m_weights[1] * (std::pow(t - 1.0f, 2.0f) * m_weights[2] + t * m_weights[3])) - t * t * (t - 1.0f) * (t - 1.0f) * m_weights[0] * (-3.0f * (2.0f * t * t - 5.0f * t + 3.0f) * m_weights[2] + 9.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1] + (t - 7.0f) * t * m_weights[3]) + (2.0f * t + 1.0f) * std::pow(t - 1.0f, 5.0f) * m_weights[0] * m_weights[0]);
+
+				// -6tw_3\left( t^5w_2\left( 3w_2-w_3 \right) +t^4w_1\left( (2t-3)w_3-9(t-1)w_2 \right) +3(t-1)^2(2t+1)t^2w_{1}^{2}-(t-1)tw_0\left( t\left( \left( -4t^2+5t-1 \right) w_2+(t-2)tw_3 \right) +(5t+3)(t-1)^2w_1 \right) +(t-1)^4(t+1)w_{0}^{2} \right) 
+
+				float ddp3 = -6.0f * t * m_weights[3] * 
+					(std::pow(t, 5.0f) * m_weights[2] * (3.0f * m_weights[2] - m_weights[3]) + std::pow(t, 4.0f) * m_weights[1] * ((2.0f * t - 3.0f) * m_weights[3] - 9.0f * (t - 1.0f) * m_weights[2]) + 3.0f * std::pow(t - 1.0f, 2.0f) * (2.0f * t + 1.0f) * t * t * m_weights[1] * m_weights[1] - (t - 1.0f) * t * m_weights[0] * (t * ((-4.0f * t * t + 5.0f * t - 1.0f) * m_weights[2] + (t - 2.0f) * t * m_weights[3]) + (5.0f * t + 3.0f) * std::pow(t - 1.0f, 2.0f) * m_weights[1]) + std::pow(t - 1.0f, 4.0f) * (t + 1.0f) * m_weights[0] * m_weights[0]);
+
+				Vector2 ddp = ddp0 * m_points[0] + ddp1 * m_points[1] + ddp2 * m_points[2] + ddp3 * m_points[3];
+
+				ddp /= det;
+
+				float k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
+
+				Vector2 tangent = dp.normal();
+				Vector2 normal = tangent.perpendicular();
+				Vector2 v = normal * k * scale;
+
+				if (flip)
+					v.negate();
+
+				Vector2 curvaturePoint = v + p1;
+				result.push_back(curvaturePoint);
+
+			}
+
+			return result;
+		}
+
+	private:
+		std::array<Vector2, 4> m_points;
+		std::array<float, 4> m_weights = {1.0f, 1.0f, 1.0f, 1.0f};
+	};
+
+	class RationalQuadraticBezier
+	{
+
+	public:
+
+		void set(const Vector2& p0, const Vector2& p1, const Vector2& p2, float w0 = 1.0f, float w1 = 1.0f, float w2 = 1.0f)
+		{
+			m_points[0] = p0;
+			m_points[1] = p1;
+			m_points[2] = p2;
+			m_weights[0] = w0;
+			m_weights[1] = w1;
+			m_weights[2] = w2;
+		}
+
+		Vector2& pointAt(size_t index)
+		{
+			return m_points[index];
+		}
+
+		float& weightAt(size_t index)
+		{
+			return m_weights[index];
+		}
+
+		Vector2 sample(float t)const
+		{
+			Vector2 result;
+
+			return result;
+		}
+
+	private:
+		std::array<Vector2, 3> m_points;
+		std::array<float, 3> m_weights;
+	};
+
+	class QuinticBezier
+	{
+	public:
+		static QuinticBezier fromPoints(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, const Vector2& p4, const Vector2& p5)
+		{
+			QuinticBezier bezier;
+			bezier.setPoints(p0, p1, p2, p3, p4, p5);
+			return bezier;
+		}
+
+		Vector2& operator[](size_t index)
+		{
+			return m_points[index];
+		}
+
+		Vector2& at(size_t index)
+		{
+			return m_points[index];
+		}
+
+		void setPoints(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, const Vector2& p4, const Vector2& p5)
+		{
+			m_points[0] = p0;
+			m_points[1] = p1;
+			m_points[2] = p2;
+			m_points[3] = p3;
+			m_points[4] = p4;
+			m_points[5] = p5;
+		}
+
+		Vector2 sample(float t)const
+		{
+			return Math::bernstein(t, 0, 5) * m_points[0] +
+				Math::bernstein(t, 1, 5) * m_points[1] +
+				Math::bernstein(t, 2, 5) * m_points[2] +
+				Math::bernstein(t, 3, 5) * m_points[3] +
+				Math::bernstein(t, 4, 5) * m_points[4] +
+				Math::bernstein(t, 5, 5) * m_points[5];
+		}
+
+		std::vector<Vector2> samplePoints(size_t count)const
+		{
+			std::vector<Vector2> result;
+			result.reserve(count);
+			float step = 1.0f / static_cast<float>(count);
+
+			for (float t = 0.0f; t <= 1.0f; t += step)
+				result.push_back(sample(t));
+
+			return result;
+		}
+
+		std::vector<Vector2> curvaturePoints(size_t count, float scale = 1.0, bool flip = false) const
+		{
+			std::vector<Vector2> result;
+			result.reserve(count);
+
+			float step = 1.0f / static_cast<float>(count);
+			for (float t = 0.0f; t <= 1.0f; t += step)
+			{
+
+				Vector2 p1 = sample(t);
+
+				//Vector2 dp = Math::dBernstein(t, 0, 5) * m_points[0] +
+				//	Math::dBernstein(t, 1, 5) * m_points[1] +
+				//	Math::dBernstein(t, 2, 5) * m_points[2] +
+				//	Math::dBernstein(t, 3, 5) * m_points[3] +
+				//	Math::dBernstein(t, 4, 5) * m_points[4] +
+				//	Math::dBernstein(t, 5, 5) * m_points[5];
+
+				//Vector2 ddp = Math::d2Bernstein(t, 0, 5) * m_points[0] +
+				//	Math::d2Bernstein(t, 1, 5) * m_points[1] +
+				//	Math::d2Bernstein(t, 2, 5) * m_points[2] +
+				//	Math::d2Bernstein(t, 3, 5) * m_points[3] +
+				//	Math::d2Bernstein(t, 4, 5) * m_points[4] +
+				//	Math::d2Bernstein(t, 5, 5) * m_points[5];
+
+				Vector2 dp = -5.0f * std::pow(t - 1.0f, 4.0f) * m_points[0] +
+					5.0f * (5.0f * t - 1.0f) * std::pow(t - 1.0f, 3.0f) * m_points[1] +
+					-10.0f * t * (5.0f * t - 2.0f) * (t - 1.0f) * (t - 1.0f) * m_points[2] +
+					10.0f * t * t * (5.0f * t * t - 8.0f * t + 3.0f) * m_points[3] +
+					5.0f * std::pow(t, 3.0f) * (4.0f - 5.0f * t) * m_points[4] +
+					5.0f * std::pow(t, 4.0f) * m_points[5];
+
+				Vector2 ddp = -20.0f * std::pow(t - 1.0f, 3.0f) * m_points[0] +
+					20.0f * (5.0f * t - 2.0f) * std::pow(t - 1.0f, 2.0f) * m_points[1] +
+					-20.0f * (10.0f * std::pow(t, 3.0f) - 18.0f * t * t + 9.0f * t - 1.0f) * m_points[2] +
+					20.0f * t * (10.0f * t * t - 12.0f * t + 3.0f) * m_points[3] +
+					20.0f * t * t * (3.0f - 5.0f * t) * m_points[4] +
+					20.0f * std::pow(t, 3.0f) * m_points[5];
+
+				float k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
+
+				Vector2 tangent = dp.normal();
+				Vector2 normal = tangent.perpendicular();
+				Vector2 v = normal * k * scale;
+
+				if (flip)
+					v.negate();
+
+				Vector2 curvaturePoint = v + p1;
+				result.push_back(curvaturePoint);
+			}
+			return result;
+
+		}
+
+		float curvature(float t)const
+		{
+			Vector2 dp = -5.0f * std::pow(1.0f - t, 4.0f) * m_points[0] +
+				5.0f * ( 5.0f * t - 1.0f ) * std::pow(t - 1.0f, 3.0f) * m_points[1] +
+				-10.0f * (5.0f * t -  2.0f)* (t - 1.0f) * (t - 1.0f) * m_points[2] +
+				10.0f * t * t * (5.0f * t * t - 8.0f * t + 3.0f) * m_points[3] +
+				5.0f * std::pow(t, 3.0f) * (4.0f - 5.0f * t) * m_points[4] +
+				5.0f * std::pow(t, 4.0f) * m_points[5];
+
+			Vector2 ddp = -20.0f * std::pow(t - 1.0f, 3.0f) * m_points[0] +
+				20.0f * (5.0f * t - 2.0f) * std::pow(t - 1.0f, 2.0f) * m_points[1] +
+				-20.0f * (10.0f * std::pow(t, 3.0f) - 18.0f * t * t + 9.0f * t - 1.0f) * m_points[2] +
+				20.0f * (10.0f * t * t - 12.0f * t + 3.0f) * (t - 1.0f) * m_points[3] +
+				20.0f * t * t * (3.0f - 5.0f * t) * m_points[4] +
+				20.0f * std::pow(t, 3.0f) * m_points[5];
+
+			float k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
+
+			return k;
+		}
+
+	private:
+
+		std::array<Vector2, 6> m_points;
+	};
+
+	class CubicBezier
+	{
+	public:
+
+		static CubicBezier fromControlPoints(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3)
+		{
+			CubicBezier bezier;
+			bezier.setPoints(p0, p1, p2, p3);
+			return bezier;
+		}
+
+		static CubicBezier fromHermite(const Vector2& p0, const Vector2& dir0, const Vector2& p1, const Vector2& dir1)
+		{
+			CubicBezier bezier;
+			bezier.setPoints(p0, p0 + dir0 / 3.0f, p1 - dir1 / 3.0f, p1);
+			return bezier;
+		}
+
+		float torsion(float t)const
+		{
+			Vector2 dp = -3.0f * (1.0f - t) * (1.0f - t) * m_points[0] +
+				(9.0f * t * t - 12.0f * t + 3.0f) * m_points[1] +
+				(6.0f * t - 9.0f * t * t) * m_points[2] +
+				3.0f * t * t * m_points[3];
+
+			Vector2 ddp = 6.0f * (1.0f - t) * m_points[0] +
+				(18.0f * t - 12.0f) * m_points[1] +
+				(6.0f - 18.0f * t) * m_points[2] +
+				6.0f * t * m_points[3];
+
+			Vector2 dddp = -6.0f * m_points[0] +
+				18.0f * m_points[1] -
+				18.0f * m_points[2] +
+				6.0f * m_points[3];
+
+			return 0;
+		}
+
+		Vector2 sample(float t)const
+		{
+			return Math::bernstein(t, 0, 3) * m_points[0] +
+				Math::bernstein(t, 1, 3) * m_points[1] +
+				Math::bernstein(t, 2, 3) * m_points[2] +
+				Math::bernstein(t, 3, 3) * m_points[3];
+		}
+
+		float curvature(float t)const
+		{
+			//Vector2 dp = Math::dBernstein(t, 0, 3) * m_points[0] +
+			//	Math::dBernstein(t, 1, 3) * m_points[1] +
+			//	Math::dBernstein(t, 2, 3) * m_points[2] +
+			//	Math::dBernstein(t, 3, 3) * m_points[3];
+
+			Vector2 dp = -3.0f * (1.0f - t) * (1.0f - t) * m_points[0] +
+				(9.0f * t * t - 12.0f * t + 3.0f) * m_points[1] +
+				(6.0f * t - 9.0f * t * t) * m_points[2] +
+				3.0f * t * t * m_points[3];
+
+			Vector2 ddp = 6.0f * (1.0f - t) * m_points[0] +
+				(18.0f * t - 12.0f) * m_points[1] +
+				(6.0f - 18.0f * t) * m_points[2] +
+				6.0f * t * m_points[3];
+
+			float k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
+
+			return k;
+		}
+
+		std::vector<Vector2> curvaturePoints(size_t count, float scale = 1.0, bool flip = false) const
+		{
+			std::vector<Vector2> result;
+			result.reserve(count);
+
+			float step = 1.0f / static_cast<float>(count);
+			for (float t = 0.0f; t <= 1.0f; t += step)
+			{
+
+				Vector2 p1 = sample(t);
+
+				//Vector2 dp = -3.0f * (1.0f - t) * (1.0f - t) * m_points[0] +
+				//	(9.0f * t * t - 12.0f * t + 3.0f) * m_points[1] +
+				//	(6.0f * t - 9.0f * t * t) * m_points[2] +
+				//	3.0f * t * t * m_points[3];
+
+				Vector2 dp = Math::dBernstein(t, 0, 3) * m_points[0] +
+					Math::dBernstein(t, 1, 3) * m_points[1] +
+					Math::dBernstein(t, 2, 3) * m_points[2] +
+					Math::dBernstein(t, 3, 3) * m_points[3];
+
+				Vector2 ddp = Math::d2Bernstein(t, 0, 3) * m_points[0] +
+					Math::d2Bernstein(t, 1, 3) * m_points[1] +
+					Math::d2Bernstein(t, 2, 3) * m_points[2] +
+					Math::d2Bernstein(t, 3, 3) * m_points[3];
+
+				//Vector2 ddp = 6.0f * (1.0f - t) * m_points[0] +
+				//	(18.0f * t - 12.0f) * m_points[1] +
+				//	(6.0f - 18.0f * t) * m_points[2] +
+				//	6.0f * t * m_points[3];
+
+				float k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
+
+				Vector2 tangent = dp.normal();
+				Vector2 normal = tangent.perpendicular();
+				Vector2 v = normal * k * scale;
+
+				if (flip)
+					v.negate();
+
+				Vector2 curvaturePoint = v + p1;
+				result.push_back(curvaturePoint);
+			}
+			return result;
+
+		}
+
+		Vector2& operator[](size_t index)
+		{
+			return m_points[index];
+		}
+
+		Vector2& at(size_t index)
+		{
+			return m_points[index];
+		}
+
+		void setPoints(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3)
+		{
+			m_points[0] = p0;
+			m_points[1] = p1;
+			m_points[2] = p2;
+			m_points[3] = p3;
+		}
+
+		std::vector<Vector2> samplePoints(size_t count)
+		{
+			std::vector<Vector2> result;
+			result.reserve(count);
+			float step = 1.0f / static_cast<float>(count);
+
+			for (float t = 0.0f; t <= 1.0f; t += step) 
+				result.push_back(sample(t));
+
+			return result;
+		}
+
+	private:
+		std::array<Vector2, 4> m_points;
+	};
+	class AbstractSpline
+	{
+	public:
+		virtual ~AbstractSpline() = default;
+		virtual std::vector<Vector2> sample(size_t count) = 0;
+
+		void addPoints(const std::vector<Vector2>& points)
+		{
+			m_points.insert(m_points.end(), points.begin(), points.end());
+		}
+
+		Vector2& at(size_t index)
+		{
+			return m_points[index];
+		}
+
+	protected:
+		std::vector<Vector2> m_points;
+	};
+
+	class CatmullRomSpline : public AbstractSpline
+	{
+
+	public:
+		std::vector<Vector2> sample(size_t count) override
+		{
+			std::vector<Vector2> result;
+
+			return result;
+		}
+		
+	};
+
+	class BSpline : public AbstractSpline
+	{
+	public:
+		std::vector<Vector2> sample(size_t count) override
+		{
+			std::vector<Vector2> result;
+
+			return result;
+
+		}
+
+	private:
+	};
+
+
+
 	class SolverFrame : public Frame
 	{
 	public:
@@ -11,14 +513,16 @@ namespace Physics2D
 		{
 		}
 
+
+
 		void onLoad() override
 		{
 			float min = std::min(m_halfWidth, m_halfHeight);
 			float maxRadius = min * m_percentage;
 			float radius = maxRadius * m_percentage;
 			
-			m_bezierPoints1[1] = Vector2(m_halfWidth - radius, m_halfHeight);
-			m_bezierPoints1[2] = Vector2(m_halfWidth - radius * 0.6f, m_halfHeight);
+			//m_bezierPoints1[1] = Vector2(m_halfWidth - radius, m_halfHeight);
+			//m_bezierPoints1[2] = Vector2(m_halfWidth - radius * 0.6f, m_halfHeight);
 		}
 
 		void onPostRender(sf::RenderWindow& window) override
@@ -37,7 +541,7 @@ namespace Physics2D
 			float maxRadius = min * m_percentage;
 			float radius = maxRadius * m_percentage;
 
-			float step = Constant::Pi * 0.5f / m_count;
+			float step = Constant::Pi * 0.5f / static_cast<float>(m_count);
 
 			Vector2 center(m_halfWidth - radius, m_halfHeight - radius);
 
@@ -46,9 +550,9 @@ namespace Physics2D
 
 			m_cornerCenter = center;
 
-			for (float i = 0.0f; i <= m_count; i += 1.0f)
+			for (int i = 0;i <= m_count; ++i)
 			{
-				float angle = i * step;
+				float angle = static_cast<float>(i) * step;
 				Vector2 p(radius * std::cos(angle), radius * std::sin(angle));
 				p += center;
 				vertices.push_back(p);
@@ -63,9 +567,9 @@ namespace Physics2D
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, center, corner, gray);
 
 			Vector2 refP1(m_innerWidthFactor * (m_halfWidth - radius), m_halfHeight);
-			Vector2 refP2(m_innerWidthFactor * (m_halfWidth - radius), -m_halfHeight);
+			Vector2 refP2(m_innerWidthFactor * (m_halfWidth - radius), 0.0f);
 			Vector2 refP3(m_halfWidth, m_innerHeightFactor * (m_halfHeight - radius));
-			Vector2 refP4(-m_halfWidth, m_innerHeightFactor * (m_halfHeight - radius));
+			Vector2 refP4(0.0f, m_innerHeightFactor * (m_halfHeight - radius));
 
 			if (m_showReferenceLine)
 			{
@@ -74,16 +578,16 @@ namespace Physics2D
 			}
 
 			refP1 = Vector2(m_halfWidth, m_halfHeight - radius);
-			refP2 = Vector2(-m_halfWidth, m_halfHeight - radius);
+			refP2 = Vector2(0.0f, m_halfHeight - radius);
 			refP3 = Vector2(m_halfWidth - radius, m_halfHeight);
-			refP4 = Vector2(m_halfWidth - radius, -m_halfHeight);
+			refP4 = Vector2(m_halfWidth - radius, 0.0f);
 			if (m_showReferenceLine)
 			{
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, refP1, refP2, gray);
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, refP3, refP4, gray);
 			}
-			refP1 = Vector2(corner.x, -corner.y);
-			refP2 = Vector2(-corner.x, corner.y);
+			refP1 = Vector2(corner.x, 0.0f);
+			refP2 = Vector2(0.0f, corner.y);
 			if (m_showReferenceLine)
 			{
 				RenderSFMLImpl::renderLine(window, *m_settings.camera, corner, refP1, gray);
@@ -108,49 +612,76 @@ namespace Physics2D
 			m_endRoundedPos = refP2;
 			m_startRoundedPos = refP1;
 
+			m_bezier1[0]= Vector2(m_innerWidthFactor * (m_halfWidth - radius), m_halfHeight);
+			m_bezier1[3] = refP2;
 
-			m_bezierPoints1[0] = Vector2(m_innerWidthFactor * (m_halfWidth - radius), m_halfHeight);
-			m_bezierPoints1[3] = refP2;
+			m_bezier2[0] = Vector2(m_halfWidth, m_innerHeightFactor * (m_halfHeight - radius));
+			m_bezier2[3] = refP1;
 
-			m_bezierPoints2[0] = Vector2(m_halfWidth, m_innerHeightFactor * (m_halfHeight - radius));
-			m_bezierPoints2[3] = refP1;
+			Vector2 endDir = m_cornerCenter - m_endRoundedPos;
+			endDir = endDir.normal().perpendicular();
+
+			float t = (m_halfHeight - m_endRoundedPos.y) / endDir.y;
+
+			Vector2 p = m_endRoundedPos + t * endDir;
+
+			m_bezier1[2] = p;
+
+			endDir = m_cornerCenter - m_startRoundedPos;
+			endDir = endDir.normal().perpendicular();
+
+			t = (m_halfWidth - m_startRoundedPos.x) / endDir.x;
+
+			p = m_startRoundedPos + t * endDir;
+
+			m_bezier2[2] = p;
+
+			float A = 18.0f * ((m_bezier1[3].x - m_bezier1[2].x) * (m_bezier1[0].y - m_bezier1[2].y)
+				- (m_bezier1[0].x - m_bezier1[2].x) * (m_bezier1[3].y - m_bezier1[2].y));
+			float C = std::pow(9.0f * (m_bezier1[3] - m_bezier1[2]).dot(m_bezier1[3] - m_bezier1[2]), 3.0f);
+			C /= radius * radius;
+
+			float u = std::sqrt(C) / std::abs(A);
+			Vector2 finalP = m_bezier1[0] * u + (1.0f - u) * m_bezier1[2];
+
+			m_bezier1[1] = finalP;
+
+			A = 18.0f * ((m_bezier2[3].x - m_bezier2[2].x) * (m_bezier2[0].y - m_bezier2[2].y)
+				- (m_bezier2[0].x - m_bezier2[2].x) * (m_bezier2[3].y - m_bezier2[2].y));
+			C = std::pow(9.0f * (m_bezier2[3] - m_bezier2[2]).dot(m_bezier2[3] - m_bezier2[2]), 3.0f);
+			C /= radius * radius;
+
+			u = std::sqrt(C) / std::abs(A);
+
+			finalP = m_bezier2[0] * u + (1.0f - u) * m_bezier2[2];
+
+			m_bezier2[1] = finalP;
+
+			m_quinticBezier[0] = m_bezier1[0];
+
+			m_quinticBezier[5] = m_bezier1[3];
+
+			if (!once)
+			{
+				m_quinticBezier[1] = Vector2(0.538808107f, m_halfHeight);
+				m_quinticBezier[2] = Vector2(0.597935021f, m_halfHeight);
+				m_quinticBezier[3] = Vector2(0.672799885f, 0.981727779f);
+				m_quinticBezier[4] = Vector2(0.740983009f, 0.947854280f);
+				once = true;
+			}
 
 			//RenderSFMLImpl::renderPoint(window, *m_settings.camera, m_bezierPoints[0], color, 4.0f);
 			//RenderSFMLImpl::renderPoint(window, *m_settings.camera, m_bezierPoints[3], color, 4.0f);
 			//RenderSFMLImpl::renderPoint(window, *m_settings.camera, m_bezierPoints[1], gray, 4.0f);
 			//RenderSFMLImpl::renderPoint(window, *m_settings.camera, m_bezierPoints[2], gray, 4.0f);
 
-			std::vector<Vector2> bezierSamplePoints1, bezierSamplePoints2;
-			bezierSamplePoints1.reserve(m_bezierCount);
-			float bezierStep = 1.0f / m_bezierCount;
-			for (float t = 0.0f; t < 1.0f; t += bezierStep) {
-				Vector2 p = std::pow(1.0f - t, 3.0f) * m_bezierPoints1[0] +
-					3.0f * t * std::pow(1.0f - t, 2.0f) * m_bezierPoints1[1] +
-					3.0f * t * t * (1 - t) * m_bezierPoints1[2] +
-					std::pow(t, 3.0f) * m_bezierPoints1[3];
+			std::vector<Vector2> bezierPoints1 = m_bezier1.samplePoints(m_bezierCount);
+			std::vector<Vector2> bezierPoints2 = m_bezier2.samplePoints(m_bezierCount);
 
-				bezierSamplePoints1.push_back(p);
-				newVertices.push_back(p);
-
-				p = std::pow(1.0f - t, 3.0f) * m_bezierPoints2[0] +
-					3.0f * t * std::pow(1.0f - t, 2.0f) * m_bezierPoints2[1] +
-					3.0f * t * t * (1 - t) * m_bezierPoints2[2] +
-					std::pow(t, 3.0f) * m_bezierPoints2[3];
-
-				bezierSamplePoints2.push_back(p);
-
-				if (t == 0.0f)
-					continue;
-
-				//RenderSFMLImpl::renderLine(window, *m_settings.camera,
-				//	bezierSamplePoints1[bezierSamplePoints1.size() - 2], bezierSamplePoints1[bezierSamplePoints1.size() - 1], RenderConstant::Green);
-
-				//RenderSFMLImpl::renderLine(window, *m_settings.camera,
-				//	bezierSamplePoints2[bezierSamplePoints2.size() - 2], bezierSamplePoints2[bezierSamplePoints2.size() - 1], RenderConstant::Green);
-
-
+			for(auto iter = bezierPoints1.begin(); iter != bezierPoints1.end() - 1; ++iter)
+			{
+				newVertices.push_back(*iter);
 			}
-
 
 			float k = 1.0f / radius;
 			float scaleK = 1.0f * k;
@@ -180,143 +711,115 @@ namespace Physics2D
 					continue;
 
 				if (m_showRoundedCurvature)
+				{
+
 					RenderSFMLImpl::renderLine(window, *m_settings.camera,
-					curvatureOfRounded[curvatureOfRounded.size() - 2], curvatureOfRounded[curvatureOfRounded.size() - 1], gray);
+						curvatureOfRounded[curvatureOfRounded.size() - 2], curvatureOfRounded[curvatureOfRounded.size() - 1], gray);
+
+				}
 			}
 
 			for(auto iter = curvatureOfRoundedStart.rbegin() + 1; iter != curvatureOfRoundedStart.rend(); ++iter)
 			{
-				//RenderSFMLImpl::renderPoint(window, *m_settings.camera, *iter, RenderConstant::Blue, 2.0f);
 				newVertices.push_back(*iter);
 			}
+
 			
 
-
-			std::vector<Vector2> cubicBezierCurvature1, cubicBezierCurvature2;
-			std::vector<float> cubicScaleK1, cubicScaleK2;
-			//draw curvature
-			for (float t = 0.0f; t <= 1.0f; t += bezierStep)
+			if (m_showBezierCurvature)
 			{
 
-				Vector2 p1 = std::pow(1.0f - t, 3.0f) * m_bezierPoints1[0] +
-					3.0f * t * std::pow(1.0f - t, 2.0f) * m_bezierPoints1[1] +
-					3.0f * t * t * (1 - t) * m_bezierPoints1[2] +
-					std::pow(t, 3.0f) * m_bezierPoints1[3];
+				std::vector<Vector2> bezierCurvature1 = m_bezier1.curvaturePoints(m_bezierCount, m_curvatureScaleFactor);
+				std::vector<Vector2> bezierCurvature2 = m_bezier2.curvaturePoints(m_bezierCount, m_curvatureScaleFactor, true);
 
-				Vector2 dp = -3.0f * (1.0f - t) * (1.0f - t) * m_bezierPoints1[0] +
-					(9.0f * t * t - 12.0f * t + 3.0f) * m_bezierPoints1[1] +
-					(6.0f * t - 9.0f * t * t) * m_bezierPoints1[2] +
-					3.0f * t * t * m_bezierPoints1[3];
-
-				Vector2 ddp = 6.0f * (1.0f - t) * m_bezierPoints1[0] +
-					(18.0f * t - 12.0f) * m_bezierPoints1[1] +
-					(6.0f - 18.0f * t) * m_bezierPoints1[2] +
-					6.0f * t * m_bezierPoints1[3];
-
-				float k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
-
-				
-				//if (k > 0.0f)
-				//	kRadius = 1.0f / k;
-
-				float kRadius = 1.0f * k;
-				cubicScaleK1.emplace_back(kRadius);
-
-				Vector2 tangent = dp.normal();
-				Vector2 normal = tangent.perpendicular();
-
-				Vector2 curvaturePoint1 = normal * kRadius * m_curvatureScaleFactor + p1;
-
-				cubicBezierCurvature1.push_back(curvaturePoint1);
-
-				Vector2 p2 = std::pow(1.0f - t, 3.0f) * m_bezierPoints2[0] +
-					3.0f * t * std::pow(1.0f - t, 2.0f) * m_bezierPoints2[1] +
-					3.0f * t * t * (1 - t) * m_bezierPoints2[2] +
-					std::pow(t, 3.0f) * m_bezierPoints2[3];
-
-				dp = -3.0f * (1.0f - t) * (1.0f - t) * m_bezierPoints2[0] +
-					(9.0f * t * t - 12.0f * t + 3.0f) * m_bezierPoints2[1] +
-					(6.0f * t - 9.0f * t * t) * m_bezierPoints2[2] +
-					3.0f * t * t * m_bezierPoints2[3];
-
-				ddp = 6.0f * (1.0f - t) * m_bezierPoints2[0] +
-					(18.0f * t - 12.0f) * m_bezierPoints2[1] +
-					(6.0f - 18.0f * t) * m_bezierPoints2[2] +
-					6.0f * t * m_bezierPoints2[3];
-
-				k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
-
-				kRadius = 1.0f * k;
-
-				cubicScaleK2.emplace_back(kRadius);
-
-				tangent= dp.normal();
-				normal = tangent.perpendicular();
-
-				Vector2 curvaturePoint2 = -normal * kRadius * m_curvatureScaleFactor + p2;
-
-				cubicBezierCurvature2.push_back(curvaturePoint2);
-
-				if(m_showBezierCurvature)
+				for(size_t i = 0; i < bezierCurvature1.size(); ++i)
 				{
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, p1, curvaturePoint1, RenderConstant::Red);
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, p2, curvaturePoint2, RenderConstant::Red);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, bezierPoints1[i], 
+						bezierCurvature1[i], RenderConstant::Green);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, bezierPoints2[i], bezierCurvature2[i], 
+						RenderConstant::Green);
 
-					if (t == 0.0f)
+					if(i == 0)
 						continue;
 
-					RenderSFMLImpl::renderLine(window, *m_settings.camera,
-						cubicBezierCurvature1[cubicBezierCurvature1.size() - 2], cubicBezierCurvature1[cubicBezierCurvature1.size() - 1], RenderConstant::Red);
+					//RenderSFMLImpl::renderArrow(window, *m_settings.camera, bezierCurvature1[i], 
+					//	bezierCurvature1[i - 1], RenderConstant::Green, 0.3f, 30);
 
-					RenderSFMLImpl::renderLine(window, *m_settings.camera,
-						cubicBezierCurvature2[cubicBezierCurvature2.size() - 2], cubicBezierCurvature2[cubicBezierCurvature2.size() - 1], RenderConstant::Red);
+					//RenderSFMLImpl::renderArrow(window, *m_settings.camera, bezierCurvature2[i - 1],
+					//	bezierCurvature2[i], RenderConstant::Green, 0.3f, 30);
+
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, bezierCurvature1[i - 1], bezierCurvature1[i], RenderConstant::Green);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, bezierCurvature2[i - 1], bezierCurvature2[i], RenderConstant::Green);
 				}
 
 			}
-			
-			Vector2 endDir = m_cornerCenter - m_endRoundedPos;
-			endDir = endDir.normal().perpendicular();
-			
-			float t = (m_halfHeight - m_endRoundedPos.y) / endDir.y;
 
-			Vector2 p = m_endRoundedPos + t * endDir;
+			if (m_showQuinticBezier)
+			{
+				for (int i = 1; i <= 4; ++i)
+				{
+					RenderSFMLImpl::renderPoint(window, *m_settings.camera, m_quinticBezier[i], RenderConstant::Gray, 4.0f);
+				}
 
-			m_bezierPoints1[2] = p; 
+				auto quinticBezierPoints = m_quinticBezier.samplePoints(m_bezierCount);
+				auto quinticBezierCurvaturePoints = m_quinticBezier.curvaturePoints(m_bezierCount, m_curvatureScaleFactor);
 
-			endDir = m_cornerCenter - m_startRoundedPos;
-			endDir = endDir.normal().perpendicular();
+				for (size_t i = 1; i < quinticBezierPoints.size(); ++i)
+				{
 
-			t = (m_halfWidth - m_startRoundedPos.x) / endDir.x;
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, quinticBezierPoints[i - 1], quinticBezierPoints[i], RenderConstant::Yellow);
 
-			p = m_startRoundedPos + t * endDir;
+					if (m_showQuinticBezierCurvature)
+						{
+						RenderSFMLImpl::renderLine(window, *m_settings.camera, quinticBezierCurvaturePoints[i - 1]
+							, quinticBezierCurvaturePoints[i], RenderConstant::Yellow);
 
-			m_bezierPoints2[2] = p;
+						RenderSFMLImpl::renderLine(window, *m_settings.camera, quinticBezierPoints[i], quinticBezierCurvaturePoints[i], RenderConstant::Yellow);
+
+					}
+				}
+			}
+
+			if(m_showG3)
+			{
+				Vector2 start = Vector2((m_halfWidth - radius) * m_innerWidthFactor, m_halfHeight);
+				Vector2 end = Vector2(m_halfWidth, (m_halfHeight - radius) * m_innerHeightFactor);
+
+				//RenderSFMLImpl::renderLine(window, *m_settings.camera, start, end, RenderConstant::Red);
+
+				m_rationalCubicBezier.pointAt(0) = start;
+				m_rationalCubicBezier.pointAt(1) = m_bezier1[1];
+				m_rationalCubicBezier.pointAt(2) = m_bezier1[2];
+				m_rationalCubicBezier.pointAt(3) = m_endRoundedPos;
+
+				//optimize w_0 to make curvature variance at P_3 close to zero
 
 
-			float A = 18.0f * ((m_bezierPoints1[3].x - m_bezierPoints1[2].x) * (m_bezierPoints1[0].y - m_bezierPoints1[2].y)
-				- (m_bezierPoints1[0].x - m_bezierPoints1[2].x) * (m_bezierPoints1[3].y - m_bezierPoints1[2].y));
-			float C = std::pow(9.0f * (m_bezierPoints1[3] - m_bezierPoints1[2]).dot(m_bezierPoints1[3] - m_bezierPoints1[2]), 3.0f);
-			C /= radius * radius;
-			
-			float u = std::sqrt(C) / std::abs(A);
-			Vector2 finalP = m_bezierPoints1[0] * u + (1.0f - u) * m_bezierPoints1[2];
 
-			m_bezierPoints1[1] = finalP;
+				std::vector<Vector2> rationalCubicBezierPoints = m_rationalCubicBezier.samplePoints(m_bezierCount);
+				std::vector<Vector2> rationalCubicBezierCurvaturePoints = m_rationalCubicBezier.curvaturePoints(m_bezierCount, m_curvatureScaleFactor);
 
-			A = 18.0f * ((m_bezierPoints2[3].x - m_bezierPoints2[2].x) * (m_bezierPoints2[0].y - m_bezierPoints2[2].y)
-				- (m_bezierPoints2[0].x - m_bezierPoints2[2].x) * (m_bezierPoints2[3].y - m_bezierPoints2[2].y));
-			C = std::pow(9.0f * (m_bezierPoints2[3] - m_bezierPoints2[2]).dot(m_bezierPoints2[3] - m_bezierPoints2[2]), 3.0f);
-			C /= radius * radius;
+				for (size_t i = 1; i < rationalCubicBezierPoints.size(); ++i)
+				{
 
-			u = std::sqrt(C) / std::abs(A);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i - 1], rationalCubicBezierPoints[i], RenderConstant::Red);
 
-			finalP = m_bezierPoints2[0] * u + (1.0f - u) * m_bezierPoints2[2];
+					
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierCurvaturePoints[i - 1]
+						, rationalCubicBezierCurvaturePoints[i], RenderConstant::Red);
 
-			m_bezierPoints2[1] = finalP;
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i], rationalCubicBezierCurvaturePoints[i], RenderConstant::Red);
+
+					
+				}
+
+			}
+
+
 
 			//RenderSFMLImpl::renderPoint(window, *m_settings.camera, finalP, color, 4.0f);
 
-			for(auto&& iter = bezierSamplePoints2.rbegin() + 1; iter != bezierSamplePoints2.rend(); ++iter)
+			for(auto&& iter = bezierPoints2.rbegin() + 1; iter != bezierPoints2.rend(); ++iter)
 			{
 				newVertices.push_back(*iter);
 			}
@@ -368,23 +871,6 @@ namespace Physics2D
 					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices4[i], vertices4[(i + 1) % vertices4.size()], color);
 				}
 			}
-
-			//std::vector<Vector2> curvatureOfCorner;
-
-			//for (float i = 0.0f; i <= m_count; i += 1.0f)
-			//{
-			//	float angle = i * step;
-			//	Vector2 start(radius * std::cos(angle), radius * std::sin(angle));
-			//	Vector2 end(2.0f * radius * std::cos(angle), 2.0f * radius * std::sin(angle));
-			//	start += center;
-			//	end += center;
-			//	RenderSFMLImpl::renderLine(window, *m_settings.camera, start, end, gray);
-			//	curvatureOfCorner.push_back(end);
-			//	if(i == 0.0f)
-			//		continue;
-
-			//	RenderSFMLImpl::renderLine(window, *m_settings.camera, curvatureOfCorner[i - 1], curvatureOfCorner[i], gray);
-			//}
 		}
 
 		void onPostStep(real dt) override
@@ -398,28 +884,32 @@ namespace Physics2D
 		}
 		void onRenderUI() override
 		{
-			Vector2 pos(6.0f, -3.0f);
-			pos = m_settings.camera->worldToScreen(pos);
-			ImGui::SetNextWindowPos(ImVec2(pos.x, pos.y), ImGuiCond_Once);
 
 			ImGui::Begin("Rounded Rect");
 
 			ImGui::DragFloat("Half Width", &m_halfWidth, 0.01f, 0.5f, 50.0f);
 			ImGui::DragFloat("Half Height", &m_halfHeight, 0.01f, 0.5f, 50.0f);
-			ImGui::DragFloat("Rounded Radius Percentage", &m_percentage, 0.005f, 0.1f, 1.0f);
+			ImGui::DragFloat("Rounded Radius Percentage", &m_percentage, 0.005f, 0.005f, 1.0f);
 			ImGui::DragFloat("Inner Width Percentage", &m_innerWidthFactor, 0.001f, 0.0f, 1.0f);
 			ImGui::DragFloat("Inner Height Percentage", &m_innerHeightFactor, 0.001f, 0.0f, 1.0f);
-			ImGui::DragFloat("Corner Angle Percentage", &m_cornerPercentage, 0.005f, 0.01f, 0.99f);
-			ImGui::DragFloat("Bezier Sample Counts", &m_bezierCount, 1, 8.0f, 100.0f);
-			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.1f, 1.0f);
-			ImGui::DragFloat("Smoothness", &m_smoothness, 0.001f, 0.01f, 0.9f);
-			ImGui::DragFloat("Segment Count", &m_count, 1, 4.0f, 100.0f);
+			ImGui::DragFloat("Corner Angle Percentage", &m_cornerPercentage, 0.005f, 0.0f, 0.995f);
+			ImGui::DragInt("Bezier Sample Count", &m_bezierCount, 1, 8, 500);
+			ImGui::DragInt("Circle Segment Count", &m_count, 2, 4, 500);
+			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.01f, 1.0f);
+
+			ImGui::DragFloat("Weight P0", &m_rationalCubicBezier.weightAt(0), 0.001f, 0.001f, 5.0f);
+			ImGui::DragFloat("Weight P1", &m_rationalCubicBezier.weightAt(1), 0.001f, 0.001f, 5.0f);
+			ImGui::DragFloat("Weight P2", &m_rationalCubicBezier.weightAt(2), 0.001f, 0.001f, 5.0f);
+			ImGui::DragFloat("Weight P3", &m_rationalCubicBezier.weightAt(3), 0.001f, 0.001f, 5.0f);
 
 			ImGui::Checkbox("Show Rounded Curvature", &m_showRoundedCurvature);
 			ImGui::Checkbox("Show Bezier Curvature", &m_showBezierCurvature);
 			ImGui::Checkbox("Show Reference Line", &m_showReferenceLine);
+			ImGui::Checkbox("Show Quintic Bezier Curve", &m_showQuinticBezier);
+			ImGui::Checkbox("Show Quintic Bezier Curvature", &m_showQuinticBezierCurvature);
 			ImGui::Checkbox("Show G1 Continuity", &m_showG1);
 			ImGui::Checkbox("Show G2 Continuity", &m_showG2);
+			ImGui::Checkbox("Show G3 Continuity", &m_showG3);
 
 			ImGui::End();
 		}
@@ -432,26 +922,19 @@ namespace Physics2D
 		{
 			if (event.mouseButton.button == sf::Mouse::Left)
 			{
-				if((m_mousePos - m_bezierPoints1[1]).length() < 0.05f)
+				Vector2 pos(static_cast<real>(event.mouseButton.x), static_cast<real>(event.mouseButton.y));
+				m_mousePos = m_settings.camera->screenToWorld(pos);
+
+				for(int i = 1; i <= 4; ++i)
 				{
-					m_currentIndex = 1;
-					m_isMoving = true;
+					if ((m_mousePos - m_quinticBezier[i]).length() < 0.01f)
+					{
+						m_isMoving = true;
+						m_currentIndex = i;
+						break;
+					}
 				}
-				else if((m_mousePos - m_bezierPoints1[2]).length() < 0.05f)
-				{
-					m_currentIndex = 2;
-					m_isMoving = true;
-				}
-				else if((m_mousePos - m_bezierPoints1[3]).length() < 0.05f)
-				{
-					m_currentIndex = 3;
-					m_isMoving = true;
-				}
-				else
-				{
-					m_currentIndex = -1;
-					m_isMoving = false;
-				}
+
 			}
 		}
 		void onMouseRelease(sf::Event& event) override
@@ -467,8 +950,27 @@ namespace Physics2D
 			{
 				if(m_currentIndex == 1)
 				{
-					m_bezierPoints1[1].x = m_mousePos.x;
+					m_quinticBezier[m_currentIndex].x = m_mousePos.x;
 				}
+				else if(m_currentIndex == 2)
+				{
+					m_quinticBezier[m_currentIndex].x = m_mousePos.x;
+				}
+				else if(m_currentIndex == 4)
+				{
+					if(!m_cornerCenter.isOrigin() && !m_endRoundedPos.isOrigin())
+					{
+						Vector2 endDir = m_cornerCenter - m_endRoundedPos;
+						endDir = endDir.normal().perpendicular();
+
+						float dot = endDir.dot(m_mousePos - m_endRoundedPos);
+
+						Vector2 p = m_endRoundedPos + dot * endDir;
+						m_quinticBezier[m_currentIndex] = p;
+					}
+				}
+				else
+					m_quinticBezier[m_currentIndex] = m_mousePos;
 			}
 			//std::cout << "mouse:(" << m_mousePos.x << "," << m_mousePos.y << ")\n";
 			//std::cout << "bezier[1]:(" << m_bezierPoints[1].x << "," << m_bezierPoints[1].y << ")\n";
@@ -476,10 +978,14 @@ namespace Physics2D
 		}
 
 	private:
-		bool m_showG1 = true;
+		bool once = false;
+		bool m_showG1 = false;
 		bool m_showG2 = true;
+		bool m_showG3 = true;
 		bool m_showRoundedCurvature = true;
-		bool m_showBezierCurvature = true;
+		bool m_showBezierCurvature = false;
+		bool m_showQuinticBezier = false;
+		bool m_showQuinticBezierCurvature = false;
 		bool m_showReferenceLine = true;
 
 		int m_currentIndex = -1;
@@ -490,18 +996,23 @@ namespace Physics2D
 		Vector2 m_startRoundedPos;
 		Vector2 m_endRoundedPos;
 
-		std::array<Vector2, 4> m_bezierPoints1;
+		RationalCubicBezier m_rationalCubicBezier;
 
-		std::array<Vector2, 4> m_bezierPoints2;
+		QuinticBezier m_quinticBezier;
 
-		float m_innerWidthFactor = 0.6f;
-		float m_innerHeightFactor = 0.6f;
+		CubicBezier m_bezier1;
+		CubicBezier m_bezier2;
+
+		//std::array<Vector2, 4> m_bezierPoints1;
+		//std::array<Vector2, 4> m_bezierPoints2;
+
+		float m_innerWidthFactor = 0.7f;
+		float m_innerHeightFactor = 0.7f;
 		float m_curvatureScaleFactor = 0.5f;
-		float m_bezierCount = 50.0f;
-		float m_count = 50.0f;
+		int m_bezierCount = 50;
+		int m_count = 50;
 		float m_halfWidth = 1.0f;
 		float m_halfHeight = 1.0f;
-		float m_smoothness = 0.5f;
 		float m_percentage = 0.7f;
 
 		float m_cornerPercentage = 0.2f;

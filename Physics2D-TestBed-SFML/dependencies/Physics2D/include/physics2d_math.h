@@ -28,6 +28,58 @@ namespace Physics2D
 	class Math
 	{
 	public:
+		PHYSICS2D_API static real bernstein(const real& t, const real& i, const real& n)
+		{
+			return combination(n, i) * std::pow(t, i) * std::pow(1.0f - t, n - i);
+		}
+
+		PHYSICS2D_API static real dBernstein(const real& t, const real& i, const real& n)
+		{
+			if(i == 0)
+				return -1.0f * n * std::pow(1.0f - t, n - 1);
+
+			if(i == n)
+				return n * std::pow(t, n - 1);
+
+			return combination(n, i) * (i * std::pow(t, i - 1) * std::pow(1.0f - t, n - i) -
+			                             (n - i) * std::pow(t, i) * std::pow(1.0f - t, n - i - 1));
+		}
+
+		PHYSICS2D_API static real d2Bernstein(const real& t, const real& i, const real& n)
+		{
+			if(i == 0)
+				return n * (n - 1) * std::pow(1.0f - t, n - 2.0f);
+
+			if (i == 1)
+				return combination(n, 1) * ( -2.0f * (n - 1.0f) * std::pow(1.0f - t, n - 2.0f) + 
+					(n - 1.0f) * (n - 2.0f) * t * std::pow(1.0f - t, n - 3.0f));
+
+			if (i == 2)
+				return combination(n, 2) * (2.0f * std::pow(1.0f - t, n - 2.0f) 
+					- 4.0f * (n - 2.0f) * t * std::pow(1.0f - t, n - 3.0f) +
+					(n - 2.0f) * (n - 3.0f) * t * t * std::pow(1.0f - t, n - 3.0f));
+
+			if(i == n)
+				return n * (n - 1) * std::pow(t, n - 2.0f);
+
+			
+			return combination(n, i) * (i * (i - 1.0f) * std::pow(t, i - 2.0f) * std::pow(1.0f - t, n - i) 
+				- 2.0f * i * (n - i)  * std::pow(t, i - 1.0f) * std::pow(1.0f - t, n - i - 1.0f) +
+				(n - i) * (n - i - 1.0f) * std::pow(t, i) * std::pow(1.0f - t, n - i - 2.0f));
+		}
+
+		PHYSICS2D_API static real combination(const real& n, const real& m)
+		{
+			real a = 1.0f, b = 1.0f, c = 1.0f;
+			for (real i = n; i > 0; i -= 1.0f)
+				a *= i;
+			for (real i = m; i > 0; i -= 1.0f)
+				b *= i;
+			for (real i = n - m; i > 0; i -= 1.0f)
+				c *= i;
+			return a / (b * c);
+		}
+
 		//trigonometric function
 		PHYSICS2D_API static real abs(const real& x)
 		{
