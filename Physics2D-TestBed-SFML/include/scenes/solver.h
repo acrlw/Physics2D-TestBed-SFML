@@ -55,6 +55,64 @@ namespace Physics2D
 			return result;
 		}
 
+		float curvature(float t)const
+		{
+			// \left( (t-1)^3w_0-t\left( 3(t-1)^2w_1+t\left( tw_3-3(t-1)w_2 \right) \right) \right) ^2
+			float det = std::pow((std::pow(t - 1.0f, 3.0f) * m_weights[0] -
+				t * (3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1] + t * (t * m_weights[3] - 3.0f * (t - 1.0f) * m_weights[2]))), 2.0f);
+
+			// -3(t-1)^2w_0\left( (t-1)^2w_1+t\left( tw_3-2(t-1)w_2 \right) \right)
+
+			float dp0 = -3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[0] *
+				(std::pow(t - 1.0f, 2.0f) * m_weights[1] + t * (t * m_weights[3] - 2.0f * (t - 1.0f) * m_weights[2]));
+
+			// +3(t-1)w_1\left( t^2\left( 2tw_3-3(t-1)w_2 \right) +(t-1)^3w_0 \right)
+
+			float dp1 = 3.0f * (t - 1.0f) * m_weights[1] *
+				(t * t * (2.0f * t * m_weights[3] - 3.0f * (t - 1.0f) * m_weights[2]) + std::pow(t - 1.0f, 3.0f) * m_weights[0]);
+
+			// -3tw_2\left( t\left( t^2w_3-3(t-1)^2w_1 \right) +2(t-1)^3w_0 \right)
+
+			float dp2 = -3.0f * t * m_weights[2] *
+				(t * (t * t * m_weights[3] - 3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1]) + 2.0f * std::pow(t - 1.0f, 3.0f) * m_weights[0]);
+
+			// +3t^2w_3\left( (t-1)^2w_0+t\left( tw_2-2(t-1)w_1 \right) \right)
+
+			float dp3 = 3.0f * t * t * m_weights[3] *
+				(std::pow(t - 1.0f, 2.0f) * m_weights[0] + t * (t * m_weights[2] - 2.0f * (t - 1.0f) * m_weights[1]));
+
+			Vector2 dp = dp0 * m_points[0] + dp1 * m_points[1] + dp2 * m_points[2] + dp3 * m_points[3];
+			dp /= det;
+
+			// 6(t-1)w_0\left( (t-1)^3w_0\left( \left( -2t^2+t+1 \right) w_2+(t-1)^2w_1+t(t+1)w_3 \right) +t^2\left( t\left( 5t^2-13t+8 \right) w_3w_2-(t-2)t^2w_{3}^{2}-3(t-1)^2(2t-3)w_{2}^{2} \right) -3(t-1)^5w_{1}^{2}+t(t-1)^2w_1\left( 9(t-1)^2w_2+t(3-4t)w_3 \right) \right)
+
+			float ddp0 = 6.0f * (t - 1.0f) * m_weights[0] *
+				(std::pow(t - 1.0f, 3.0f) * m_weights[0] * ((-2.0f * t * t + t + 1.0f) * m_weights[2] + std::pow(t - 1.0f, 2.0f) * m_weights[1] + t * (t + 1.0f) * m_weights[3]) + t * t * (t * (5.0f * t * t - 13.0f * t + 8.0f) * m_weights[3] * m_weights[2] - (t - 2.0f) * t * t * m_weights[3] * m_weights[3] - 3.0f * std::pow(t - 1.0f, 2.0f) * (2.0f * t - 3.0f) * m_weights[2] * m_weights[2]) - 3.0f * std::pow(t - 1.0f, 5.0f) * m_weights[1] * m_weights[1] + t * std::pow(t - 1.0f, 2.0f) * m_weights[1] * (9.0f * std::pow(t - 1.0f, 2.0f) * m_weights[2] + t * (3.0f - 4.0f * t) * m_weights[3]));
+
+			// -6w_1\left( t^3\left( t^2(3-2t)w_{3}^{2}-9(t-1)^3w_{2}^{2}+9t(t-1)^2w_2w_3+3(t-1)^2w_1\left( 3(t-1)w_2-(2t+1)w_3 \right) \right) +(t-1)^6w_{0}^{2}+(t-1)^3w_0\left( t\left( t(t+6)w_3-9(t-1)w_2 \right) -3(t-1)^3w_1 \right) \right) 
+
+			float ddp1 = -6.0f * m_weights[1] *
+				(t * t * t * (t * t * (3.0f - 2.0f * t) * m_weights[3] * m_weights[3] - 9.0f * std::pow(t - 1.0f, 3.0f) * m_weights[2] * m_weights[2] + 9.0f * t * std::pow(t - 1.0f, 2.0f) * m_weights[2] * m_weights[3] + 3.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1] * (3.0f * (t - 1.0f) * m_weights[2] - (2.0f * t + 1.0f) * m_weights[3])) + std::pow(t - 1.0f, 6.0f) * m_weights[0] * m_weights[0] + std::pow(t - 1.0f, 3.0f) * m_weights[0] * (t * (t * (t + 6.0f) * m_weights[3] - 9.0f * (t - 1.0f) * m_weights[2]) - 3.0f * std::pow(t - 1.0f, 3.0f) * m_weights[1]));
+
+			// 6w_2\left( t^3\left( t^3\left( 3w_2-w_3 \right) w_3+9(t-1)^3w_{1}^{2}-9(t-1)w_1\left( (t-1)^2w_2+tw_3 \right) \right) -t^2(t-1)^2w_0\left( -3\left( 2t^2-5t+3 \right) w_2+9(t-1)^2w_1+(t-7)tw_3 \right) +(2t+1)(t-1)^5w_{0}^{2} \right) 
+
+			float ddp2 = 6.0f * m_weights[2] *
+				(t * t * t * (t * t * t * (3.0f * m_weights[2] - m_weights[3]) * m_weights[3] + 9.0f * std::pow(t - 1.0f, 3.0f) * m_weights[1] * m_weights[1] - 9.0f * (t - 1.0f) * m_weights[1] * (std::pow(t - 1.0f, 2.0f) * m_weights[2] + t * m_weights[3])) - t * t * (t - 1.0f) * (t - 1.0f) * m_weights[0] * (-3.0f * (2.0f * t * t - 5.0f * t + 3.0f) * m_weights[2] + 9.0f * std::pow(t - 1.0f, 2.0f) * m_weights[1] + (t - 7.0f) * t * m_weights[3]) + (2.0f * t + 1.0f) * std::pow(t - 1.0f, 5.0f) * m_weights[0] * m_weights[0]);
+
+			// -6tw_3\left( t^5w_2\left( 3w_2-w_3 \right) +t^4w_1\left( (2t-3)w_3-9(t-1)w_2 \right) +3(t-1)^2(2t+1)t^2w_{1}^{2}-(t-1)tw_0\left( t\left( \left( -4t^2+5t-1 \right) w_2+(t-2)tw_3 \right) +(5t+3)(t-1)^2w_1 \right) +(t-1)^4(t+1)w_{0}^{2} \right) 
+
+			float ddp3 = -6.0f * t * m_weights[3] *
+				(std::pow(t, 5.0f) * m_weights[2] * (3.0f * m_weights[2] - m_weights[3]) + std::pow(t, 4.0f) * m_weights[1] * ((2.0f * t - 3.0f) * m_weights[3] - 9.0f * (t - 1.0f) * m_weights[2]) + 3.0f * std::pow(t - 1.0f, 2.0f) * (2.0f * t + 1.0f) * t * t * m_weights[1] * m_weights[1] - (t - 1.0f) * t * m_weights[0] * (t * ((-4.0f * t * t + 5.0f * t - 1.0f) * m_weights[2] + (t - 2.0f) * t * m_weights[3]) + (5.0f * t + 3.0f) * std::pow(t - 1.0f, 2.0f) * m_weights[1]) + std::pow(t - 1.0f, 4.0f) * (t + 1.0f) * m_weights[0] * m_weights[0]);
+
+			Vector2 ddp = ddp0 * m_points[0] + ddp1 * m_points[1] + ddp2 * m_points[2] + ddp3 * m_points[3];
+
+			ddp /= det;
+
+			float k = std::abs(dp.x * ddp.y - dp.y * ddp.x) / std::pow(dp.length(), 3.0f);
+
+			return k;
+		}
+
 		std::vector<Vector2> curvaturePoints(size_t count, float scale = 1.0, bool flip = false) const
 		{
 			std::vector<Vector2> result;
@@ -136,6 +194,7 @@ namespace Physics2D
 
 	private:
 		std::array<Vector2, 4> m_points;
+		//std::array<float, 4> m_weights = {0.45f, 1.0f, 1.0f, 1.0f};
 		std::array<float, 4> m_weights = {1.0f, 1.0f, 1.0f, 1.0f};
 	};
 
@@ -793,7 +852,27 @@ namespace Physics2D
 				m_rationalCubicBezier.pointAt(3) = m_endRoundedPos;
 
 				//optimize w_0 to make curvature variance at P_3 close to zero
+				float k0 = m_rationalCubicBezier.curvature(0.0f);
+				float k1 = m_rationalCubicBezier.curvature(1.0f);
 
+				float residual1 = k0 - m_rationalCubicBezier.curvature(0.001f);
+				float residual2 = k1 - m_rationalCubicBezier.curvature(0.999f);
+
+
+				if (residual2 > 0)
+					m_rationalCubicBezier.weightAt(0) += 0.0005f * m_rationalCubicBezier.weightAt(0);
+				else
+					m_rationalCubicBezier.weightAt(0) -= 0.0005f * m_rationalCubicBezier.weightAt(0);
+
+				float residual3 = k1 - scaleK;
+
+				if(residual3 > 0)
+					m_rationalCubicBezier.weightAt(2) += 0.0005f * m_rationalCubicBezier.weightAt(2);
+				else
+					m_rationalCubicBezier.weightAt(2) -= 0.0005f * m_rationalCubicBezier.weightAt(2);
+
+				std::cout << "res1:" << residual1 << ", res2:" << residual2 << ", res3:" << residual3 << ", w0:" << m_rationalCubicBezier.weightAt(0) << "\n";
+				
 
 
 				std::vector<Vector2> rationalCubicBezierPoints = m_rationalCubicBezier.samplePoints(m_bezierCount);
@@ -897,10 +976,10 @@ namespace Physics2D
 			ImGui::DragInt("Circle Segment Count", &m_count, 2, 4, 500);
 			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.01f, 1.0f);
 
-			ImGui::DragFloat("Weight P0", &m_rationalCubicBezier.weightAt(0), 0.001f, 0.001f, 5.0f);
-			ImGui::DragFloat("Weight P1", &m_rationalCubicBezier.weightAt(1), 0.001f, 0.001f, 5.0f);
-			ImGui::DragFloat("Weight P2", &m_rationalCubicBezier.weightAt(2), 0.001f, 0.001f, 5.0f);
-			ImGui::DragFloat("Weight P3", &m_rationalCubicBezier.weightAt(3), 0.001f, 0.001f, 5.0f);
+			ImGui::DragFloat("Weight P0", &m_rationalCubicBezier.weightAt(0), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Weight P1", &m_rationalCubicBezier.weightAt(1), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Weight P2", &m_rationalCubicBezier.weightAt(2), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Weight P3", &m_rationalCubicBezier.weightAt(3), 0.001f, 0.001f, 5.0f, "%.7f");
 
 			ImGui::Checkbox("Show Rounded Curvature", &m_showRoundedCurvature);
 			ImGui::Checkbox("Show Bezier Curvature", &m_showBezierCurvature);
