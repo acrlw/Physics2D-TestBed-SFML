@@ -585,6 +585,7 @@ namespace Physics2D
 			//m_bezierPoints1[2] = Vector2(m_halfWidth - radius * 0.6f, m_halfHeight);
 		}
 
+
 		void onPostRender(sf::RenderWindow& window) override
 		{
 			std::vector<Vector2> vertices;
@@ -860,22 +861,24 @@ namespace Physics2D
 
 				if(m_numOptimize)
 				{
+					float resolution = m_residualResolution;
 					{
 						//optimize w_0 to make curvature variance at P_3 close to zero
 						float k0 = m_rationalCubicBezier.curvature(0.0f);
 						float k1 = m_rationalCubicBezier.curvature(1.0f);
 
-						float residual1 = (k0 - m_rationalCubicBezier.curvature(0.0001f)) / 0.0001f;
-						float residual2 = (k1 - m_rationalCubicBezier.curvature(0.9999f)) / 0.0001f;
+
+						float residual1 = (k0 - m_rationalCubicBezier.curvature(resolution)) / resolution;
+						float residual2 = (k1 - m_rationalCubicBezier.curvature(1.0f - resolution)) / resolution;
 
 						//while(std::abs(residual2) > 1e-3)
 						//{
 						if (residual2 > 0)
 							//m_rationalCubicBezier.weightAt(0) += 0.0005f * m_rationalCubicBezier.weightAt(0);
-							m_rationalCubicBezier.weightAt(0) *= 1.0001f;
+							m_rationalCubicBezier.weightAt(0) *= (1.0f + m_optimizeSpeed);
 						else
 							//m_rationalCubicBezier.weightAt(0) -= 0.0005f * m_rationalCubicBezier.weightAt(0);
-							m_rationalCubicBezier.weightAt(0) *= 0.9999f;
+							m_rationalCubicBezier.weightAt(0) *= (1.0f - m_optimizeSpeed);
 
 						//	residual2 = (k1 - m_rationalCubicBezier.curvature(0.9999f)) / 0.0001f;
 						//	std::cout << "optimize res2:" << residual2 << "\n";
@@ -897,17 +900,17 @@ namespace Physics2D
 						float k0 = m_rationalCubicBezier2.curvature(0.0f);
 						float k1 = m_rationalCubicBezier2.curvature(1.0f);
 
-						float residual1 = (k0 - m_rationalCubicBezier2.curvature(0.0001f)) / 0.0001f;
-						float residual2 = (k1 - m_rationalCubicBezier2.curvature(0.9999f)) / 0.0001f;
+						float residual1 = (k0 - m_rationalCubicBezier.curvature(resolution)) / resolution;
+						float residual2 = (k1 - m_rationalCubicBezier.curvature(1.0f - resolution)) / resolution;
 
 						//while(std::abs(residual2) > 1e-3)
 						//{
 						if (residual2 > 0)
 							//m_rationalCubicBezier2.weightAt(0) += 0.0005f * m_rationalCubicBezier2.weightAt(0);
-							m_rationalCubicBezier2.weightAt(0) *= 1.0001f;
+							m_rationalCubicBezier2.weightAt(0) *= (1.0f + m_optimizeSpeed);
 						else
 							//m_rationalCubicBezier2.weightAt(0) -= 0.0005f * m_rationalCubicBezier2.weightAt(0);
-							m_rationalCubicBezier2.weightAt(0) *= 0.9999f;
+							m_rationalCubicBezier2.weightAt(0) *= (1.0f - m_optimizeSpeed);
 
 						//	residual2 = (k1 - m_rationalCubicBezier2.curvature(0.9999f)) / 0.0001f;
 						//	std::cout << "optimize res2:" << residual2 << "\n";
@@ -929,14 +932,15 @@ namespace Physics2D
 
 				{
 					std::vector<Vector2> rationalCubicBezierPoints = m_rationalCubicBezier.samplePoints(m_bezierCount);
+					std::vector<Vector2> rationalCubicBezierCurvaturePoints = m_rationalCubicBezier.curvaturePoints(m_bezierCount, m_curvatureScaleFactor);
 
 					for (auto iter = rationalCubicBezierPoints.begin(); iter != rationalCubicBezierPoints.end() - 1; ++iter)
 						g3Vertices.push_back(*iter);
 
+					
+
 					if(m_showG3Curvature)
 					{
-						std::vector<Vector2> rationalCubicBezierCurvaturePoints = m_rationalCubicBezier.curvaturePoints(m_bezierCount, m_curvatureScaleFactor);
-
 						for (size_t i = 1; i < rationalCubicBezierPoints.size(); ++i)
 						{
 
@@ -1097,17 +1101,19 @@ namespace Physics2D
 			ImGui::DragInt("Circle Segment Count", &m_count, 2, 4, 500);
 			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.01f, 1.0f);
 
-			ImGui::DragFloat("Bezier1 Weight P0", &m_rationalCubicBezier.weightAt(0), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier1 Weight P1", &m_rationalCubicBezier.weightAt(1), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier1 Weight P2", &m_rationalCubicBezier.weightAt(2), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier1 Weight P3", &m_rationalCubicBezier.weightAt(3), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P0", &m_rationalCubicBezier.weightAt(0), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P1", &m_rationalCubicBezier.weightAt(1), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P2", &m_rationalCubicBezier.weightAt(2), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P3", &m_rationalCubicBezier.weightAt(3), 1e-6f, 1e-7f, 5.0f, "%.7f");
 
 
-			ImGui::DragFloat("Bezier2 Weight P0", &m_rationalCubicBezier2.weightAt(0), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier2 Weight P1", &m_rationalCubicBezier2.weightAt(1), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier2 Weight P2", &m_rationalCubicBezier2.weightAt(2), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier2 Weight P3", &m_rationalCubicBezier2.weightAt(3), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P0", &m_rationalCubicBezier2.weightAt(0), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P1", &m_rationalCubicBezier2.weightAt(1), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P2", &m_rationalCubicBezier2.weightAt(2), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P3", &m_rationalCubicBezier2.weightAt(3), 1e-6f, 1e-7f, 5.0f, "%.7f");
 
+			ImGui::DragFloat("Optimize Residual Resolution", &m_residualResolution, 1e-6f, 1e-6f, 0.1f, "%.7f");
+			ImGui::DragFloat("Optimize Speed", &m_optimizeSpeed, 1e-6f, 1e-7f, 0.1f, "%.7f");
 			ImGui::Checkbox("Optimize", &m_numOptimize);
 
 			ImGui::Checkbox("Show Rounded Curvature", &m_showRoundedCurvature);
@@ -1218,6 +1224,8 @@ namespace Physics2D
 		//std::array<Vector2, 4> m_bezierPoints1;
 		//std::array<Vector2, 4> m_bezierPoints2;
 
+		float m_residualResolution = 1e-5f;
+		float m_optimizeSpeed = 1e-5f;
 		float m_innerWidthFactor = 0.7f;
 		float m_innerHeightFactor = 0.7f;
 		float m_curvatureScaleFactor = 0.61f;
