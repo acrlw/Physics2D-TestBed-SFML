@@ -195,7 +195,8 @@ namespace Physics2D
 	private:
 		std::array<Vector2, 4> m_points;
 		//std::array<float, 4> m_weights = {0.45f, 1.0f, 1.0f, 1.0f};
-		std::array<float, 4> m_weights = {1.0f, 1.0f, 1.0f, 1.0f};
+		//std::array<float, 4> m_weights = {1.0f, 1.0f, 1.0f, 1.0f};
+		std::array<float, 4> m_weights = {1.0051876f, 0.9668550f, 0.8220000f, 0.8360001f };
 	};
 
 	class RationalQuadraticBezier
@@ -587,14 +588,15 @@ namespace Physics2D
 		void onPostRender(sf::RenderWindow& window) override
 		{
 			std::vector<Vector2> vertices;
-
 			std::vector<Vector2> newVertices;
+			std::vector<Vector2> g3Vertices;
 
 			Vector2 p0(m_halfWidth, 0);
 			Vector2 p1(0, m_halfHeight);
 
 			vertices.push_back(p0);
 			newVertices.push_back(p1);
+			g3Vertices.push_back(p1);
 
 			float min = std::min(m_halfWidth, m_halfHeight);
 			float maxRadius = min * m_percentage;
@@ -614,6 +616,7 @@ namespace Physics2D
 				float angle = static_cast<float>(i) * step;
 				Vector2 p(radius * std::cos(angle), radius * std::sin(angle));
 				p += center;
+
 				vertices.push_back(p);
 			}
 
@@ -717,7 +720,6 @@ namespace Physics2D
 			m_bezier2[1] = finalP;
 
 			m_quinticBezier[0] = m_bezier1[0];
-
 			m_quinticBezier[5] = m_bezier1[3];
 
 			if (!once)
@@ -851,46 +853,142 @@ namespace Physics2D
 				m_rationalCubicBezier.pointAt(2) = m_bezier1[2];
 				m_rationalCubicBezier.pointAt(3) = m_endRoundedPos;
 
-				//optimize w_0 to make curvature variance at P_3 close to zero
-				float k0 = m_rationalCubicBezier.curvature(0.0f);
-				float k1 = m_rationalCubicBezier.curvature(1.0f);
+				m_rationalCubicBezier2.pointAt(0) = end;
+				m_rationalCubicBezier2.pointAt(1) = m_bezier2[1];
+				m_rationalCubicBezier2.pointAt(2) = m_bezier2[2];
+				m_rationalCubicBezier2.pointAt(3) = m_startRoundedPos;
 
-				float residual1 = k0 - m_rationalCubicBezier.curvature(0.001f);
-				float residual2 = k1 - m_rationalCubicBezier.curvature(0.999f);
+				if(m_numOptimize)
+				{
+					{
+						//optimize w_0 to make curvature variance at P_3 close to zero
+						float k0 = m_rationalCubicBezier.curvature(0.0f);
+						float k1 = m_rationalCubicBezier.curvature(1.0f);
 
+						float residual1 = (k0 - m_rationalCubicBezier.curvature(0.0001f)) / 0.0001f;
+						float residual2 = (k1 - m_rationalCubicBezier.curvature(0.9999f)) / 0.0001f;
 
-				if (residual2 > 0)
-					m_rationalCubicBezier.weightAt(0) += 0.0005f * m_rationalCubicBezier.weightAt(0);
-				else
-					m_rationalCubicBezier.weightAt(0) -= 0.0005f * m_rationalCubicBezier.weightAt(0);
+						//while(std::abs(residual2) > 1e-3)
+						//{
+						if (residual2 > 0)
+							//m_rationalCubicBezier.weightAt(0) += 0.0005f * m_rationalCubicBezier.weightAt(0);
+							m_rationalCubicBezier.weightAt(0) *= 1.0001f;
+						else
+							//m_rationalCubicBezier.weightAt(0) -= 0.0005f * m_rationalCubicBezier.weightAt(0);
+							m_rationalCubicBezier.weightAt(0) *= 0.9999f;
 
-				float residual3 = k1 - scaleK;
+						//	residual2 = (k1 - m_rationalCubicBezier.curvature(0.9999f)) / 0.0001f;
+						//	std::cout << "optimize res2:" << residual2 << "\n";
+						//}
 
-				if(residual3 > 0)
-					m_rationalCubicBezier.weightAt(2) += 0.0005f * m_rationalCubicBezier.weightAt(2);
-				else
-					m_rationalCubicBezier.weightAt(2) -= 0.0005f * m_rationalCubicBezier.weightAt(2);
+						float residual3 = k1 - scaleK;
 
-				std::cout << "res1:" << residual1 << ", res2:" << residual2 << ", res3:" << residual3 << ", w0:" << m_rationalCubicBezier.weightAt(0) << "\n";
+						if (residual3 > 0)
+							m_rationalCubicBezier.weightAt(1) *= 0.9999f;
+						else
+							m_rationalCubicBezier.weightAt(1) *= 1.0001f;
+
+						std::cout << "res1:" << residual1 << ", res2:" << residual2 << ", res3:" << residual3 << ", w0:" << m_rationalCubicBezier.weightAt(0) << "\n";
+
+					}
+
+					{
+						//optimize w_0 to make curvature variance at P_3 close to zero
+						float k0 = m_rationalCubicBezier2.curvature(0.0f);
+						float k1 = m_rationalCubicBezier2.curvature(1.0f);
+
+						float residual1 = (k0 - m_rationalCubicBezier2.curvature(0.0001f)) / 0.0001f;
+						float residual2 = (k1 - m_rationalCubicBezier2.curvature(0.9999f)) / 0.0001f;
+
+						//while(std::abs(residual2) > 1e-3)
+						//{
+						if (residual2 > 0)
+							//m_rationalCubicBezier2.weightAt(0) += 0.0005f * m_rationalCubicBezier2.weightAt(0);
+							m_rationalCubicBezier2.weightAt(0) *= 1.0001f;
+						else
+							//m_rationalCubicBezier2.weightAt(0) -= 0.0005f * m_rationalCubicBezier2.weightAt(0);
+							m_rationalCubicBezier2.weightAt(0) *= 0.9999f;
+
+						//	residual2 = (k1 - m_rationalCubicBezier2.curvature(0.9999f)) / 0.0001f;
+						//	std::cout << "optimize res2:" << residual2 << "\n";
+						//}
+
+						float residual3 = k1 - scaleK;
+
+						if (residual3 > 0)
+							m_rationalCubicBezier2.weightAt(1) *= 0.9999f;
+						else
+							m_rationalCubicBezier2.weightAt(1) *= 1.0001f;
+
+						//std::cout << "res1:" << residual1 << ", res2:" << residual2 << ", res3:" << residual3 << ", w0:" << m_rationalCubicBezier2.weightAt(0) << "\n";
+					}
+				}
 				
 
+				
 
-				std::vector<Vector2> rationalCubicBezierPoints = m_rationalCubicBezier.samplePoints(m_bezierCount);
-				std::vector<Vector2> rationalCubicBezierCurvaturePoints = m_rationalCubicBezier.curvaturePoints(m_bezierCount, m_curvatureScaleFactor);
-
-				for (size_t i = 1; i < rationalCubicBezierPoints.size(); ++i)
 				{
+					std::vector<Vector2> rationalCubicBezierPoints = m_rationalCubicBezier.samplePoints(m_bezierCount);
 
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i - 1], rationalCubicBezierPoints[i], RenderConstant::Red);
+					for (auto iter = rationalCubicBezierPoints.begin(); iter != rationalCubicBezierPoints.end() - 1; ++iter)
+						g3Vertices.push_back(*iter);
 
-					
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierCurvaturePoints[i - 1]
-						, rationalCubicBezierCurvaturePoints[i], RenderConstant::Red);
+					if(m_showG3Curvature)
+					{
+						std::vector<Vector2> rationalCubicBezierCurvaturePoints = m_rationalCubicBezier.curvaturePoints(m_bezierCount, m_curvatureScaleFactor);
 
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i], rationalCubicBezierCurvaturePoints[i], RenderConstant::Red);
+						for (size_t i = 1; i < rationalCubicBezierPoints.size(); ++i)
+						{
 
+							//RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i - 1], rationalCubicBezierPoints[i], RenderConstant::Red);
+
+
+							RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierCurvaturePoints[i - 1]
+								, rationalCubicBezierCurvaturePoints[i], RenderConstant::Blue);
+
+							RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i], rationalCubicBezierCurvaturePoints[i], RenderConstant::Blue);
+
+
+						}
+
+					}
 					
 				}
+
+				for (auto iter = curvatureOfRoundedStart.rbegin();
+					iter != curvatureOfRoundedStart.rend(); ++iter)
+				{
+					g3Vertices.push_back(*iter);
+				}
+
+				{
+					std::vector<Vector2> rationalCubicBezierPoints = m_rationalCubicBezier2.samplePoints(m_bezierCount);
+
+					for (auto iter = rationalCubicBezierPoints.rbegin() + 1; iter != rationalCubicBezierPoints.rend(); ++iter)
+						g3Vertices.push_back(*iter);
+
+
+					if(m_showG3Curvature)
+					{
+						std::vector<Vector2> rationalCubicBezierCurvaturePoints = m_rationalCubicBezier2.curvaturePoints(m_bezierCount, m_curvatureScaleFactor, true);
+
+						for (size_t i = 1; i < rationalCubicBezierPoints.size(); ++i)
+						{
+
+							//RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i - 1], rationalCubicBezierPoints[i], RenderConstant::Green);
+
+
+							RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierCurvaturePoints[i - 1]
+								, rationalCubicBezierCurvaturePoints[i], RenderConstant::Blue);
+
+							RenderSFMLImpl::renderLine(window, *m_settings.camera, rationalCubicBezierPoints[i], rationalCubicBezierCurvaturePoints[i], RenderConstant::Blue);
+
+
+						}
+					}
+				}
+
+				g3Vertices.push_back(p0);
 
 			}
 
@@ -909,6 +1007,7 @@ namespace Physics2D
 
 			std::vector<Vector2> vertices2, vertices3, vertices4;
 			std::vector<Vector2> newVertices2, newVertices3, newVertices4;
+			std::vector<Vector2> g3Vertices2, g3Vertices3, g3Vertices4;
 			for(auto& p : vertices)
 			{
 				vertices2.emplace_back(-p.x, p.y);
@@ -923,6 +1022,22 @@ namespace Physics2D
 				newVertices4.emplace_back(p.x, -p.y);
 			}
 
+			for (auto& p : g3Vertices)
+			{
+				g3Vertices2.emplace_back(-p.x, p.y);
+				g3Vertices3.emplace_back(-p.x, -p.y);
+				g3Vertices4.emplace_back(p.x, -p.y);
+			}
+			if (m_showG1)
+			{
+				for (size_t i = 0; i < vertices.size() - 1; ++i)
+				{
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices[i], vertices[(i + 1) % vertices.size()], RenderConstant::Red);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices2[i], vertices2[(i + 1) % vertices2.size()], RenderConstant::Red);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices3[i], vertices3[(i + 1) % vertices3.size()], RenderConstant::Red);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices4[i], vertices4[(i + 1) % vertices4.size()], RenderConstant::Red);
+				}
+			}
 			if (m_showG2)
 			{
 				//for(size_t i = 0 ; i < newVertices.size(); ++i)
@@ -939,17 +1054,23 @@ namespace Physics2D
 					RenderSFMLImpl::renderLine(window, *m_settings.camera, newVertices4[i - 1], newVertices4[i], RenderConstant::Green);
 				}
 			}
-
-			if (m_showG1)
+			if(m_showG3)
 			{
-				for (size_t i = 0; i < vertices.size() - 1; ++i)
+				//for(size_t i = 0 ; i < g3Vertices.size(); ++i)
+				//{
+				//	RenderSFMLImpl::renderUInt(window, *m_settings.camera, g3Vertices[i], *m_settings.font,
+				//		i, RenderConstant::Green, 18, Vector2(0.0f, 0.0f));
+				//	//RenderSFMLImpl::renderPoint(window, *m_settings.camera, elem, RenderConstant::Green, 2.0f);
+				//}
+				for (size_t i = 1; i < g3Vertices.size(); ++i)
 				{
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices[i], vertices[(i + 1) % vertices.size()], color);
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices2[i], vertices2[(i + 1) % vertices2.size()], color);
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices3[i], vertices3[(i + 1) % vertices3.size()], color);
-					RenderSFMLImpl::renderLine(window, *m_settings.camera, vertices4[i], vertices4[(i + 1) % vertices4.size()], color);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, g3Vertices[i - 1], g3Vertices[i], RenderConstant::Blue);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, g3Vertices2[i - 1], g3Vertices2[i], RenderConstant::Blue);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, g3Vertices3[i - 1], g3Vertices3[i], RenderConstant::Blue);
+					RenderSFMLImpl::renderLine(window, *m_settings.camera, g3Vertices4[i - 1], g3Vertices4[i], RenderConstant::Blue);
 				}
 			}
+			
 		}
 
 		void onPostStep(real dt) override
@@ -976,10 +1097,18 @@ namespace Physics2D
 			ImGui::DragInt("Circle Segment Count", &m_count, 2, 4, 500);
 			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.01f, 1.0f);
 
-			ImGui::DragFloat("Weight P0", &m_rationalCubicBezier.weightAt(0), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Weight P1", &m_rationalCubicBezier.weightAt(1), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Weight P2", &m_rationalCubicBezier.weightAt(2), 0.001f, 0.001f, 5.0f, "%.7f");
-			ImGui::DragFloat("Weight P3", &m_rationalCubicBezier.weightAt(3), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P0", &m_rationalCubicBezier.weightAt(0), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P1", &m_rationalCubicBezier.weightAt(1), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P2", &m_rationalCubicBezier.weightAt(2), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P3", &m_rationalCubicBezier.weightAt(3), 0.001f, 0.001f, 5.0f, "%.7f");
+
+
+			ImGui::DragFloat("Bezier2 Weight P0", &m_rationalCubicBezier2.weightAt(0), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P1", &m_rationalCubicBezier2.weightAt(1), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P2", &m_rationalCubicBezier2.weightAt(2), 0.001f, 0.001f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P3", &m_rationalCubicBezier2.weightAt(3), 0.001f, 0.001f, 5.0f, "%.7f");
+
+			ImGui::Checkbox("Optimize", &m_numOptimize);
 
 			ImGui::Checkbox("Show Rounded Curvature", &m_showRoundedCurvature);
 			ImGui::Checkbox("Show Bezier Curvature", &m_showBezierCurvature);
@@ -989,6 +1118,7 @@ namespace Physics2D
 			ImGui::Checkbox("Show G1 Continuity", &m_showG1);
 			ImGui::Checkbox("Show G2 Continuity", &m_showG2);
 			ImGui::Checkbox("Show G3 Continuity", &m_showG3);
+			ImGui::Checkbox("Show G3 Curvature", &m_showG3Curvature);
 
 			ImGui::End();
 		}
@@ -1057,10 +1187,12 @@ namespace Physics2D
 		}
 
 	private:
+		bool m_numOptimize = false;
 		bool once = false;
 		bool m_showG1 = false;
 		bool m_showG2 = true;
 		bool m_showG3 = true;
+		bool m_showG3Curvature = true;
 		bool m_showRoundedCurvature = true;
 		bool m_showBezierCurvature = false;
 		bool m_showQuinticBezier = false;
@@ -1075,6 +1207,7 @@ namespace Physics2D
 		Vector2 m_startRoundedPos;
 		Vector2 m_endRoundedPos;
 
+		RationalCubicBezier m_rationalCubicBezier2;
 		RationalCubicBezier m_rationalCubicBezier;
 
 		QuinticBezier m_quinticBezier;
@@ -1087,14 +1220,14 @@ namespace Physics2D
 
 		float m_innerWidthFactor = 0.7f;
 		float m_innerHeightFactor = 0.7f;
-		float m_curvatureScaleFactor = 0.5f;
+		float m_curvatureScaleFactor = 0.61f;
 		int m_bezierCount = 50;
 		int m_count = 50;
-		float m_halfWidth = 1.0f;
-		float m_halfHeight = 1.0f;
-		float m_percentage = 0.7f;
+		float m_halfWidth = 2.0f;
+		float m_halfHeight = 2.0f;
+		float m_percentage = 0.67f;
 
-		float m_cornerPercentage = 0.2f;
+		float m_cornerPercentage = 0.38f;
 		sf::Color color = RenderConstant::Cyan;
 		sf::Color gray = sf::Color(158, 158, 158, 255);
 		
