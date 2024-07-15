@@ -194,9 +194,8 @@ namespace Physics2D
 
 	private:
 		std::array<Vector2, 4> m_points;
-		//std::array<float, 4> m_weights = {0.45f, 1.0f, 1.0f, 1.0f};
-		//std::array<float, 4> m_weights = {1.0f, 1.0f, 1.0f, 1.0f};
-		std::array<float, 4> m_weights = {1.0051876f, 0.9668550f, 0.8220000f, 0.8360001f };
+		//std::array<float, 4> m_weights = {1.0006114f, 0.9667583f, 0.8220000f, 0.8360001f };
+		std::array<float, 4> m_weights = { 0.5235227f, 0.9434174f, 0.8017000f, 0.8254001f };
 	};
 
 	class RationalQuadraticBezier
@@ -867,9 +866,14 @@ namespace Physics2D
 						float k0 = m_rationalCubicBezier.curvature(0.0f);
 						float k1 = m_rationalCubicBezier.curvature(1.0f);
 
+						float t2 = static_cast<float>(m_bezierCount - 1) / static_cast<float>(m_bezierCount);
+						float k2 = m_rationalCubicBezier.curvature(t2);
 
-						float residual1 = (k0 - m_rationalCubicBezier.curvature(resolution)) / resolution;
-						float residual2 = (k1 - m_rationalCubicBezier.curvature(1.0f - resolution)) / resolution;
+						float bezierStep = 1.0f / static_cast<float>(m_bezierCount);
+
+
+						float residual1 = (k0 - m_rationalCubicBezier.curvature(bezierStep)) / bezierStep;
+						float residual2 = (k1 - k2) / bezierStep;
 
 						//while(std::abs(residual2) > 1e-3)
 						//{
@@ -900,9 +904,14 @@ namespace Physics2D
 						float k0 = m_rationalCubicBezier2.curvature(0.0f);
 						float k1 = m_rationalCubicBezier2.curvature(1.0f);
 
-						float residual1 = (k0 - m_rationalCubicBezier.curvature(resolution)) / resolution;
-						float residual2 = (k1 - m_rationalCubicBezier.curvature(1.0f - resolution)) / resolution;
+						float t2 = static_cast<float>(m_bezierCount - 1) / static_cast<float>(m_bezierCount);
+						float k2 = m_rationalCubicBezier2.curvature(t2);
 
+						float bezierStep = 1.0f / static_cast<float>(m_bezierCount);
+
+
+						float residual1 = (k0 - m_rationalCubicBezier2.curvature(bezierStep)) / bezierStep;
+						float residual2 = (k1 - k2) / bezierStep;
 						//while(std::abs(residual2) > 1e-3)
 						//{
 						if (residual2 > 0)
@@ -1101,16 +1110,16 @@ namespace Physics2D
 			ImGui::DragInt("Circle Segment Count", &m_count, 2, 4, 500);
 			ImGui::DragFloat("Curvature Scale Factor", &m_curvatureScaleFactor, 0.01f, 0.01f, 1.0f);
 
-			ImGui::DragFloat("Bezier1 Weight P0", &m_rationalCubicBezier.weightAt(0), 1e-6f, 1e-7f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier1 Weight P1", &m_rationalCubicBezier.weightAt(1), 1e-6f, 1e-7f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier1 Weight P2", &m_rationalCubicBezier.weightAt(2), 1e-6f, 1e-7f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier1 Weight P3", &m_rationalCubicBezier.weightAt(3), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P0", &m_rationalCubicBezier.weightAt(0), 1e-4f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P1", &m_rationalCubicBezier.weightAt(1), 1e-4f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P2", &m_rationalCubicBezier.weightAt(2), 1e-4f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier1 Weight P3", &m_rationalCubicBezier.weightAt(3), 1e-4f, 1e-7f, 5.0f, "%.7f");
 
 
-			ImGui::DragFloat("Bezier2 Weight P0", &m_rationalCubicBezier2.weightAt(0), 1e-6f, 1e-7f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier2 Weight P1", &m_rationalCubicBezier2.weightAt(1), 1e-6f, 1e-7f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier2 Weight P2", &m_rationalCubicBezier2.weightAt(2), 1e-6f, 1e-7f, 5.0f, "%.7f");
-			ImGui::DragFloat("Bezier2 Weight P3", &m_rationalCubicBezier2.weightAt(3), 1e-6f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P0", &m_rationalCubicBezier2.weightAt(0), 1e-4f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P1", &m_rationalCubicBezier2.weightAt(1), 1e-4f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P2", &m_rationalCubicBezier2.weightAt(2), 1e-4f, 1e-7f, 5.0f, "%.7f");
+			ImGui::DragFloat("Bezier2 Weight P3", &m_rationalCubicBezier2.weightAt(3), 1e-4f, 1e-7f, 5.0f, "%.7f");
 
 			ImGui::DragFloat("Optimize Residual Resolution", &m_residualResolution, 1e-6f, 1e-6f, 0.1f, "%.7f");
 			ImGui::DragFloat("Optimize Speed", &m_optimizeSpeed, 1e-6f, 1e-7f, 0.1f, "%.7f");
@@ -1226,16 +1235,18 @@ namespace Physics2D
 
 		float m_residualResolution = 1e-5f;
 		float m_optimizeSpeed = 1e-5f;
-		float m_innerWidthFactor = 0.7f;
-		float m_innerHeightFactor = 0.7f;
-		float m_curvatureScaleFactor = 0.61f;
+		float m_innerWidthFactor = 0.2f;
+		float m_innerHeightFactor = 0.2f;
+		float m_curvatureScaleFactor = 0.5f;
 		int m_bezierCount = 50;
 		int m_count = 50;
+
 		float m_halfWidth = 2.0f;
 		float m_halfHeight = 2.0f;
-		float m_percentage = 0.67f;
 
-		float m_cornerPercentage = 0.38f;
+		float m_percentage = 0.681f;
+
+		float m_cornerPercentage = 0.4f;
 		sf::Color color = RenderConstant::Cyan;
 		sf::Color gray = sf::Color(158, 158, 158, 255);
 		
