@@ -698,6 +698,7 @@ namespace Physics2D
 
 			m_bezier2[2] = p;
 
+
 			float A = 18.0f * ((m_bezier1[3].x - m_bezier1[2].x) * (m_bezier1[0].y - m_bezier1[2].y)
 				- (m_bezier1[0].x - m_bezier1[2].x) * (m_bezier1[3].y - m_bezier1[2].y));
 			float C = std::pow(9.0f * (m_bezier1[3] - m_bezier1[2]).dot(m_bezier1[3] - m_bezier1[2]), 3.0f);
@@ -706,7 +707,29 @@ namespace Physics2D
 			float u = std::sqrt(C) / std::abs(A);
 			Vector2 finalP = m_bezier1[0] * u + (1.0f - u) * m_bezier1[2];
 
+			//A = 18.0f * ((m_bezier1[3].x - m_bezier1[2].x) * (m_bezier1[2].y - m_bezier1[0].y)
+			//	- (m_bezier1[2].x - m_bezier1[0].x) * (m_bezier1[3].y - m_bezier1[2].y));
+
+			//float B = 18.0f * ((m_bezier1[3].x - m_bezier1[2].x) * (m_bezier1[0].y - 2.0f * m_bezier1[2].y + m_bezier1[3].y)
+			//	- (m_bezier1[0].x - 2.0f * m_bezier1[2].x + m_bezier1[3].x) * (m_bezier1[3].y - m_bezier1[2].y));
+
+			//C = std::pow(9.0f * (m_bezier1[3] - m_bezier1[2]).dot(m_bezier1[3] - m_bezier1[2]), 3.0f);
+			//C /= radius * radius;
+
+			//float determinant = 4.0f * A * A * C;
+
+			//float beta1 = (-2.0f * A * B + std::sqrt(determinant)) / (2.0f * A * A);
+			//float beta2 = (-2.0f * A * B - std::sqrt(determinant)) / (2.0f * A * A);
+
+			//float realBeta = std::abs(beta1) < std::abs(beta2) ? beta1 : beta2;
+
+			//Vector2 finalBetaPoint = m_bezier1[0] + realBeta * (m_bezier1[2] - m_bezier1[0]);
+
 			m_bezier1[1] = finalP;
+
+
+
+			//m_bezier1[1] = finalP;
 
 			A = 18.0f * ((m_bezier2[3].x - m_bezier2[2].x) * (m_bezier2[0].y - m_bezier2[2].y)
 				- (m_bezier2[0].x - m_bezier2[2].x) * (m_bezier2[3].y - m_bezier2[2].y));
@@ -1125,6 +1148,10 @@ namespace Physics2D
 			ImGui::DragFloat("Optimize Speed", &m_optimizeSpeed, 1e-6f, 1e-7f, 0.1f, "%.7f");
 			ImGui::Checkbox("Optimize", &m_numOptimize);
 
+			ImGui::Checkbox("Enable Corner Smoothing", &m_enableCornerSmoothing);
+			ImGui::SameLine();
+			ImGui::DragFloat("Corner Smoothing", &m_cornerSmoothing, 0.01f, 0.0f, 1.0f);
+
 			ImGui::Checkbox("Show Rounded Curvature", &m_showRoundedCurvature);
 			ImGui::Checkbox("Show Bezier Curvature", &m_showBezierCurvature);
 			ImGui::Checkbox("Show Reference Line", &m_showReferenceLine);
@@ -1202,6 +1229,7 @@ namespace Physics2D
 		}
 
 	private:
+		bool m_enableCornerSmoothing = false;
 		bool m_numOptimize = false;
 		bool once = false;
 		bool m_showG1 = false;
@@ -1233,6 +1261,7 @@ namespace Physics2D
 		//std::array<Vector2, 4> m_bezierPoints1;
 		//std::array<Vector2, 4> m_bezierPoints2;
 
+		float m_cornerSmoothing = 0.6f;
 		float m_residualResolution = 1e-5f;
 		float m_optimizeSpeed = 1e-5f;
 		float m_innerWidthFactor = 0.2f;
