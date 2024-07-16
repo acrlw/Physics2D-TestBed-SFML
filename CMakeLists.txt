@@ -7,6 +7,8 @@ find_package(imgui CONFIG REQUIRED)
 find_package(SFML CONFIG REQUIRED COMPONENTS graphics system window)
 find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
+find_package(Ceres CONFIG REQUIRED)
+
 # Set target Physics2D
 add_library(Physics2D)
 target_compile_definitions(Physics2D PUBLIC "$<$<CONFIG:DEBUG>:DEBUG>")
@@ -47,6 +49,7 @@ target_link_libraries(Physics2D-TestBed-SFML PRIVATE
     sfml-system sfml-network sfml-graphics sfml-window
     ImGui-SFML::ImGui-SFML
     Eigen3::Eigen
+    Ceres::ceres
 )
 
 add_custom_command(TARGET Physics2D-TestBed-SFML POST_BUILD 

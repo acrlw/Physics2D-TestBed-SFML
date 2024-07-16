@@ -195,7 +195,8 @@ namespace Physics2D
 	private:
 		std::array<Vector2, 4> m_points;
 		//std::array<float, 4> m_weights = {1.0006114f, 0.9667583f, 0.8220000f, 0.8360001f };
-		std::array<float, 4> m_weights = { 0.5235227f, 0.9434174f, 0.8017000f, 0.8254001f };
+		//std::array<float, 4> m_weights = { 0.5235227f, 0.9434174f, 0.8017000f, 0.8254001f };
+		std::array<float, 4> m_weights = { 0.8029640f, 0.9434249f, 0.8017000f, 0.8254001f };
 	};
 
 	class RationalQuadraticBezier
@@ -1264,14 +1265,14 @@ namespace Physics2D
 		float m_cornerSmoothing = 0.6f;
 		float m_residualResolution = 1e-5f;
 		float m_optimizeSpeed = 1e-5f;
-		float m_innerWidthFactor = 0.2f;
-		float m_innerHeightFactor = 0.2f;
-		float m_curvatureScaleFactor = 0.5f;
-		int m_bezierCount = 50;
-		int m_count = 50;
+		float m_innerWidthFactor = 0.55f;
+		float m_innerHeightFactor = 0.55f;
+		float m_curvatureScaleFactor = 0.1f;
+		int m_bezierCount = 100;
+		int m_count = 100;
 
-		float m_halfWidth = 2.0f;
-		float m_halfHeight = 2.0f;
+		float m_halfWidth = 1.0f;
+		float m_halfHeight = 1.0f;
 
 		float m_percentage = 0.681f;
 
